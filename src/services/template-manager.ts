@@ -4,7 +4,7 @@
  */
 
 import { logger } from '../utils/logger';
-import { getCommandInfo } from '../lib/command-groups';
+// import.*from.*../lib/command-groups';
 import { join } from 'path';
 import { homedir } from 'os';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';

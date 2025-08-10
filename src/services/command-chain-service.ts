@@ -5,7 +5,7 @@
 
 import { SlashCommandHandler, SlashCommandResult } from './slash-command-handler';
 import { ConversationContext } from '../types/conversation';
-import { commandChains } from '../lib/command-groups';
+// import.*from.*../lib/command-groups';
 // import { logger } from '../utils/logger';
 import chalk from 'chalk';
 

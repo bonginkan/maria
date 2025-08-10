@@ -76,7 +76,7 @@ export class LocalAuthService {
   async login(email: string, password: string): Promise<{ user: User; token: string }> {
     // Get user
     const user = await this.getUserByEmail(email);
-    if (\!user) {
+    if (!user) {
       throw new Error('Invalid credentials');
     }
 
@@ -84,7 +84,7 @@ export class LocalAuthService {
     const [salt, hash] = user.passwordHash.split(':');
     const verifyHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
     
-    if (hash \!== verifyHash) {
+    if (hash !== verifyHash) {
       throw new Error('Invalid credentials');
     }
 
@@ -128,7 +128,7 @@ export class LocalAuthService {
     try {
       // Check session
       const session = this.sessions.get(token);
-      if (\!session || session.expiresAt < new Date()) {
+      if (!session || session.expiresAt < new Date()) {
         return null;
       }
 
@@ -144,7 +144,7 @@ export class LocalAuthService {
 
   async hasPermission(token: string, requiredRole: 'admin' | 'editor' | 'viewer'): Promise<boolean> {
     const user = await this.verifyToken(token);
-    if (\!user) {
+    if (!user) {
       return false;
     }
 
@@ -160,7 +160,7 @@ export class LocalAuthService {
   private async getUserById(id: string): Promise<User | null> {
     const userPath = path.join(this.dataPath, 'users', `${id}.json`);
     
-    if (\!await fs.pathExists(userPath)) {
+    if (!await fs.pathExists(userPath)) {
       return null;
     }
 
@@ -194,7 +194,7 @@ export class LocalAuthService {
   private async loadSessions(): Promise<void> {
     const sessionsDir = path.join(this.dataPath, 'sessions');
     
-    if (\!await fs.pathExists(sessionsDir)) {
+    if (!await fs.pathExists(sessionsDir)) {
       return;
     }
 

@@ -1,0 +1,78 @@
+name: PR Quality Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10'
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 🗃️ Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: 🔗 Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: 🔧 Build check
+        run: pnpm run build
+
+      - name: 🧪 Lint check
+        run: pnpm run lint
+
+      - name: 🔍 Type check
+        run: pnpm run typecheck
+
+      - name: 📊 Package size check
+        run: |
+          npm pack --dry-run
+          SIZE=$(npm pack --dry-run 2>/dev/null | grep "npm notice package size" | awk '{print $5}')
+          echo "📦 Package size: $SIZE"
+          
+          # Check if package size is reasonable (< 10MB)
+          SIZE_NUM=$(echo $SIZE | sed 's/[^0-9.]//g')
+          UNIT=$(echo $SIZE | sed 's/[0-9.]//g' | tr '[:lower:]' '[:upper:]')
+          
+          if [[ "$UNIT" == "MB" && $(echo "$SIZE_NUM > 10" | bc -l) == 1 ]]; then
+            echo "⚠️ Warning: Package size ($SIZE) is quite large"
+            exit 1
+          fi
+          
+          echo "✅ Package size is acceptable"
+
+      - name: 🎯 PR Summary
+        run: |
+          echo "## ✅ PR Quality Check Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Build successful" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Linting passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Type checking passed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Package size acceptable" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 Ready for review and merge!" >> $GITHUB_STEP_SUMMARY

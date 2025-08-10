@@ -224,7 +224,7 @@ export class PrioritySystem {
     breakdown.cost = costScore;
 
     // Apply weights based on preferences
-    const weightedScore = this.applyWeights(breakdown, task);
+    let weightedScore = this.applyWeights(breakdown, task);
 
     // Custom order override
     if (this.config.customOrder) {

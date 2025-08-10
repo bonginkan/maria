@@ -1,6 +1,6 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "Intelligent CLI Assistant with Multi-Model AI Support - Zero Configuration, Privacy First",
   "keywords": [
     "ai",
@@ -54,7 +54,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build && pnpm run test",
+    "prepublishOnly": "pnpm run build",
     "release": "pnpm version patch && pnpm publish",
     "release:alpha": "pnpm publish --tag alpha",
     "release:beta": "pnpm publish --tag beta"

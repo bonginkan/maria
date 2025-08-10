@@ -32,7 +32,7 @@ export class LocalStorageService {
   constructor(options: StorageOptions = {}) {
     this.basePath = options.basePath || path.join(process.env.HOME || '', '.maria', 'storage');
     this.maxVersions = options.maxVersions || 10;
-    this.enableBackup = options.enableBackup \!== false;
+    this.enableBackup = options.enableBackup !== false;
     
     // Ensure base directory exists
     fs.ensureDirSync(this.basePath);
@@ -82,7 +82,7 @@ export class LocalStorageService {
   async download(filePath: string): Promise<Buffer> {
     const fullPath = path.join(this.basePath, filePath);
     
-    if (\!await fs.pathExists(fullPath)) {
+    if (!await fs.pathExists(fullPath)) {
       throw new Error(`File not found: ${filePath}`);
     }
 
@@ -103,7 +103,7 @@ export class LocalStorageService {
   async list(directory: string = ''): Promise<FileMetadata[]> {
     const fullPath = path.join(this.basePath, directory);
     
-    if (\!await fs.pathExists(fullPath)) {
+    if (!await fs.pathExists(fullPath)) {
       return [];
     }
 
@@ -124,7 +124,7 @@ export class LocalStorageService {
   private async createVersion(filePath: string): Promise<void> {
     const fullPath = path.join(this.basePath, filePath);
     
-    if (\!await fs.pathExists(fullPath)) {
+    if (!await fs.pathExists(fullPath)) {
       return;
     }
 
@@ -153,7 +153,7 @@ export class LocalStorageService {
   private async getMetadata(filePath: string): Promise<FileMetadata | null> {
     const metaPath = path.join(this.basePath, 'metadata', `${filePath}.json`);
     
-    if (\!await fs.pathExists(metaPath)) {
+    if (!await fs.pathExists(metaPath)) {
       return null;
     }
 

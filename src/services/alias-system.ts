@@ -5,7 +5,7 @@
 
 import { readConfig, writeConfig } from '../utils/config';
 import { logger } from '../utils/logger';
-import { getCommandInfo } from '../lib/command-groups';
+// import.*from.*../lib/command-groups';
 
 export interface CommandAlias {
   alias: string;

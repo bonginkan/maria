@@ -10,19 +10,16 @@ export default defineConfig({
   splitting: false,
   treeshake: true,
   external: [],
-  noExternal: [],
+  noExternal: [/.*/],
   target: 'node18',
   platform: 'node',
   shims: false,
   keepNames: true,
   bundle: true,
-  skipNodeModulesBundle: true,
+  skipNodeModulesBundle: false,
   metafile: true,
   onSuccess: 'chmod +x dist/cli.js',
   esbuildOptions(options) {
-    options.footer = {
-      js: `if (require.main === module) { require('./cli').main(); }`,
-    };
+    // No footer needed for CLI entry
   },
 });
-EOF < /dev/null
