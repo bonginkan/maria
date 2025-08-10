@@ -87,12 +87,12 @@ export class Neo4jService {
     }
 
     logger.debug('Executing query:', query, params);
-    
+
     // TODO: Implement actual query execution
     return {
       nodes: [],
       relationships: [],
-      records: []
+      records: [],
     };
   }
 
@@ -100,10 +100,8 @@ export class Neo4jService {
    * ノードを取得
    */
   async getNodes(label?: string): Promise<Neo4jNode[]> {
-    const query = label 
-      ? `MATCH (n:${label}) RETURN n`
-      : 'MATCH (n) RETURN n';
-    
+    const query = label ? `MATCH (n:${label}) RETURN n` : 'MATCH (n) RETURN n';
+
     const result = await this.executeQuery(query);
     return result.nodes;
   }
@@ -112,10 +110,8 @@ export class Neo4jService {
    * リレーションシップを取得
    */
   async getRelationships(type?: string): Promise<Neo4jRelationship[]> {
-    const query = type
-      ? `MATCH ()-[r:${type}]->() RETURN r`
-      : 'MATCH ()-[r]->() RETURN r';
-    
+    const query = type ? `MATCH ()-[r:${type}]->() RETURN r` : 'MATCH ()-[r]->() RETURN r';
+
     const result = await this.executeQuery(query);
     return result.relationships;
   }
@@ -146,13 +142,13 @@ export class Neo4jService {
       nodes: [
         { label: 'Entity', count: 150, properties: ['id', 'name', 'type', 'created'] },
         { label: 'Document', count: 85, properties: ['id', 'title', 'content', 'version'] },
-        { label: 'User', count: 25, properties: ['id', 'email', 'name', 'role'] }
+        { label: 'User', count: 25, properties: ['id', 'email', 'name', 'role'] },
       ],
       relationships: [
         { type: 'CREATED_BY', count: 85, startLabel: 'Document', endLabel: 'User' },
         { type: 'REFERENCES', count: 120, startLabel: 'Document', endLabel: 'Entity' },
-        { type: 'CONTAINS', count: 200, startLabel: 'Entity', endLabel: 'Entity' }
-      ]
+        { type: 'CONTAINS', count: 200, startLabel: 'Entity', endLabel: 'Entity' },
+      ],
     };
   }
 
@@ -162,21 +158,21 @@ export class Neo4jService {
   async analyzePatterns(options?: { limit?: number }): Promise<Pattern[]> {
     const limit = options?.limit || 10;
     logger.info(`Analyzing patterns... (limit: ${limit})`);
-    
+
     // Mock implementation
     return [
       {
         name: 'Hub Nodes',
         pattern: 'Nodes with high connectivity (degree > 10)',
         count: 12,
-        example: { label: 'Entity', name: 'MainProject', degree: 45 }
+        example: { label: 'Entity', name: 'MainProject', degree: 45 },
       },
       {
         name: 'Isolated Nodes',
         pattern: 'Nodes with no connections',
         count: 3,
-        example: ['User', 'Document']
-      }
+        example: ['User', 'Document'],
+      },
     ];
   }
 
@@ -187,12 +183,12 @@ export class Neo4jService {
     const type = options?.type || 'degree';
     const limit = options?.limit || 20;
     logger.info(`Calculating ${type} metrics...`);
-    
+
     // Mock implementation
     return [
       { node: 'MainProject', score: 45, details: 'Entity' },
       { node: 'UserAdmin', score: 32, details: 'User' },
-      { node: 'CoreDocument', score: 28, details: 'Document' }
+      { node: 'CoreDocument', score: 28, details: 'Document' },
     ].slice(0, limit);
   }
 
@@ -202,7 +198,7 @@ export class Neo4jService {
   async detectCommunities(options?: { algorithm?: string }): Promise<Community[]> {
     const algorithm = options?.algorithm || 'louvain';
     logger.info(`Detecting communities using ${algorithm}...`);
-    
+
     // Mock implementation
     return [
       {
@@ -210,14 +206,14 @@ export class Neo4jService {
         size: 15,
         keyMembers: ['MainProject', 'CoreDocument', 'Feature1', 'Feature2'],
         density: 0.75,
-        centralNode: 'MainProject'
+        centralNode: 'MainProject',
       },
       {
         id: 2,
         size: 8,
         keyMembers: ['UserAdmin', 'User1', 'User2'],
-        density: 0.65
-      }
+        density: 0.65,
+      },
     ];
   }
 
@@ -226,16 +222,16 @@ export class Neo4jService {
    */
   async runQuery(query: string, params?: Record<string, any>): Promise<any[]> {
     logger.debug('Running query:', query, params);
-    
+
     // Mock implementation - return sample data based on query patterns
     if (query.includes('MATCH (n)')) {
       return [
         { label: 'Entity', count: 150 },
         { label: 'Document', count: 85 },
-        { label: 'User', count: 25 }
+        { label: 'User', count: 25 },
       ];
     }
-    
+
     return [];
   }
 
@@ -250,20 +246,20 @@ export class Neo4jService {
     const type = options?.type || 'similar';
     const limit = options?.limit || 10;
     logger.info(`Generating ${type} recommendations...`);
-    
+
     // Mock implementation
     return [
       {
         node: 'RelatedProject',
         score: 0.85,
         reason: 'Common connections: 8',
-        connections: ['Feature1', 'Feature2', 'UserAdmin']
+        connections: ['Feature1', 'Feature2', 'UserAdmin'],
       },
       {
         node: 'SimilarDocument',
         score: 0.72,
-        reason: 'Distance: 2, Paths: 5'
-      }
+        reason: 'Distance: 2, Paths: 5',
+      },
     ].slice(0, limit);
   }
 
@@ -278,14 +274,14 @@ export class Neo4jService {
   }): Promise<Path[]> {
     const { from, to, type = 'shortest' } = options;
     logger.info(`Finding ${type} paths from ${from} to ${to}...`);
-    
+
     // Mock implementation
     return [
       {
         nodes: [from, 'IntermediateNode', to],
         length: 2,
-        cost: type === 'weighted' ? 15 : undefined
-      }
+        cost: type === 'weighted' ? 15 : undefined,
+      },
     ];
   }
 }
@@ -296,11 +292,11 @@ export class MockNeo4jService extends Neo4jService {
     console.warn('Neo4j is not configured. Using mock implementation.');
     // Use the parent's connected property instead of trying to assign to isConnected method
   }
-  
+
   async analyzeSchema() {
     return { nodes: [], relationships: [], constraints: [], indexes: [] };
   }
-  
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async runQuery(_query: string, _params?: Record<string, any>): Promise<any[]> {
     // Return empty array to match the expected return type

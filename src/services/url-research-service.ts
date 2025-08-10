@@ -24,7 +24,7 @@ export interface ResearchResult {
 
 export class URLResearchService {
   private static instance: URLResearchService;
-  
+
   public static getInstance(): URLResearchService {
     if (!URLResearchService.instance) {
       URLResearchService.instance = new URLResearchService();
@@ -38,15 +38,15 @@ export class URLResearchService {
   public detectURLs(input: string): string[] {
     const urlPatterns = [
       // HTTP/HTTPS URLs
-      /https?:\/\/(?:[-\w.])+(?:\:[0-9]+)?(?:\/(?:[\w\._~!$&'()*+,;=:@]|%[0-9a-fA-F]{2})*)*(?:\?(?:[\w\._~!$&'()*+,;=:@/?]|%[0-9a-fA-F]{2})*)?(?:#(?:[\w\._~!$&'()*+,;=:@/?]|%[0-9a-fA-F]{2})*)?/g,
+      /https?:\/\/(?:[-\w.])+(?::[0-9]+)?(?:\/(?:[\w._~!$&'()*+,;=:@]|%[0-9a-fA-F]{2})*)*(?:\?(?:[\w._~!$&'()*+,;=:@/?]|%[0-9a-fA-F]{2})*)?(?:#(?:[\w._~!$&'()*+,;=:@/?]|%[0-9a-fA-F]{2})*)?/g,
       // Git repository URLs
       /git@[\w.-]+:[\w.-]+\/[\w.-]+\.git/g,
       // Domain-only URLs
-      /(?:^|\s)((?:[\w-]+\.)+[a-zA-Z]{2,}(?:\/\S*)?)/g
+      /(?:^|\s)((?:[\w-]+\.)+[a-zA-Z]{2,}(?:\/\S*)?)/g,
     ];
 
     const urls: string[] = [];
-    
+
     for (const pattern of urlPatterns) {
       const matches = input.matchAll(pattern);
       for (const match of matches) {
@@ -65,32 +65,52 @@ export class URLResearchService {
   /**
    * Analyze URL content type
    */
-  public analyzeContentType(url: string, content: string, title?: string): URLAnalysis['contentType'] {
+  public analyzeContentType(
+    url: string,
+    content: string,
+    title?: string,
+  ): URLAnalysis['contentType'] {
     const urlLower = url.toLowerCase();
     const contentLower = content.toLowerCase();
     const titleLower = title?.toLowerCase() || '';
 
     // Documentation sites
-    if (urlLower.includes('docs.') || urlLower.includes('/docs/') || 
-        titleLower.includes('documentation') || contentLower.includes('api reference')) {
+    if (
+      urlLower.includes('docs.') ||
+      urlLower.includes('/docs/') ||
+      titleLower.includes('documentation') ||
+      contentLower.includes('api reference')
+    ) {
       return 'documentation';
     }
 
     // Repository sites
-    if (urlLower.includes('github.com') || urlLower.includes('gitlab.com') || 
-        urlLower.includes('bitbucket.org') || contentLower.includes('repository')) {
+    if (
+      urlLower.includes('github.com') ||
+      urlLower.includes('gitlab.com') ||
+      urlLower.includes('bitbucket.org') ||
+      contentLower.includes('repository')
+    ) {
       return 'repository';
     }
 
     // API endpoints
-    if (urlLower.includes('/api/') || urlLower.includes('api.') || 
-        contentLower.includes('endpoint') || contentLower.includes('json api')) {
+    if (
+      urlLower.includes('/api/') ||
+      urlLower.includes('api.') ||
+      contentLower.includes('endpoint') ||
+      contentLower.includes('json api')
+    ) {
       return 'api';
     }
 
     // Articles/blogs
-    if (urlLower.includes('blog') || urlLower.includes('article') || 
-        titleLower.includes('tutorial') || contentLower.includes('published')) {
+    if (
+      urlLower.includes('blog') ||
+      urlLower.includes('article') ||
+      titleLower.includes('tutorial') ||
+      contentLower.includes('published')
+    ) {
       return 'article';
     }
 
@@ -102,10 +122,10 @@ export class URLResearchService {
    * Extract key information from content
    */
   public extractKeyInfo(content: string): {
-    keywords: string[],
-    codeBlocks: string[],
-    links: string[],
-    summary: string
+    keywords: string[];
+    codeBlocks: string[];
+    links: string[];
+    summary: string;
   } {
     // Extract code blocks
     const codeBlocks: string[] = [];
@@ -136,19 +156,20 @@ export class URLResearchService {
    */
   private extractKeywords(content: string): string[] {
     // Simple keyword extraction based on frequency
-    const words = content.toLowerCase()
+    const words = content
+      .toLowerCase()
       .replace(/[^\w\s]/g, ' ')
       .split(/\s+/)
-      .filter(word => word.length > 3);
+      .filter((word) => word.length > 3);
 
     const wordCount: Record<string, number> = {};
-    words.forEach(word => {
+    words.forEach((word) => {
       wordCount[word] = (wordCount[word] || 0) + 1;
     });
 
     // Get top 10 most frequent words
     return Object.entries(wordCount)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
       .map(([word]) => word);
   }
@@ -158,7 +179,7 @@ export class URLResearchService {
    */
   public async performDeepResearch(url: string): Promise<ResearchResult> {
     console.log(chalk.cyan(`🔍 Performing deep research on: ${url}`));
-    
+
     // Simulate research steps
     await this.displayResearchStep('Fetching URL content...', 1000);
     await this.displayResearchStep('Analyzing content structure...', 800);
@@ -171,13 +192,15 @@ export class URLResearchService {
       url,
       title: 'Example Title',
       description: 'Example description of the content',
-      content: 'Mock content for demonstration purposes. This would contain the actual fetched content from the URL.',
+      content:
+        'Mock content for demonstration purposes. This would contain the actual fetched content from the URL.',
       contentType: this.analyzeContentType(url, 'mock content'),
       keywords: ['example', 'mock', 'content', 'research', 'analysis'],
       links: ['https://example.com/related1', 'https://example.com/related2'],
       images: ['https://example.com/image1.png'],
       codeBlocks: ['```js\nconsole.log("example");\n```'],
-      summary: 'This is a mock summary of the researched content. In a real implementation, this would contain key insights from the actual URL content.'
+      summary:
+        'This is a mock summary of the researched content. In a real implementation, this would contain key insights from the actual URL content.',
     };
 
     const result: ResearchResult = {
@@ -186,19 +209,19 @@ export class URLResearchService {
       relatedUrls: [
         'https://example.com/related-topic-1',
         'https://example.com/related-topic-2',
-        'https://example.com/similar-content'
+        'https://example.com/similar-content',
       ],
       keyInsights: [
         'The content provides comprehensive information about the topic',
         'Multiple code examples are available for practical implementation',
-        'The documentation includes best practices and common pitfalls'
+        'The documentation includes best practices and common pitfalls',
       ],
       actionableItems: [
         'Review the provided code examples',
         'Implement the suggested best practices',
-        'Explore the related resources for deeper understanding'
+        'Explore the related resources for deeper understanding',
       ],
-      researchDepth: 'deep'
+      researchDepth: 'deep',
     };
 
     return result;
@@ -209,7 +232,7 @@ export class URLResearchService {
    */
   private async displayResearchStep(message: string, delay: number): Promise<void> {
     console.log(chalk.gray(`   ${message}`));
-    await new Promise(resolve => setTimeout(resolve, delay));
+    await new Promise((resolve) => setTimeout(resolve, delay));
   }
 
   /**
@@ -218,16 +241,16 @@ export class URLResearchService {
   public displayResearchResults(result: ResearchResult): void {
     console.log('\n' + chalk.cyan.bold('🔬 Deep Research Results'));
     console.log(chalk.gray('=' + '='.repeat(50)));
-    
+
     // Basic info
     console.log(chalk.white.bold(`🔗 URL: ${result.originalUrl}`));
     console.log(chalk.gray(`📊 Research Depth: ${result.researchDepth}`));
     console.log(chalk.gray(`📝 Content Type: ${result.analysis.contentType}`));
-    
+
     if (result.analysis.title) {
       console.log(chalk.white(`📰 Title: ${result.analysis.title}`));
     }
-    
+
     if (result.analysis.description) {
       console.log(chalk.white(`📄 Description: ${result.analysis.description}`));
     }
@@ -333,13 +356,13 @@ export class URLResearchService {
     summary += `URL: ${result.originalUrl}\n`;
     summary += `Type: ${result.analysis.contentType}\n`;
     summary += `Research Depth: ${result.researchDepth}\n\n`;
-    
+
     if (result.analysis.title) {
       summary += `Title: ${result.analysis.title}\n`;
     }
-    
+
     summary += `Summary: ${result.analysis.summary}\n\n`;
-    
+
     if (result.keyInsights.length > 0) {
       summary += `Key Insights:\n`;
       result.keyInsights.forEach((insight, index) => {
@@ -347,7 +370,7 @@ export class URLResearchService {
       });
       summary += '\n';
     }
-    
+
     if (result.actionableItems.length > 0) {
       summary += `Actionable Items:\n`;
       result.actionableItems.forEach((item, index) => {
@@ -355,7 +378,7 @@ export class URLResearchService {
       });
       summary += '\n';
     }
-    
+
     return summary;
   }
 }

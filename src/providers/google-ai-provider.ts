@@ -13,67 +13,67 @@ export class GoogleAIProvider extends BaseAIProvider {
     'gemini-1.5-flash',
     'gemini-1.5-flash-002',
     'gemini-1.5-flash-8b',
-    'gemini-1.0-pro'
+    'gemini-1.0-pro',
   ];
-  
+
   private client?: GoogleGenerativeAI;
-  
+
   async initialize(apiKey: string, config?: Record<string, any>): Promise<void> {
     await super.initialize(apiKey, config);
-    
+
     this.client = new GoogleGenerativeAI(apiKey);
   }
-  
+
   private convertMessages(messages: Message[]): Content[] {
     // Extract system message to use as initial context
-    const systemMessage = messages.find(m => m.role === 'system');
-    const conversationMessages = messages.filter(m => m.role !== 'system');
-    
+    const systemMessage = messages.find((m) => m.role === 'system');
+    const conversationMessages = messages.filter((m) => m.role !== 'system');
+
     const contents: Content[] = [];
-    
+
     // Add system message as first user message if present
     if (systemMessage) {
       contents.push({
         role: 'user',
-        parts: [{ text: `System: ${systemMessage.content}` }]
+        parts: [{ text: `System: ${systemMessage.content}` }],
       });
       contents.push({
         role: 'model',
-        parts: [{ text: 'Understood. I will follow these instructions.' }]
+        parts: [{ text: 'Understood. I will follow these instructions.' }],
       });
     }
-    
+
     // Add conversation messages
-    conversationMessages.forEach(msg => {
+    conversationMessages.forEach((msg) => {
       contents.push({
         role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }]
+        parts: [{ text: msg.content }],
       });
     });
-    
+
     return contents;
   }
-  
+
   private getModel(modelName: string): GenerativeModel {
     if (!this.client) {
       throw new Error('Client not initialized');
     }
-    
-    return this.client.getGenerativeModel({ 
+
+    return this.client.getGenerativeModel({
       model: modelName,
       generationConfig: {
         candidateCount: 1,
-      }
+      },
     });
   }
-  
+
   async chat(messages: Message[], model?: string, options?: CompletionOptions): Promise<string> {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
-    
+
     const genModel = this.getModel(selectedModel);
     const contents = this.convertMessages(messages);
-    
+
     // Create chat session with history
     const chat = genModel.startChat({
       history: contents.slice(0, -1), // All messages except the last one
@@ -82,9 +82,9 @@ export class GoogleAIProvider extends BaseAIProvider {
         maxOutputTokens: options?.maxTokens,
         topP: options?.topP,
         stopSequences: options?.stopSequences,
-      }
+      },
     });
-    
+
     // Send the last message
     const lastMessage = contents[contents.length - 1];
     if (!lastMessage || !lastMessage.parts || !lastMessage.parts[0]) {
@@ -92,17 +92,21 @@ export class GoogleAIProvider extends BaseAIProvider {
     }
     const result = await chat.sendMessage(lastMessage.parts[0].text || '');
     const response = await result.response;
-    
+
     return response.text();
   }
-  
-  async *chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string> {
+
+  async *chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string> {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
-    
+
     const genModel = this.getModel(selectedModel);
     const contents = this.convertMessages(messages);
-    
+
     // Create chat session with history
     const chat = genModel.startChat({
       history: contents.slice(0, -1),
@@ -111,49 +115,57 @@ export class GoogleAIProvider extends BaseAIProvider {
         maxOutputTokens: options?.maxTokens,
         topP: options?.topP,
         stopSequences: options?.stopSequences,
-      }
+      },
     });
-    
+
     // Send the last message with streaming
     const lastMessage = contents[contents.length - 1];
     if (!lastMessage || !lastMessage.parts || !lastMessage.parts[0]) {
       throw new Error('Invalid message format');
     }
     const result = await chat.sendMessageStream(lastMessage.parts[0].text || '');
-    
+
     for await (const chunk of result.stream) {
       const text = chunk.text();
       if (text) {
         yield text;
-        
+
         if (options?.streamOptions?.onToken) {
           options.streamOptions.onToken(text);
         }
       }
-      
+
       // Check for abort signal
       if (options?.streamOptions?.signal?.aborted) {
         break;
       }
     }
   }
-  
-  async generateCode(prompt: string, language: string = 'typescript', model?: string): Promise<string> {
+
+  async generateCode(
+    prompt: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<string> {
     const messages: Message[] = [
       {
         role: 'system',
-        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`
+        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`,
       },
       {
         role: 'user',
-        content: prompt
-      }
+        content: prompt,
+      },
     ];
-    
+
     return this.chat(messages, model, { temperature: 0.2 });
   }
-  
-  async reviewCode(code: string, language: string = 'typescript', model?: string): Promise<CodeReviewResult> {
+
+  async reviewCode(
+    code: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<CodeReviewResult> {
     const messages: Message[] = [
       {
         role: 'system',
@@ -169,16 +181,16 @@ export class GoogleAIProvider extends BaseAIProvider {
   ],
   "summary": "<overall code quality summary>",
   "improvements": ["<improvement suggestion 1>", "<improvement suggestion 2>", ...]
-}`
+}`,
       },
       {
         role: 'user',
-        content: code
-      }
+        content: code,
+      },
     ];
-    
+
     const response = await this.chat(messages, model, { temperature: 0.1 });
-    
+
     try {
       return JSON.parse(response);
     } catch {
@@ -186,7 +198,7 @@ export class GoogleAIProvider extends BaseAIProvider {
       return {
         issues: [],
         summary: response,
-        improvements: []
+        improvements: [],
       };
     }
   }

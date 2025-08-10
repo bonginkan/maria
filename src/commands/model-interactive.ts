@@ -35,11 +35,11 @@ export class InteractiveModelSelector {
   constructor() {
     // Ensure environment is loaded
     loadEnvironmentVariables();
-    
+
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
-      terminal: true
+      terminal: true,
     });
 
     // Enable raw mode for arrow key detection
@@ -51,10 +51,10 @@ export class InteractiveModelSelector {
 
   async initialize(): Promise<void> {
     console.log(chalk.cyan('🔍 Checking available AI models...\n'));
-    
+
     // Check LM Studio
     await this.checkLMStudio();
-    
+
     // Build model list
     this.models = [
       // Local models
@@ -66,7 +66,7 @@ export class InteractiveModelSelector {
         context: '128K',
         vram: '~64GB',
         available: this.lmStudioStatus === 'running',
-        description: 'Complex reasoning, large documents'
+        description: 'Complex reasoning, large documents',
       },
       {
         id: 'gpt-oss-20b',
@@ -76,7 +76,7 @@ export class InteractiveModelSelector {
         context: '32K',
         vram: '~12GB',
         available: this.lmStudioStatus === 'running',
-        description: 'Balanced performance'
+        description: 'Balanced performance',
       },
       // Cloud models
       {
@@ -87,7 +87,7 @@ export class InteractiveModelSelector {
         context: '128K',
         available: !!process.env.OPENAI_API_KEY,
         apiKeySet: !!process.env.OPENAI_API_KEY,
-        description: 'High accuracy, multimodal'
+        description: 'High accuracy, multimodal',
       },
       {
         id: 'claude-3-opus',
@@ -97,7 +97,7 @@ export class InteractiveModelSelector {
         context: '200K',
         available: !!process.env.ANTHROPIC_API_KEY,
         apiKeySet: !!process.env.ANTHROPIC_API_KEY,
-        description: 'Long text, complex tasks'
+        description: 'Long text, complex tasks',
       },
       {
         id: 'gemini-2.5-pro',
@@ -107,7 +107,7 @@ export class InteractiveModelSelector {
         context: '128K',
         available: !!process.env.GEMINI_API_KEY,
         apiKeySet: !!process.env.GEMINI_API_KEY,
-        description: 'Research, analysis, vision'
+        description: 'Research, analysis, vision',
       },
       {
         id: 'groq-mixtral',
@@ -117,8 +117,8 @@ export class InteractiveModelSelector {
         context: '32K',
         available: !!process.env.GROK_API_KEY,
         apiKeySet: !!process.env.GROK_API_KEY,
-        description: 'Fast inference'
-      }
+        description: 'Fast inference',
+      },
     ];
 
     // Auto-start LM Studio if not running
@@ -140,10 +140,10 @@ export class InteractiveModelSelector {
       // Check if server is running
       try {
         const response = await fetch('http://localhost:1234/v1/models', {
-          headers: { 'Authorization': 'Bearer lm-studio' },
-          signal: AbortSignal.timeout(2000)
+          headers: { Authorization: 'Bearer lm-studio' },
+          signal: AbortSignal.timeout(2000),
         });
-        
+
         if (response.ok) {
           this.lmStudioStatus = 'running';
         } else {
@@ -161,31 +161,31 @@ export class InteractiveModelSelector {
   private async startLMStudio(): Promise<boolean> {
     try {
       console.log(chalk.cyan('🚀 Starting LM Studio server...'));
-      
+
       // Stop any existing server
       await execAsync('/Users/bongin_max/.lmstudio/bin/lms server stop 2>/dev/null || true');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Start server
       await execAsync('/Users/bongin_max/.lmstudio/bin/lms server start');
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       // Verify it's running
       await this.checkLMStudio();
-      
+
       if (this.lmStudioStatus === 'running') {
         console.log(chalk.green('✅ LM Studio server started successfully!\n'));
-        
+
         // Update model availability
-        this.models.forEach(model => {
+        this.models.forEach((model) => {
           if (model.provider === 'LM Studio') {
             model.available = true;
           }
         });
-        
+
         return true;
       }
-      
+
       return false;
     } catch (error) {
       console.error(chalk.red('Failed to start LM Studio:'), error);
@@ -196,7 +196,7 @@ export class InteractiveModelSelector {
   async selectModel(): Promise<string | null> {
     return new Promise((resolve) => {
       this.render();
-      
+
       process.stdin.on('keypress', async (_, key) => {
         if (key.name === 'up') {
           this.selectedIndex = Math.max(0, this.selectedIndex - 1);
@@ -206,13 +206,13 @@ export class InteractiveModelSelector {
           this.render();
         } else if (key.name === 'return') {
           const selected = this.models[this.selectedIndex];
-          
+
           if (!selected) {
             this.cleanup();
             resolve(null);
             return;
           }
-          
+
           // If selecting a local model that's not available, try to start LM Studio
           if (selected.type === 'local' && !selected.available) {
             if (this.lmStudioStatus === 'not-running') {
@@ -226,12 +226,12 @@ export class InteractiveModelSelector {
               }
             }
           }
-          
+
           // Load the model if it's local
           if (selected.type === 'local' && selected.available) {
             await this.loadLocalModel(selected.id);
           }
-          
+
           // Update environment
           await this.updateEnvironment(selected);
           console.log(chalk.green(`\n✅ Selected: ${selected.name}`));
@@ -249,17 +249,17 @@ export class InteractiveModelSelector {
     console.clear();
     console.log(chalk.bold.cyan('🤖 Select AI Model'));
     console.log(chalk.gray('Use ↑↓ arrows to navigate, Enter to select, ESC to cancel\n'));
-    
+
     // Group by type
-    const localModels = this.models.filter(m => m.type === 'local');
-    const cloudModels = this.models.filter(m => m.type === 'cloud');
-    
+    const localModels = this.models.filter((m) => m.type === 'local');
+    const cloudModels = this.models.filter((m) => m.type === 'cloud');
+
     let currentIndex = 0;
-    
+
     // Local models
     if (localModels.length > 0) {
       console.log(chalk.bold.green('💻 Local Models (Offline)'));
-      localModels.forEach(model => {
+      localModels.forEach((model) => {
         const isSelected = currentIndex === this.selectedIndex;
         const prefix = isSelected ? chalk.cyan('▶ ') : '  ';
         const status = model.available ? chalk.green('✓') : chalk.red('✗');
@@ -269,11 +269,11 @@ export class InteractiveModelSelector {
       });
       console.log();
     }
-    
+
     // Cloud models
     if (cloudModels.length > 0) {
       console.log(chalk.bold.blue('☁️  Cloud Models'));
-      cloudModels.forEach(model => {
+      cloudModels.forEach((model) => {
         const isSelected = currentIndex === this.selectedIndex;
         const prefix = isSelected ? chalk.cyan('▶ ') : '  ';
         const status = model.available ? chalk.green('✓') : chalk.red('✗');
@@ -283,11 +283,14 @@ export class InteractiveModelSelector {
         currentIndex++;
       });
     }
-    
+
     // Status bar
     console.log(chalk.gray('\n─'.repeat(60)));
-    console.log(chalk.cyan('Current model: ') + chalk.yellow(process.env.LMSTUDIO_DEFAULT_MODEL || process.env.AI_MODEL || 'None'));
-    
+    console.log(
+      chalk.cyan('Current model: ') +
+        chalk.yellow(process.env.LMSTUDIO_DEFAULT_MODEL || process.env.AI_MODEL || 'None'),
+    );
+
     if (this.lmStudioStatus === 'running') {
       console.log(chalk.green('LM Studio: Running at http://localhost:1234'));
     } else if (this.lmStudioStatus === 'not-running') {
@@ -309,7 +312,7 @@ export class InteractiveModelSelector {
 
   private async updateEnvironment(model: ModelOption): Promise<void> {
     const envPath = path.join(process.cwd(), '.env.local');
-    
+
     if (model.type === 'local') {
       process.env.AI_PROVIDER = 'lmstudio';
       process.env.LMSTUDIO_DEFAULT_MODEL = model.id;
@@ -319,17 +322,20 @@ export class InteractiveModelSelector {
       process.env.AI_MODEL = model.id;
       process.env.OFFLINE_MODE = 'false';
     }
-    
+
     // Update .env.local file
     if (fs.existsSync(envPath)) {
       let content = fs.readFileSync(envPath, 'utf-8');
-      
+
       if (model.type === 'local') {
-        content = content.replace(/LMSTUDIO_DEFAULT_MODEL=.*/g, `LMSTUDIO_DEFAULT_MODEL=${model.id}`);
+        content = content.replace(
+          /LMSTUDIO_DEFAULT_MODEL=.*/g,
+          `LMSTUDIO_DEFAULT_MODEL=${model.id}`,
+        );
         content = content.replace(/AI_PROVIDER=.*/g, 'AI_PROVIDER=lmstudio');
         content = content.replace(/OFFLINE_MODE=.*/g, 'OFFLINE_MODE=true');
       }
-      
+
       fs.writeFileSync(envPath, content);
     }
   }

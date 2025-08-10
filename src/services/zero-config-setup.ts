@@ -57,7 +57,7 @@ export class ZeroConfigSetup {
 
     // 3. Configure providers automatically
     const llmPreferences = await this.configureLLMPreferences(providers);
-    
+
     // 4. Test connections
     const connectionResults = await this.testConnections(providers);
     this.log(`✅ ${connectionResults.successful} providers configured successfully`);
@@ -67,7 +67,7 @@ export class ZeroConfigSetup {
       language,
       llmPreferences,
       apiKeys: this.getApiKeysFromEnv(),
-      modelDefaults: this.getDefaultModels(providers)
+      modelDefaults: this.getDefaultModels(providers),
     };
 
     await this.saveConfiguration(config);
@@ -83,7 +83,7 @@ export class ZeroConfigSetup {
       if (locale.includes('ja') || locale.includes('JP')) {
         return 'ja';
       }
-      
+
       // Check if running on Japanese system
       if (process.platform === 'darwin') {
         try {
@@ -98,7 +98,7 @@ export class ZeroConfigSetup {
     } catch {
       this.log(`⚠️ Language detection failed`);
     }
-    
+
     return 'en';
   }
 
@@ -106,10 +106,10 @@ export class ZeroConfigSetup {
     const providers: ProviderStatus[] = [];
 
     // Local providers
-    providers.push(...await this.detectLocalProviders());
-    
-    // Cloud providers  
-    providers.push(...await this.detectCloudProviders());
+    providers.push(...(await this.detectLocalProviders()));
+
+    // Cloud providers
+    providers.push(...(await this.detectCloudProviders()));
 
     return providers;
   }
@@ -136,7 +136,7 @@ export class ZeroConfigSetup {
     try {
       // Check if port 1234 is in use
       const isRunning = await this.checkPort(1234);
-      
+
       if (isRunning) {
         // Test API
         const response = await this.testAPI('http://localhost:1234/v1/models');
@@ -147,7 +147,7 @@ export class ZeroConfigSetup {
             available: true,
             configured: true,
             models: response.data?.data?.map((m: any) => m.id) || [],
-            endpoint: 'http://localhost:1234/v1'
+            endpoint: 'http://localhost:1234/v1',
           };
         }
       }
@@ -161,7 +161,7 @@ export class ZeroConfigSetup {
             type: 'local',
             available: true,
             configured: false,
-            endpoint: 'http://localhost:1234/v1'
+            endpoint: 'http://localhost:1234/v1',
           };
         } catch {
           // App not installed
@@ -172,7 +172,7 @@ export class ZeroConfigSetup {
         name: 'lmstudio',
         type: 'local',
         available: false,
-        configured: false
+        configured: false,
       };
     } catch {
       this.log(`⚠️ LM Studio detection failed`);
@@ -180,7 +180,7 @@ export class ZeroConfigSetup {
         name: 'lmstudio',
         type: 'local',
         available: false,
-        configured: false
+        configured: false,
       };
     }
   }
@@ -189,11 +189,11 @@ export class ZeroConfigSetup {
     try {
       // Check if vllm is installed
       const isInstalled = await this.checkCommand('python', ['-c', 'import vllm']);
-      
+
       if (isInstalled) {
         // Check if running
         const isRunning = await this.checkPort(8000);
-        
+
         if (isRunning) {
           const response = await this.testAPI('http://localhost:8000/v1/models');
           if (response.success) {
@@ -203,7 +203,7 @@ export class ZeroConfigSetup {
               available: true,
               configured: true,
               models: response.data?.data?.map((m: any) => m.id) || [],
-              endpoint: 'http://localhost:8000/v1'
+              endpoint: 'http://localhost:8000/v1',
             };
           }
         }
@@ -213,7 +213,7 @@ export class ZeroConfigSetup {
           type: 'local',
           available: true,
           configured: false,
-          endpoint: 'http://localhost:8000/v1'
+          endpoint: 'http://localhost:8000/v1',
         };
       }
 
@@ -221,14 +221,14 @@ export class ZeroConfigSetup {
         name: 'vllm',
         type: 'local',
         available: false,
-        configured: false
+        configured: false,
       };
     } catch {
       return {
         name: 'vllm',
         type: 'local',
         available: false,
-        configured: false
+        configured: false,
       };
     }
   }
@@ -237,11 +237,11 @@ export class ZeroConfigSetup {
     try {
       // Check if ollama command exists
       const isInstalled = await this.checkCommand('ollama', ['--version']);
-      
+
       if (isInstalled) {
         // Check if running
         const isRunning = await this.checkPort(11434);
-        
+
         if (isRunning) {
           const response = await this.testAPI('http://localhost:11434/api/tags');
           if (response.success) {
@@ -251,7 +251,7 @@ export class ZeroConfigSetup {
               available: true,
               configured: true,
               models: response.data?.models?.map((m: any) => m.name) || [],
-              endpoint: 'http://localhost:11434/api'
+              endpoint: 'http://localhost:11434/api',
             };
           }
         }
@@ -261,7 +261,7 @@ export class ZeroConfigSetup {
           type: 'local',
           available: true,
           configured: false,
-          endpoint: 'http://localhost:11434/api'
+          endpoint: 'http://localhost:11434/api',
         };
       }
 
@@ -269,14 +269,14 @@ export class ZeroConfigSetup {
         name: 'ollama',
         type: 'local',
         available: false,
-        configured: false
+        configured: false,
       };
     } catch {
       return {
         name: 'ollama',
         type: 'local',
         available: false,
-        configured: false
+        configured: false,
       };
     }
   }
@@ -291,59 +291,64 @@ export class ZeroConfigSetup {
       name: 'openai',
       type: 'cloud',
       available: !!apiKeys.OPENAI_API_KEY,
-      configured: !!apiKeys.OPENAI_API_KEY
+      configured: !!apiKeys.OPENAI_API_KEY,
     });
 
     providers.push({
       name: 'anthropic',
       type: 'cloud',
       available: !!apiKeys.ANTHROPIC_API_KEY,
-      configured: !!apiKeys.ANTHROPIC_API_KEY
+      configured: !!apiKeys.ANTHROPIC_API_KEY,
     });
 
     providers.push({
       name: 'googleai',
       type: 'cloud',
       available: !!(apiKeys.GOOGLE_AI_API_KEY || apiKeys.GEMINI_API_KEY),
-      configured: !!(apiKeys.GOOGLE_AI_API_KEY || apiKeys.GEMINI_API_KEY)
+      configured: !!(apiKeys.GOOGLE_AI_API_KEY || apiKeys.GEMINI_API_KEY),
     });
 
     providers.push({
       name: 'grok',
       type: 'cloud',
       available: !!apiKeys.GROK_API_KEY,
-      configured: !!apiKeys.GROK_API_KEY
+      configured: !!apiKeys.GROK_API_KEY,
     });
 
     return providers;
   }
 
-  private async configureLLMPreferences(providers: ProviderStatus[]): Promise<SetupWizardConfig['llmPreferences']> {
-    const localProviders = providers.filter(p => p.type === 'local' && p.available);
-    const cloudProviders = providers.filter(p => p.type === 'cloud' && p.configured);
+  private async configureLLMPreferences(
+    providers: ProviderStatus[],
+  ): Promise<SetupWizardConfig['llmPreferences']> {
+    const localProviders = providers.filter((p) => p.type === 'local' && p.available);
+    const cloudProviders = providers.filter((p) => p.type === 'cloud' && p.configured);
 
     const preferences = {
       preferLocal: localProviders.length > 0,
-      downloadModels: localProviders.length > 0 && localProviders.some(p => !p.configured),
-      providers: [
-        ...localProviders.map(p => p.name),
-        ...cloudProviders.map(p => p.name)
-      ]
+      downloadModels: localProviders.length > 0 && localProviders.some((p) => !p.configured),
+      providers: [...localProviders.map((p) => p.name), ...cloudProviders.map((p) => p.name)],
     };
 
-    this.log(`🎯 Preferences: Local=${preferences.preferLocal}, Providers=${preferences.providers.length}`);
-    
+    this.log(
+      `🎯 Preferences: Local=${preferences.preferLocal}, Providers=${preferences.providers.length}`,
+    );
+
     return preferences;
   }
 
-  private async testConnections(providers: ProviderStatus[]): Promise<{ successful: number; failed: number }> {
+  private async testConnections(
+    providers: ProviderStatus[],
+  ): Promise<{ successful: number; failed: number }> {
     let successful = 0;
     let failed = 0;
 
-    for (const provider of providers.filter(p => p.configured)) {
+    for (const provider of providers.filter((p) => p.configured)) {
       try {
         if (provider.type === 'local' && provider.endpoint) {
-          const result = await this.testAPI(provider.endpoint + (provider.name === 'ollama' ? '/tags' : '/models'));
+          const result = await this.testAPI(
+            provider.endpoint + (provider.name === 'ollama' ? '/tags' : '/models'),
+          );
           if (result.success) {
             this.log(`✅ ${provider.name}: Connected`);
             successful++;
@@ -370,10 +375,10 @@ export class ZeroConfigSetup {
 
     const envKeys = [
       'OPENAI_API_KEY',
-      'ANTHROPIC_API_KEY', 
+      'ANTHROPIC_API_KEY',
       'GOOGLE_AI_API_KEY',
       'GEMINI_API_KEY',
-      'GROK_API_KEY'
+      'GROK_API_KEY',
     ];
 
     for (const key of envKeys) {
@@ -393,7 +398,7 @@ export class ZeroConfigSetup {
       grok: 'grok-beta',
       lmstudio: 'gpt-oss-20b',
       vllm: 'stabilityai/japanese-stablelm-instruct-alpha-7b-v2',
-      ollama: 'llama3.2:3b'
+      ollama: 'llama3.2:3b',
     };
 
     // Override with detected models if available
@@ -410,14 +415,13 @@ export class ZeroConfigSetup {
     try {
       // Ensure directory exists
       await fs.mkdir(join(homedir(), '.maria'), { recursive: true });
-      
+
       // Save config
       await fs.writeFile(this.configPath, JSON.stringify(config, null, 2));
-      
+
       // Save logs
       const logPath = join(homedir(), '.maria', 'setup.log');
       await fs.writeFile(logPath, this.logBuffer.join('\n'));
-      
     } catch (error) {
       throw new Error(`Failed to save configuration: ${error}`);
     }
@@ -426,10 +430,11 @@ export class ZeroConfigSetup {
   // Helper methods
   private async checkPort(port: number): Promise<boolean> {
     return new Promise((resolve) => {
-      const command = process.platform === 'win32' 
-        ? `netstat -an | findstr :${port}`
-        : `lsof -Pi :${port} -sTCP:LISTEN -t`;
-      
+      const command =
+        process.platform === 'win32'
+          ? `netstat -an | findstr :${port}`
+          : `lsof -Pi :${port} -sTCP:LISTEN -t`;
+
       exec(command, (error, stdout) => {
         resolve(!error && stdout.trim().length > 0);
       });
@@ -447,17 +452,17 @@ export class ZeroConfigSetup {
   private async testAPI(url: string): Promise<{ success: boolean; data?: any }> {
     try {
       // Use fetch if available, otherwise use a simple HTTP check
-      const response = await fetch(url, { 
+      const response = await fetch(url, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         return { success: true, data };
       }
-      
+
       return { success: false };
     } catch {
       return { success: false };

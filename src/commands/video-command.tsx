@@ -25,7 +25,7 @@ const VIDEO_MODELS = {
     huggingface: 'Wan-AI/Wan2.2-T2V-A14B-Diffusers',
     vram: '~16GB',
     maxFrames: 81,
-    resolution: '1280x720'
+    resolution: '1280x720',
   },
   'wan-2.2-ti2v-5b': {
     name: 'Wan 2.2 TI2V 5B',
@@ -35,7 +35,7 @@ const VIDEO_MODELS = {
     huggingface: 'Wan-AI/Wan2.2-TI2V-5B',
     vram: '~8GB',
     maxFrames: 33,
-    resolution: '1280x704'
+    resolution: '1280x704',
   },
   'wan-2.2-i2v-a14b': {
     name: 'Wan 2.2 I2V A14B',
@@ -45,8 +45,8 @@ const VIDEO_MODELS = {
     huggingface: 'Wan-AI/Wan2.2-I2V-A14B',
     vram: '~16GB',
     maxFrames: 81,
-    resolution: '1280x720'
-  }
+    resolution: '1280x720',
+  },
 };
 
 interface VideoGenerationParams {
@@ -70,9 +70,9 @@ interface VideoCommandProps {
 /**
  * /video - Interactive video generation command
  */
-export const VideoCommand: React.FC<VideoCommandProps> = ({ 
+export const VideoCommand: React.FC<VideoCommandProps> = ({
   initialMode = 'generate',
-  params = {}
+  params = {},
 }) => {
   const [mode] = useState(initialMode);
   const [currentStep, setCurrentStep] = useState(0);
@@ -80,18 +80,16 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
   const [progress, setProgress] = useState('');
   const [error, setError] = useState('');
   const [result, setResult] = useState('');
-  
+
   // Form state
   const [prompt, setPrompt] = useState(params.prompt || '');
   const [selectedModel, setSelectedModel] = useState<keyof typeof VIDEO_MODELS>(
-    params.model || 'wan-2.2-ti2v-5b'
+    params.model || 'wan-2.2-ti2v-5b',
   );
   const [frames] = useState(params.frames || 33);
   const [fps] = useState(params.fps || 24);
   const [inputImage] = useState(params.inputImage || '');
-  const [outputPath] = useState(
-    params.outputPath || `~/maria_output/video_${Date.now()}.mp4`
-  );
+  const [outputPath] = useState(params.outputPath || `~/maria_output/video_${Date.now()}.mp4`);
 
   useInput((input, key) => {
     if (key.escape) {
@@ -114,7 +112,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 
   const setupHuggingFace = async (): Promise<void> => {
     setProgress('Setting up Hugging Face CLI...');
-    
+
     try {
       // Install huggingface-cli if not present
       try {
@@ -132,34 +130,38 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
       await execAsync(`huggingface-cli login --token ${hfToken}`);
       setProgress('Hugging Face CLI setup complete');
     } catch (error) {
-      throw new Error(`Failed to setup Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to setup Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const downloadModel = async (modelId: keyof typeof VIDEO_MODELS): Promise<void> => {
     const model = VIDEO_MODELS[modelId];
     const modelPath = `${process.env.HF_MODEL_DIR || '~/.maria/huggingface/models'}/${modelId}`;
-    
+
     setProgress(`Downloading ${model.name}... This may take several minutes`);
-    
+
     try {
       // Create model directory
       await execAsync(`mkdir -p "${modelPath}"`);
-      
+
       // Download model
       await execAsync(`huggingface-cli download ${model.huggingface} --local-dir "${modelPath}"`);
-      
+
       setProgress(`Model ${model.name} downloaded successfully`);
     } catch (error) {
-      throw new Error(`Failed to download model: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to download model: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const setupComfyUI = async (): Promise<void> => {
     const comfyPath = `${process.env.HOME}/.maria/comfyui`;
-    
+
     setProgress('Setting up ComfyUI...');
-    
+
     try {
       // Check if ComfyUI exists
       try {
@@ -168,14 +170,16 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
         // Clone ComfyUI
         await execAsync(`mkdir -p "${comfyPath}"`);
         await execAsync(`git clone https://github.com/comfyanonymous/ComfyUI.git "${comfyPath}"`);
-        
+
         // Install dependencies
         await execAsync(`cd "${comfyPath}" && pip install -r requirements.txt`);
       }
-      
+
       setProgress('ComfyUI setup complete');
     } catch (error) {
-      throw new Error(`Failed to setup ComfyUI: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to setup ComfyUI: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
@@ -183,45 +187,47 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
     const timestamp = Date.now();
     const outputDir = `${process.env.HOME}/.maria/outputs/video/${timestamp}`;
     const outputFile = path.join(outputDir, `${params.model}_${timestamp}.mp4`);
-    
+
     setProgress('Initializing video generation...');
-    
+
     try {
       // Create output directory
       await execAsync(`mkdir -p "${outputDir}"`);
-      
+
       // Setup Hugging Face and ComfyUI if needed
       const isHFReady = await checkHuggingFaceSetup();
       if (!isHFReady) {
         await setupHuggingFace();
       }
-      
+
       await setupComfyUI();
       await downloadModel(params.model);
-      
+
       // Generate workflow JSON
       const workflowPath = await createComfyUIWorkflow(params, outputFile);
-      
+
       // Run ComfyUI headless
       setProgress('Generating video...');
       await runComfyUIHeadless(workflowPath, outputFile);
-      
+
       return outputFile;
     } catch (error) {
-      throw new Error(`Video generation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Video generation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const createComfyUIWorkflow = async (
-    params: VideoGenerationParams, 
-    outputPath: string
+    params: VideoGenerationParams,
+    outputPath: string,
   ): Promise<string> => {
     const model = VIDEO_MODELS[params.model];
     const workflowDir = `${process.env.HOME}/.maria/comfyui/workflows`;
     const workflowPath = path.join(workflowDir, `${params.model}_workflow.json`);
-    
+
     await execAsync(`mkdir -p "${workflowDir}"`);
-    
+
     // Basic workflow template (simplified)
     const workflow = {
       nodes: [
@@ -230,8 +236,8 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
           class: 'CLIPTextEncode',
           inputs: {
             text: params.prompt,
-            clip: ['model_loader', 1]
-          }
+            clip: ['model_loader', 1],
+          },
         },
         {
           id: 2,
@@ -243,20 +249,20 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
             width: params.width || parseInt(model.resolution.split('x')[0] ?? '720'),
             height: params.height || parseInt(model.resolution.split('x')[1] ?? '480'),
             steps: params.steps || 20,
-            seed: params.seed || Math.floor(Math.random() * 1000000)
-          }
+            seed: params.seed || Math.floor(Math.random() * 1000000),
+          },
         },
         {
           id: 3,
           class: 'SaveVideo',
           inputs: {
             video: [2, 0],
-            filename_prefix: path.basename(outputPath, '.mp4')
-          }
-        }
-      ]
+            filename_prefix: path.basename(outputPath, '.mp4'),
+          },
+        },
+      ],
     };
-    
+
     await fs.writeFile(workflowPath, JSON.stringify(workflow, null, 2));
     return workflowPath;
   };
@@ -264,44 +270,45 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
   const runComfyUIHeadless = async (workflowPath: string, outputPath: string): Promise<void> => {
     const comfyPath = `${process.env.HOME}/.maria/comfyui`;
     const port = 8188;
-    
+
     setProgress('Starting ComfyUI server...');
-    
+
     // Start ComfyUI in background
-    const serverProcess = exec(`cd "${comfyPath}" && python main.py --listen 127.0.0.1 --port ${port} --headless`);
-    
+    const serverProcess = exec(
+      `cd "${comfyPath}" && python main.py --listen 127.0.0.1 --port ${port} --headless`,
+    );
+
     try {
       // Wait for server to start
-      await new Promise(resolve => setTimeout(resolve, 10000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+
       // Submit workflow
       setProgress('Submitting generation job...');
       const workflow = await fs.readFile(workflowPath, 'utf-8');
-      
+
       await execAsync(`curl -s -X POST "http://127.0.0.1:${port}/prompt" \
         -H "Content-Type: application/json" \
         --data '${workflow}'`);
-      
+
       // Poll for completion
       setProgress('Video generation in progress...');
       let attempts = 0;
       const maxAttempts = 120; // 10 minutes max
-      
+
       while (attempts < maxAttempts) {
         try {
           await fs.access(outputPath);
           break;
         } catch {
-          await new Promise(resolve => setTimeout(resolve, 5000));
+          await new Promise((resolve) => setTimeout(resolve, 5000));
           attempts++;
           setProgress(`Video generation in progress... (${attempts * 5}s)`);
         }
       }
-      
+
       if (attempts >= maxAttempts) {
         throw new Error('Video generation timeout');
       }
-      
     } finally {
       // Kill server
       if (serverProcess.pid) {
@@ -319,7 +326,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
     setIsGenerating(true);
     setError('');
     setProgress('');
-    
+
     try {
       const outputFile = await generateVideo({
         prompt,
@@ -329,9 +336,9 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
         inputImage: inputImage || undefined,
         outputPath,
         steps: 20,
-        seed: Math.floor(Math.random() * 1000000)
+        seed: Math.floor(Math.random() * 1000000),
       });
-      
+
       setResult(outputFile);
       setProgress('Video generated successfully!');
     } catch (error) {
@@ -343,10 +350,12 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 
   const renderModelList = () => (
     <Box flexDirection="column">
-      <Box >
-        <Text bold color="cyan">🎬 Available Video Models</Text>
+      <Box>
+        <Text bold color="cyan">
+          🎬 Available Video Models
+        </Text>
       </Box>
-      
+
       <Box flexDirection="column" gap={1}>
         {Object.entries(VIDEO_MODELS).map(([id, model]) => (
           <Box key={id} gap={1}>
@@ -363,7 +372,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
           </Box>
         ))}
       </Box>
-      
+
       <Box marginTop={1}>
         <Text color="gray">💡 Use `/video` to start generation</Text>
       </Box>
@@ -374,25 +383,25 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
     if (isGenerating) {
       return (
         <Box flexDirection="column">
-          <Box >
+          <Box>
             <Spinner type="dots" />
             <Text color="yellow"> Generating Video...</Text>
           </Box>
-          
+
           {progress && (
-            <Box >
+            <Box>
               <Text color="cyan">{progress}</Text>
             </Box>
           )}
-          
+
           {error && (
-            <Box >
+            <Box>
               <Text color="red">❌ Error: {error}</Text>
             </Box>
           )}
-          
+
           {result && (
-            <Box >
+            <Box>
               <Text color="green">✅ Video saved: {result}</Text>
             </Box>
           )}
@@ -400,16 +409,11 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
       );
     }
 
-    const steps = [
-      'Enter prompt',
-      'Select model', 
-      'Configure settings',
-      'Generate video'
-    ];
+    const steps = ['Enter prompt', 'Select model', 'Configure settings', 'Generate video'];
 
     return (
       <Box flexDirection="column">
-        <Box >
+        <Box>
           <Text bold color="cyan">
             🎬 Video Generation ({steps[currentStep]})
           </Text>
@@ -435,7 +439,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
             <SelectInput
               items={Object.entries(VIDEO_MODELS).map(([id, model]) => ({
                 label: `${model.badge} ${model.name} - ${model.description}`,
-                value: id
+                value: id,
               }))}
               onSelect={(item) => {
                 setSelectedModel(item.value as keyof typeof VIDEO_MODELS);
@@ -451,7 +455,9 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
               <Text color="yellow">Configuration:</Text>
             </Box>
             <Box flexDirection="column" gap={1}>
-              <Text>Frames: {frames} (max: {VIDEO_MODELS[selectedModel].maxFrames})</Text>
+              <Text>
+                Frames: {frames} (max: {VIDEO_MODELS[selectedModel].maxFrames})
+              </Text>
               <Text>FPS: {fps}</Text>
               <Text>Resolution: {VIDEO_MODELS[selectedModel].resolution}</Text>
               {inputImage && <Text>Input Image: {inputImage}</Text>}
@@ -463,7 +469,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
               items={[
                 { label: '✅ Generate with current settings', value: 'generate' },
                 { label: '⚙️ Modify frames count', value: 'frames' },
-                { label: '🖼️ Add input image (I2V)', value: 'image' }
+                { label: '🖼️ Add input image (I2V)', value: 'image' },
               ]}
               onSelect={(item) => {
                 if (item.value === 'generate') {
@@ -487,14 +493,18 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 
   const renderComparison = () => (
     <Box flexDirection="column">
-      <Box >
-        <Text bold color="cyan">📊 Video Model Comparison</Text>
+      <Box>
+        <Text bold color="cyan">
+          📊 Video Model Comparison
+        </Text>
       </Box>
-      
+
       <Box gap={2}>
         {Object.entries(VIDEO_MODELS).map(([id, model]) => (
           <Box key={id} flexDirection="column" width={30}>
-            <Text bold color="yellow">{model.badge} {model.name}</Text>
+            <Text bold color="yellow">
+              {model.badge} {model.name}
+            </Text>
             <Text color="gray">Type: {model.type}</Text>
             <Text color="gray">VRAM: {model.vram}</Text>
             <Text color="gray">Max Frames: {model.maxFrames}</Text>
@@ -521,7 +531,9 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 /**
  * Parse natural language video requests
  */
-export const parseVideoRequest = (input: string): {
+export const parseVideoRequest = (
+  input: string,
+): {
   action: string;
   model?: keyof typeof VIDEO_MODELS;
   prompt?: string;
@@ -533,27 +545,31 @@ export const parseVideoRequest = (input: string): {
   const prompt = promptMatch ? promptMatch[1] : '';
 
   // Model selection logic
-  if (lowerInput.includes('14b') || lowerInput.includes('high quality') || lowerInput.includes('detailed')) {
-    return { 
-      action: 'generate', 
+  if (
+    lowerInput.includes('14b') ||
+    lowerInput.includes('high quality') ||
+    lowerInput.includes('detailed')
+  ) {
+    return {
+      action: 'generate',
       model: 'wan-2.2-t2v-a14b',
-      prompt 
+      prompt,
     };
   }
-  
+
   if (lowerInput.includes('fast') || lowerInput.includes('5b') || lowerInput.includes('quick')) {
-    return { 
-      action: 'generate', 
+    return {
+      action: 'generate',
       model: 'wan-2.2-ti2v-5b',
-      prompt 
+      prompt,
     };
   }
-  
+
   if (lowerInput.includes('image to video') || lowerInput.includes('i2v')) {
-    return { 
-      action: 'generate', 
+    return {
+      action: 'generate',
       model: 'wan-2.2-i2v-a14b',
-      prompt 
+      prompt,
     };
   }
 
@@ -565,10 +581,10 @@ export const parseVideoRequest = (input: string): {
     return { action: 'models' };
   }
 
-  return { 
+  return {
     action: 'generate',
     model: 'wan-2.2-ti2v-5b',
-    prompt
+    prompt,
   };
 };
 

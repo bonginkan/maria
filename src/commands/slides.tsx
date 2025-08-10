@@ -12,7 +12,10 @@ interface SlidesCommand {
   slidesId?: string;
 }
 
-const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({ command, onExit }) => {
+const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
+  command,
+  onExit,
+}) => {
   const [status, setStatus] = React.useState<'processing' | 'done'>('processing');
   const [result, setResult] = React.useState<string>('');
 
@@ -20,8 +23,8 @@ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
     const executeAgent = async () => {
       try {
         // Simulate presentation agent execution
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
         let mockResult = '';
         switch (command.action) {
           case 'structure':
@@ -39,7 +42,7 @@ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
           default:
             mockResult = 'Presentation task completed successfully.';
         }
-        
+
         setResult(mockResult);
         setStatus('done');
       } catch (error) {
@@ -60,10 +63,12 @@ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="magenta">Presentation Agent</Text>
+        <Text bold color="magenta">
+          Presentation Agent
+        </Text>
         <Text> - {command.action} action</Text>
       </Box>
-      
+
       {status === 'processing' ? (
         <Box>
           <Spinner type="dots" />
@@ -97,7 +102,9 @@ const InteractiveSlidesMenu: React.FC<{ onSelect: (action: string) => void }> = 
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="magenta">Presentation Agent - Slide Creation</Text>
+        <Text bold color="magenta">
+          Presentation Agent - Slide Creation
+        </Text>
       </Box>
       <Box marginBottom={1}>
         <Text>Select an action:</Text>
@@ -144,25 +151,25 @@ export default function slidesCommand(program: Command) {
       if (options.structure) {
         const command: SlidesCommand = { action: 'structure', topic: options.structure };
         const { waitUntilExit } = render(
-          <SlidesAgent command={command} onExit={() => process.exit(0)} />
+          <SlidesAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.content) {
         const command: SlidesCommand = { action: 'content', file: options.content };
         const { waitUntilExit } = render(
-          <SlidesAgent command={command} onExit={() => process.exit(0)} />
+          <SlidesAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.visuals) {
         const command: SlidesCommand = { action: 'visuals', file: options.visuals };
         const { waitUntilExit } = render(
-          <SlidesAgent command={command} onExit={() => process.exit(0)} />
+          <SlidesAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.sync) {
         const command: SlidesCommand = { action: 'sync', slidesId: options.sync };
         const { waitUntilExit } = render(
-          <SlidesAgent command={command} onExit={() => process.exit(0)} />
+          <SlidesAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else {

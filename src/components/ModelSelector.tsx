@@ -18,7 +18,7 @@ const MODEL_PROFILES = {
     badge: '🌟',
     description: 'High accuracy, multimodal capabilities',
     context: '128K',
-    type: 'cloud'
+    type: 'cloud',
   },
   'gpt-4-turbo': {
     provider: 'openai',
@@ -26,7 +26,7 @@ const MODEL_PROFILES = {
     badge: '⚡',
     description: 'Fast reasoning and code generation',
     context: '128K',
-    type: 'cloud'
+    type: 'cloud',
   },
   'claude-3-opus': {
     provider: 'anthropic',
@@ -34,7 +34,7 @@ const MODEL_PROFILES = {
     badge: '🎭',
     description: 'Long text processing, complex tasks',
     context: '200K',
-    type: 'cloud'
+    type: 'cloud',
   },
   'claude-3-sonnet': {
     provider: 'anthropic',
@@ -42,7 +42,7 @@ const MODEL_PROFILES = {
     badge: '🎵',
     description: 'Balanced performance and cost',
     context: '200K',
-    type: 'cloud'
+    type: 'cloud',
   },
   'gemini-2.5-pro': {
     provider: 'google',
@@ -50,7 +50,7 @@ const MODEL_PROFILES = {
     badge: '💎',
     description: 'Research, analysis, vision capabilities',
     context: '128K',
-    type: 'cloud'
+    type: 'cloud',
   },
   'mixtral-8x7b': {
     provider: 'groq',
@@ -58,7 +58,7 @@ const MODEL_PROFILES = {
     badge: '⚡',
     description: 'Fast inference, real-time responses',
     context: '32K',
-    type: 'cloud'
+    type: 'cloud',
   },
   'llama-3-70b': {
     provider: 'groq',
@@ -66,9 +66,9 @@ const MODEL_PROFILES = {
     badge: '🦙',
     description: 'Open source excellence',
     context: '32K',
-    type: 'cloud'
+    type: 'cloud',
   },
-  
+
   // Local models
   'gpt-oss-120b': {
     provider: 'lmstudio',
@@ -77,7 +77,7 @@ const MODEL_PROFILES = {
     description: 'Complex reasoning, large documents',
     context: '128K',
     type: 'local',
-    vram: '~64GB'
+    vram: '~64GB',
   },
   'gpt-oss-20b': {
     provider: 'lmstudio',
@@ -86,7 +86,7 @@ const MODEL_PROFILES = {
     description: 'Balanced performance, quick responses',
     context: '32K',
     type: 'local',
-    vram: '~12GB'
+    vram: '~12GB',
   },
   'qwen3-30b': {
     provider: 'lmstudio',
@@ -95,7 +95,7 @@ const MODEL_PROFILES = {
     description: 'Multilingual support',
     context: '32K',
     type: 'local',
-    vram: '~16GB'
+    vram: '~16GB',
   },
   'qwen2.5-vl': {
     provider: 'ollama',
@@ -104,8 +104,8 @@ const MODEL_PROFILES = {
     description: 'Vision capabilities',
     context: '8K',
     type: 'local',
-    vram: '~8GB'
-  }
+    vram: '~8GB',
+  },
 };
 
 interface ModelSelectorProps {
@@ -114,10 +114,10 @@ interface ModelSelectorProps {
   onCancel?: () => void;
 }
 
-export const ModelSelector: React.FC<ModelSelectorProps> = ({ 
+export const ModelSelector: React.FC<ModelSelectorProps> = ({
   currentModel = 'gemini-2.5-pro',
   onComplete,
-  onCancel
+  onCancel,
 }) => {
   const { exit } = useApp();
   const [selectedModel, setSelectedModel] = useState<string>(currentModel);
@@ -163,9 +163,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       const config = await readConfig();
       config.defaultModel = item.value as any;
       await writeConfig(config);
-      
+
       setSaved(true);
-      
+
       // Notify parent component
       if (onComplete) {
         setTimeout(() => {
@@ -192,7 +192,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         </Box>
         <Box marginTop={1}>
           <Text>{profile.badge} </Text>
-          <Text bold color="cyan">{profile.name}</Text>
+          <Text bold color="cyan">
+            {profile.name}
+          </Text>
           <Text color="gray"> - {profile.description}</Text>
         </Box>
         <Box marginTop={1}>
@@ -214,16 +216,18 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const models = getFilteredModels();
   const items = models.map(([id, profile]) => ({
     label: `${profile.badge} ${profile.name} (${profile.context}) - ${profile.description}`,
-    value: id
+    value: id,
   }));
 
   // Find initial index for current model
-  const initialIndex = items.findIndex(item => item.value === currentModel);
+  const initialIndex = items.findIndex((item) => item.value === currentModel);
 
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">🤖 Select AI Model</Text>
+        <Text bold color="cyan">
+          🤖 Select AI Model
+        </Text>
       </Box>
 
       <Box marginBottom={1}>
@@ -239,14 +243,10 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           initialIndex={initialIndex >= 0 ? initialIndex : 0}
           onSelect={handleSelect}
           indicatorComponent={({ isSelected }) => (
-            <Box marginRight={1}>
-              {isSelected ? <Text color="cyan">▶</Text> : <Text> </Text>}
-            </Box>
+            <Box marginRight={1}>{isSelected ? <Text color="cyan">▶</Text> : <Text> </Text>}</Box>
           )}
           itemComponent={({ isSelected, label }) => (
-            <Text color={isSelected ? 'cyan' : 'white'}>
-              {label}
-            </Text>
+            <Text color={isSelected ? 'cyan' : 'white'}>{label}</Text>
           )}
         />
       </Box>
@@ -258,9 +258,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       )}
 
       <Box marginTop={1}>
-        <Text color="gray">
-          ↑↓ Navigate • Enter Select • A/C/L Filter • ESC Cancel
-        </Text>
+        <Text color="gray">↑↓ Navigate • Enter Select • A/C/L Filter • ESC Cancel</Text>
       </Box>
     </Box>
   );

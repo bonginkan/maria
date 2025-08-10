@@ -32,7 +32,7 @@ const SOWReview: React.FC<SOWReviewProps> = ({ sow, onApprove }) => {
     if (key.tab && !showConfirm) {
       const currentIndex = tabs.findIndex((t) => t.value === activeTab);
       const nextIndex = (currentIndex + 1) % tabs.length;
-      setActiveTab(tabs[nextIndex]?.value as Tab || 'overview');
+      setActiveTab((tabs[nextIndex]?.value as Tab) || 'overview');
     }
     if (key.return && !showConfirm) {
       setShowConfirm(true);
@@ -83,7 +83,7 @@ const SOWReview: React.FC<SOWReviewProps> = ({ sow, onApprove }) => {
         <Text bold>Deliverables:</Text>
       </Box>
       {sow.deliverables?.map((d: any, i: number) => (
-        <Text key={i}>  • {d.name}</Text>
+        <Text key={i}> • {d.name}</Text>
       ))}
     </Box>
   );
@@ -95,22 +95,25 @@ const SOWReview: React.FC<SOWReviewProps> = ({ sow, onApprove }) => {
       </Box>
       {sow.tasks?.map((task: any, i: number) => (
         <Box key={i} marginBottom={1}>
-          <Text bold color="cyan">{i + 1}. {task.name}</Text>
-          <Text>   Description: {task.description}</Text>
-          <Text>   Duration: {task.duration}</Text>
-          <Text>   Dependencies: {task.dependencies?.join(', ') || 'None'}</Text>
+          <Text bold color="cyan">
+            {i + 1}. {task.name}
+          </Text>
+          <Text> Description: {task.description}</Text>
+          <Text> Duration: {task.duration}</Text>
+          <Text> Dependencies: {task.dependencies?.join(', ') || 'None'}</Text>
         </Box>
       ))}
     </Box>
   );
 
   const renderTimeline = () => {
-    const timelineData = sow.tasks?.map((task: any) => ({
-      Task: task.name,
-      Start: task.startDate || 'TBD',
-      End: task.endDate || 'TBD',
-      Duration: task.duration,
-    })) || [];
+    const timelineData =
+      sow.tasks?.map((task: any) => ({
+        Task: task.name,
+        Start: task.startDate || 'TBD',
+        End: task.endDate || 'TBD',
+        Duration: task.duration,
+      })) || [];
 
     return (
       <Box flexDirection="column">
@@ -162,7 +165,7 @@ const SOWReview: React.FC<SOWReviewProps> = ({ sow, onApprove }) => {
                 color={activeTab === tab.value ? 'cyan' : 'gray'}
                 bold={activeTab === tab.value}
               >
-                [{tab.label}] 
+                [{tab.label}]
               </Text>
             ))}
             <Text dimColor> (Press TAB to switch)</Text>
@@ -181,7 +184,9 @@ const SOWReview: React.FC<SOWReviewProps> = ({ sow, onApprove }) => {
             </Box>
             {showDetails && (
               <Box flexDirection="column" borderStyle="double" padding={1}>
-                <Text bold color="magenta">Additional Details</Text>
+                <Text bold color="magenta">
+                  Additional Details
+                </Text>
                 <Text>Session ID: {sow.sessionId || 'N/A'}</Text>
                 <Text>Created: {new Date().toISOString()}</Text>
                 <Text>Context: {sow.context || 'Default'}</Text>

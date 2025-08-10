@@ -10,9 +10,7 @@ export type {
   ExecutionStep,
   SOWDocument,
   TaskPlan,
-  TaskStep
+  TaskStep,
 } from './conversation';
 
-export type {
-  Message
-} from './message';
+export type { Message } from './message';

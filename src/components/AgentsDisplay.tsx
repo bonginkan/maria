@@ -16,7 +16,7 @@ import {
   Timeline,
   TreeView,
   SmartSummary,
-  DrillDownNav
+  DrillDownNav,
 } from './visualizations';
 
 interface AgentInfo {
@@ -45,30 +45,30 @@ export const AgentsDisplay: React.FC<{
     paperWriter: { calls: 45, avgTime: 3.2, successRate: 98 },
     slidesCreator: { calls: 32, avgTime: 2.8, successRate: 96 },
     codeReviewer: { calls: 78, avgTime: 1.5, successRate: 99 },
-    devOpsEngineer: { calls: 23, avgTime: 4.1, successRate: 95 }
+    devOpsEngineer: { calls: 23, avgTime: 4.1, successRate: 95 },
   });
   const [drillDownPath, setDrillDownPath] = useState<string[]>(['Agents Overview']);
 
   // Simulate real-time updates
   useEffect(() => {
     const interval = setInterval(() => {
-      setAgentMetrics(prev => ({
-        paperWriter: { 
-          ...prev.paperWriter, 
-          calls: prev.paperWriter.calls + Math.floor(Math.random() * 3) 
+      setAgentMetrics((prev) => ({
+        paperWriter: {
+          ...prev.paperWriter,
+          calls: prev.paperWriter.calls + Math.floor(Math.random() * 3),
         },
-        slidesCreator: { 
-          ...prev.slidesCreator, 
-          calls: prev.slidesCreator.calls + Math.floor(Math.random() * 2) 
+        slidesCreator: {
+          ...prev.slidesCreator,
+          calls: prev.slidesCreator.calls + Math.floor(Math.random() * 2),
         },
-        codeReviewer: { 
-          ...prev.codeReviewer, 
-          calls: prev.codeReviewer.calls + Math.floor(Math.random() * 5) 
+        codeReviewer: {
+          ...prev.codeReviewer,
+          calls: prev.codeReviewer.calls + Math.floor(Math.random() * 5),
         },
-        devOpsEngineer: { 
-          ...prev.devOpsEngineer, 
-          calls: prev.devOpsEngineer.calls + Math.floor(Math.random() * 2) 
-        }
+        devOpsEngineer: {
+          ...prev.devOpsEngineer,
+          calls: prev.devOpsEngineer.calls + Math.floor(Math.random() * 2),
+        },
       }));
     }, 5000);
 
@@ -76,7 +76,6 @@ export const AgentsDisplay: React.FC<{
   }, []);
 
   const tabs = ['overview', 'usage', 'performance', 'config'];
-
 
   const renderOverview = () => (
     <Box flexDirection="column" marginTop={1}>
@@ -86,20 +85,20 @@ export const AgentsDisplay: React.FC<{
           mostActive: 'Code Reviewer',
           peakTime: '2-3 PM',
           avgResponse: '2.4s',
-          successRate: 97
+          successRate: 97,
         }}
         type="usage"
       />
 
-      <DrillDownNav 
-        path={drillDownPath} 
+      <DrillDownNav
+        path={drillDownPath}
         onNavigate={(index) => setDrillDownPath(drillDownPath.slice(0, index + 1))}
       />
 
       <Box marginBottom={2}>
         <MetricCard
           title="Active Agents"
-          value={data.agents.filter(a => a.status === 'available').length}
+          value={data.agents.filter((a) => a.status === 'available').length}
           subtitle={`of ${data.agents.length} total`}
           icon="🤖"
           color="cyan"
@@ -135,33 +134,33 @@ export const AgentsDisplay: React.FC<{
             { key: 'name', header: 'Agent', width: 20 },
             { key: 'status', header: 'Status', width: 12 },
             { key: 'calls', header: 'Calls', width: 8, align: 'right' },
-            { key: 'success', header: 'Success', width: 10, align: 'right', color: 'green' }
+            { key: 'success', header: 'Success', width: 10, align: 'right', color: 'green' },
           ]}
           data={[
-            { 
-              name: 'Paper Writer', 
-              status: '● Active', 
+            {
+              name: 'Paper Writer',
+              status: '● Active',
               calls: agentMetrics.paperWriter.calls,
-              success: `${agentMetrics.paperWriter.successRate}%`
+              success: `${agentMetrics.paperWriter.successRate}%`,
             },
-            { 
-              name: 'Slides Creator', 
-              status: '● Active', 
+            {
+              name: 'Slides Creator',
+              status: '● Active',
               calls: agentMetrics.slidesCreator.calls,
-              success: `${agentMetrics.slidesCreator.successRate}%`
+              success: `${agentMetrics.slidesCreator.successRate}%`,
             },
-            { 
-              name: 'Code Reviewer', 
-              status: '● Active', 
+            {
+              name: 'Code Reviewer',
+              status: '● Active',
               calls: agentMetrics.codeReviewer.calls,
-              success: `${agentMetrics.codeReviewer.successRate}%`
+              success: `${agentMetrics.codeReviewer.successRate}%`,
             },
-            { 
-              name: 'DevOps Engineer', 
-              status: '● Active', 
+            {
+              name: 'DevOps Engineer',
+              status: '● Active',
               calls: agentMetrics.devOpsEngineer.calls,
-              success: `${agentMetrics.devOpsEngineer.successRate}%`
-            }
+              success: `${agentMetrics.devOpsEngineer.successRate}%`,
+            },
           ]}
         />
       </Box>
@@ -173,9 +172,14 @@ export const AgentsDisplay: React.FC<{
         <Box flexDirection="column">
           {data.integrations.map((integration, i) => (
             <Box key={i} marginBottom={1}>
-              <StatusIndicator 
-                status={integration.status === 'available' ? 'active' : 
-                        integration.status === 'planned' ? 'pending' : 'inactive'} 
+              <StatusIndicator
+                status={
+                  integration.status === 'available'
+                    ? 'active'
+                    : integration.status === 'planned'
+                      ? 'pending'
+                      : 'inactive'
+                }
               />
               <Text> {integration.name}</Text>
               <Text color="gray"> - {integration.description}</Text>
@@ -189,7 +193,9 @@ export const AgentsDisplay: React.FC<{
   const renderUsage = () => (
     <Box flexDirection="column" marginTop={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Agent Usage Statistics</Text>
+        <Text bold color="cyan">
+          Agent Usage Statistics
+        </Text>
       </Box>
 
       <Box flexDirection="column" marginBottom={2}>
@@ -201,7 +207,11 @@ export const AgentsDisplay: React.FC<{
             { label: 'Code Reviewer', value: agentMetrics.codeReviewer.calls, color: 'cyan' },
             { label: 'Paper Writer', value: agentMetrics.paperWriter.calls, color: 'green' },
             { label: 'Slides Creator', value: agentMetrics.slidesCreator.calls, color: 'yellow' },
-            { label: 'DevOps Engineer', value: agentMetrics.devOpsEngineer.calls, color: 'magenta' }
+            {
+              label: 'DevOps Engineer',
+              value: agentMetrics.devOpsEngineer.calls,
+              color: 'magenta',
+            },
           ]}
           width={40}
         />
@@ -211,15 +221,23 @@ export const AgentsDisplay: React.FC<{
         <Box marginBottom={1}>
           <Text bold>Usage Trends (Last 7 Days)</Text>
         </Box>
-        <TrendLine 
-          data={[45, 52, 48, 65, 72, 68, Object.values(agentMetrics).reduce((sum, m) => sum + m.calls, 0)]} 
-          label="Total Daily Calls" 
-          width={40} 
+        <TrendLine
+          data={[
+            45,
+            52,
+            48,
+            65,
+            72,
+            68,
+            Object.values(agentMetrics).reduce((sum, m) => sum + m.calls, 0),
+          ]}
+          label="Total Daily Calls"
+          width={40}
         />
-        <TrendLine 
-          data={[2.8, 2.6, 2.7, 2.5, 2.4, 2.5, 2.4]} 
-          label="Avg Response Time (s)" 
-          width={40} 
+        <TrendLine
+          data={[2.8, 2.6, 2.7, 2.5, 2.4, 2.5, 2.4]}
+          label="Avg Response Time (s)"
+          width={40}
         />
       </Box>
 
@@ -234,7 +252,7 @@ export const AgentsDisplay: React.FC<{
             { time: '12m ago', event: 'Paper formatting: Research.tex', type: 'info' },
             { time: '15m ago', event: 'DevOps deployment to staging', type: 'success' },
             { time: '20m ago', event: 'Code review detected 3 issues', type: 'warning' },
-            { time: '25m ago', event: 'Paper Writer started new draft', type: 'info' }
+            { time: '25m ago', event: 'Paper Writer started new draft', type: 'info' },
           ]}
         />
       </Box>
@@ -244,7 +262,9 @@ export const AgentsDisplay: React.FC<{
   const renderPerformance = () => (
     <Box flexDirection="column" marginTop={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Agent Performance Metrics</Text>
+        <Text bold color="cyan">
+          Agent Performance Metrics
+        </Text>
       </Box>
 
       <Box marginBottom={2}>
@@ -257,7 +277,7 @@ export const AgentsDisplay: React.FC<{
               { label: '<1s', value: 35, color: 'green' },
               { label: '1-2s', value: 40, color: 'green' },
               { label: '2-5s', value: 20, color: 'yellow' },
-              { label: '>5s', value: 5, color: 'red' }
+              { label: '>5s', value: 5, color: 'red' },
             ]}
             width={30}
           />
@@ -270,11 +290,7 @@ export const AgentsDisplay: React.FC<{
           {Object.entries(agentMetrics).map(([agent, metrics]) => (
             <Box key={agent} marginBottom={1}>
               <Text>{agent.replace(/([A-Z])/g, ' $1').trim()}: </Text>
-              <ProgressRing
-                value={metrics.successRate}
-                total={100}
-                size="small"
-              />
+              <ProgressRing value={metrics.successRate} total={100} size="small" />
             </Box>
           ))}
         </Box>
@@ -292,7 +308,7 @@ export const AgentsDisplay: React.FC<{
               { label: 'Midday', value: 2.8, color: 'yellow' },
               { label: 'Afternoon', value: 2.5, color: 'yellow' },
               { label: 'Evening', value: 2.2, color: 'green' },
-              { label: 'Night', value: 1.8, color: 'green' }
+              { label: 'Night', value: 1.8, color: 'green' },
             ]}
             width={35}
             showValues={true}
@@ -307,14 +323,14 @@ export const AgentsDisplay: React.FC<{
         <Table
           columns={[
             { key: 'metric', header: 'Metric', width: 25 },
-            { key: 'value', header: 'Value', width: 15, align: 'right', color: 'cyan' }
+            { key: 'value', header: 'Value', width: 15, align: 'right', color: 'cyan' },
           ]}
           data={[
             { metric: 'Code Review Accuracy', value: '94%' },
             { metric: 'Paper Formatting Success', value: '98%' },
             { metric: 'Slides Visual Quality', value: '92%' },
             { metric: 'Deployment Success Rate', value: '95%' },
-            { metric: 'User Satisfaction', value: '4.6/5.0' }
+            { metric: 'User Satisfaction', value: '4.6/5.0' },
           ]}
         />
       </Box>
@@ -324,7 +340,9 @@ export const AgentsDisplay: React.FC<{
   const renderConfig = () => (
     <Box flexDirection="column" marginTop={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Agent Configuration</Text>
+        <Text bold color="cyan">
+          Agent Configuration
+        </Text>
       </Box>
 
       <Box flexDirection="column" marginBottom={2}>
@@ -342,8 +360,8 @@ export const AgentsDisplay: React.FC<{
                 { id: 'latex', label: 'LaTeX formatting' },
                 { id: 'bibtex', label: 'BibTeX management' },
                 { id: 'citations', label: 'Citation formatting' },
-                { id: 'templates', label: 'Template library' }
-              ]
+                { id: 'templates', label: 'Template library' },
+              ],
             },
             {
               id: 'slides',
@@ -354,8 +372,8 @@ export const AgentsDisplay: React.FC<{
                 { id: 'themes', label: 'Theme selection' },
                 { id: 'layouts', label: 'Layout optimization' },
                 { id: 'visuals', label: 'Visual generation' },
-                { id: 'export', label: 'Export formats' }
-              ]
+                { id: 'export', label: 'Export formats' },
+              ],
             },
             {
               id: 'code',
@@ -366,9 +384,9 @@ export const AgentsDisplay: React.FC<{
                 { id: 'security', label: 'Security analysis' },
                 { id: 'performance', label: 'Performance tips' },
                 { id: 'style', label: 'Style checking' },
-                { id: 'tests', label: 'Test suggestions' }
-              ]
-            }
+                { id: 'tests', label: 'Test suggestions' },
+              ],
+            },
           ]}
         />
       </Box>
@@ -380,7 +398,7 @@ export const AgentsDisplay: React.FC<{
         <Table
           columns={[
             { key: 'setting', header: 'Setting', width: 25 },
-            { key: 'value', header: 'Current Value', width: 20, align: 'right' }
+            { key: 'value', header: 'Current Value', width: 20, align: 'right' },
           ]}
           data={[
             { setting: 'Max Concurrent Agents', value: '3' },
@@ -388,7 +406,7 @@ export const AgentsDisplay: React.FC<{
             { setting: 'Auto-retry on Failure', value: 'Enabled' },
             { setting: 'Cache Results', value: '24 hours' },
             { setting: 'Preferred Model', value: 'Gemini 2.5 Pro' },
-            { setting: 'Context Window', value: '128K tokens' }
+            { setting: 'Context Window', value: '128K tokens' },
           ]}
         />
       </Box>
@@ -407,10 +425,7 @@ export const AgentsDisplay: React.FC<{
       <Box marginBottom={1}>
         {tabs.map((tab, i) => (
           <Box key={tab} marginRight={2}>
-            <Text
-              color={activeTab === tab ? 'cyan' : 'gray'}
-              bold={activeTab === tab}
-            >
+            <Text color={activeTab === tab ? 'cyan' : 'gray'} bold={activeTab === tab}>
               {i + 1}. {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </Text>
           </Box>

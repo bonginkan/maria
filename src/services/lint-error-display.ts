@@ -20,7 +20,7 @@ export interface PastedContent {
 
 export class LintErrorDisplayService {
   private static instance: LintErrorDisplayService;
-  
+
   public static getInstance(): LintErrorDisplayService {
     if (!LintErrorDisplayService.instance) {
       LintErrorDisplayService.instance = new LintErrorDisplayService();
@@ -34,14 +34,17 @@ export class LintErrorDisplayService {
   public parsePastedContent(content: string): PastedContent {
     const lines = content.split('\n');
     const lineCount = lines.length;
-    
+
     // Detect content type based on patterns
     let type: PastedContent['type'] = 'text';
     let language: string | undefined;
 
     // Check for ESLint output
-    if (content.includes('eslint') || content.includes('.eslintrc') || 
-        content.match(/\d+:\d+\s+(error|warning|info)/)) {
+    if (
+      content.includes('eslint') ||
+      content.includes('.eslintrc') ||
+      content.match(/\d+:\d+\s+(error|warning|info)/)
+    ) {
       type = 'error';
       language = 'text';
     }
@@ -51,14 +54,22 @@ export class LintErrorDisplayService {
       language = 'typescript';
     }
     // Check for code patterns
-    else if (content.includes('function') || content.includes('const ') || 
-             content.includes('import ') || content.includes('export ')) {
+    else if (
+      content.includes('function') ||
+      content.includes('const ') ||
+      content.includes('import ') ||
+      content.includes('export ')
+    ) {
       type = 'code';
       language = this.detectLanguage(content);
     }
     // Check for log patterns
-    else if (content.includes('ERROR') || content.includes('WARN') || 
-             content.includes('[ERROR]') || content.includes('[WARN]')) {
+    else if (
+      content.includes('ERROR') ||
+      content.includes('WARN') ||
+      content.includes('[ERROR]') ||
+      content.includes('[WARN]')
+    ) {
       type = 'log';
       language = 'text';
     }
@@ -67,7 +78,7 @@ export class LintErrorDisplayService {
       content,
       lineCount,
       type,
-      language
+      language,
     };
   }
 
@@ -75,15 +86,23 @@ export class LintErrorDisplayService {
    * Detect programming language from code content
    */
   private detectLanguage(content: string): string {
-    if (content.includes('import React') || content.includes('useState') || 
-        content.includes('jsx') || content.includes('tsx')) {
+    if (
+      content.includes('import React') ||
+      content.includes('useState') ||
+      content.includes('jsx') ||
+      content.includes('tsx')
+    ) {
       return 'typescript';
     }
-    if (content.includes('function') || content.includes('const ') || 
-        content.includes('let ') || content.includes('var ')) {
+    if (
+      content.includes('function') ||
+      content.includes('const ') ||
+      content.includes('let ') ||
+      content.includes('var ')
+    ) {
       return 'javascript';
     }
-    if (content.includes('def ') || content.includes('import ') && content.includes('from ')) {
+    if (content.includes('def ') || (content.includes('import ') && content.includes('from '))) {
       return 'python';
     }
     if (content.includes('package ') || content.includes('func ')) {
@@ -101,9 +120,9 @@ export class LintErrorDisplayService {
   public parseESLintErrors(output: string): LintError[] {
     const errors: LintError[] = [];
     const lines = output.split('\n');
-    
+
     let currentFile = '';
-    
+
     for (const line of lines) {
       // File path detection
       const fileMatch = line.match(/^(.+\.(?:js|ts|jsx|tsx))$/);
@@ -111,9 +130,11 @@ export class LintErrorDisplayService {
         currentFile = fileMatch[1];
         continue;
       }
-      
+
       // Error line detection
-      const errorMatch = line.match(/^\s*(\d+):(\d+)\s+(error|warning|info)\s+(.+?)\s+([a-z-/@]+)$/);
+      const errorMatch = line.match(
+        /^\s*(\d+):(\d+)\s+(error|warning|info)\s+(.+?)\s+([a-z-/@]+)$/,
+      );
       if (errorMatch && currentFile) {
         const [, lineNum, colNum, severity, message, rule] = errorMatch;
         if (lineNum && colNum && severity && message && rule) {
@@ -123,12 +144,12 @@ export class LintErrorDisplayService {
             column: parseInt(colNum, 10),
             severity: severity as LintError['severity'],
             message: message.trim(),
-            rule: rule.trim()
+            rule: rule.trim(),
           });
         }
       }
     }
-    
+
     return errors;
   }
 
@@ -138,7 +159,7 @@ export class LintErrorDisplayService {
   public parseTypeScriptErrors(output: string): LintError[] {
     const errors: LintError[] = [];
     const lines = output.split('\n');
-    
+
     for (const line of lines) {
       // TypeScript error pattern: file.ts(line,col): error TSxxxx: message
       const tsMatch = line.match(/^(.+\.ts)\((\d+),(\d+)\):\s+(error|warning)\s+(TS\d+):\s+(.+)$/);
@@ -152,12 +173,12 @@ export class LintErrorDisplayService {
             severity: severity as LintError['severity'],
             message: message.trim(),
             rule: code,
-            code
+            code,
           });
         }
       }
     }
-    
+
     return errors;
   }
 
@@ -166,11 +187,13 @@ export class LintErrorDisplayService {
    */
   public displayPastedContent(pastedContent: PastedContent): void {
     const { content, lineCount, type, language } = pastedContent;
-    
+
     // Display header with metadata
     console.log('\n' + chalk.cyan('📋 Pasted Content Analysis'));
     console.log(chalk.gray('=' + '='.repeat(50)));
-    console.log(chalk.gray(`Type: ${type} | Lines: ${lineCount} | Language: ${language || 'auto-detected'}`));
+    console.log(
+      chalk.gray(`Type: ${type} | Lines: ${lineCount} | Language: ${language || 'auto-detected'}`),
+    );
     console.log('');
 
     // Display content based on type
@@ -211,11 +234,11 @@ export class LintErrorDisplayService {
     // Fallback to raw error display
     console.log(chalk.red('❌ Error Output:'));
     console.log(chalk.gray('─'.repeat(40)));
-    
+
     const lines = content.split('\n');
     lines.forEach((line, index) => {
       const lineNum = chalk.gray(`${(index + 1).toString().padStart(3)}: `);
-      
+
       // Highlight error patterns
       let formattedLine = line;
       if (line.includes('error')) {
@@ -225,9 +248,12 @@ export class LintErrorDisplayService {
         formattedLine = formattedLine.replace(/warning/gi, chalk.yellow.bold('WARNING'));
       }
       if (line.match(/\d+:\d+/)) {
-        formattedLine = formattedLine.replace(/(\d+):(\d+)/, chalk.cyan('$1') + ':' + chalk.cyan('$2'));
+        formattedLine = formattedLine.replace(
+          /(\d+):(\d+)/,
+          chalk.cyan('$1') + ':' + chalk.cyan('$2'),
+        );
       }
-      
+
       console.log(lineNum + formattedLine);
     });
   }
@@ -245,39 +271,42 @@ export class LintErrorDisplayService {
     console.log('');
 
     // Group errors by file
-    const errorsByFile = errors.reduce((acc, error) => {
-      if (!acc[error.file]) {
-        acc[error.file] = [];
-      }
-      acc[error.file]!.push(error);
-      return acc;
-    }, {} as Record<string, LintError[]>);
+    const errorsByFile = errors.reduce(
+      (acc, error) => {
+        if (!acc[error.file]) {
+          acc[error.file] = [];
+        }
+        acc[error.file]!.push(error);
+        return acc;
+      },
+      {} as Record<string, LintError[]>,
+    );
 
     // Display errors grouped by file
     Object.entries(errorsByFile).forEach(([file, fileErrors]) => {
       console.log(chalk.bold.white(`📁 ${file}`));
       console.log(chalk.gray('─'.repeat(file.length + 2)));
-      
+
       fileErrors.forEach((error) => {
         const severityIcon = {
           error: chalk.red('❌'),
           warning: chalk.yellow('⚠️'),
-          info: chalk.blue('ℹ️')
+          info: chalk.blue('ℹ️'),
         }[error.severity];
-        
+
         const location = chalk.cyan(`${error.line}:${error.column}`);
         const rule = chalk.gray(`[${error.rule}]`);
-        
+
         console.log(`  ${severityIcon} ${location} ${error.message} ${rule}`);
       });
-      
+
       console.log('');
     });
 
     // Display summary
-    const errorCount = errors.filter(e => e.severity === 'error').length;
-    const warningCount = errors.filter(e => e.severity === 'warning').length;
-    
+    const errorCount = errors.filter((e) => e.severity === 'error').length;
+    const warningCount = errors.filter((e) => e.severity === 'warning').length;
+
     console.log(chalk.gray('Summary:'));
     if (errorCount > 0) {
       console.log(`  ${chalk.red('❌')} ${errorCount} error(s)`);
@@ -293,7 +322,7 @@ export class LintErrorDisplayService {
   private displayCodeContent(content: string, language: string): void {
     console.log(chalk.green('💻 Code Content:'));
     console.log(chalk.gray('─'.repeat(40)));
-    
+
     try {
       const highlighted = highlight(content, { language });
       console.log(highlighted);
@@ -313,11 +342,11 @@ export class LintErrorDisplayService {
   private displayLogContent(content: string): void {
     console.log(chalk.blue('📄 Log Content:'));
     console.log(chalk.gray('─'.repeat(40)));
-    
+
     const lines = content.split('\n');
     lines.forEach((line, index) => {
       const lineNum = chalk.gray(`${(index + 1).toString().padStart(3)}: `);
-      
+
       let formattedLine = line;
       // Color code log levels
       if (line.includes('ERROR') || line.includes('[ERROR]')) {
@@ -329,7 +358,7 @@ export class LintErrorDisplayService {
       } else if (line.includes('DEBUG') || line.includes('[DEBUG]')) {
         formattedLine = line.replace(/(DEBUG|\[DEBUG\])/gi, chalk.gray.bold('$1'));
       }
-      
+
       console.log(lineNum + formattedLine);
     });
   }
@@ -340,7 +369,7 @@ export class LintErrorDisplayService {
   private displayTextContent(content: string): void {
     console.log(chalk.white('📝 Text Content:'));
     console.log(chalk.gray('─'.repeat(40)));
-    
+
     const lines = content.split('\n');
     lines.forEach((line, index) => {
       const lineNum = chalk.gray(`${(index + 1).toString().padStart(3)}: `);
@@ -353,10 +382,10 @@ export class LintErrorDisplayService {
    */
   public generateQuickFixes(errors: LintError[]): string[] {
     const suggestions: string[] = [];
-    
+
     for (const error of errors) {
       const rule = error.rule.toLowerCase();
-      
+
       if (rule.includes('no-unused-vars')) {
         suggestions.push(`Remove unused variable in ${error.file}:${error.line}`);
       } else if (rule.includes('no-console')) {
@@ -371,7 +400,7 @@ export class LintErrorDisplayService {
         suggestions.push(`Fix quote style in ${error.file}:${error.line}`);
       }
     }
-    
+
     return [...new Set(suggestions)]; // Remove duplicates
   }
 }

@@ -9,14 +9,14 @@ import { readConfig, writeConfig } from '../utils/config';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
-import { 
-  commandCategories, 
-  getCommandsByCategory, 
+import {
+  commandCategories,
+  getCommandsByCategory,
   getCommandInfo,
   getRelatedCommands,
   getCommandChain,
   CommandCategory,
-  commandChains
+  commandChains,
 } from '../lib/command-groups';
 import { SuggestionService, SuggestionContext } from './suggestion-service';
 import { CommandChainService } from './command-chain-service';
@@ -32,7 +32,18 @@ export interface SlashCommandResult {
   message: string;
   data?: any;
   requiresInput?: boolean;
-  component?: 'config-panel' | 'auth-flow' | 'help-dialog' | 'status-display' | 'system-diagnostics' | 'cost-display' | 'agents-display' | 'mcp-display' | 'model-selector' | 'image-generator' | 'video-generator';
+  component?:
+    | 'config-panel'
+    | 'auth-flow'
+    | 'help-dialog'
+    | 'status-display'
+    | 'system-diagnostics'
+    | 'cost-display'
+    | 'agents-display'
+    | 'mcp-display'
+    | 'model-selector'
+    | 'image-generator'
+    | 'video-generator';
   suggestions?: string; // Formatted suggestion text
 }
 
@@ -54,7 +65,7 @@ export class SlashCommandHandler {
   } = {
     isAuthenticated: false,
     plan: 'free',
-    credits: 100
+    credits: 100,
   };
 
   private constructor() {
@@ -85,21 +96,23 @@ export class SlashCommandHandler {
    * スラッシュコマンドを処理
    */
   async handleCommand(
-    command: string, 
-    args: string[], 
-    context: ConversationContext
+    command: string,
+    args: string[],
+    context: ConversationContext,
   ): Promise<SlashCommandResult> {
     let commandName = command.toLowerCase();
     let commandArgs = args;
-    
+
     // Check if this is an alias
-    const aliasResolution = this.aliasSystem.resolveAlias(`${commandName} ${args.join(' ')}`.trim());
+    const aliasResolution = this.aliasSystem.resolveAlias(
+      `${commandName} ${args.join(' ')}`.trim(),
+    );
     if (aliasResolution) {
       logger.debug(`Resolved alias ${commandName} to ${aliasResolution.command}`);
       commandName = aliasResolution.command;
       commandArgs = aliasResolution.args;
     }
-    
+
     logger.debug(`Processing slash command: ${commandName}`, commandArgs);
 
     // Add to history
@@ -107,7 +120,7 @@ export class SlashCommandHandler {
 
     try {
       let result: SlashCommandResult;
-      
+
       switch (commandName) {
         // ユーザー管理コマンド
         case '/login':
@@ -244,18 +257,17 @@ export class SlashCommandHandler {
         default:
           result = {
             success: false,
-            message: `Unknown command: ${commandName}. Type /help for available commands.`
+            message: `Unknown command: ${commandName}. Type /help for available commands.`,
           };
       }
-      
+
       // Add suggestions to the result
       return await this.addSuggestions(result, commandName, context);
-      
     } catch (error) {
       logger.error(`Slash command error: ${commandName}`, error);
       return {
         success: false,
-        message: `Error executing ${commandName}: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Error executing ${commandName}: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -266,7 +278,7 @@ export class SlashCommandHandler {
   private async addSuggestions(
     result: SlashCommandResult,
     commandName: string,
-    context: ConversationContext
+    context: ConversationContext,
   ): Promise<SlashCommandResult> {
     // Don't add suggestions for help or exit commands
     if (!result.success || commandName === '/help' || commandName === '/exit') {
@@ -278,15 +290,15 @@ export class SlashCommandHandler {
       lastCommandSuccess: result.success,
       projectInitialized: await this.checkProjectInitialized(),
       userLoggedIn: this.userSession.isAuthenticated,
-      currentMode: context.preferences?.defaultModel || 'chat'
+      currentMode: context.preferences?.defaultModel || 'chat',
     };
-    
+
     const suggestions = await this.suggestionService.getContextualSuggestions(suggestionContext);
-    
+
     if (suggestions.length > 0) {
       result.suggestions = this.suggestionService.formatSuggestions(suggestions);
     }
-    
+
     return result;
   }
 
@@ -296,7 +308,10 @@ export class SlashCommandHandler {
   private async checkProjectInitialized(): Promise<boolean> {
     try {
       const config = await readConfig();
-      return config.project?.workingDirectories !== undefined && config.project.workingDirectories.length > 0;
+      return (
+        config.project?.workingDirectories !== undefined &&
+        config.project.workingDirectories.length > 0
+      );
     } catch {
       return false;
     }
@@ -308,17 +323,17 @@ export class SlashCommandHandler {
       return {
         success: true,
         message: `Already logged in as user ${this.userSession.userId}`,
-        data: { user: this.userSession }
+        data: { user: this.userSession },
       };
     }
 
     const provider = args[0] || 'email';
     const validProviders = ['email', 'google', 'github'];
-    
+
     if (!validProviders.includes(provider)) {
       return {
         success: false,
-        message: `Invalid provider: ${provider}. Available: ${validProviders.join(', ')}`
+        message: `Invalid provider: ${provider}. Available: ${validProviders.join(', ')}`,
       };
     }
 
@@ -329,14 +344,14 @@ export class SlashCommandHandler {
       userId: `user-${uuidv4().slice(0, 8)}`,
       plan: 'pro',
       credits: 1000,
-      loginTime: new Date()
+      loginTime: new Date(),
     };
 
     return {
       success: true,
       message: `Successfully logged in with ${provider}`,
       data: { user: this.userSession },
-      component: 'auth-flow'
+      component: 'auth-flow',
     };
   }
 
@@ -344,7 +359,7 @@ export class SlashCommandHandler {
     if (!this.userSession.isAuthenticated) {
       return {
         success: false,
-        message: 'Not currently logged in'
+        message: 'Not currently logged in',
       };
     }
 
@@ -356,7 +371,7 @@ export class SlashCommandHandler {
     this.userSession = {
       isAuthenticated: false,
       plan: 'free',
-      credits: 100
+      credits: 100,
     };
 
     let message = `Logged out user ${oldUserId}`;
@@ -365,11 +380,14 @@ export class SlashCommandHandler {
 
     return {
       success: true,
-      message
+      message,
     };
   }
 
-  private async handleMode(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleMode(
+    args: string[],
+    context: ConversationContext,
+  ): Promise<SlashCommandResult> {
     const availableModes = ['chat', 'command', 'research', 'creative'];
     const currentMode = context.preferences?.defaultModel || 'chat';
 
@@ -377,7 +395,7 @@ export class SlashCommandHandler {
       return {
         success: true,
         message: `Current mode: ${currentMode}\\nAvailable modes: ${availableModes.join(', ')}`,
-        data: { currentMode, availableModes }
+        data: { currentMode, availableModes },
       };
     }
 
@@ -385,7 +403,7 @@ export class SlashCommandHandler {
     if (!newMode || !availableModes.includes(newMode)) {
       return {
         success: false,
-        message: `Invalid mode: ${newMode || 'undefined'}. Available: ${availableModes.join(', ')}`
+        message: `Invalid mode: ${newMode || 'undefined'}. Available: ${availableModes.join(', ')}`,
       };
     }
 
@@ -402,7 +420,7 @@ export class SlashCommandHandler {
     return {
       success: true,
       message: `Mode switched to ${newMode}`,
-      data: { mode: newMode }
+      data: { mode: newMode },
     };
   }
 
@@ -413,14 +431,14 @@ export class SlashCommandHandler {
     if (!validPlans.includes(targetPlan)) {
       return {
         success: false,
-        message: `Invalid plan: ${targetPlan}. Available: ${validPlans.join(', ')}`
+        message: `Invalid plan: ${targetPlan}. Available: ${validPlans.join(', ')}`,
       };
     }
 
     if (!this.userSession.isAuthenticated) {
       return {
         success: false,
-        message: 'Please login first with /login'
+        message: 'Please login first with /login',
       };
     }
 
@@ -428,7 +446,7 @@ export class SlashCommandHandler {
     if (currentPlan === targetPlan) {
       return {
         success: true,
-        message: `Already on ${targetPlan} plan`
+        message: `Already on ${targetPlan} plan`,
       };
     }
 
@@ -439,49 +457,49 @@ export class SlashCommandHandler {
     return {
       success: true,
       message: `Successfully upgraded to ${targetPlan} plan`,
-      data: { 
+      data: {
         plan: targetPlan,
         credits: this.userSession.credits,
-        features: this.getPlanFeatures(targetPlan)
-      }
+        features: this.getPlanFeatures(targetPlan),
+      },
     };
   }
 
   private async handleStatus(): Promise<SlashCommandResult> {
     const config = await readConfig();
-    
+
     const status = {
       user: this.userSession,
       system: {
         version: '2.5.3',
         mode: config.defaultMode || 'chat',
         apiUrl: config.apiUrl || 'http://localhost:8080',
-        sandboxStatus: 'ready' // TODO: 実際のSandbox状態を取得
+        sandboxStatus: 'ready', // TODO: 実際のSandbox状態を取得
       },
       resources: {
         memory: `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`,
-        uptime: `${Math.round(process.uptime())}s`
-      }
+        uptime: `${Math.round(process.uptime())}s`,
+      },
     };
 
     return {
       success: true,
       message: 'System status retrieved',
       data: status,
-      component: 'status-display'
+      component: 'status-display',
     };
   }
 
   // 設定・環境管理コマンド
   private async handleConfig(args: string[]): Promise<SlashCommandResult> {
     const config = await readConfig();
-    
+
     if (args.length === 0) {
       return {
         success: true,
         message: 'Opening configuration panel',
         data: { config },
-        component: 'config-panel'
+        component: 'config-panel',
       };
     }
 
@@ -492,52 +510,125 @@ export class SlashCommandHandler {
       await writeConfig(config);
       return {
         success: true,
-        message: `Configuration updated: ${key} = ${value}`
+        message: `Configuration updated: ${key} = ${value}`,
       };
     } else if (key) {
       // 設定値表示
       const currentValue = (config as any)[key];
       return {
         success: true,
-        message: `${key}: ${currentValue || 'undefined'}`
+        message: `${key}: ${currentValue || 'undefined'}`,
       };
     }
-    
+
     return {
       success: false,
-      message: 'Invalid config command usage'
+      message: 'Invalid config command usage',
     };
   }
 
-  private async handleModel(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleModel(
+    args: string[],
+    context: ConversationContext,
+  ): Promise<SlashCommandResult> {
     const cloudModels = [
-      { id: 'gpt-4o', provider: 'OpenAI', name: 'GPT-4o', context: '128K', description: 'High accuracy, multimodal capabilities' },
-      { id: 'gpt-4-turbo', provider: 'OpenAI', name: 'GPT-4 Turbo', context: '128K', description: 'Fast reasoning and code generation' },
-      { id: 'claude-3-opus', provider: 'Anthropic', name: 'Claude 3 Opus', context: '200K', description: 'Long text processing, complex tasks' },
-      { id: 'claude-3-sonnet', provider: 'Anthropic', name: 'Claude 3 Sonnet', context: '200K', description: 'Balanced performance and cost' },
-      { id: 'gemini-2.5-pro', provider: 'Google', name: 'Gemini 2.5 Pro', context: '128K', description: 'Research, analysis, vision capabilities' },
-      { id: 'mixtral-8x7b', provider: 'Groq', name: 'Mixtral 8x7B', context: '32K', description: 'Fast inference, real-time responses' },
-      { id: 'llama-3-70b', provider: 'Groq', name: 'Llama 3 70B', context: '32K', description: 'Open source excellence' }
+      {
+        id: 'gpt-4o',
+        provider: 'OpenAI',
+        name: 'GPT-4o',
+        context: '128K',
+        description: 'High accuracy, multimodal capabilities',
+      },
+      {
+        id: 'gpt-4-turbo',
+        provider: 'OpenAI',
+        name: 'GPT-4 Turbo',
+        context: '128K',
+        description: 'Fast reasoning and code generation',
+      },
+      {
+        id: 'claude-3-opus',
+        provider: 'Anthropic',
+        name: 'Claude 3 Opus',
+        context: '200K',
+        description: 'Long text processing, complex tasks',
+      },
+      {
+        id: 'claude-3-sonnet',
+        provider: 'Anthropic',
+        name: 'Claude 3 Sonnet',
+        context: '200K',
+        description: 'Balanced performance and cost',
+      },
+      {
+        id: 'gemini-2.5-pro',
+        provider: 'Google',
+        name: 'Gemini 2.5 Pro',
+        context: '128K',
+        description: 'Research, analysis, vision capabilities',
+      },
+      {
+        id: 'mixtral-8x7b',
+        provider: 'Groq',
+        name: 'Mixtral 8x7B',
+        context: '32K',
+        description: 'Fast inference, real-time responses',
+      },
+      {
+        id: 'llama-3-70b',
+        provider: 'Groq',
+        name: 'Llama 3 70B',
+        context: '32K',
+        description: 'Open source excellence',
+      },
     ];
 
     const localModels = [
-      { id: 'gpt-oss-120b', provider: 'LM Studio', name: 'GPT-OSS 120B', context: '128K', vram: '~64GB', description: 'Complex reasoning, large documents' },
-      { id: 'gpt-oss-20b', provider: 'LM Studio', name: 'GPT-OSS 20B', context: '32K', vram: '~12GB', description: 'Balanced performance, quick responses' },
-      { id: 'qwen3-30b', provider: 'LM Studio', name: 'Qwen3 30B', context: '32K', vram: '~16GB', description: 'Multilingual support' },
-      { id: 'qwen2.5-vl', provider: 'Ollama', name: 'Qwen2.5-VL', context: '8K', vram: '~8GB', description: 'Vision capabilities' }
+      {
+        id: 'gpt-oss-120b',
+        provider: 'LM Studio',
+        name: 'GPT-OSS 120B',
+        context: '128K',
+        vram: '~64GB',
+        description: 'Complex reasoning, large documents',
+      },
+      {
+        id: 'gpt-oss-20b',
+        provider: 'LM Studio',
+        name: 'GPT-OSS 20B',
+        context: '32K',
+        vram: '~12GB',
+        description: 'Balanced performance, quick responses',
+      },
+      {
+        id: 'qwen3-30b',
+        provider: 'LM Studio',
+        name: 'Qwen3 30B',
+        context: '32K',
+        vram: '~16GB',
+        description: 'Multilingual support',
+      },
+      {
+        id: 'qwen2.5-vl',
+        provider: 'Ollama',
+        name: 'Qwen2.5-VL',
+        context: '8K',
+        vram: '~8GB',
+        description: 'Vision capabilities',
+      },
     ];
-    
+
     const allModels = [...cloudModels, ...localModels];
     const currentModel = context.preferences?.defaultModel || 'gemini-2.5-pro';
     // Find current model info (unused for now)
-    const _currentModelInfo = allModels.find(m => m.id === currentModel);
+    const _currentModelInfo = allModels.find((m) => m.id === currentModel);
     void _currentModelInfo; // Will be used for UI display in future implementation
 
     // If no arguments, launch interactive selector
     if (args.length === 0) {
       try {
         const selectedModel = await runInteractiveModelSelector();
-        
+
         if (selectedModel) {
           // Update context and config
           if (!context.preferences) {
@@ -546,30 +637,30 @@ export class SlashCommandHandler {
               verbosity: 'normal',
               autoMode: false,
               defaultModel: 'gemini-2.5-pro',
-              theme: 'dark'
+              theme: 'dark',
             };
           }
           context.preferences.defaultModel = selectedModel as any;
-          
+
           const config = await readConfig();
           config.defaultModel = selectedModel as any;
           await writeConfig(config);
-          
+
           return {
             success: true,
             message: `✅ Model switched to: ${selectedModel}`,
-            data: { model: selectedModel }
+            data: { model: selectedModel },
           };
         } else {
           return {
             success: false,
-            message: 'Model selection cancelled'
+            message: 'Model selection cancelled',
           };
         }
       } catch (error) {
         return {
           success: false,
-          message: `Error selecting model: ${error instanceof Error ? error.message : 'Unknown error'}`
+          message: `Error selecting model: ${error instanceof Error ? error.message : 'Unknown error'}`,
         };
       }
     }
@@ -578,24 +669,24 @@ export class SlashCommandHandler {
     const modelMap: Record<string, string> = {
       // OpenAI models
       'gpt-4o': 'gpt-4o',
-      'gpt4o': 'gpt-4o',
+      gpt4o: 'gpt-4o',
       'gpt-4-turbo': 'gpt-4-turbo',
-      'gpt4turbo': 'gpt-4-turbo',
+      gpt4turbo: 'gpt-4-turbo',
       // Anthropic models
       'claude-3-opus': 'claude-3-opus',
-      'claude3opus': 'claude-3-opus',
-      'opus': 'claude-3-opus',
+      claude3opus: 'claude-3-opus',
+      opus: 'claude-3-opus',
       'claude-3-sonnet': 'claude-3-sonnet',
-      'claude3sonnet': 'claude-3-sonnet',
-      'sonnet': 'claude-3-sonnet',
+      claude3sonnet: 'claude-3-sonnet',
+      sonnet: 'claude-3-sonnet',
       // Google models
-      'gemini': 'gemini-2.5-pro',
+      gemini: 'gemini-2.5-pro',
       'gemini-2.5-pro': 'gemini-2.5-pro',
-      'gemini25pro': 'gemini-2.5-pro',
+      gemini25pro: 'gemini-2.5-pro',
       // Groq models
-      'mixtral': 'mixtral-8x7b',
+      mixtral: 'mixtral-8x7b',
       'mixtral-8x7b': 'mixtral-8x7b',
-      'llama3': 'llama-3-70b',
+      llama3: 'llama-3-70b',
       'llama-3-70b': 'llama-3-70b',
       // Local models (LM Studio)
       'gpt-oss-120b': 'gpt-oss-120b',
@@ -603,20 +694,20 @@ export class SlashCommandHandler {
       'gpt-oss-20b': 'gpt-oss-20b',
       '20b': 'gpt-oss-20b',
       'qwen3-30b': 'qwen3-30b',
-      'qwen30b': 'qwen3-30b',
-      'qwen3': 'qwen3-30b',
+      qwen30b: 'qwen3-30b',
+      qwen3: 'qwen3-30b',
       // Ollama models
       'qwen2.5-vl': 'qwen2.5-vl',
-      'qwenvl': 'qwen2.5-vl',
-      'vision': 'qwen2.5-vl'
+      qwenvl: 'qwen2.5-vl',
+      vision: 'qwen2.5-vl',
     };
-    
+
     const newModel = modelMap[requestedModel];
-    
+
     if (!newModel) {
       return {
         success: false,
-        message: `❌ Invalid model: "${args[0]}"\n\n**Available models:**\n☁️ Cloud: gpt-4o, claude-3-opus, gemini-2.5-pro, mixtral-8x7b\n💻 Local: gpt-oss-120b, gpt-oss-20b, qwen3-30b, qwen2.5-vl\n\nUse \`/model\` to see detailed information.`
+        message: `❌ Invalid model: "${args[0]}"\n\n**Available models:**\n☁️ Cloud: gpt-4o, claude-3-opus, gemini-2.5-pro, mixtral-8x7b\n💻 Local: gpt-oss-120b, gpt-oss-20b, qwen3-30b, qwen2.5-vl\n\nUse \`/model\` to see detailed information.`,
       };
     }
 
@@ -627,7 +718,7 @@ export class SlashCommandHandler {
         verbosity: 'normal',
         autoMode: false,
         defaultModel: 'gemini-2.5-pro',
-        theme: 'dark'
+        theme: 'dark',
       };
     }
     context.preferences.defaultModel = newModel as any;
@@ -640,12 +731,12 @@ export class SlashCommandHandler {
     } catch (error) {
       return {
         success: false,
-        message: `❌ Failed to save model configuration: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `❌ Failed to save model configuration: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
 
-    const newModelInfo = allModels.find(m => m.id === newModel);
-    const modelType = cloudModels.some(m => m.id === newModel) ? '☁️ Cloud' : '💻 Local';
+    const newModelInfo = allModels.find((m) => m.id === newModel);
+    const modelType = cloudModels.some((m) => m.id === newModel) ? '☁️ Cloud' : '💻 Local';
     let statusMessage = `✅ **AI Model Updated**\n\n`;
     statusMessage += `🤖 **Active Model**: ${newModelInfo?.name || newModel}\n`;
     statusMessage += `📍 **Type**: ${modelType} (${newModelInfo?.provider || 'Unknown'})\n`;
@@ -655,39 +746,39 @@ export class SlashCommandHandler {
     }
     statusMessage += `\n📝 **Optimized for**: ${newModelInfo?.description || 'Advanced AI tasks'}\n\n`;
     statusMessage += `💡 Your next messages will use this model. Type something to test it!`;
-    
+
     return {
       success: true,
       message: statusMessage,
-      data: { model: newModel, modelInfo: newModelInfo, type: modelType }
+      data: { model: newModel, modelInfo: newModelInfo, type: modelType },
     };
   }
 
   // 設定・環境管理コマンドの詳細実装
   private async handlePermissions(args: string[]): Promise<SlashCommandResult> {
     const config = await readConfig();
-    
+
     if (args.length === 0) {
       const permissions = config.permissions || {
         fileAccess: true,
         networkAccess: true,
-        systemCommands: false
+        systemCommands: false,
       };
-      
+
       return {
         success: true,
         message: `Current permissions:\n  File Access: ${permissions.fileAccess}\n  Network Access: ${permissions.networkAccess}\n  System Commands: ${permissions.systemCommands}`,
-        data: { permissions }
+        data: { permissions },
       };
     }
 
     const [permission] = args;
     const validPermissions = ['fileAccess', 'networkAccess', 'systemCommands'];
-    
+
     if (!permission || !validPermissions.includes(permission)) {
       return {
         success: false,
-        message: `Invalid permission: ${permission || 'undefined'}. Available: ${validPermissions.join(', ')}`
+        message: `Invalid permission: ${permission || 'undefined'}. Available: ${validPermissions.join(', ')}`,
       };
     }
 
@@ -696,33 +787,33 @@ export class SlashCommandHandler {
     const currentValue = config.permissions?.[permission as keyof typeof config.permissions];
     return {
       success: true,
-      message: `${permission}: ${currentValue || 'undefined'}`
+      message: `${permission}: ${currentValue || 'undefined'}`,
     };
   }
 
   private async handleHooks(args: string[]): Promise<SlashCommandResult> {
     const config = await readConfig();
-    
+
     if (args.length === 0) {
       const hooks = config.hooks || {};
       const hooksList = Object.entries(hooks)
         .map(([key, value]) => `  ${key}: ${value}`)
         .join('\n');
-      
+
       return {
         success: true,
         message: `Configured hooks:\n${hooksList || '  None'}`,
-        data: { hooks }
+        data: { hooks },
       };
     }
 
     const [hookName, ...commandParts] = args;
     const validHooks = ['onStart', 'onExit', 'onError'];
-    
+
     if (!hookName || !validHooks.includes(hookName)) {
       return {
         success: false,
-        message: `Invalid hook: ${hookName || 'undefined'}. Available: ${validHooks.join(', ')}`
+        message: `Invalid hook: ${hookName || 'undefined'}. Available: ${validHooks.join(', ')}`,
       };
     }
 
@@ -731,10 +822,10 @@ export class SlashCommandHandler {
       if (!config.hooks) config.hooks = {};
       (config.hooks as any)[hookName] = command;
       await writeConfig(config);
-      
+
       return {
         success: true,
-        message: `Hook ${hookName} set to: ${command}`
+        message: `Hook ${hookName} set to: ${command}`,
       };
     }
 
@@ -744,13 +835,13 @@ export class SlashCommandHandler {
       await writeConfig(config);
       return {
         success: true,
-        message: `Hook ${hookName} removed`
+        message: `Hook ${hookName} removed`,
       };
     }
 
     return {
       success: true,
-      message: `Hook ${hookName} is not set`
+      message: `Hook ${hookName} is not set`,
     };
   }
 
@@ -758,7 +849,7 @@ export class SlashCommandHandler {
     return {
       success: true,
       message: 'Running system diagnostics...',
-      component: 'system-diagnostics'
+      component: 'system-diagnostics',
     };
   }
 
@@ -794,7 +885,7 @@ Run /config to customize MARIA settings.`;
     return {
       success: true,
       message: instructions,
-      data: { setupComplete: false }
+      data: { setupComplete: false },
     };
   }
 
@@ -803,42 +894,44 @@ Run /config to customize MARIA settings.`;
       const rootPath = process.cwd();
       const mariaPath = path.join(rootPath, 'MARIA.md');
       const exists = fs.existsSync(mariaPath);
-      
+
       if (exists) {
         // Update existing MARIA.md with latest codebase analysis
         console.log('📊 Analyzing codebase for MARIA.md update...');
         const analysis = await this.analyzeCodebase(rootPath);
         const updatedContent = await this.updateMariaMd(mariaPath, analysis);
-        
+
         fs.writeFileSync(mariaPath, updatedContent, 'utf8');
-        
+
         return {
           success: true,
-          message: `✅ MARIA.md updated with latest codebase analysis\n` +
-                  `📁 Analyzed: ${analysis.fileCount} files in ${analysis.directories.length} directories\n` +
-                  `🏗️  Tech Stack: ${analysis.techStack.join(', ')}\n` +
-                  `⏰ Updated: ${new Date().toISOString()}`
+          message:
+            `✅ MARIA.md updated with latest codebase analysis\n` +
+            `📁 Analyzed: ${analysis.fileCount} files in ${analysis.directories.length} directories\n` +
+            `🏗️  Tech Stack: ${analysis.techStack.join(', ')}\n` +
+            `⏰ Updated: ${new Date().toISOString()}`,
         };
       } else {
         // Create new MARIA.md with codebase analysis
         console.log('📊 Creating new MARIA.md with codebase analysis...');
         const analysis = await this.analyzeCodebase(rootPath);
         const content = await this.createMariaMd(rootPath, analysis);
-        
+
         fs.writeFileSync(mariaPath, content, 'utf8');
-        
+
         return {
           success: true,
-          message: `✅ MARIA.md created successfully\n` +
-                  `📁 Analyzed: ${analysis.fileCount} files in ${analysis.directories.length} directories\n` +
-                  `🏗️  Tech Stack: ${analysis.techStack.join(', ')}\n` +
-                  `📍 Location: ${mariaPath}`
+          message:
+            `✅ MARIA.md created successfully\n` +
+            `📁 Analyzed: ${analysis.fileCount} files in ${analysis.directories.length} directories\n` +
+            `🏗️  Tech Stack: ${analysis.techStack.join(', ')}\n` +
+            `📍 Location: ${mariaPath}`,
         };
       }
     } catch (error) {
       return {
         success: false,
-        message: `❌ Failed to initialize MARIA.md: ${error instanceof Error ? error.message : String(error)}`
+        message: `❌ Failed to initialize MARIA.md: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -858,45 +951,73 @@ Run /config to customize MARIA settings.`;
   // エージェント・統合管理コマンド
   private async handleAgents(): Promise<SlashCommandResult> {
     const builtinAgents = [
-      { name: 'Paper Writer', status: 'available', description: 'Academic paper generation and LaTeX formatting' },
-      { name: 'Slides Creator', status: 'available', description: 'Presentation creation with AI content generation' },
-      { name: 'Code Reviewer', status: 'available', description: 'AI-powered code review and suggestions' },
-      { name: 'DevOps Engineer', status: 'available', description: 'Deployment and infrastructure management' }
+      {
+        name: 'Paper Writer',
+        status: 'available',
+        description: 'Academic paper generation and LaTeX formatting',
+      },
+      {
+        name: 'Slides Creator',
+        status: 'available',
+        description: 'Presentation creation with AI content generation',
+      },
+      {
+        name: 'Code Reviewer',
+        status: 'available',
+        description: 'AI-powered code review and suggestions',
+      },
+      {
+        name: 'DevOps Engineer',
+        status: 'available',
+        description: 'Deployment and infrastructure management',
+      },
     ];
 
     const ideIntegrations = [
-      { name: 'VS Code', status: 'available', description: 'MARIA extension for Visual Studio Code' },
-      { name: 'JetBrains', status: 'planned', description: 'IntelliJ IDEA and WebStorm integration' },
-      { name: 'Neovim', status: 'available', description: 'Terminal-based integration' }
+      {
+        name: 'VS Code',
+        status: 'available',
+        description: 'MARIA extension for Visual Studio Code',
+      },
+      {
+        name: 'JetBrains',
+        status: 'planned',
+        description: 'IntelliJ IDEA and WebStorm integration',
+      },
+      { name: 'Neovim', status: 'available', description: 'Terminal-based integration' },
     ];
 
     return {
       success: true,
       message: 'Opening AI agents management dashboard...',
       data: { agents: builtinAgents, integrations: ideIntegrations },
-      component: 'agents-display'
+      component: 'agents-display',
     };
   }
 
   private async handleMcp(): Promise<SlashCommandResult> {
     const mcpServers = [
       { name: 'Playwright', status: 'active', description: 'Browser automation and testing' },
-      { name: 'FileSystem', status: 'active', description: 'File operations and project management' },
+      {
+        name: 'FileSystem',
+        status: 'active',
+        description: 'File operations and project management',
+      },
       { name: 'Git', status: 'active', description: 'Version control integration' },
       { name: 'SQLite', status: 'available', description: 'Database operations and queries' },
-      { name: 'GitHub', status: 'available', description: 'GitHub API integration' }
+      { name: 'GitHub', status: 'available', description: 'GitHub API integration' },
     ];
 
-    const activeServers = mcpServers.filter(s => s.status === 'active');
-    const availableServers = mcpServers.filter(s => s.status === 'available');
+    const activeServers = mcpServers.filter((s) => s.status === 'active');
+    const availableServers = mcpServers.filter((s) => s.status === 'available');
 
     const message = `MCP (Model Context Protocol) Server Management:
 
 🟢 Active Servers (${activeServers.length}):
-${activeServers.map(server => `• ${server.name}: ${server.description}`).join('\n')}
+${activeServers.map((server) => `• ${server.name}: ${server.description}`).join('\n')}
 
 ⚪ Available Servers (${availableServers.length}):
-${availableServers.map(server => `• ${server.name}: ${server.description}`).join('\n')}
+${availableServers.map((server) => `• ${server.name}: ${server.description}`).join('\n')}
 
 🔧 Management Commands:
 • /mcp start <server> - Start MCP server
@@ -916,11 +1037,18 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     return {
       success: true,
       message,
-      data: { servers: mcpServers, active: activeServers.length, available: availableServers.length }
+      data: {
+        servers: mcpServers,
+        active: activeServers.length,
+        available: availableServers.length,
+      },
     };
   }
 
-  private async handleClear(context: ConversationContext, args: string[]): Promise<SlashCommandResult> {
+  private async handleClear(
+    context: ConversationContext,
+    args: string[],
+  ): Promise<SlashCommandResult> {
     const option = args[0]?.toLowerCase();
     const stats = this.chatContextService.getStats();
     const historyCount = context.history.length;
@@ -931,7 +1059,7 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     const options = {
       soft: option === '--soft',
       hard: option === '--hard',
-      summary: option === '--summary'
+      summary: option === '--summary',
     };
 
     // Handle soft clear (display only)
@@ -943,20 +1071,25 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
         data: {
           type: 'soft',
           preservedMessages: stats.messagesInWindow,
-          preservedTokens: stats.totalTokens
-        }
+          preservedTokens: stats.totalTokens,
+        },
       };
     }
 
     // Handle summary generation before clear
     if (options.summary) {
       const summary = await this.chatContextService.exportContext('markdown');
-      const summaryPath = path.join(process.env.HOME || '', '.maria', 'summaries', `summary-${Date.now()}.md`);
-      
+      const summaryPath = path.join(
+        process.env.HOME || '',
+        '.maria',
+        'summaries',
+        `summary-${Date.now()}.md`,
+      );
+
       try {
         await fs.promises.mkdir(path.dirname(summaryPath), { recursive: true });
         await fs.promises.writeFile(summaryPath, summary);
-        
+
         this.chatContextService.clearContext({ summary: true });
         context.history = [];
         if (context.metadata) {
@@ -973,8 +1106,8 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
             type: 'summary',
             summaryPath,
             clearedMessages: historyCount,
-            freedTokens: previousTokens
-          }
+            freedTokens: previousTokens,
+          },
         };
       } catch (error) {
         logger.error('Failed to save summary:', error);
@@ -984,7 +1117,7 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     // Handle hard clear (complete reset)
     const clearType = options.hard ? 'hard' : 'normal';
     this.chatContextService.clearContext({ soft: false });
-    
+
     // Clear conversation context
     context.history = [];
     if (context.metadata) {
@@ -997,16 +1130,16 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     // Display context usage indicator
     const indicator = this.chatContextService.getTokenUsageIndicator();
 
-    return { 
-      success: true, 
+    return {
+      success: true,
       message: `${clearType === 'hard' ? '🔄 Complete reset' : '🧹 Context cleared'} (${historyCount} messages, $${previousCost.toFixed(4)}, ${previousTokens} tokens freed)\n${indicator}`,
-      data: { 
+      data: {
         type: clearType,
         clearedMessages: historyCount,
         freedCost: previousCost,
         freedTokens: previousTokens,
-        compressionCount: stats.compressedCount
-      }
+        compressionCount: stats.compressedCount,
+      },
     };
   }
 
@@ -1014,7 +1147,7 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     if (!context.history.length) {
       return {
         success: false,
-        message: 'No conversation history to compact'
+        message: 'No conversation history to compact',
       };
     }
 
@@ -1022,10 +1155,8 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     const originalTokens = context.metadata?.totalTokens || 0;
 
     // 重要なメッセージのみを保持（エラー、重要なシステムメッセージ、最後の5つの交換）
-    const importantMessages = context.history.filter(msg => 
-      msg.metadata?.error || 
-      msg.role === 'system' ||
-      msg.metadata?.command
+    const importantMessages = context.history.filter(
+      (msg) => msg.metadata?.error || msg.role === 'system' || msg.metadata?.command,
     );
 
     const recentMessages = context.history.slice(-10); // 最新10メッセージを保持
@@ -1036,37 +1167,37 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
         role: 'system' as const,
         content: `[Conversation compacted: ${originalCount - recentMessages.length - 5} messages summarized]`,
         timestamp: new Date(),
-        metadata: { command: 'compact' }
+        metadata: { command: 'compact' },
       },
-      ...recentMessages
+      ...recentMessages,
     ];
 
     // 重複を除去
-    const uniqueMessages = compactedHistory.filter((msg, index, arr) => 
-      arr.findIndex(m => m.id === msg.id) === index
+    const uniqueMessages = compactedHistory.filter(
+      (msg, index, arr) => arr.findIndex((m) => m.id === msg.id) === index,
     );
 
     context.history = uniqueMessages;
-    
+
     // トークン数を推定 (簡易計算: 文字数 ÷ 4)
     const newTokenCount = Math.ceil(
-      uniqueMessages.reduce((sum, msg) => sum + msg.content.length, 0) / 4
+      uniqueMessages.reduce((sum, msg) => sum + msg.content.length, 0) / 4,
     );
-    
+
     if (context.metadata) {
       context.metadata.totalTokens = newTokenCount;
       context.metadata.cost = newTokenCount * 0.000002; // 簡易計算
     }
 
-    return { 
-      success: true, 
-      message: `Conversation compacted: ${originalCount} → ${uniqueMessages.length} messages (${Math.round((originalTokens - newTokenCount) / originalTokens * 100)}% size reduction)`,
+    return {
+      success: true,
+      message: `Conversation compacted: ${originalCount} → ${uniqueMessages.length} messages (${Math.round(((originalTokens - newTokenCount) / originalTokens) * 100)}% size reduction)`,
       data: {
         originalCount,
         compactedCount: uniqueMessages.length,
         tokenReduction: originalTokens - newTokenCount,
-        reductionPercent: Math.round((originalTokens - newTokenCount) / originalTokens * 100)
-      }
+        reductionPercent: Math.round(((originalTokens - newTokenCount) / originalTokens) * 100),
+      },
     };
   }
 
@@ -1081,20 +1212,20 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
       if (!savedContext.history) {
         return {
           success: false,
-          message: 'No saved conversation found to resume'
+          message: 'No saved conversation found to resume',
         };
       }
 
       // 保存された会話を現在のコンテキストにマージ
-      context.history = savedContext.history.map(msg => ({
+      context.history = savedContext.history.map((msg) => ({
         ...msg,
-        timestamp: new Date(msg.timestamp)
+        timestamp: new Date(msg.timestamp),
       }));
 
       if (savedContext.currentTask) {
         context.currentTask = {
           ...savedContext.currentTask,
-          startTime: new Date(savedContext.currentTask.startTime)
+          startTime: new Date(savedContext.currentTask.startTime),
         };
       }
 
@@ -1103,35 +1234,34 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
           ...context.metadata,
           ...savedContext.metadata,
           startTime: new Date(savedContext.metadata.startTime || Date.now()),
-          lastActivity: new Date(savedContext.metadata.lastActivity || Date.now())
+          lastActivity: new Date(savedContext.metadata.lastActivity || Date.now()),
         };
       }
 
       // レジューム後はファイルを削除
       await fs.unlink(resumeFile);
 
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${context.currentTask.title || context.currentTask.type})` : ''}`,
         data: {
           messagesRestored: context.history.length,
           taskRestored: !!context.currentTask,
-          lastActivity: context.metadata?.lastActivity
-        }
+          lastActivity: context.metadata?.lastActivity,
+        },
       };
-
     } catch (error) {
       if ((error as any).code === 'ENOENT') {
         return {
           success: false,
-          message: 'No saved conversation found to resume'
+          message: 'No saved conversation found to resume',
         };
       }
-      
+
       logger.error('Resume conversation error', error);
       return {
         success: false,
-        message: `Failed to resume conversation: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Failed to resume conversation: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -1144,8 +1274,8 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     const messageCount = context.history.length;
 
     // ユーザープランに基づくコスト制限を取得
-    const dailyLimit = this.userSession.plan === 'free' ? 100 : 
-                      this.userSession.plan === 'pro' ? 5000 : 20000;
+    const dailyLimit =
+      this.userSession.plan === 'free' ? 100 : this.userSession.plan === 'pro' ? 5000 : 20000;
     const remainingCredits = this.userSession.credits;
 
     // 詳細な使用量統計
@@ -1155,25 +1285,25 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
         tokens: tokens,
         messages: messageCount,
         duration: `${Math.floor(duration / 60)}m ${duration % 60}s`,
-        avgCostPerMessage: messageCount > 0 ? (cost / messageCount) : 0
+        avgCostPerMessage: messageCount > 0 ? cost / messageCount : 0,
       },
       user: {
         plan: this.userSession.plan,
         dailyLimit: dailyLimit,
         remainingCredits: remainingCredits,
-        usagePercent: Math.round((dailyLimit - remainingCredits) / dailyLimit * 100)
+        usagePercent: Math.round(((dailyLimit - remainingCredits) / dailyLimit) * 100),
       },
       projected: {
-        hourlyRate: duration > 0 ? (cost * 3600 / duration) : 0,
-        dailyProjection: duration > 0 ? (cost * 86400 / duration) : 0
-      }
+        hourlyRate: duration > 0 ? (cost * 3600) / duration : 0,
+        dailyProjection: duration > 0 ? (cost * 86400) / duration : 0,
+      },
     };
 
     return {
       success: true,
       message: 'Opening cost analysis dashboard...',
       data: stats,
-      component: 'cost-display'
+      component: 'cost-display',
     };
   }
 
@@ -1181,7 +1311,7 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
     try {
       // GitHub CLI を使用してPR情報を取得
       const { execSync } = await import('child_process');
-      
+
       // カレントブランチのPR番号を取得
       let prNumber = args[0];
       if (!prNumber) {
@@ -1192,13 +1322,17 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
         } catch {
           return {
             success: false,
-            message: 'No PR found for current branch. Please specify PR number: /review <pr-number>'
+            message:
+              'No PR found for current branch. Please specify PR number: /review <pr-number>',
           };
         }
       }
 
       // PR詳細情報を取得
-      const prDetails = execSync(`gh pr view ${prNumber} --json title,body,commits,files,comments,reviews`, { encoding: 'utf-8' });
+      const prDetails = execSync(
+        `gh pr view ${prNumber} --json title,body,commits,files,comments,reviews`,
+        { encoding: 'utf-8' },
+      );
       const pr = JSON.parse(prDetails);
 
       // PR差分を取得
@@ -1214,7 +1348,7 @@ ${availableServers.map(server => `• ${server.name}: ${server.description}`).jo
         reviews: pr.reviews?.length || 0,
         diffSize: diffOutput.split('\n').length,
         complexity: this.analyzePRComplexity(diffOutput),
-        suggestions: this.generateReviewSuggestions(pr, diffOutput)
+        suggestions: this.generateReviewSuggestions(pr, diffOutput),
       };
 
       const message = `PR Review Analysis - #${prNumber}:
@@ -1231,14 +1365,13 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
       return {
         success: true,
         message,
-        data: { prNumber, analysis, diff: diffOutput }
+        data: { prNumber, analysis, diff: diffOutput },
       };
-
     } catch (error) {
       logger.error('PR review error', error);
       return {
         success: false,
-        message: `Failed to review PR: ${error instanceof Error ? error.message : 'Unknown error'}. Make sure GitHub CLI is installed and you're authenticated.`
+        message: `Failed to review PR: ${error instanceof Error ? error.message : 'Unknown error'}. Make sure GitHub CLI is installed and you're authenticated.`,
       };
     }
   }
@@ -1246,7 +1379,7 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
   private async handlePrComments(args: string[] = []): Promise<SlashCommandResult> {
     try {
       const { execSync } = await import('child_process');
-      
+
       let prNumber = args[0];
       if (!prNumber) {
         try {
@@ -1256,29 +1389,32 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
         } catch {
           return {
             success: false,
-            message: 'No PR found for current branch. Please specify PR number: /pr-comments <pr-number>'
+            message:
+              'No PR found for current branch. Please specify PR number: /pr-comments <pr-number>',
           };
         }
       }
 
       // PR コメントとレビューを取得
-      const commentsData = execSync(`gh pr view ${prNumber} --json comments,reviews`, { encoding: 'utf-8' });
+      const commentsData = execSync(`gh pr view ${prNumber} --json comments,reviews`, {
+        encoding: 'utf-8',
+      });
       const data = JSON.parse(commentsData);
 
       const comments = data.comments || [];
       const reviews = data.reviews || [];
-      
+
       // コメントを時系列でソート
       const allFeedback = [
         ...comments.map((c: any) => ({ ...c, type: 'comment' })),
-        ...reviews.map((r: any) => ({ ...r, type: 'review' }))
+        ...reviews.map((r: any) => ({ ...r, type: 'review' })),
       ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
       if (!allFeedback.length) {
         return {
           success: true,
           message: `No comments or reviews found for PR #${prNumber}`,
-          data: { prNumber, comments: [], reviews: [] }
+          data: { prNumber, comments: [], reviews: [] },
         };
       }
 
@@ -1290,7 +1426,7 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
         changeRequests: reviews.filter((r: any) => r.state === 'CHANGES_REQUESTED').length,
         pendingReviews: reviews.filter((r: any) => r.state === 'PENDING').length,
         actionItems: this.extractActionItems(allFeedback),
-        sentiment: this.analyzeFeedbackSentiment(allFeedback)
+        sentiment: this.analyzeFeedbackSentiment(allFeedback),
       };
 
       const message = `PR Comments Analysis - #${prNumber}:
@@ -1304,21 +1440,24 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
 ${analysis.actionItems.map((item, i) => `${i + 1}. ${item}`).join('\n')}
 
 Recent Feedback:
-${allFeedback.slice(-3).map((fb: any) => 
-  `• ${fb.author?.login || 'Unknown'} (${fb.type}): ${(fb.body || '').substring(0, 100)}...`
-).join('\n')}`;
+${allFeedback
+  .slice(-3)
+  .map(
+    (fb: any) =>
+      `• ${fb.author?.login || 'Unknown'} (${fb.type}): ${(fb.body || '').substring(0, 100)}...`,
+  )
+  .join('\n')}`;
 
       return {
         success: true,
         message,
-        data: { prNumber, analysis, feedback: allFeedback }
+        data: { prNumber, analysis, feedback: allFeedback },
       };
-
     } catch (error) {
       logger.error('PR comments error', error);
       return {
         success: false,
-        message: `Failed to get PR comments: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Failed to get PR comments: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -1331,10 +1470,10 @@ ${allFeedback.slice(-3).map((fb: any) =>
       return {
         success: false,
         message: 'Please provide a bug description: /bug <type> <description>',
-        data: { 
+        data: {
           availableTypes: ['crash', 'performance', 'ui', 'api', 'security', 'feature', 'general'],
-          example: '/bug crash "CLI crashes when running /export command"' 
-        }
+          example: '/bug crash "CLI crashes when running /export command"',
+        },
       };
     }
 
@@ -1346,7 +1485,7 @@ ${allFeedback.slice(-3).map((fb: any) =>
         cliVersion: '2.5.3', // TODO: package.jsonから動的に取得
         workingDirectory: process.cwd(),
         timestamp: new Date().toISOString(),
-        user: this.userSession.userId || 'anonymous'
+        user: this.userSession.userId || 'anonymous',
       };
 
       // バグレポートの構造化
@@ -1357,21 +1496,21 @@ ${allFeedback.slice(-3).map((fb: any) =>
         context: {
           lastCommands: [], // TODO: コマンド履歴から取得
           projectType: 'unknown', // TODO: プロジェクト検出
-          reproductionSteps: []
+          reproductionSteps: [],
         },
         severity: this.assessBugSeverity(bugType, description),
-        reportId: `bug-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        reportId: `bug-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       };
 
       // ローカルファイルに保存（フィードバック収集用）
       const fs = await import('fs/promises');
       const reportsDir = `${process.cwd()}/.maria-reports`;
-      
+
       try {
         await fs.mkdir(reportsDir, { recursive: true });
         await fs.writeFile(
           `${reportsDir}/${bugReport.reportId}.json`,
-          JSON.stringify(bugReport, null, 2)
+          JSON.stringify(bugReport, null, 2),
         );
       } catch (saveError) {
         logger.warn('Could not save bug report locally', saveError);
@@ -1396,46 +1535,53 @@ For urgent issues, please contact support at https://github.com/anthropics/claud
       return {
         success: true,
         message,
-        data: { bugReport, reportPath: `${reportsDir}/${bugReport.reportId}.json` }
+        data: { bugReport, reportPath: `${reportsDir}/${bugReport.reportId}.json` },
       };
-
     } catch (error) {
       logger.error('Bug report error', error);
       return {
         success: false,
-        message: `Failed to submit bug report: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Failed to submit bug report: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
   private async handleReleaseNotes(args: string[] = []): Promise<SlashCommandResult> {
     const version = args[0] || 'latest';
-    
+
     try {
       const { execSync } = await import('child_process');
-      
+
       // GitHub API を使用してリリース情報を取得
       let releaseData: string;
-      
+
       try {
         if (version === 'latest') {
-          releaseData = execSync('gh release view --json tagName,name,body,publishedAt,assets', { encoding: 'utf-8' });
+          releaseData = execSync('gh release view --json tagName,name,body,publishedAt,assets', {
+            encoding: 'utf-8',
+          });
         } else {
-          releaseData = execSync(`gh release view ${version} --json tagName,name,body,publishedAt,assets`, { encoding: 'utf-8' });
+          releaseData = execSync(
+            `gh release view ${version} --json tagName,name,body,publishedAt,assets`,
+            { encoding: 'utf-8' },
+          );
         }
       } catch (ghError: any) {
         // No release found - return graceful message
-        if (ghError.stderr?.includes('release not found') || ghError.message?.includes('release not found')) {
+        if (
+          ghError.stderr?.includes('release not found') ||
+          ghError.message?.includes('release not found')
+        ) {
           return {
             success: true,
-            message: `📦 Release Notes\n\nNo releases found in this repository yet.\n\nOnce releases are published, you can view them with:\n  /release-notes        - Latest release\n  /release-notes v1.0.0 - Specific version`
+            message: `📦 Release Notes\n\nNo releases found in this repository yet.\n\nOnce releases are published, you can view them with:\n  /release-notes        - Latest release\n  /release-notes v1.0.0 - Specific version`,
           };
         }
         throw ghError;
       }
-      
+
       const release = JSON.parse(releaseData);
-      
+
       // リリースノートの解析
       const analysis = {
         version: release.tagName,
@@ -1445,7 +1591,7 @@ For urgent issues, please contact support at https://github.com/anthropics/claud
         features: this.extractFeatures(release.body || ''),
         bugFixes: this.extractBugFixes(release.body || ''),
         breakingChanges: this.extractBreakingChanges(release.body || ''),
-        assets: release.assets?.length || 0
+        assets: release.assets?.length || 0,
       };
 
       const message = `Release Notes - ${analysis.version}:
@@ -1453,13 +1599,13 @@ For urgent issues, please contact support at https://github.com/anthropics/claud
 🏷️  Title: ${analysis.title}
 
 ✨ New Features (${analysis.features.length}):
-${analysis.features.map(f => `• ${f}`).join('\n') || '• None listed'}
+${analysis.features.map((f) => `• ${f}`).join('\n') || '• None listed'}
 
 🐛 Bug Fixes (${analysis.bugFixes.length}):
-${analysis.bugFixes.map(f => `• ${f}`).join('\n') || '• None listed'}
+${analysis.bugFixes.map((f) => `• ${f}`).join('\n') || '• None listed'}
 
 [WARN] Breaking Changes (${analysis.breakingChanges.length}):
-${analysis.breakingChanges.map(c => `• ${c}`).join('\n') || '• None'}
+${analysis.breakingChanges.map((c) => `• ${c}`).join('\n') || '• None'}
 
 📦 Assets: ${analysis.assets} files available
 📄 Full notes: gh release view ${analysis.version}`;
@@ -1467,12 +1613,11 @@ ${analysis.breakingChanges.map(c => `• ${c}`).join('\n') || '• None'}
       return {
         success: true,
         message,
-        data: { release, analysis }
+        data: { release, analysis },
       };
-
     } catch (error) {
       logger.error('Release notes error', error);
-      
+
       // Fallback to built-in version info
       const fallbackMessage = `Release Notes - Current Version (2.5.3):
 📅 Released: 2025-01-30
@@ -1499,23 +1644,23 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       return {
         success: true,
         message: fallbackMessage,
-        data: { version: '2.5.3', source: 'fallback' }
+        data: { version: '2.5.3', source: 'fallback' },
       };
     }
   }
 
   private async handleVim(context: ConversationContext): Promise<SlashCommandResult> {
     const config = await readConfig();
-    
+
     // Vim モードの現在の状態を取得
     const currentVimMode = config.cli?.vimMode || false;
     const newVimMode = !currentVimMode;
-    
+
     // Vim モード設定を更新
     if (context.preferences) {
       (context.preferences as any).vimMode = newVimMode;
     }
-    
+
     // 設定ファイルに保存
     if (!config.cli) config.cli = {};
     config.cli.vimMode = newVimMode;
@@ -1530,28 +1675,28 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       ':q to exit, :w to save conversation',
       'dd to delete message, yy to copy',
       '/ for search, n/N for next/previous',
-      'u for undo, Ctrl+r for redo'
+      'u for undo, Ctrl+r for redo',
     ];
 
     const normalFeatures = [
       'Arrow keys for navigation',
       'Standard copy/paste (Ctrl+C/V)',
       'Tab completion for commands',
-      'Standard terminal shortcuts'
+      'Standard terminal shortcuts',
     ];
 
-    const message = newVimMode 
-      ? `Vim Mode Enabled [ON]\n\nVim-style keyboard shortcuts activated:\n${vimFeatures.map(f => `• ${f}`).join('\n')}\n\nPress Esc to enter normal mode, i to enter insert mode.`
-      : `Normal Mode Enabled [NORMAL]\n\nStandard keyboard shortcuts restored:\n${normalFeatures.map(f => `• ${f}`).join('\n')}\n\nVim keybindings disabled.`;
+    const message = newVimMode
+      ? `Vim Mode Enabled [ON]\n\nVim-style keyboard shortcuts activated:\n${vimFeatures.map((f) => `• ${f}`).join('\n')}\n\nPress Esc to enter normal mode, i to enter insert mode.`
+      : `Normal Mode Enabled [NORMAL]\n\nStandard keyboard shortcuts restored:\n${normalFeatures.map((f) => `• ${f}`).join('\n')}\n\nVim keybindings disabled.`;
 
     return {
       success: true,
       message,
-      data: { 
+      data: {
         vimMode: newVimMode,
         keyBindings: config.cli?.keyBindings,
-        features: newVimMode ? vimFeatures : normalFeatures
-      }
+        features: newVimMode ? vimFeatures : normalFeatures,
+      },
     };
   }
 
@@ -1562,29 +1707,29 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       const path = await import('path');
       const packagePath = path.resolve(process.cwd(), 'package.json');
       const packageData = JSON.parse(await fs.readFile(packagePath, 'utf8'));
-      
+
       return {
         success: true,
-        message: `MARIA CODE CLI v${packageData.version || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`
+        message: `MARIA CODE CLI v${packageData.version || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`,
       };
     } catch {
       // Fallback if package.json can't be read
       return {
         success: true,
-        message: `MARIA CODE CLI v1.0.0\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`
+        message: `MARIA CODE CLI v1.0.0\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`,
       };
     }
   }
 
   private async handleHelp(args: string[]): Promise<SlashCommandResult> {
     const arg = args[0]?.toLowerCase();
-    
+
     // If no argument, show general help
     if (!arg) {
       let helpText = `🚀 MARIA CODE - Interactive AI Development CLI\n\n`;
       helpText += `Usage: /help [category|command]\n\n`;
       helpText += `📚 COMMAND CATEGORIES:\n\n`;
-      
+
       // Show all categories with their descriptions
       Object.entries(commandCategories).forEach(([key, name]) => {
         const category = key as CommandCategory;
@@ -1598,76 +1743,77 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       helpText += `  • /help <command> for detailed info (e.g., /help /init)\n`;
       helpText += `  • Commands suggest related actions after execution\n`;
       helpText += `  • Chain commands for workflows (e.g., /init → /add-dir → /memory)\n\n`;
-      
+
       const totalCommands = Object.keys(commandCategories).reduce(
-        (sum, cat) => sum + getCommandsByCategory(cat as CommandCategory).length, 0
+        (sum, cat) => sum + getCommandsByCategory(cat as CommandCategory).length,
+        0,
       );
       helpText += `Total commands available: ${totalCommands}`;
 
       return {
         success: true,
         message: helpText,
-        component: 'help-dialog'
+        component: 'help-dialog',
       };
     }
-    
+
     // Check if argument is a category
     if (arg in commandCategories) {
       const category = arg as CommandCategory;
       const categoryName = commandCategories[category];
       const commands = getCommandsByCategory(category);
-      
+
       let helpText = `📖 ${categoryName.toUpperCase()}\n\n`;
-      
-      commands.forEach(cmd => {
+
+      commands.forEach((cmd) => {
         helpText += `${cmd.command.padEnd(20)} - ${cmd.description}\n`;
         if (cmd.usage) {
           helpText += `  Usage: ${cmd.usage}\n`;
         }
         if (cmd.examples && cmd.examples.length > 0) {
           helpText += `  Examples:\n`;
-          cmd.examples.forEach(ex => helpText += `    ${ex}\n`);
+          cmd.examples.forEach((ex) => (helpText += `    ${ex}\n`));
         }
         if (cmd.relatedCommands && cmd.relatedCommands.length > 0) {
           helpText += `  Related: ${cmd.relatedCommands.join(', ')}\n`;
         }
         helpText += '\n';
       });
-      
+
       return {
         success: true,
         message: helpText,
-        component: 'help-dialog'
+        component: 'help-dialog',
       };
     }
-    
+
     // Check if argument is a specific command
     const commandArg = arg.startsWith('/') ? arg : `/${arg}`;
     const commandInfo = getCommandInfo(commandArg);
-    
+
     if (commandInfo) {
       let helpText = `📌 Command: ${commandInfo.command}\n\n`;
       helpText += `Description: ${commandInfo.description}\n\n`;
-      
+
       if (commandInfo.usage) {
         helpText += `Usage: ${commandInfo.usage}\n\n`;
       }
-      
+
       if (commandInfo.examples && commandInfo.examples.length > 0) {
         helpText += `Examples:\n`;
-        commandInfo.examples.forEach(ex => helpText += `  ${ex}\n`);
+        commandInfo.examples.forEach((ex) => (helpText += `  ${ex}\n`));
         helpText += '\n';
       }
-      
+
       if (commandInfo.relatedCommands && commandInfo.relatedCommands.length > 0) {
         helpText += `Related Commands:\n`;
         const related = getRelatedCommands(commandInfo.command);
-        related.forEach(rel => {
+        related.forEach((rel) => {
           helpText += `  ${rel.command.padEnd(15)} - ${rel.description}\n`;
         });
         helpText += '\n';
       }
-      
+
       // Check if this command is part of a workflow
       const chain = getCommandChain(commandInfo.command);
       if (chain) {
@@ -1675,25 +1821,31 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         helpText += `  ${chain.description}\n`;
         helpText += `  Chain: ${chain.commands.join(' → ')}\n`;
       }
-      
+
       return {
         success: true,
         message: helpText,
-        component: 'help-dialog'
+        component: 'help-dialog',
       };
     }
-    
+
     // Unknown argument
     return {
       success: false,
-      message: `Unknown help topic: ${arg}\n\nTry:\n  /help - Show all categories\n  /help <category> - Show category commands\n  /help <command> - Show command details`
+      message: `Unknown help topic: ${arg}\n\nTry:\n  /help - Show all categories\n  /help <category> - Show category commands\n  /help <command> - Show command details`,
     };
 
     return {
       success: true,
       message: `📚 MARIA CLI Help - ${Object.keys(commandCategories).length} Categories, ${Object.keys(commandCategories).reduce((sum, categoryKey) => sum + getCommandsByCategory(categoryKey as CommandCategory).length, 0)} Commands`,
       component: 'help-dialog',
-      data: { categories: commandCategories, totalCommands: Object.keys(commandCategories).reduce((sum, categoryKey) => sum + getCommandsByCategory(categoryKey as CommandCategory).length, 0) }
+      data: {
+        categories: commandCategories,
+        totalCommands: Object.keys(commandCategories).reduce(
+          (sum, categoryKey) => sum + getCommandsByCategory(categoryKey as CommandCategory).length,
+          0,
+        ),
+      },
     };
   }
 
@@ -1703,25 +1855,25 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       userLoggedIn: this.userSession.isAuthenticated,
       currentMode: context.preferences?.defaultModel || 'chat',
       sessionDuration: Date.now() - this.sessionStartTime,
-      commandHistory: this.suggestionService.getCommandHistory()
+      commandHistory: this.suggestionService.getCommandHistory(),
     };
-    
+
     // Get contextual suggestions
     const suggestions = await this.suggestionService.getContextualSuggestions(suggestionContext);
-    
+
     // Get most used commands
     const mostUsed = this.suggestionService.getMostUsedCommands(5);
-    
+
     // Get current workflow if any
     const lastCommand = this.suggestionService.getLastCommand();
     const currentChain = lastCommand ? getCommandChain(lastCommand) : undefined;
-    
+
     let message = '💡 Intelligent Command Suggestions\n\n';
-    
+
     // Context-based suggestions
     if (suggestions.length > 0) {
       message += '📍 Based on current context:\n';
-      suggestions.forEach(sug => {
+      suggestions.forEach((sug) => {
         message += `  ${sug.command.padEnd(15)} - ${sug.description}`;
         if (sug.reason) {
           message += ` (${sug.reason})`;
@@ -1730,58 +1882,58 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       });
       message += '\n';
     }
-    
+
     // Workflow suggestions
     if (currentChain) {
       message += `🔗 Current workflow: "${currentChain.name}"\n`;
       const currentIndex = lastCommand ? currentChain.commands.indexOf(lastCommand) : -1;
       if (currentIndex !== -1 && currentIndex < currentChain.commands.length - 1) {
         message += `  Next: ${currentChain.commands[currentIndex + 1]}\n`;
-        message += `  Complete chain: /chain ${Object.keys(commandChains).find(k => commandChains[k as keyof typeof commandChains] === currentChain)}\n`;
+        message += `  Complete chain: /chain ${Object.keys(commandChains).find((k) => commandChains[k as keyof typeof commandChains] === currentChain)}\n`;
       }
       message += '\n';
     }
-    
+
     // Frequently used commands
     if (mostUsed.length > 0) {
       message += '⭐ Your frequently used commands:\n';
       mostUsed.forEach((cmd, i) => {
-        message += `  ${(i + 1)}. ${cmd}\n`;
+        message += `  ${i + 1}. ${cmd}\n`;
       });
       message += '\n';
     }
-    
+
     // Smart recommendations based on patterns
     message += '🤖 Smart recommendations:\n';
-    
+
     if (!suggestionContext.projectInitialized) {
       message += '  • Start with /init to initialize your project\n';
     } else {
       const timeMinutes = (suggestionContext.sessionDuration || 0) / 60000;
-      
+
       if (timeMinutes > 60) {
         message += '  • Consider /compact to optimize memory (long session)\n';
       }
-      
+
       if (!this.suggestionService.hasUsedCommand('/test')) {
         message += '  • Try /test to ensure code quality\n';
       }
-      
+
       if (!this.suggestionService.hasUsedCommand('/agents')) {
         message += '  • Explore /agents for AI-powered assistance\n';
       }
     }
-    
+
     message += '\nTip: Use /help <command> for detailed information about any command';
-    
+
     return {
       success: true,
       message,
       data: {
         suggestions,
         mostUsed,
-        currentWorkflow: currentChain?.name
-      }
+        currentWorkflow: currentChain?.name,
+      },
     };
   }
 
@@ -1789,17 +1941,17 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
   private async handleAlias(args: string[]): Promise<SlashCommandResult> {
     const subCommand = args[0];
-    
+
     // If no subcommand, list all aliases
     if (!subCommand) {
       const { userAliases, builtInAliases } = this.aliasSystem.listAliases();
-      
+
       let message = '🔤 Command Aliases\n\n';
-      
+
       // Built-in aliases
       if (builtInAliases.length > 0) {
         message += '📌 Built-in Aliases:\n';
-        builtInAliases.forEach(alias => {
+        builtInAliases.forEach((alias) => {
           message += `  ${alias.alias.padEnd(8)} → ${alias.command.padEnd(15)} - ${alias.description}`;
           if (alias.usageCount > 0) {
             message += ` (used ${alias.usageCount}x)`;
@@ -1808,11 +1960,11 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         });
         message += '\n';
       }
-      
+
       // User aliases
       if (userAliases.length > 0) {
         message += '⭐ Your Custom Aliases:\n';
-        userAliases.forEach(alias => {
+        userAliases.forEach((alias) => {
           message += `  ${alias.alias.padEnd(8)} → ${alias.command.padEnd(15)} - ${alias.description}`;
           if (alias.usageCount > 0) {
             message += ` (used ${alias.usageCount}x)`;
@@ -1823,81 +1975,82 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       } else {
         message += '💡 No custom aliases yet. Create one with: /alias add <alias> <command>\n\n';
       }
-      
+
       message += 'Usage:\n';
       message += '  /alias add <alias> <command> [description] - Create new alias\n';
       message += '  /alias remove <alias>                      - Remove alias\n';
       message += '  /alias export                              - Export aliases to JSON\n';
       message += '  /alias import <json>                       - Import aliases from JSON\n';
       message += '\nExample: /alias add /gs "/git status" "Quick git status"';
-      
+
       return {
         success: true,
-        message
+        message,
       };
     }
-    
+
     // Handle subcommands
     switch (subCommand) {
       case 'add': {
         const alias = args[1];
         const command = args[2];
         const description = args.slice(3).join(' ');
-        
+
         if (!alias || !command) {
           return {
             success: false,
-            message: 'Usage: /alias add <alias> <command> [description]\nExample: /alias add /gs "/git status" "Quick git status"'
+            message:
+              'Usage: /alias add <alias> <command> [description]\nExample: /alias add /gs "/git status" "Quick git status"',
           };
         }
-        
+
         return await this.aliasSystem.createAlias(alias, command, description);
       }
-      
+
       case 'remove': {
         const alias = args[1];
-        
+
         if (!alias) {
           return {
             success: false,
-            message: 'Usage: /alias remove <alias>'
+            message: 'Usage: /alias remove <alias>',
           };
         }
-        
+
         return await this.aliasSystem.removeAlias(alias);
       }
-      
+
       case 'export': {
         const exportData = this.aliasSystem.exportAliases();
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
         const filename = `maria-aliases-${timestamp}.json`;
-        
+
         try {
           const fs = await import('fs/promises');
           await fs.writeFile(filename, exportData);
-          
+
           return {
             success: true,
-            message: `✅ Aliases exported to ${filename}\n\n${exportData}`
+            message: `✅ Aliases exported to ${filename}\n\n${exportData}`,
           };
         } catch (error) {
           return {
             success: false,
-            message: `Failed to export aliases: ${error instanceof Error ? error.message : 'Unknown error'}`
+            message: `Failed to export aliases: ${error instanceof Error ? error.message : 'Unknown error'}`,
           };
         }
       }
-      
+
       case 'import': {
         const filename = args[1];
-        
+
         if (!filename) {
           return {
             success: false,
-            message: 'Usage: /alias import <filename>'
+            message: 'Usage: /alias import <filename>',
           };
         }
-        
+
         try {
           const fs = await import('fs/promises');
           const jsonData = await fs.readFile(filename, 'utf-8');
@@ -1905,32 +2058,32 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         } catch (error) {
           return {
             success: false,
-            message: `Failed to import aliases: ${error instanceof Error ? error.message : 'Unknown error'}`
+            message: `Failed to import aliases: ${error instanceof Error ? error.message : 'Unknown error'}`,
           };
         }
       }
-      
+
       default:
         return {
           success: false,
-          message: `Unknown alias command: ${subCommand}\n\nAvailable commands: add, remove, export, import`
+          message: `Unknown alias command: ${subCommand}\n\nAvailable commands: add, remove, export, import`,
         };
     }
   }
 
   private async handleTemplate(args: string[]): Promise<SlashCommandResult> {
     const subCommand = args[0];
-    
+
     // If no subcommand, list all templates
     if (!subCommand) {
       const { userTemplates, builtInTemplates } = this.templateManager.listTemplates();
-      
+
       let message = '📋 Command Templates\n\n';
-      
+
       // Built-in templates
       if (builtInTemplates.length > 0) {
         message += '🏭 Built-in Templates:\n';
-        builtInTemplates.forEach(template => {
+        builtInTemplates.forEach((template) => {
           message += `\n  📌 ${template.name} (ID: ${template.id})\n`;
           message += `     ${template.description}\n`;
           message += `     Commands: ${template.commands.length} | Tags: ${template.tags?.join(', ') || 'none'}`;
@@ -1941,11 +2094,11 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         });
         message += '\n';
       }
-      
+
       // User templates
       if (userTemplates.length > 0) {
         message += '⭐ Your Templates:\n';
-        userTemplates.forEach(template => {
+        userTemplates.forEach((template) => {
           message += `\n  📄 ${template.name} (ID: ${template.id})\n`;
           message += `     ${template.description}\n`;
           message += `     Commands: ${template.commands.length} | Tags: ${template.tags?.join(', ') || 'none'}`;
@@ -1957,7 +2110,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       } else {
         message += '\n💡 No custom templates yet. Create one with: /template create\n';
       }
-      
+
       message += '\nUsage:\n';
       message += '  /template run <id> [params]       - Run a template\n';
       message += '  /template save <name> <commands>  - Save commands as template\n';
@@ -1965,13 +2118,13 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       message += '  /template delete <id>             - Delete template\n';
       message += '  /template export [ids]            - Export templates\n';
       message += '  /template import <file>           - Import templates\n';
-      
+
       return {
         success: true,
-        message
+        message,
       };
     }
-    
+
     // Handle subcommands
     switch (subCommand) {
       case 'run': {
@@ -1979,414 +2132,420 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         if (!templateId) {
           return {
             success: false,
-            message: 'Usage: /template run <template-id> [param1=value1] [param2=value2]'
+            message: 'Usage: /template run <template-id> [param1=value1] [param2=value2]',
           };
         }
-        
+
         const template = this.templateManager.getTemplate(templateId);
         if (!template) {
           return {
             success: false,
-            message: `Template "${templateId}" not found`
+            message: `Template "${templateId}" not found`,
           };
         }
-        
+
         // Parse parameters
         const params: Record<string, any> = {};
-        args.slice(2).forEach(arg => {
+        args.slice(2).forEach((arg) => {
           const [key, value] = arg.split('=');
           if (key && value !== undefined) {
             params[key] = value;
           }
         });
-        
+
         // Validate parameters
         const validation = this.templateManager.validateParameters(template, params);
         if (!validation.valid) {
           return {
             success: false,
-            message: `Invalid parameters:\n${validation.errors.join('\n')}`
+            message: `Invalid parameters:\n${validation.errors.join('\n')}`,
           };
         }
-        
+
         // Set defaults
-        template.parameters?.forEach(param => {
+        template.parameters?.forEach((param) => {
           if (params[param.name] === undefined && param.default !== undefined) {
             params[param.name] = param.default;
           }
         });
-        
+
         // Increment usage count
         this.templateManager.incrementUsageCount(templateId);
-        
+
         // Execute template through chain service
-        const commands = template.commands.map(cmd => {
+        const commands = template.commands.map((cmd) => {
           const command = this.templateManager.substituteParameters(cmd.command, params);
-          const args = cmd.args?.map(arg => 
-            this.templateManager.substituteParameters(arg, params)
+          const args = cmd.args?.map((arg) =>
+            this.templateManager.substituteParameters(arg, params),
           );
           return `${command} ${args?.join(' ') || ''}`.trim();
         });
-        
+
         return {
           success: true,
           message: `🚀 Running template: "${template.name}"\n\nCommands to execute:\n${commands.map((cmd, i) => `  ${i + 1}. ${cmd}`).join('\n')}\n\nUse /chain to execute the workflow`,
           data: {
             template,
             commands,
-            parameters: params
-          }
+            parameters: params,
+          },
         };
       }
-      
+
       case 'save': {
         const name = args[1];
         const description = args[2] || 'Custom template';
         const commandStrings = args.slice(3);
-        
+
         if (!name || commandStrings.length === 0) {
           return {
             success: false,
-            message: 'Usage: /template save <name> <description> <command1> <command2> ...'
+            message: 'Usage: /template save <name> <description> <command1> <command2> ...',
           };
         }
-        
-        const commands = commandStrings.map(cmdStr => {
+
+        const commands = commandStrings.map((cmdStr) => {
           const parts = cmdStr.split(' ');
           return {
             command: parts[0] || '',
-            args: parts.slice(1).filter(arg => arg.length > 0)
+            args: parts.slice(1).filter((arg) => arg.length > 0),
           };
         });
-        
+
         const result = await this.templateManager.createTemplate(name, description, commands);
-        
+
         if (result.success && result.template) {
           return {
             success: true,
-            message: `✅ Template "${name}" created successfully!\n\nID: ${result.template.id}\nRun it with: /template run ${result.template.id}`
+            message: `✅ Template "${name}" created successfully!\n\nID: ${result.template.id}\nRun it with: /template run ${result.template.id}`,
           };
         }
-        
+
         return result;
       }
-      
+
       case 'delete': {
         const templateId = args[1];
         if (!templateId) {
           return {
             success: false,
-            message: 'Usage: /template delete <template-id>'
+            message: 'Usage: /template delete <template-id>',
           };
         }
-        
+
         return await this.templateManager.deleteTemplate(templateId);
       }
-      
+
       default:
         return {
           success: false,
-          message: `Unknown template command: ${subCommand}\n\nAvailable commands: run, save, delete, view, export, import`
+          message: `Unknown template command: ${subCommand}\n\nAvailable commands: run, save, delete, view, export, import`,
         };
     }
   }
 
-  private async handleBatch(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleBatch(
+    args: string[],
+    context: ConversationContext,
+  ): Promise<SlashCommandResult> {
     const subCommand = args[0];
-    
+
     // If no arguments, show help
     if (!subCommand) {
       let message = '⚡ Batch Command Execution\n\n';
       message += 'Execute multiple commands with advanced control flow.\n\n';
-      
+
       message += 'Usage:\n';
       message += '  /batch <command1> && <command2> ...  - Execute commands sequentially\n';
       message += '  /batch --file <filename>              - Execute from file\n';
       message += '  /batch --parallel <cmd1> <cmd2>       - Execute in parallel\n';
       message += '  /batch --stop-on-error <commands>     - Stop if any command fails\n';
       message += '  /batch --dry-run <commands>           - Preview without executing\n\n';
-      
+
       message += 'Advanced Features:\n';
       message += '  • Conditional execution: IF <condition> THEN <command>\n';
       message += '  • Parallel execution: PARALLEL: <cmd1> && <cmd2>\n';
       message += '  • Variables: Commands can set/use variables\n';
       message += '  • Retries: Automatic retry on failure\n\n';
-      
+
       message += 'Examples:\n';
       message += '  /batch /init && /add-dir ./src && /test\n';
       message += '  /batch --parallel /test --type unit /test --type integration\n';
       message += '  /batch --file workflow.batch\n';
-      
+
       return {
         success: true,
-        message
+        message,
       };
     }
-    
+
     // Handle file execution
     if (subCommand === '--file') {
       const filename = args[1];
       if (!filename) {
         return {
           success: false,
-          message: 'Usage: /batch --file <filename>'
+          message: 'Usage: /batch --file <filename>',
         };
       }
-      
+
       try {
         const fs = await import('fs/promises');
         const content = await fs.readFile(filename, 'utf-8');
         const commands = this.batchEngine.parseBatchString(content);
-        
+
         const result = await this.batchEngine.executeBatch(commands, context, {
-          stopOnError: true
+          stopOnError: true,
         });
-        
+
         return {
           success: result.success,
           message: `Batch execution ${result.success ? 'completed' : 'failed'}`,
-          data: result
+          data: result,
         };
       } catch (error) {
         return {
           success: false,
-          message: `Failed to read batch file: ${error instanceof Error ? error.message : 'Unknown error'}`
+          message: `Failed to read batch file: ${error instanceof Error ? error.message : 'Unknown error'}`,
         };
       }
     }
-    
+
     // Parse options
     const options: any = {
       stopOnError: args.includes('--stop-on-error'),
       parallel: args.includes('--parallel'),
-      dryRun: args.includes('--dry-run')
+      dryRun: args.includes('--dry-run'),
     };
-    
+
     // Remove option flags from args
-    const commandArgs = args.filter(arg => !arg.startsWith('--'));
-    
+    const commandArgs = args.filter((arg) => !arg.startsWith('--'));
+
     // Join commands and split by &&
     const commandString = commandArgs.join(' ');
-    const commandStrings = commandString.split('&&').map(cmd => cmd.trim());
-    
+    const commandStrings = commandString.split('&&').map((cmd) => cmd.trim());
+
     // Parse commands
-    const commands = commandStrings.map(cmdStr => {
+    const commands = commandStrings.map((cmdStr) => {
       const parts = cmdStr.split(' ');
       return {
         command: parts[0] || '',
         args: parts.slice(1),
-        parallel: options.parallel || false
+        parallel: options.parallel || false,
       };
     });
-    
+
     // Execute batch
     try {
       const result = await this.batchEngine.executeBatch(commands, context, options);
-      
+
       return {
         success: result.success,
         message: `\nBatch execution ${result.success ? 'completed successfully' : 'completed with errors'}`,
-        data: result
+        data: result,
       };
     } catch (error) {
       return {
         success: false,
-        message: `Batch execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Batch execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
 
-  private async handleChain(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleChain(
+    args: string[],
+    context: ConversationContext,
+  ): Promise<SlashCommandResult> {
     const chainName = args[0];
-    
+
     // If no chain name provided, list available chains
     if (!chainName) {
       const availableChains = this.chainService.getAvailableChains();
       let message = '🔗 Available Command Chains:\n\n';
-      
-      availableChains.forEach(chain => {
+
+      availableChains.forEach((chain) => {
         message += `  ${chain.name.padEnd(20)} - ${chain.description}\n`;
         message += `  Commands: ${chain.commands.join(' → ')}\n\n`;
       });
-      
+
       message += 'Usage: /chain <chain-name> [--interactive] [--stop-on-error]\n';
       message += 'Example: /chain projectSetup\n';
-      
+
       return {
         success: true,
-        message
+        message,
       };
     }
-    
+
     // Check for options
     const interactive = args.includes('--interactive');
     const stopOnError = args.includes('--stop-on-error');
-    
+
     // Check if chain is executing
     if (this.chainService.isChainExecuting()) {
       return {
         success: false,
-        message: 'A command chain is already executing. Please wait for it to complete.'
+        message: 'A command chain is already executing. Please wait for it to complete.',
       };
     }
-    
+
     // Execute the chain
-    const result = await this.chainService.executeChain(
-      chainName as any,
-      context,
-      { interactive, stopOnError }
-    );
-    
+    const result = await this.chainService.executeChain(chainName as any, context, {
+      interactive,
+      stopOnError,
+    });
+
     return {
       success: result.success,
       message: result.summary,
       data: {
         executedCommands: result.executedCommands,
-        errors: result.errors
-      }
+        errors: result.errors,
+      },
     };
   }
 
   private async handleHotkey(args: string[]): Promise<SlashCommandResult> {
     const subCommand = args[0];
-    
+
     // If no arguments, show current hotkeys
     if (!subCommand) {
       const bindings = this.hotkeyManager.listBindings();
       if (bindings.length === 0) {
         return {
           success: true,
-          message: '⌨️  No hotkeys configured. Use /hotkey add to create one.'
+          message: '⌨️  No hotkeys configured. Use /hotkey add to create one.',
         };
       }
-      
+
       let message = '⌨️  Configured Hotkeys\n\n';
       message += this.hotkeyManager.getHelpText();
-      
+
       return {
         success: true,
-        message
+        message,
       };
     }
-    
+
     switch (subCommand) {
       case 'add': {
         const hotkeyStr = args[1];
         const command = args[2];
-        
+
         if (!hotkeyStr || !command) {
           return {
             success: false,
-            message: 'Usage: /hotkey add <key-combination> <command> [description]\n\nExample: /hotkey add ctrl+s /status "Show status"'
+            message:
+              'Usage: /hotkey add <key-combination> <command> [description]\n\nExample: /hotkey add ctrl+s /status "Show status"',
           };
         }
-        
+
         const parsed = this.hotkeyManager.parseHotkeyString(hotkeyStr);
         if (!parsed) {
           return {
             success: false,
-            message: `Invalid hotkey format: ${hotkeyStr}. Use format like: ctrl+s, ctrl+shift+p`
+            message: `Invalid hotkey format: ${hotkeyStr}. Use format like: ctrl+s, ctrl+shift+p`,
           };
         }
-        
+
         const description = args.slice(3).join(' ');
         const binding = {
           key: parsed.key,
           modifiers: parsed.modifiers,
           command,
           description,
-          enabled: true
+          enabled: true,
         };
-        
+
         const result = this.hotkeyManager.addBinding(binding);
         return result;
       }
-      
+
       case 'remove': {
         const hotkeyStr = args[1];
         if (!hotkeyStr) {
           return {
             success: false,
-            message: 'Usage: /hotkey remove <key-combination>'
+            message: 'Usage: /hotkey remove <key-combination>',
           };
         }
-        
+
         const result = this.hotkeyManager.removeBinding(hotkeyStr);
         return result;
       }
-      
+
       case 'toggle': {
         const hotkeyStr = args[1];
         if (!hotkeyStr) {
           return {
             success: false,
-            message: 'Usage: /hotkey toggle <key-combination>'
+            message: 'Usage: /hotkey toggle <key-combination>',
           };
         }
-        
+
         const result = this.hotkeyManager.toggleBinding(hotkeyStr);
         return result;
       }
-      
+
       case 'enable':
         this.hotkeyManager.setEnabled(true);
         return {
           success: true,
-          message: '✅ Hotkeys enabled globally'
+          message: '✅ Hotkeys enabled globally',
         };
-      
+
       case 'disable':
         this.hotkeyManager.setEnabled(false);
         return {
           success: true,
-          message: '🚫 Hotkeys disabled globally'
+          message: '🚫 Hotkeys disabled globally',
         };
-      
+
       case 'export': {
         const config = this.hotkeyManager.exportConfig();
         const filename = `hotkeys-${Date.now()}.json`;
-        
+
         try {
           const fs = await import('fs/promises');
           await fs.writeFile(filename, JSON.stringify(config, null, 2));
-          
+
           return {
             success: true,
             message: `✅ Hotkey configuration exported to ${filename}`,
-            data: config
+            data: config,
           };
         } catch (error) {
           return {
             success: false,
-            message: `Failed to export: ${error}`
+            message: `Failed to export: ${error}`,
           };
         }
       }
-      
+
       case 'import': {
         const filename = args[1];
         if (!filename) {
           return {
             success: false,
-            message: 'Usage: /hotkey import <filename>'
+            message: 'Usage: /hotkey import <filename>',
           };
         }
-        
+
         try {
           const fs = await import('fs/promises');
           const content = await fs.readFile(filename, 'utf-8');
           const config = JSON.parse(content);
-          
+
           const result = this.hotkeyManager.importConfig(config);
           return result;
         } catch (error) {
           return {
             success: false,
-            message: `Failed to import: ${error}`
+            message: `Failed to import: ${error}`,
           };
         }
       }
-      
+
       case 'help': {
         let message = '⌨️  Hotkey Management\n\n';
         message += 'Commands:\n';
@@ -2398,30 +2557,30 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         message += '  /hotkey disable             - Disable all hotkeys\n';
         message += '  /hotkey export              - Export configuration\n';
         message += '  /hotkey import <file>       - Import configuration\n\n';
-        
+
         message += 'Key Format Examples:\n';
         message += '  ctrl+s                      - Control + S\n';
         message += '  ctrl+shift+p                - Control + Shift + P\n';
         message += '  alt+1                       - Alt + 1\n';
         message += '  cmd+k (Mac) / win+k (Win)   - Command/Windows + K\n\n';
-        
+
         message += 'Default Hotkeys:\n';
         message += '  Ctrl+S → /status\n';
         message += '  Ctrl+H → /help\n';
         message += '  Ctrl+L → /clear\n';
         message += '  Ctrl+E → /export --clipboard\n';
         message += '  Ctrl+T → /test\n';
-        
+
         return {
           success: true,
-          message
+          message,
         };
       }
-      
+
       default:
         return {
           success: false,
-          message: `Unknown hotkey subcommand: ${subCommand}. Use /hotkey help for usage.`
+          message: `Unknown hotkey subcommand: ${subCommand}. Use /hotkey help for usage.`,
         };
     }
   }
@@ -2429,32 +2588,34 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
   private async handleExit(context: ConversationContext): Promise<SlashCommandResult> {
     // 会話セッションを保存（オプション）
     const shouldSave = context.history.length > 0;
-    
+
     if (shouldSave) {
       try {
         const fs = await import('fs/promises');
         const sessionFile = `${process.cwd()}/.maria-session.json`;
-        
+
         const sessionData = {
           sessionId: context.sessionId,
           history: context.history,
           currentTask: context.currentTask,
           metadata: context.metadata,
-          savedAt: new Date().toISOString()
+          savedAt: new Date().toISOString(),
         };
-        
+
         await fs.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
-        
+
         const stats = {
           messages: context.history.length,
           cost: context.metadata?.cost || 0,
-          duration: context.metadata?.startTime ? 
-            Math.round((Date.now() - context.metadata.startTime.getTime()) / 1000) : 0
+          duration: context.metadata?.startTime
+            ? Math.round((Date.now() - context.metadata.startTime.getTime()) / 1000)
+            : 0,
         };
 
-        console.log(`\nSession saved: ${stats.messages} messages, $${stats.cost.toFixed(6)}, ${Math.floor(stats.duration / 60)}m ${stats.duration % 60}s`);
+        console.log(
+          `\nSession saved: ${stats.messages} messages, $${stats.cost.toFixed(6)}, ${Math.floor(stats.duration / 60)}m ${stats.duration % 60}s`,
+        );
         console.log(`Resume with: /resume\n`);
-        
       } catch (error) {
         logger.warn('Could not save session', error);
       }
@@ -2462,7 +2623,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
     // Graceful exit message
     console.log('Thanks for using MARIA CODE! Happy coding!');
-    
+
     // テスト環境では process.exit を避ける
     if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
       setTimeout(() => {
@@ -2473,10 +2634,9 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     return {
       success: true,
       message: 'Exiting MARIA CODE...',
-      data: { sessionSaved: shouldSave }
+      data: { sessionSaved: shouldSave },
     };
   }
-
 
   private async handleMigrateInstaller(): Promise<SlashCommandResult> {
     try {
@@ -2488,7 +2648,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         npm: false,
         yarn: false,
         pnpm: false,
-        packagePath: null as string | null
+        packagePath: null as string | null,
       };
 
       // グローバルインストールの確認
@@ -2524,10 +2684,11 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
       // 移行計画を作成
       const migrationPlan = {
-        hasGlobalInstall: globalInstallCheck.npm || globalInstallCheck.yarn || globalInstallCheck.pnpm,
+        hasGlobalInstall:
+          globalInstallCheck.npm || globalInstallCheck.yarn || globalInstallCheck.pnpm,
         hasLocalInstall: localInstall,
         hasPackageJson: !!packageJson,
-        recommendedAction: 'none' as 'none' | 'install-local' | 'remove-global' | 'create-project'
+        recommendedAction: 'none' as 'none' | 'install-local' | 'remove-global' | 'create-project',
       };
 
       // 推奨アクションを決定
@@ -2580,15 +2741,14 @@ Run the steps above to complete your migration!`;
           currentStatus: globalInstallCheck,
           migrationPlan,
           steps: migrationSteps,
-          configBackupRequired: migrationPlan.hasGlobalInstall
-        }
+          configBackupRequired: migrationPlan.hasGlobalInstall,
+        },
       };
-
     } catch (error) {
       logger.error('Migration installer error', error);
       return {
         success: false,
-        message: `Failed to analyze installation: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Failed to analyze installation: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -2601,32 +2761,29 @@ Run the steps above to complete your migration!`;
       steps.push('Install locally: npm install --save-dev @maria/code-cli');
       steps.push('Add script to package.json: "mc": "maria-code"');
       steps.push('Test local installation: npm run mc -- --version');
-      
+
       if (globalCheck.npm) steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
       if (globalCheck.yarn) steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
       if (globalCheck.pnpm) steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
-      
-      steps.push('Update shell aliases to use: npx @maria/code-cli');
 
+      steps.push('Update shell aliases to use: npx @maria/code-cli');
     } else if (plan.recommendedAction === 'create-project') {
       steps.push('Initialize new project: npm init -y');
       steps.push('Install locally: npm install --save-dev @maria/code-cli');
       steps.push('Add scripts to package.json');
       steps.push('Copy global config to project: cp ~/.maria-code.toml ./.maria-code.toml');
       steps.push('Test local setup: npx @maria/code-cli --version');
-
     } else if (plan.recommendedAction === 'remove-global') {
       steps.push('Verify local installation works: npx @maria/code-cli --version');
       steps.push('Update shell aliases to use local version');
-      
+
       if (globalCheck.npm) steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
       if (globalCheck.yarn) steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
       if (globalCheck.pnpm) steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
-      
-      steps.push('Clean up global config if not needed');
 
+      steps.push('Clean up global config if not needed');
     } else {
-      steps.push('No migration needed - you\'re already using the recommended setup! [OK]');
+      steps.push("No migration needed - you're already using the recommended setup! [OK]");
     }
 
     return steps;
@@ -2637,19 +2794,25 @@ Run the steps above to complete your migration!`;
     const features = {
       free: ['100 credits/day', 'Basic AI models', 'Standard support'],
       pro: ['5000 credits/day', 'All AI models', 'Priority support', 'Advanced features'],
-      max: ['20000 credits/day', 'All AI models', '24/7 support', 'Enterprise features', 'Custom agents']
+      max: [
+        '20000 credits/day',
+        'All AI models',
+        '24/7 support',
+        'Enterprise features',
+        'Custom agents',
+      ],
     };
     return features[plan as keyof typeof features] || [];
   }
 
   private analyzePRComplexity(diff: string): string {
     const lines = diff.split('\n');
-    const additions = lines.filter(l => l.startsWith('+')).length;
-    const deletions = lines.filter(l => l.startsWith('-')).length;
+    const additions = lines.filter((l) => l.startsWith('+')).length;
+    const deletions = lines.filter((l) => l.startsWith('-')).length;
     const fileChanges = (diff.match(/diff --git/g) || []).length;
-    
-    const complexityScore = additions + deletions + (fileChanges * 10);
-    
+
+    const complexityScore = additions + deletions + fileChanges * 10;
+
     if (complexityScore < 50) return 'Low';
     if (complexityScore < 200) return 'Medium';
     if (complexityScore < 500) return 'High';
@@ -2658,141 +2821,144 @@ Run the steps above to complete your migration!`;
 
   private generateReviewSuggestions(pr: any, diff: string): string[] {
     const suggestions = [];
-    
+
     // Basic checks
     if (!pr.body || pr.body.length < 50) {
       suggestions.push('Consider adding a more detailed PR description');
     }
-    
+
     if (diff.includes('console.log') || diff.includes('console.error')) {
       suggestions.push('Remove console.log statements before merging');
     }
-    
+
     if (diff.includes('TODO') || diff.includes('FIXME')) {
       suggestions.push('Address TODO/FIXME comments');
     }
-    
+
     if (diff.includes('package.json') && diff.includes('+')) {
       suggestions.push('Verify new dependencies are necessary and secure');
     }
-    
+
     if (!diff.includes('test') && diff.includes('.ts') && diff.includes('.js')) {
       suggestions.push('Consider adding tests for new functionality');
     }
-    
+
     if (suggestions.length === 0) {
       suggestions.push('Code looks good! Consider testing edge cases');
     }
-    
+
     return suggestions;
   }
 
   private extractActionItems(feedback: any[]): string[] {
     const actionItems = [];
     const actionKeywords = ['fix', 'change', 'update', 'remove', 'add', 'refactor', 'improve'];
-    
+
     for (const item of feedback) {
       const body = (item.body || '').toLowerCase();
-      if (actionKeywords.some(keyword => body.includes(keyword))) {
+      if (actionKeywords.some((keyword) => body.includes(keyword))) {
         const sentence = (item.body || '').split('.')[0];
         if (sentence.length > 10 && sentence.length < 150) {
           actionItems.push(sentence.trim());
         }
       }
     }
-    
+
     return actionItems.slice(0, 5); // 最大5つまで
   }
 
   private analyzeFeedbackSentiment(feedback: any[]): string {
     if (!feedback.length) return 'Neutral';
-    
+
     const positiveKeywords = ['good', 'great', 'excellent', 'nice', 'approve', 'perfect', 'clean'];
     const negativeKeywords = ['bad', 'issue', 'problem', 'wrong', 'error', 'fix', 'concern'];
-    
+
     let positiveCount = 0;
     let negativeCount = 0;
-    
+
     for (const item of feedback) {
       const body = (item.body || '').toLowerCase();
-      positiveCount += positiveKeywords.filter(kw => body.includes(kw)).length;
-      negativeCount += negativeKeywords.filter(kw => body.includes(kw)).length;
+      positiveCount += positiveKeywords.filter((kw) => body.includes(kw)).length;
+      negativeCount += negativeKeywords.filter((kw) => body.includes(kw)).length;
     }
-    
+
     if (positiveCount > negativeCount * 1.5) return 'Positive';
     if (negativeCount > positiveCount * 1.5) return 'Negative';
     return 'Mixed';
   }
 
-  private assessBugSeverity(type: string, description: string): 'Low' | 'Medium' | 'High' | 'Critical' {
+  private assessBugSeverity(
+    type: string,
+    description: string,
+  ): 'Low' | 'Medium' | 'High' | 'Critical' {
     const desc = description.toLowerCase();
-    
+
     if (type === 'crash' || desc.includes('crash') || desc.includes('fatal')) {
       return 'Critical';
     }
-    
+
     if (type === 'security' || desc.includes('security') || desc.includes('vulnerability')) {
       return 'Critical';
     }
-    
+
     if (desc.includes('data loss') || desc.includes('corruption')) {
       return 'Critical';
     }
-    
+
     if (type === 'performance' || desc.includes('slow') || desc.includes('timeout')) {
       return 'High';
     }
-    
+
     if (type === 'api' || desc.includes('api') || desc.includes('error')) {
       return 'High';
     }
-    
+
     if (type === 'ui' || desc.includes('display') || desc.includes('layout')) {
       return 'Medium';
     }
-    
+
     return 'Low';
   }
 
   private extractFeatures(releaseBody: string): string[] {
     const features = [];
     const lines = releaseBody.split('\n');
-    
+
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed.match(/^[*\-]\s*(feat|feature|add)/i)) {
         features.push(trimmed.replace(/^[*\-]\s*/i, ''));
       }
     }
-    
+
     return features.slice(0, 10); // 最大10個
   }
 
   private extractBugFixes(releaseBody: string): string[] {
     const fixes = [];
     const lines = releaseBody.split('\n');
-    
+
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed.match(/^[*\-]\s*(fix|bug|resolve)/i)) {
         fixes.push(trimmed.replace(/^[*\-]\s*/i, ''));
       }
     }
-    
+
     return fixes.slice(0, 10); // 最大10個
   }
 
   private extractBreakingChanges(releaseBody: string): string[] {
     const changes = [];
     const lines = releaseBody.split('\n');
-    
+
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed.match(/^[*\-]\s*(break|breaking|change)/i)) {
         changes.push(trimmed.replace(/^[*\-]\s*/i, ''));
       }
     }
-    
+
     return changes.slice(0, 5); // 最大5個
   }
 
@@ -2811,14 +2977,17 @@ Run the steps above to complete your migration!`;
       buildSystem: [],
       dependencies: {
         dependencies: [],
-        devDependencies: []
-      }
+        devDependencies: [],
+      },
     };
 
     // .gitignore パターンを読み込み
     const gitignorePath = path.join(rootPath, '.gitignore');
-    const ignorePatterns = fs.existsSync(gitignorePath) 
-      ? fs.readFileSync(gitignorePath, 'utf8').split('\n').filter(line => line.trim() && !line.startsWith('#'))
+    const ignorePatterns = fs.existsSync(gitignorePath)
+      ? fs
+          .readFileSync(gitignorePath, 'utf8')
+          .split('\n')
+          .filter((line) => line.trim() && !line.startsWith('#'))
       : ['node_modules', '.git', 'dist', 'build', '.env*'];
 
     // ディレクトリを再帰的に分析
@@ -2831,17 +3000,17 @@ Run the steps above to complete your migration!`;
   }
 
   private async analyzeDirectory(
-    currentPath: string, 
-    rootPath: string, 
-    analysis: CodebaseAnalysis, 
+    currentPath: string,
+    rootPath: string,
+    analysis: CodebaseAnalysis,
     ignorePatterns: string[],
-    depth: number = 0
+    depth: number = 0,
   ): Promise<void> {
     if (depth > 3) return; // 深度制限
 
     try {
       const items = fs.readdirSync(currentPath);
-      
+
       for (const item of items) {
         const itemPath = path.join(currentPath, item);
         const relativePath = path.relative(rootPath, itemPath);
@@ -2850,14 +3019,14 @@ Run the steps above to complete your migration!`;
         if (this.shouldIgnore(relativePath, ignorePatterns)) continue;
 
         const stat = fs.statSync(itemPath);
-        
+
         if (stat.isDirectory()) {
           analysis.directories.push(relativePath);
           await this.analyzeDirectory(itemPath, rootPath, analysis, ignorePatterns, depth + 1);
         } else if (stat.isFile()) {
           analysis.files.push(relativePath);
           analysis.fileCount++;
-          
+
           // ファイル拡張子から言語を推定
           const ext = path.extname(item).toLowerCase();
           const language = this.getLanguageFromExtension(ext);
@@ -2872,7 +3041,7 @@ Run the steps above to complete your migration!`;
   }
 
   private shouldIgnore(relativePath: string, ignorePatterns: string[]): boolean {
-    return ignorePatterns.some(pattern => {
+    return ignorePatterns.some((pattern) => {
       // シンプルなパターンマッチング
       if (pattern.includes('*')) {
         const regex = new RegExp(pattern.replace(/\*/g, '.*'));
@@ -2898,14 +3067,14 @@ Run the steps above to complete your migration!`;
       '.php': 'PHP',
       '.rb': 'Ruby',
       '.swift': 'Swift',
-      '.kt': 'Kotlin'
+      '.kt': 'Kotlin',
     };
     return extMap[ext] || null;
   }
 
   private inferTechStack(analysis: CodebaseAnalysis): void {
     const { files, rootPath } = analysis;
-    
+
     // Package manager detection
     if (files.includes('pnpm-lock.yaml')) {
       analysis.packageManager = 'pnpm';
@@ -2919,7 +3088,7 @@ Run the steps above to complete your migration!`;
     }
 
     // Framework detection
-    if (files.some(f => f.includes('next.config'))) {
+    if (files.some((f) => f.includes('next.config'))) {
       analysis.frameworks.push('Next.js');
       analysis.techStack.push('Next.js');
     }
@@ -2949,11 +3118,14 @@ Run the steps above to complete your migration!`;
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
         analysis.dependencies = {
           dependencies: Object.keys(packageJson.dependencies || {}),
-          devDependencies: Object.keys(packageJson.devDependencies || {})
+          devDependencies: Object.keys(packageJson.devDependencies || {}),
         };
 
         // Framework detection from dependencies
-        const allDeps = [...(analysis.dependencies.dependencies || []), ...(analysis.dependencies.devDependencies || [])];
+        const allDeps = [
+          ...(analysis.dependencies.dependencies || []),
+          ...(analysis.dependencies.devDependencies || []),
+        ];
         if (allDeps.includes('react')) analysis.techStack.push('React');
         if (allDeps.includes('vue')) analysis.techStack.push('Vue.js');
         if (allDeps.includes('express')) analysis.techStack.push('Express');
@@ -2974,7 +3146,7 @@ Run the steps above to complete your migration!`;
   private async createMariaMd(rootPath: string, analysis: CodebaseAnalysis): Promise<string> {
     const projectName = path.basename(rootPath);
     const timestamp = new Date().toISOString();
-    
+
     return `# MARIA.md
 
 このファイルはClaude Code (claude.ai/code) がこのリポジトリのコードを操作する際のガイダンスを提供します。
@@ -2988,7 +3160,7 @@ Run the steps above to complete your migration!`;
 ## 📊 コードベース分析結果
 
 ### 🏗️ 技術スタック
-${analysis.techStack.map(tech => `- ${tech}`).join('\n')}
+${analysis.techStack.map((tech) => `- ${tech}`).join('\n')}
 
 ### 📁 プロジェクト構造
 - **ディレクトリ数**: ${analysis.directories.length}
@@ -2997,9 +3169,9 @@ ${analysis.techStack.map(tech => `- ${tech}`).join('\n')}
 - **パッケージマネージャー**: ${analysis.packageManager}
 
 ### 🚀 フレームワーク・ツール
-${analysis.frameworks.length > 0 ? analysis.frameworks.map(fw => `- ${fw}`).join('\n') : '- なし'}
+${analysis.frameworks.length > 0 ? analysis.frameworks.map((fw) => `- ${fw}`).join('\n') : '- なし'}
 
-${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.buildSystem.map(bs => `- ${bs}`).join('\n')}\n` : ''}
+${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.buildSystem.map((bs) => `- ${bs}`).join('\n')}\n` : ''}
 
 ## 📝 開発ガイドライン
 
@@ -3016,7 +3188,10 @@ ${analysis.packageManager !== 'unknown' ? `${analysis.packageManager} run build`
 \`\`\`
 
 ### 重要なファイル・ディレクトリ
-${analysis.directories.slice(0, 10).map(dir => `- \`${dir}/\``).join('\n')}
+${analysis.directories
+  .slice(0, 10)
+  .map((dir) => `- \`${dir}/\``)
+  .join('\n')}
 
 ## 🤖 AI Assistant設定
 
@@ -3054,14 +3229,14 @@ ${analysis.directories.slice(0, 10).map(dir => `- \`${dir}/\``).join('\n')}
   private async updateMariaMd(mariaPath: string, analysis: CodebaseAnalysis): Promise<string> {
     const existingContent = fs.readFileSync(mariaPath, 'utf8');
     const timestamp = new Date().toISOString();
-    
+
     // 既存の分析結果セクションを更新
     const updatedContent = existingContent.replace(
       /## 📊 コードベース分析結果[\s\S]*?(?=## 📝 開発ガイドライン|$)/,
       `## 📊 コードベース分析結果
 
 ### 🏗️ 技術スタック
-${analysis.techStack.map(tech => `- ${tech}`).join('\n')}
+${analysis.techStack.map((tech) => `- ${tech}`).join('\n')}
 
 ### 📁 プロジェクト構造
 - **ディレクトリ数**: ${analysis.directories.length}
@@ -3070,25 +3245,23 @@ ${analysis.techStack.map(tech => `- ${tech}`).join('\n')}
 - **パッケージマネージャー**: ${analysis.packageManager}
 
 ### 🚀 フレームワーク・ツール
-${analysis.frameworks.length > 0 ? analysis.frameworks.map(fw => `- ${fw}`).join('\n') : '- なし'}
+${analysis.frameworks.length > 0 ? analysis.frameworks.map((fw) => `- ${fw}`).join('\n') : '- なし'}
 
-${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.buildSystem.map(bs => `- ${bs}`).join('\n')}\n` : ''}
+${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.buildSystem.map((bs) => `- ${bs}`).join('\n')}\n` : ''}
 
-`
+`,
     );
 
     // タイムスタンプを更新
-    return updatedContent.replace(
-      /\*最終更新: .*\*/,
-      `*最終更新: ${timestamp}*`
-    );
+    return updatedContent.replace(/\*最終更新: .*\*/, `*最終更新: ${timestamp}*`);
   }
 
   private async handleVideo(args: string[]): Promise<SlashCommandResult> {
     if (args.length === 0) {
       return {
         success: false,
-        message: 'Usage: /video "prompt" [--model wan22-5b|wan22-14b] [--resolution 720p|1080p] [--fps 24|30] [--frames 33|49|81] [--compare] [--input-image path]'
+        message:
+          'Usage: /video "prompt" [--model wan22-5b|wan22-14b] [--resolution 720p|1080p] [--fps 24|30] [--frames 33|49|81] [--compare] [--input-image path]',
       };
     }
 
@@ -3140,7 +3313,7 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
       success: true,
       message: `🎬 動画生成を開始します...\nプロンプト: ${prompt}\nモデル: ${options.model}`,
       component: 'video-generator',
-      data: { prompt, ...options }
+      data: { prompt, ...options },
     };
   }
 
@@ -3148,7 +3321,8 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
     if (args.length === 0) {
       return {
         success: false,
-        message: 'Usage: /image "prompt" [--style photorealistic|artistic|anime|concept|technical] [--size 512x512|1024x1024] [--batch 1-4] [--quality low|medium|high]'
+        message:
+          'Usage: /image "prompt" [--style photorealistic|artistic|anime|concept|technical] [--size 512x512|1024x1024] [--batch 1-4] [--quality low|medium|high]',
       };
     }
 
@@ -3162,12 +3336,18 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
 
       switch (flag) {
         case '--style':
-          if (value && ['photorealistic', 'artistic', 'anime', 'concept', 'technical'].includes(value)) {
+          if (
+            value &&
+            ['photorealistic', 'artistic', 'anime', 'concept', 'technical'].includes(value)
+          ) {
             options.style = value;
           }
           break;
         case '--size':
-          if (value && ['512x512', '768x768', '1024x1024', '1024x768', '768x1024'].includes(value)) {
+          if (
+            value &&
+            ['512x512', '768x768', '1024x1024', '1024x768', '768x1024'].includes(value)
+          ) {
             options.size = value;
           }
           break;
@@ -3201,11 +3381,10 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
     return {
       success: true,
       message: `🖼️ 画像生成を開始します...\nプロンプト: ${prompt}\nスタイル: ${options.style}`,
-      component: 'image-generator', 
-      data: { prompt, ...options }
+      component: 'image-generator',
+      data: { prompt, ...options },
     };
   }
-
 }
 
 interface CodebaseAnalysis {

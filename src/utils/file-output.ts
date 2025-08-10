@@ -17,16 +17,10 @@ export class FileOutputManager {
   }
 
   async saveSOW(sow: any, options: FileOutputOptions = {}): Promise<string> {
-    const {
-      format = 'json',
-      timestamp = true,
-      filename
-    } = options;
+    const { format = 'json', timestamp = true, filename } = options;
 
     const baseFilename = filename || 'maria-sow';
-    const timestampSuffix = timestamp 
-      ? `-${new Date().toISOString().replace(/[:.]/g, '-')}` 
-      : '';
+    const timestampSuffix = timestamp ? `-${new Date().toISOString().replace(/[:.]/g, '-')}` : '';
     const fullFilename = `${baseFilename}${timestampSuffix}.${format}`;
     const filepath = path.join(this.outputDir, fullFilename);
 
@@ -55,16 +49,10 @@ export class FileOutputManager {
   }
 
   async saveExecutionResults(results: any, options: FileOutputOptions = {}): Promise<string> {
-    const {
-      format = 'json',
-      timestamp = true,
-      filename
-    } = options;
+    const { format = 'json', timestamp = true, filename } = options;
 
     const baseFilename = filename || 'maria-execution-results';
-    const timestampSuffix = timestamp 
-      ? `-${new Date().toISOString().replace(/[:.]/g, '-')}` 
-      : '';
+    const timestampSuffix = timestamp ? `-${new Date().toISOString().replace(/[:.]/g, '-')}` : '';
     const fullFilename = `${baseFilename}${timestampSuffix}.${format}`;
     const filepath = path.join(this.outputDir, fullFilename);
 
@@ -93,16 +81,10 @@ export class FileOutputManager {
   }
 
   async saveChatLog(messages: any[], options: FileOutputOptions = {}): Promise<string> {
-    const {
-      format = 'json',
-      timestamp = true,
-      filename
-    } = options;
+    const { format = 'json', timestamp = true, filename } = options;
 
     const baseFilename = filename || 'maria-chat-log';
-    const timestampSuffix = timestamp 
-      ? `-${new Date().toISOString().replace(/[:.]/g, '-')}` 
-      : '';
+    const timestampSuffix = timestamp ? `-${new Date().toISOString().replace(/[:.]/g, '-')}` : '';
     const fullFilename = `${baseFilename}${timestampSuffix}.${format}`;
     const filepath = path.join(this.outputDir, fullFilename);
 
@@ -142,7 +124,7 @@ export class FileOutputManager {
       `- **Priority:** ${sow.priority || 'Medium'}`,
       '',
       '## Tasks',
-      ''
+      '',
     ];
 
     if (sow.tasks && sow.tasks.length > 0) {
@@ -151,11 +133,11 @@ export class FileOutputManager {
         sections.push('');
         sections.push(`**Description:** ${task.description || 'No description'}`);
         sections.push(`**Duration:** ${task.duration || 'Not specified'}`);
-        
+
         if (task.dependencies && task.dependencies.length > 0) {
           sections.push(`**Dependencies:** ${task.dependencies.join(', ')}`);
         }
-        
+
         sections.push('');
       });
     }
@@ -181,7 +163,7 @@ export class FileOutputManager {
       `  estimatedDuration: "${sow.estimatedDuration || 'Not specified'}"`,
       `  totalBudget: ${sow.totalBudget || 0}`,
       `  priority: "${sow.priority || 'Medium'}"`,
-      '  tasks:'
+      '  tasks:',
     ];
 
     if (sow.tasks && sow.tasks.length > 0) {
@@ -191,7 +173,9 @@ export class FileOutputManager {
         lines.push(`      description: "${task.description || 'No description'}"`);
         lines.push(`      duration: "${task.duration || 'Not specified'}"`);
         if (task.dependencies && task.dependencies.length > 0) {
-          lines.push(`      dependencies: [${task.dependencies.map((d: string) => `"${d}"`).join(', ')}]`);
+          lines.push(
+            `      dependencies: [${task.dependencies.map((d: string) => `"${d}"`).join(', ')}]`,
+          );
         }
       });
     }
@@ -212,7 +196,7 @@ export class FileOutputManager {
       '',
       'TASKS',
       '-'.repeat(20),
-      ''
+      '',
     ];
 
     if (sow.tasks && sow.tasks.length > 0) {
@@ -247,12 +231,13 @@ export class FileOutputManager {
       `- **Success Rate:** ${results.successRate ? (results.successRate * 100).toFixed(1) + '%' : 'N/A'}`,
       '',
       '## Step Details',
-      ''
+      '',
     ];
 
     if (results.steps && results.steps.length > 0) {
       results.steps.forEach((step: any, index: number) => {
-        const statusIcon = step.status === 'completed' ? '✅' : step.status === 'failed' ? '❌' : '⏸️';
+        const statusIcon =
+          step.status === 'completed' ? '✅' : step.status === 'failed' ? '❌' : '⏸️';
         sections.push(`### ${statusIcon} ${step.name || `Step ${index + 1}`}`);
         sections.push('');
         sections.push(`**Status:** ${step.status || 'Unknown'}`);
@@ -280,7 +265,7 @@ export class FileOutputManager {
       `  completedSteps: ${results.completedSteps || 0}`,
       `  failedSteps: ${results.failedSteps || 0}`,
       `  successRate: ${results.successRate || 0}`,
-      '  steps:'
+      '  steps:',
     ];
 
     if (results.steps && results.steps.length > 0) {
@@ -315,12 +300,13 @@ export class FileOutputManager {
       '',
       'STEP DETAILS',
       '-'.repeat(20),
-      ''
+      '',
     ];
 
     if (results.steps && results.steps.length > 0) {
       results.steps.forEach((step: any, index: number) => {
-        const statusSymbol = step.status === 'completed' ? '[✓]' : step.status === 'failed' ? '[✗]' : '[?]';
+        const statusSymbol =
+          step.status === 'completed' ? '[✓]' : step.status === 'failed' ? '[✗]' : '[?]';
         lines.push(`${statusSymbol} ${step.name || `Step ${index + 1}`}`);
         lines.push(`    Status: ${step.status || 'Unknown'}`);
         lines.push(`    Duration: ${step.duration || 'N/A'}`);
@@ -345,7 +331,7 @@ export class FileOutputManager {
       `**Total Messages:** ${messages.length}`,
       '',
       '## Conversation',
-      ''
+      '',
     ];
 
     messages.forEach((message: any) => {
@@ -372,7 +358,7 @@ export class FileOutputManager {
       '',
       'CONVERSATION',
       '-'.repeat(20),
-      ''
+      '',
     ];
 
     messages.forEach((message: any) => {
@@ -393,11 +379,11 @@ export class FileOutputManager {
 export const fileOutputManager = new FileOutputManager();
 
 // Convenience functions
-export const saveSOW = (sow: any, options?: FileOutputOptions) => 
+export const saveSOW = (sow: any, options?: FileOutputOptions) =>
   fileOutputManager.saveSOW(sow, options);
 
-export const saveExecutionResults = (results: any, options?: FileOutputOptions) => 
+export const saveExecutionResults = (results: any, options?: FileOutputOptions) =>
   fileOutputManager.saveExecutionResults(results, options);
 
-export const saveChatLog = (messages: any[], options?: FileOutputOptions) => 
+export const saveChatLog = (messages: any[], options?: FileOutputOptions) =>
   fileOutputManager.saveChatLog(messages, options);

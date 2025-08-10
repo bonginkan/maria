@@ -25,7 +25,7 @@ const IMAGE_MODELS = {
     huggingface: 'Qwen/Qwen-Image',
     vram: '~8GB',
     resolution: '1024x1024',
-    maxRes: '2048x2048'
+    maxRes: '2048x2048',
   },
   'stable-diffusion-xl': {
     name: 'Stable Diffusion XL',
@@ -35,17 +35,17 @@ const IMAGE_MODELS = {
     huggingface: 'stabilityai/stable-diffusion-xl-base-1.0',
     vram: '~10GB',
     resolution: '1024x1024',
-    maxRes: '1536x1536'
+    maxRes: '1536x1536',
   },
   'flux-dev': {
     name: 'FLUX.1-dev',
     badge: '⚡',
     description: 'Fast, high-quality text-to-image',
-    type: 'text-to-image', 
+    type: 'text-to-image',
     huggingface: 'black-forest-labs/FLUX.1-dev',
     vram: '~12GB',
     resolution: '1024x1024',
-    maxRes: '1440x1440'
+    maxRes: '1440x1440',
   },
   'dall-e-3-xl': {
     name: 'DALL-E 3 XL',
@@ -55,8 +55,8 @@ const IMAGE_MODELS = {
     huggingface: 'openskyml/dalle-3-xl',
     vram: '~16GB',
     resolution: '1024x1024',
-    maxRes: '2048x2048'
-  }
+    maxRes: '2048x2048',
+  },
 };
 
 interface ImageGenerationParams {
@@ -81,9 +81,9 @@ interface ImageCommandProps {
 /**
  * /image - Interactive image generation command
  */
-export const ImageCommand: React.FC<ImageCommandProps> = ({ 
+export const ImageCommand: React.FC<ImageCommandProps> = ({
   initialMode = 'generate',
-  params = {}
+  params = {},
 }) => {
   const [mode] = useState(initialMode);
   const [currentStep, setCurrentStep] = useState(0);
@@ -91,11 +91,11 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
   const [progress, setProgress] = useState('');
   const [error, setError] = useState('');
   const [results, setResults] = useState<string[]>([]);
-  
+
   // Form state
   const [prompt, setPrompt] = useState(params.prompt || '');
   const [selectedModel, setSelectedModel] = useState<keyof typeof IMAGE_MODELS>(
-    params.model || 'qwen-image'
+    params.model || 'qwen-image',
   );
   const [width] = useState(params.width || 1024);
   const [height] = useState(params.height || 1024);
@@ -118,9 +118,11 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
     try {
       // Check Python
       await execAsync('which python3');
-      
+
       // Check required packages
-      const { stdout } = await execAsync('python3 -c "import torch, diffusers, transformers; print(\'ok\')"');
+      const { stdout } = await execAsync(
+        'python3 -c "import torch, diffusers, transformers; print(\'ok\')"',
+      );
       return stdout.trim() === 'ok';
     } catch {
       return false;
@@ -129,16 +131,20 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
 
   const setupDependencies = async (): Promise<void> => {
     setProgress('Installing image generation dependencies...');
-    
+
     try {
       // Install required packages
-      await execAsync('pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu');
+      await execAsync(
+        'pip3 install torch torchvision --index-url https://download.pytorch.org/whl/cpu',
+      );
       await execAsync('pip3 install diffusers transformers accelerate');
       await execAsync('pip3 install Pillow requests');
-      
+
       setProgress('Dependencies installed successfully');
     } catch (error) {
-      throw new Error(`Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
@@ -154,7 +160,7 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
 
   const setupHuggingFace = async (): Promise<void> => {
     setProgress('Setting up Hugging Face CLI...');
-    
+
     try {
       // Install huggingface-cli if not present
       try {
@@ -172,35 +178,39 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
       await execAsync(`huggingface-cli login --token ${hfToken}`);
       setProgress('Hugging Face CLI setup complete');
     } catch (error) {
-      throw new Error(`Failed to setup Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to setup Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const downloadModel = async (modelId: keyof typeof IMAGE_MODELS): Promise<void> => {
     const model = IMAGE_MODELS[modelId];
     const modelPath = `${process.env.HF_MODEL_DIR || '~/.maria/huggingface/models'}/${modelId}`;
-    
+
     setProgress(`Downloading ${model.name}... This may take several minutes`);
-    
+
     try {
       // Create model directory
       await execAsync(`mkdir -p "${modelPath}"`);
-      
+
       // Download model
       await execAsync(`huggingface-cli download ${model.huggingface} --local-dir "${modelPath}"`);
-      
+
       setProgress(`Model ${model.name} downloaded successfully`);
     } catch (error) {
-      throw new Error(`Failed to download model: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Failed to download model: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
   const createImageGenerationScript = async (params: ImageGenerationParams): Promise<string> => {
     const scriptDir = `${process.env.HOME}/.maria/scripts`;
     const scriptPath = path.join(scriptDir, 'generate_image.py');
-    
+
     await execAsync(`mkdir -p "${scriptDir}"`);
-    
+
     const pythonScript = `
 import torch
 from diffusers import DiffusionPipeline
@@ -289,49 +299,54 @@ if __name__ == "__main__":
     const timestamp = Date.now();
     const outputDir = `${process.env.HOME}/.maria/outputs/images/${timestamp}`;
     const modelPath = `${process.env.HF_MODEL_DIR || '~/.maria/huggingface/models'}/${params.model}`;
-    
+
     setProgress('Initializing image generation...');
-    
+
     try {
       // Create output directory
       await execAsync(`mkdir -p "${outputDir}"`);
-      
+
       // Check and setup dependencies
       const depsReady = await checkDependencies();
       if (!depsReady) {
         await setupDependencies();
       }
-      
+
       // Setup Hugging Face if needed
       const isHFReady = await checkHuggingFaceSetup();
       if (!isHFReady) {
         await setupHuggingFace();
       }
-      
+
       // Download model if not present
       try {
         await fs.access(modelPath);
       } catch {
         await downloadModel(params.model);
       }
-      
+
       // Create generation script
       const scriptPath = await createImageGenerationScript(params);
-      
+
       // Run generation
       setProgress('Generating images...');
       await execAsync(
         `cd "${outputDir}" && python3 "${scriptPath}" "${params.prompt}" "${modelPath}" "${outputDir}"`,
-        { timeout: 600000 } // 10 minute timeout
+        { timeout: 600000 }, // 10 minute timeout
       );
-      
+
       // Get generated files
       const { stdout } = await execAsync(`ls "${outputDir}"/*.png`);
-      const files = stdout.trim().split('\n').filter(f => f.length > 0);
-      
+      const files = stdout
+        .trim()
+        .split('\n')
+        .filter((f) => f.length > 0);
+
       return files;
     } catch (error) {
-      throw new Error(`Image generation failed: ${error instanceof Error ? error.message : String(error)}`);
+      throw new Error(
+        `Image generation failed: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   };
 
@@ -345,7 +360,7 @@ if __name__ == "__main__":
     setError('');
     setProgress('');
     setResults([]);
-    
+
     try {
       const outputFiles = await generateImages({
         prompt,
@@ -357,9 +372,9 @@ if __name__ == "__main__":
         numImages,
         negativePrompt,
         seed: Math.floor(Math.random() * 1000000),
-        style
+        style,
       });
-      
+
       setResults(outputFiles);
       setProgress(`Generated ${outputFiles.length} images successfully!`);
     } catch (error) {
@@ -372,9 +387,11 @@ if __name__ == "__main__":
   const renderModelList = () => (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">🎨 Available Image Generation Models</Text>
+        <Text bold color="cyan">
+          🎨 Available Image Generation Models
+        </Text>
       </Box>
-      
+
       <Box flexDirection="column" gap={1}>
         {Object.entries(IMAGE_MODELS).map(([id, model]) => (
           <Box key={id} gap={1}>
@@ -390,7 +407,7 @@ if __name__ == "__main__":
           </Box>
         ))}
       </Box>
-      
+
       <Box marginTop={1}>
         <Text color="gray">💡 Use `/image` to start generation</Text>
       </Box>
@@ -405,24 +422,27 @@ if __name__ == "__main__":
             <Spinner type="dots" />
             <Text color="yellow"> Generating Images...</Text>
           </Box>
-          
+
           {progress && (
             <Box marginBottom={1}>
               <Text color="cyan">{progress}</Text>
             </Box>
           )}
-          
+
           {error && (
             <Box marginBottom={1}>
               <Text color="red">❌ Error: {error}</Text>
             </Box>
           )}
-          
+
           {results.length > 0 && (
             <Box flexDirection="column" marginBottom={1}>
               <Text color="green">✅ Generated images:</Text>
               {results.map((file, idx) => (
-                <Text key={idx} color="cyan">  {file}</Text>
+                <Text key={idx} color="cyan">
+                  {' '}
+                  {file}
+                </Text>
               ))}
             </Box>
           )}
@@ -430,12 +450,7 @@ if __name__ == "__main__":
       );
     }
 
-    const steps = [
-      'Enter prompt',
-      'Select model', 
-      'Configure settings',
-      'Generate images'
-    ];
+    const steps = ['Enter prompt', 'Select model', 'Configure settings', 'Generate images'];
 
     return (
       <Box flexDirection="column">
@@ -465,7 +480,7 @@ if __name__ == "__main__":
             <SelectInput
               items={Object.entries(IMAGE_MODELS).map(([id, model]) => ({
                 label: `${model.badge} ${model.name} - ${model.description}`,
-                value: id
+                value: id,
               }))}
               onSelect={(item) => {
                 setSelectedModel(item.value as keyof typeof IMAGE_MODELS);
@@ -481,7 +496,9 @@ if __name__ == "__main__":
               <Text color="yellow">Configuration:</Text>
             </Box>
             <Box flexDirection="column" gap={1}>
-              <Text>Resolution: {width}x{height}</Text>
+              <Text>
+                Resolution: {width}x{height}
+              </Text>
               <Text>Steps: {steps}</Text>
               <Text>Guidance Scale: {guidanceScale}</Text>
               <Text>Number of Images: {numImages}</Text>
@@ -496,7 +513,7 @@ if __name__ == "__main__":
                 { label: '✅ Generate with current settings', value: 'generate' },
                 { label: '📐 Modify resolution', value: 'resolution' },
                 { label: '🎯 Adjust quality settings', value: 'quality' },
-                { label: '📷 Change number of images', value: 'count' }
+                { label: '📷 Change number of images', value: 'count' },
               ]}
               onSelect={(item) => {
                 if (item.value === 'generate') {
@@ -522,13 +539,17 @@ if __name__ == "__main__":
   const renderComparison = () => (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">📊 Image Model Comparison</Text>
+        <Text bold color="cyan">
+          📊 Image Model Comparison
+        </Text>
       </Box>
-      
+
       <Box gap={2}>
         {Object.entries(IMAGE_MODELS).map(([id, model]) => (
           <Box key={id} flexDirection="column" width={25}>
-            <Text bold color="yellow">{model.badge} {model.name}</Text>
+            <Text bold color="yellow">
+              {model.badge} {model.name}
+            </Text>
             <Text color="gray">Type: {model.type}</Text>
             <Text color="gray">VRAM: {model.vram}</Text>
             <Text color="gray">Resolution: {model.resolution}</Text>
@@ -545,9 +566,11 @@ if __name__ == "__main__":
   const renderGallery = () => (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">🖼️ Recent Generated Images</Text>
+        <Text bold color="cyan">
+          🖼️ Recent Generated Images
+        </Text>
       </Box>
-      
+
       {results.length > 0 ? (
         <Box flexDirection="column" gap={1}>
           {results.map((file, idx) => (
@@ -579,7 +602,9 @@ if __name__ == "__main__":
 /**
  * Parse natural language image requests
  */
-export const parseImageRequest = (input: string): {
+export const parseImageRequest = (
+  input: string,
+): {
   action: string;
   model?: keyof typeof IMAGE_MODELS;
   prompt?: string;
@@ -603,38 +628,38 @@ export const parseImageRequest = (input: string): {
 
   // Model selection logic
   if (lowerInput.includes('qwen') || lowerInput.includes('advanced')) {
-    return { 
-      action: 'generate', 
+    return {
+      action: 'generate',
       model: 'qwen-image',
       prompt,
-      style
+      style,
     };
   }
-  
+
   if (lowerInput.includes('stable') || lowerInput.includes('artistic')) {
-    return { 
-      action: 'generate', 
+    return {
+      action: 'generate',
       model: 'stable-diffusion-xl',
       prompt,
-      style
+      style,
     };
   }
-  
+
   if (lowerInput.includes('flux') || lowerInput.includes('fast')) {
-    return { 
-      action: 'generate', 
+    return {
+      action: 'generate',
       model: 'flux-dev',
       prompt,
-      style
+      style,
     };
   }
-  
+
   if (lowerInput.includes('dall') || lowerInput.includes('creative')) {
-    return { 
-      action: 'generate', 
+    return {
+      action: 'generate',
       model: 'dall-e-3-xl',
       prompt,
-      style
+      style,
     };
   }
 
@@ -650,11 +675,11 @@ export const parseImageRequest = (input: string): {
     return { action: 'gallery' };
   }
 
-  return { 
+  return {
     action: 'generate',
     model: 'qwen-image',
     prompt,
-    style
+    style,
   };
 };
 

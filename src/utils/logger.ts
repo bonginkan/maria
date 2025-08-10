@@ -10,7 +10,7 @@ export enum LogLevel {
   INFO = 1,
   WARN = 2,
   ERROR = 3,
-  NONE = 4
+  NONE = 4,
 }
 
 class Logger {
@@ -51,21 +51,25 @@ class Logger {
     }
   }
 
-  task(taskName: string, status: 'start' | 'progress' | 'complete' | 'error', message?: string): void {
+  task(
+    taskName: string,
+    status: 'start' | 'progress' | 'complete' | 'error',
+    message?: string,
+  ): void {
     if (this.level > LogLevel.INFO) return;
 
     const statusIcons = {
       start: '🚀',
       progress: '⏳',
       complete: '✅',
-      error: '❌'
+      error: '❌',
     };
 
     const statusColors = {
       start: chalk.bold.magenta,
       progress: chalk.magenta,
       complete: chalk.bold.magenta,
-      error: chalk.bold.magenta
+      error: chalk.bold.magenta,
     };
 
     const icon = statusIcons[status];

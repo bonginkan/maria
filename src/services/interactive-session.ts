@@ -18,7 +18,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
   return {
     async start(): Promise<void> {
       running = true;
-      
+
       console.log(chalk.blue('🤖 MARIA Interactive Session Started'));
       console.log(chalk.gray('Type your message, or use /help for commands. Type /exit to quit.'));
       console.log('');
@@ -29,7 +29,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
             type: 'text',
             name: 'message',
             message: chalk.cyan('You:'),
-            initial: ''
+            initial: '',
           });
 
           if (!message || !running) break;
@@ -45,21 +45,20 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
 
           // Send to AI
           process.stdout.write(chalk.blue('\nMARIA: '));
-          
+
           try {
             let fullResponse = '';
             const stream = maria.chatStream(message);
-            
+
             for await (const chunk of stream) {
               process.stdout.write(chunk);
               fullResponse += chunk;
             }
-            
+
             console.log('\n');
           } catch (error) {
             console.error(chalk.red('\n❌ Error:'), error);
           }
-
         } catch (error) {
           if ((error as any).message?.includes('canceled')) {
             break; // User pressed Ctrl+C
@@ -74,7 +73,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
 
     stop(): void {
       running = false;
-    }
+    },
   };
 }
 
@@ -110,7 +109,9 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
         maria.setPriorityMode(mode);
         console.log(chalk.green(`✅ Priority mode set to: ${mode}`));
       } else {
-        console.log(chalk.yellow('Usage: /priority <privacy-first|performance|cost-effective|auto>'));
+        console.log(
+          chalk.yellow('Usage: /priority <privacy-first|performance|cost-effective|auto>'),
+        );
       }
       return true;
 
@@ -145,12 +146,12 @@ function showHelp(): void {
 
 async function showStatus(maria: MariaAI): Promise<void> {
   console.log(chalk.blue('\n📊 System Status:\n'));
-  
+
   try {
     const health = await maria.getHealth();
-    const status = health.overall === 'healthy' ? '✅' : 
-                  health.overall === 'degraded' ? '⚠️' : '❌';
-    
+    const status =
+      health.overall === 'healthy' ? '✅' : health.overall === 'degraded' ? '⚠️' : '❌';
+
     console.log(`${status} Overall: ${health.overall}`);
     console.log(`💻 CPU: ${health.system.cpu}%`);
     console.log(`🧠 Memory: ${health.system.memory}%`);
@@ -163,11 +164,11 @@ async function showStatus(maria: MariaAI): Promise<void> {
 
 async function showModels(maria: MariaAI): Promise<void> {
   console.log(chalk.blue('\n🔧 Available Models:\n'));
-  
+
   try {
     const models = await maria.getModels();
-    const available = models.filter(m => m.available);
-    
+    const available = models.filter((m) => m.available);
+
     if (available.length === 0) {
       console.log(chalk.yellow('No models available'));
       return;
@@ -187,17 +188,17 @@ async function showModels(maria: MariaAI): Promise<void> {
 
 async function showHealth(maria: MariaAI): Promise<void> {
   console.log(chalk.blue('\n🏥 Health Status:\n'));
-  
+
   try {
     const health = await maria.getHealth();
-    
+
     // Services
     console.log(chalk.bold('Local Services:'));
     Object.entries(health.services).forEach(([name, status]) => {
       const icon = status.status === 'running' ? '✅' : '⚠️';
       console.log(`  ${icon} ${name}: ${status.status}`);
     });
-    
+
     console.log('');
     console.log(chalk.bold('Cloud APIs:'));
     Object.entries(health.cloudAPIs).forEach(([name, status]) => {
@@ -208,11 +209,11 @@ async function showHealth(maria: MariaAI): Promise<void> {
     if (health.recommendations.length > 0) {
       console.log('');
       console.log(chalk.bold('Recommendations:'));
-      health.recommendations.forEach(rec => {
+      health.recommendations.forEach((rec) => {
         console.log(`  💡 ${rec}`);
       });
     }
-    
+
     console.log('');
   } catch (error) {
     console.error(chalk.red('❌ Failed to get health status:'), error);
@@ -221,7 +222,7 @@ async function showHealth(maria: MariaAI): Promise<void> {
 
 function showConfig(maria: MariaAI): void {
   console.log(chalk.blue('\n⚙️  Current Configuration:\n'));
-  
+
   const config = maria.getConfig();
   console.log(chalk.cyan('Priority:'), config.priority || 'auto');
   console.log(chalk.cyan('Auto Start:'), config.autoStart ? 'enabled' : 'disabled');

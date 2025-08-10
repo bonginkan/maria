@@ -27,7 +27,7 @@ export const App: React.FC = () => {
         return false;
       }
     };
-    
+
     setRawModeSupported(checkRawModeSupport());
   }, []);
 
@@ -38,16 +38,16 @@ export const App: React.FC = () => {
       input,
       output: '',
       timestamp: new Date(),
-      status: 'pending'
+      status: 'pending',
     };
 
-    setCommands(prev => [...prev, newCommand]);
+    setCommands((prev) => [...prev, newCommand]);
     setIsProcessing(true);
 
     try {
       // Process the command
       let output = '';
-      
+
       if (input.startsWith('/')) {
         // Handle slash commands
         output = await handleSlashCommand(input);
@@ -59,20 +59,18 @@ export const App: React.FC = () => {
         output = `💬 Chat: "${input}"\n\n🔄 Processing your request...`;
       }
 
-      setCommands(prev => 
-        prev.map(cmd => 
-          cmd.id === commandId 
-            ? { ...cmd, output, status: 'success' as const }
-            : cmd
-        )
+      setCommands((prev) =>
+        prev.map((cmd) =>
+          cmd.id === commandId ? { ...cmd, output, status: 'success' as const } : cmd,
+        ),
       );
     } catch (error) {
-      setCommands(prev => 
-        prev.map(cmd => 
-          cmd.id === commandId 
+      setCommands((prev) =>
+        prev.map((cmd) =>
+          cmd.id === commandId
             ? { ...cmd, output: `❌ Error: ${error}`, status: 'error' as const }
-            : cmd
-        )
+            : cmd,
+        ),
       );
     } finally {
       setIsProcessing(false);
@@ -81,7 +79,7 @@ export const App: React.FC = () => {
 
   const handleSlashCommand = async (input: string): Promise<string> => {
     const command = input.slice(1); // Remove the '/'
-    
+
     switch (command.toLowerCase()) {
       case 'help':
         return `📚 Available Commands:
@@ -211,14 +209,14 @@ Type /help to see available commands.`;
 
       {/* Input Area */}
       {rawModeSupported ? (
-        <CommandInput 
-          onSubmit={handleCommand} 
+        <CommandInput
+          onSubmit={handleCommand}
           disabled={isProcessing}
           placeholder="Type a command or chat message... (e.g., 'mc chat', '/help', or any question)"
         />
       ) : (
-        <FallbackInput 
-          onSubmit={handleCommand} 
+        <FallbackInput
+          onSubmit={handleCommand}
           disabled={isProcessing}
           placeholder="Type a command or chat message... (e.g., 'mc chat', '/help', or any question)"
         />

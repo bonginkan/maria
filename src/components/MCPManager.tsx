@@ -45,14 +45,14 @@ const MCPManager: React.FC<MCPManagerProps> = ({ config, onUpdate, onExit }) => 
       status: 'unknown' as const,
       capabilities: [
         'browser.navigate',
-        'browser.screenshot', 
+        'browser.screenshot',
         'element.click',
         'element.type',
         'element.hover',
         'accessibility.snapshot',
-        'network.monitor'
+        'network.monitor',
       ],
-      type: 'community' as const
+      type: 'community' as const,
     },
     {
       id: 'filesystem-mcp',
@@ -61,13 +61,8 @@ const MCPManager: React.FC<MCPManagerProps> = ({ config, onUpdate, onExit }) => 
       command: 'npx',
       args: ['@modelcontextprotocol/server-filesystem'],
       status: 'unknown' as const,
-      capabilities: [
-        'file.read',
-        'file.write',
-        'directory.list',
-        'file.search'
-      ],
-      type: 'built-in' as const
+      capabilities: ['file.read', 'file.write', 'directory.list', 'file.search'],
+      type: 'built-in' as const,
     },
     {
       id: 'git-mcp',
@@ -76,14 +71,8 @@ const MCPManager: React.FC<MCPManagerProps> = ({ config, onUpdate, onExit }) => 
       command: 'npx',
       args: ['@modelcontextprotocol/server-git'],
       status: 'unknown' as const,
-      capabilities: [
-        'git.status',
-        'git.diff',
-        'git.commit',
-        'git.branch',
-        'git.log'
-      ],
-      type: 'built-in' as const
+      capabilities: ['git.status', 'git.diff', 'git.commit', 'git.branch', 'git.log'],
+      type: 'built-in' as const,
     },
     {
       id: 'sqlite-mcp',
@@ -92,42 +81,37 @@ const MCPManager: React.FC<MCPManagerProps> = ({ config, onUpdate, onExit }) => 
       command: 'npx',
       args: ['@modelcontextprotocol/server-sqlite'],
       status: 'unknown' as const,
-      capabilities: [
-        'sqlite.query',
-        'sqlite.schema',
-        'sqlite.execute'
-      ],
-      type: 'built-in' as const
-    }
+      capabilities: ['sqlite.query', 'sqlite.schema', 'sqlite.execute'],
+      type: 'built-in' as const,
+    },
   ];
 
   useEffect(() => {
     const customServers = config.mcp?.servers || [];
-    const allServers: MCPServer[] = [
-      ...builtInServers,
-      ...customServers
-    ];
+    const allServers: MCPServer[] = [...builtInServers, ...customServers];
     setServers(allServers);
     checkServerStatuses();
   }, [config]);
 
   const checkServerStatuses = useCallback(async () => {
-    const updatedServers = await Promise.all(servers.map(async (server) => {
-      try {
-        // Check if the server package is installed
-        if (server.command === 'npx') {
-          // For npx commands, we can't easily check if they're running
-          // but we can check if they can be executed
-          return { ...server, status: 'stopped' as const };
+    const updatedServers = await Promise.all(
+      servers.map(async (server) => {
+        try {
+          // Check if the server package is installed
+          if (server.command === 'npx') {
+            // For npx commands, we can't easily check if they're running
+            // but we can check if they can be executed
+            return { ...server, status: 'stopped' as const };
+          }
+
+          // For other commands, try to ping or check if they respond
+          return { ...server, status: 'unknown' as const };
+        } catch {
+          return { ...server, status: 'error' as const };
         }
-        
-        // For other commands, try to ping or check if they respond
-        return { ...server, status: 'unknown' as const };
-      } catch {
-        return { ...server, status: 'error' as const };
-      }
-    }));
-    
+      }),
+    );
+
     setServers(updatedServers);
   }, [servers]);
 
@@ -135,80 +119,74 @@ const MCPManager: React.FC<MCPManagerProps> = ({ config, onUpdate, onExit }) => 
     try {
       // Create Playwright MCP configuration
       const playwrightMCPConfig = {
-        "name": "playwright-browser-automation",
-        "version": "1.0.0",
-        "server": {
-          "command": "npx",
-          "args": ["@playwright/mcp@latest"],
-          "env": {
-            "PLAYWRIGHT_BROWSERS_PATH": "0"
-          }
+        name: 'playwright-browser-automation',
+        version: '1.0.0',
+        server: {
+          command: 'npx',
+          args: ['@playwright/mcp@latest'],
+          env: {
+            PLAYWRIGHT_BROWSERS_PATH: '0',
+          },
         },
-        "client": {
-          "timeout": 30000,
-          "retries": 3
+        client: {
+          timeout: 30000,
+          retries: 3,
         },
-        "browser": {
-          "type": "chromium",
-          "headless": true,
-          "args": [
-            "--no-sandbox",
-            "--disable-dev-shm-usage"
-          ],
-          "viewport": {
-            "width": 1280,
-            "height": 720
-          }
+        browser: {
+          type: 'chromium',
+          headless: true,
+          args: ['--no-sandbox', '--disable-dev-shm-usage'],
+          viewport: {
+            width: 1280,
+            height: 720,
+          },
         },
-        "capabilities": [
+        capabilities: [
           {
-            "name": "browser_navigate",
-            "description": "Navigate to a URL"
+            name: 'browser_navigate',
+            description: 'Navigate to a URL',
           },
           {
-            "name": "browser_screenshot", 
-            "description": "Take a screenshot of the current page"
+            name: 'browser_screenshot',
+            description: 'Take a screenshot of the current page',
           },
           {
-            "name": "element_click",
-            "description": "Click on an element"
+            name: 'element_click',
+            description: 'Click on an element',
           },
           {
-            "name": "element_type",
-            "description": "Type text into an element"
+            name: 'element_type',
+            description: 'Type text into an element',
           },
           {
-            "name": "element_hover",
-            "description": "Hover over an element"
+            name: 'element_hover',
+            description: 'Hover over an element',
           },
           {
-            "name": "accessibility_snapshot",
-            "description": "Get accessibility tree snapshot"
+            name: 'accessibility_snapshot',
+            description: 'Get accessibility tree snapshot',
           },
           {
-            "name": "network_monitor",
-            "description": "Monitor network requests and responses"
-          }
+            name: 'network_monitor',
+            description: 'Monitor network requests and responses',
+          },
         ],
-        "examples": [
+        examples: [
           {
-            "name": "basic_navigation",
-            "description": "Navigate to a website and take a screenshot",
-            "steps": [
-              "browser_navigate('https://example.com')",
-              "browser_screenshot()"
-            ]
+            name: 'basic_navigation',
+            description: 'Navigate to a website and take a screenshot',
+            steps: ["browser_navigate('https://example.com')", 'browser_screenshot()'],
           },
           {
-            "name": "form_interaction",
-            "description": "Fill out a form and submit",
-            "steps": [
+            name: 'form_interaction',
+            description: 'Fill out a form and submit',
+            steps: [
               "element_type('#email', 'user@example.com')",
               "element_type('#password', 'secret123')",
-              "element_click('#submit-button')"
-            ]
-          }
-        ]
+              "element_click('#submit-button')",
+            ],
+          },
+        ],
       };
 
       const configPath = join(process.cwd(), '.playwright-mcp.json');
@@ -271,19 +249,16 @@ module.exports = { testPlaywrightMCP };
         status: 'stopped',
         capabilities: ['browser.navigate', 'browser.screenshot', 'element.click'],
         configPath: configPath,
-        type: 'community'
+        type: 'community',
       };
 
       const updatedConfig = {
         ...config,
         mcp: {
           ...config.mcp,
-          servers: [
-            ...(config.mcp?.servers || []),
-            newServer
-          ],
-          enabled: true
-        }
+          servers: [...(config.mcp?.servers || []), newServer],
+          enabled: true,
+        },
       };
 
       onUpdate(updatedConfig);
@@ -308,11 +283,11 @@ module.exports = { testPlaywrightMCP };
   //     });
 
   //     // Update server status
-  //     const updatedServers = servers.map(s => 
+  //     const updatedServers = servers.map(s =>
   //       s.id === serverId ? { ...s, status: 'running' as const } : s
   //     );
   //     setServers(updatedServers);
-      
+
   //     setSuccess(`✅ Started ${server.name}`);
   //   } catch (err) {
   //     setError(`Failed to start ${server.name}: ${err}`);
@@ -323,7 +298,7 @@ module.exports = { testPlaywrightMCP };
   //   // In a real implementation, we'd track process IDs and kill them
   //   const server = servers.find(s => s.id === serverId);
   //   if (server) {
-  //     const updatedServers = servers.map(s => 
+  //     const updatedServers = servers.map(s =>
   //       s.id === serverId ? { ...s, status: 'stopped' as const } : s
   //     );
   //     setServers(updatedServers);
@@ -337,12 +312,14 @@ module.exports = { testPlaywrightMCP };
       { label: '⬆️  Install Playwright MCP', value: 'install' },
       { label: '⚙️  Configure MCP Settings', value: 'config' },
       { label: '🔄 Refresh Server Status', value: 'refresh' },
-      { label: '↩️  Back', value: 'back' }
+      { label: '↩️  Back', value: 'back' },
     ];
 
     return (
       <Box flexDirection="column">
-        <Text color="cyan" bold>🔌 MCP Server Manager</Text>
+        <Text color="cyan" bold>
+          🔌 MCP Server Manager
+        </Text>
         <Text color="gray">Model Context Protocol server management</Text>
         <Box marginTop={1}>
           <SelectInput
@@ -367,34 +344,36 @@ module.exports = { testPlaywrightMCP };
 
   const renderServersList = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>📋 MCP Servers</Text>
+      <Text color="cyan" bold>
+        📋 MCP Servers
+      </Text>
       <Text color="gray">Available Model Context Protocol servers:</Text>
-      
+
       {servers.map((server) => (
         <Box key={server.id} flexDirection="column" marginTop={1}>
           <Box>
             <Text color={server.status === 'running' ? 'green' : 'gray'}>
               {server.status === 'running' ? '🟢' : '⚪'} {server.name}
             </Text>
-            <Text color={server.type === 'built-in' ? 'blue' : 'yellow'}>
-              {' '}({server.type})
-            </Text>
+            <Text color={server.type === 'built-in' ? 'blue' : 'yellow'}> ({server.type})</Text>
           </Box>
-          <Text color="gray">   {server.description}</Text>
-          <Text color="gray">   Status: {server.status}</Text>
-          <Text color="magenta">   Capabilities: {server.capabilities.slice(0, 3).join(', ')}
+          <Text color="gray"> {server.description}</Text>
+          <Text color="gray"> Status: {server.status}</Text>
+          <Text color="magenta">
+            {' '}
+            Capabilities: {server.capabilities.slice(0, 3).join(', ')}
             {server.capabilities.length > 3 ? '...' : ''}
           </Text>
         </Box>
       ))}
-      
+
       <Box marginTop={2}>
         <SelectInput
           items={[
             { label: 'Start server', value: 'start' },
             { label: 'Stop server', value: 'stop' },
             { label: 'View server details', value: 'details' },
-            { label: 'Back to main menu', value: 'back' }
+            { label: 'Back to main menu', value: 'back' },
           ]}
           onSelect={(item) => {
             if (item.value === 'back') {
@@ -415,9 +394,11 @@ module.exports = { testPlaywrightMCP };
 
   const renderConfiguration = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>⚙️  MCP Configuration</Text>
+      <Text color="cyan" bold>
+        ⚙️ MCP Configuration
+      </Text>
       <Text color="gray">Current MCP settings:</Text>
-      
+
       <Box marginTop={1} flexDirection="column">
         <Text color="yellow">Global Settings:</Text>
         <Text color="gray">• MCP Enabled: {config.mcp?.enabled ? 'Yes' : 'No'}</Text>
@@ -425,14 +406,14 @@ module.exports = { testPlaywrightMCP };
         <Text color="gray">• Server timeout: {config.mcp?.timeout || 30000}ms</Text>
         <Text color="gray">• Log level: {config.mcp?.logLevel || 'info'}</Text>
       </Box>
-      
+
       <Box marginTop={2}>
         <SelectInput
           items={[
             { label: 'Toggle MCP enabled', value: 'toggle-enabled' },
             { label: 'Configure timeouts', value: 'timeouts' },
             { label: 'Set log level', value: 'log-level' },
-            { label: 'Back to main menu', value: 'back' }
+            { label: 'Back to main menu', value: 'back' },
           ]}
           onSelect={(item) => {
             if (item.value === 'back') {
@@ -442,8 +423,8 @@ module.exports = { testPlaywrightMCP };
                 ...config,
                 mcp: {
                   ...config.mcp,
-                  enabled: !config.mcp?.enabled
-                }
+                  enabled: !config.mcp?.enabled,
+                },
               };
               onUpdate(updatedConfig);
               setSuccess(`✅ MCP ${updatedConfig.mcp.enabled ? 'enabled' : 'disabled'}`);

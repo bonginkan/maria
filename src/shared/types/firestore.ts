@@ -15,11 +15,13 @@ export const ProjectSchema = z.object({
   tags: z.array(z.string()).default([]),
   createdAt: z.date(),
   updatedAt: z.date(),
-  settings: z.object({
-    isPublic: z.boolean().default(false),
-    collaborators: z.array(z.string()).default([]),
-    autoSave: z.boolean().default(true),
-  }).optional(),
+  settings: z
+    .object({
+      isPublic: z.boolean().default(false),
+      collaborators: z.array(z.string()).default([]),
+      autoSave: z.boolean().default(true),
+    })
+    .optional(),
 });
 
 export const UserProfileSchema = z.object({
@@ -30,14 +32,16 @@ export const UserProfileSchema = z.object({
   role: z.enum(['user', 'admin']).default('user'),
   createdAt: z.date(),
   updatedAt: z.date(),
-  preferences: z.object({
-    theme: z.enum(['light', 'dark', 'system']).default('system'),
-    language: z.string().default('en'),
-    notifications: z.object({
-      email: z.boolean().default(true),
-      push: z.boolean().default(true),
-    }),
-  }).optional(),
+  preferences: z
+    .object({
+      theme: z.enum(['light', 'dark', 'system']).default('system'),
+      language: z.string().default('en'),
+      notifications: z.object({
+        email: z.boolean().default(true),
+        push: z.boolean().default(true),
+      }),
+    })
+    .optional(),
 });
 
 export const ActivitySchema = z.object({
@@ -55,17 +59,21 @@ export const ChatSessionSchema = z.object({
   id: z.string(),
   projectId: z.string(),
   userId: z.string(),
-  messages: z.array(z.object({
-    id: z.string(),
-    role: z.enum(['user', 'assistant', 'system']),
-    content: z.string(),
-    timestamp: z.date(),
-    metadata: z.object({
-      model: z.string().optional(),
-      tokens: z.number().optional(),
-      citations: z.array(z.string()).optional(),
-    }).optional(),
-  })),
+  messages: z.array(
+    z.object({
+      id: z.string(),
+      role: z.enum(['user', 'assistant', 'system']),
+      content: z.string(),
+      timestamp: z.date(),
+      metadata: z
+        .object({
+          model: z.string().optional(),
+          tokens: z.number().optional(),
+          citations: z.array(z.string()).optional(),
+        })
+        .optional(),
+    }),
+  ),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

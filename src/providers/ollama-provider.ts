@@ -26,7 +26,7 @@ export class OllamaProvider extends BaseAIProvider {
     'phi3.5:14b',
     'mistral:7b',
     'mixtral:8x7b',
-    'nomic-embed-text'
+    'nomic-embed-text',
   ];
 
   private apiBase: string = 'http://localhost:11434';
@@ -38,12 +38,14 @@ export class OllamaProvider extends BaseAIProvider {
 
   async initialize(apiKey: string = 'ollama', config?: Record<string, any>): Promise<void> {
     await super.initialize(apiKey, config);
-    
+
     const ollamaConfig = config as OllamaConfig;
     this.apiBase = ollamaConfig?.apiBase || process.env.OLLAMA_API_BASE || 'http://localhost:11434';
     this.timeout = ollamaConfig?.timeout || parseInt(process.env.OLLAMA_TIMEOUT || '300000');
-    this.retryAttempts = ollamaConfig?.retryAttempts || parseInt(process.env.OLLAMA_RETRY_ATTEMPTS || '3');
-    this.retryDelay = ollamaConfig?.retryDelay || parseInt(process.env.OLLAMA_RETRY_DELAY || '1000');
+    this.retryAttempts =
+      ollamaConfig?.retryAttempts || parseInt(process.env.OLLAMA_RETRY_ATTEMPTS || '3');
+    this.retryDelay =
+      ollamaConfig?.retryDelay || parseInt(process.env.OLLAMA_RETRY_DELAY || '1000');
 
     // Check health and get available models
     await this.checkHealth();
@@ -56,7 +58,7 @@ export class OllamaProvider extends BaseAIProvider {
     try {
       const response = await fetch(`${this.apiBase}/api/version`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       this.isHealthy = response.ok;
@@ -71,11 +73,11 @@ export class OllamaProvider extends BaseAIProvider {
   private async fetchAvailableModels(): Promise<void> {
     try {
       const response = await fetch(`${this.apiBase}/api/tags`, {
-        method: 'GET'
+        method: 'GET',
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.availableModels = data.models?.map((model: any) => model.name) || [];
       }
     } catch {
@@ -90,14 +92,14 @@ export class OllamaProvider extends BaseAIProvider {
 
   private async retryWithBackoff<T>(
     fn: () => Promise<T>,
-    attempts: number = this.retryAttempts
+    attempts: number = this.retryAttempts,
   ): Promise<T> {
     for (let i = 0; i < attempts; i++) {
       try {
         return await fn();
       } catch (error) {
         if (i === attempts - 1) throw error;
-        await new Promise(resolve => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
+        await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
       }
     }
     throw new Error('Max retry attempts reached');
@@ -109,7 +111,7 @@ export class OllamaProvider extends BaseAIProvider {
 
     // Convert to Ollama format
     const prompt = this.messagesToPrompt(messages);
-    
+
     const payload = {
       model: selectedModel,
       prompt: prompt,
@@ -118,18 +120,18 @@ export class OllamaProvider extends BaseAIProvider {
         temperature: options?.temperature || 0.7,
         top_p: options?.topP || 0.95,
         stop: options?.stopSequences,
-        num_predict: options?.maxTokens || 4096
-      }
+        num_predict: options?.maxTokens || 4096,
+      },
     };
 
     const makeRequest = async () => {
       const response = await fetch(`${this.apiBase}/api/generate`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(this.timeout)
+        signal: AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
@@ -141,17 +143,21 @@ export class OllamaProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const data = await response.json() as any;
+    const data = (await response.json()) as any;
     return data.response || '';
   }
 
-  async *chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string> {
+  async *chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string> {
     this.ensureInitialized();
     const selectedModel = model || this.getDefaultModel();
 
     // Convert to Ollama format
     const prompt = this.messagesToPrompt(messages);
-    
+
     const payload = {
       model: selectedModel,
       prompt: prompt,
@@ -160,18 +166,18 @@ export class OllamaProvider extends BaseAIProvider {
         temperature: options?.temperature || 0.7,
         top_p: options?.topP || 0.95,
         stop: options?.stopSequences,
-        num_predict: options?.maxTokens || 4096
-      }
+        num_predict: options?.maxTokens || 4096,
+      },
     };
 
     const makeRequest = async () => {
       const response = await fetch(`${this.apiBase}/api/generate`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
-        signal: options?.streamOptions?.signal || AbortSignal.timeout(this.timeout)
+        signal: options?.streamOptions?.signal || AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
@@ -230,7 +236,7 @@ export class OllamaProvider extends BaseAIProvider {
   private messagesToPrompt(messages: Message[]): string {
     // Convert messages to a single prompt for Ollama
     let prompt = '';
-    
+
     for (const message of messages) {
       if (message.role === 'system') {
         prompt += `System: ${message.content}\n\n`;
@@ -240,27 +246,35 @@ export class OllamaProvider extends BaseAIProvider {
         prompt += `Assistant: ${message.content}\n\n`;
       }
     }
-    
+
     prompt += 'Assistant: ';
     return prompt;
   }
 
-  async generateCode(prompt: string, language: string = 'typescript', model?: string): Promise<string> {
+  async generateCode(
+    prompt: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<string> {
     const messages: Message[] = [
       {
         role: 'system',
-        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`
+        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`,
       },
       {
         role: 'user',
-        content: prompt
-      }
+        content: prompt,
+      },
     ];
 
     return this.chat(messages, model, { temperature: 0.2, maxTokens: 8192 });
   }
 
-  async reviewCode(code: string, language: string = 'typescript', model?: string): Promise<CodeReviewResult> {
+  async reviewCode(
+    code: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<CodeReviewResult> {
     const messages: Message[] = [
       {
         role: 'system',
@@ -276,12 +290,12 @@ export class OllamaProvider extends BaseAIProvider {
   ],
   "summary": "<overall code quality summary>",
   "improvements": ["<improvement suggestion 1>", "<improvement suggestion 2>", ...]
-}`
+}`,
       },
       {
         role: 'user',
-        content: code
-      }
+        content: code,
+      },
     ];
 
     const response = await this.chat(messages, model, { temperature: 0.1, maxTokens: 4096 });
@@ -293,7 +307,7 @@ export class OllamaProvider extends BaseAIProvider {
       return {
         issues: [],
         summary: response,
-        improvements: []
+        improvements: [],
       };
     }
   }
@@ -312,10 +326,10 @@ export class OllamaProvider extends BaseAIProvider {
     const response = await fetch(`${this.apiBase}/api/pull`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({ name: modelName }),
-      signal: AbortSignal.timeout(600000) // 10 minutes for model download
+      signal: AbortSignal.timeout(600000), // 10 minutes for model download
     });
 
     if (!response.ok) {
@@ -363,9 +377,9 @@ export class OllamaProvider extends BaseAIProvider {
     const response = await fetch(`${this.apiBase}/api/delete`, {
       method: 'DELETE',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name: modelName })
+      body: JSON.stringify({ name: modelName }),
     });
 
     if (!response.ok) {

@@ -12,7 +12,10 @@ interface PaperCommand {
   file?: string;
 }
 
-const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({ command, onExit }) => {
+const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({
+  command,
+  onExit,
+}) => {
   const [status, setStatus] = React.useState<'processing' | 'done'>('processing');
   const [result, setResult] = React.useState<string>('');
 
@@ -21,8 +24,8 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({ c
       try {
         // Simulate academic agent execution for now
         // TODO: Implement proper API integration
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
         let mockResult = '';
         switch (command.action) {
           case 'outline':
@@ -40,7 +43,7 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({ c
           default:
             mockResult = 'Academic task completed successfully.';
         }
-        
+
         setResult(mockResult);
 
         setStatus('done');
@@ -62,10 +65,12 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({ c
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Academic Agent</Text>
+        <Text bold color="cyan">
+          Academic Agent
+        </Text>
         <Text> - {command.action} action</Text>
       </Box>
-      
+
       {status === 'processing' ? (
         <Box>
           <Spinner type="dots" />
@@ -99,7 +104,9 @@ const InteractivePaperMenu: React.FC<{ onSelect: (action: string) => void }> = (
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Academic Agent - Paper Development</Text>
+        <Text bold color="cyan">
+          Academic Agent - Paper Development
+        </Text>
       </Box>
       <Box marginBottom={1}>
         <Text>Select an action:</Text>
@@ -146,25 +153,25 @@ export default function paperCommand(program: Command) {
       if (options.outline) {
         const command: PaperCommand = { action: 'outline', topic: options.outline };
         const { waitUntilExit } = render(
-          <PaperAgent command={command} onExit={() => process.exit(0)} />
+          <PaperAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.write) {
         const command: PaperCommand = { action: 'write', section: options.write };
         const { waitUntilExit } = render(
-          <PaperAgent command={command} onExit={() => process.exit(0)} />
+          <PaperAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.references) {
         const command: PaperCommand = { action: 'references', file: options.references };
         const { waitUntilExit } = render(
-          <PaperAgent command={command} onExit={() => process.exit(0)} />
+          <PaperAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.review) {
         const command: PaperCommand = { action: 'review', file: options.review };
         const { waitUntilExit } = render(
-          <PaperAgent command={command} onExit={() => process.exit(0)} />
+          <PaperAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else {

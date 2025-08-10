@@ -21,7 +21,7 @@ export class ConfigManager {
       autoStart: true,
       healthMonitoring: true,
       language: 'auto',
-      offlineMode: false
+      offlineMode: false,
     };
   }
 
@@ -73,15 +73,15 @@ export class ConfigManager {
         ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
         GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '',
         GROQ_API_KEY: process.env.GROQ_API_KEY || '',
-        GROK_API_KEY: process.env.GROK_API_KEY || ''
+        GROK_API_KEY: process.env.GROK_API_KEY || '',
       },
       localProviders: {
         lmstudio: process.env.LMSTUDIO_ENABLED !== 'false',
         ollama: process.env.OLLAMA_ENABLED !== 'false',
-        vllm: process.env.VLLM_ENABLED !== 'false'
+        vllm: process.env.VLLM_ENABLED !== 'false',
       },
       autoStart: process.env.AUTO_START_LLMS !== 'false',
-      healthMonitoring: process.env.HEALTH_MONITORING !== 'false'
+      healthMonitoring: process.env.HEALTH_MONITORING !== 'false',
     };
 
     return new ConfigManager(config);
@@ -94,10 +94,10 @@ export class ConfigManager {
     const os = await import('os');
 
     const targetPath = configPath || path.join(os.homedir(), '.maria', 'config.json');
-    
+
     // Ensure directory exists
     await fs.ensureDir(path.dirname(targetPath));
-    
+
     // Save configuration
     await fs.writeJson(targetPath, this.config, { spaces: 2 });
   }
@@ -109,7 +109,7 @@ export class ConfigManager {
     const os = await import('os');
 
     const targetPath = configPath || path.join(os.homedir(), '.maria', 'config.json');
-    
+
     if (await fs.pathExists(targetPath)) {
       try {
         const savedConfig = await fs.readJson(targetPath);

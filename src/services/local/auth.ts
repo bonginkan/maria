@@ -37,17 +37,21 @@ export class LocalAuthService {
     this.jwtSecret = options.jwtSecret || crypto.randomBytes(32).toString('hex');
     this.sessionTTL = options.sessionTTL || 86400000; // 24 hours
     this.dataPath = options.dataPath || path.join(process.env.HOME || '', '.maria', 'auth');
-    
+
     // Ensure data directory exists
     fs.ensureDirSync(this.dataPath);
     fs.ensureDirSync(path.join(this.dataPath, 'users'));
     fs.ensureDirSync(path.join(this.dataPath, 'sessions'));
-    
+
     // Load existing sessions
     this.loadSessions();
   }
 
-  async register(email: string, password: string, role: 'admin' | 'editor' | 'viewer' = 'viewer'): Promise<User> {
+  async register(
+    email: string,
+    password: string,
+    role: 'admin' | 'editor' | 'viewer' = 'viewer',
+  ): Promise<User> {
     // Check if user exists
     const existingUser = await this.getUserByEmail(email);
     if (existingUser) {
@@ -64,7 +68,7 @@ export class LocalAuthService {
       email,
       passwordHash: `${salt}:${passwordHash}`,
       role,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     // Save user
@@ -83,7 +87,7 @@ export class LocalAuthService {
     // Verify password
     const [salt, hash] = user.passwordHash.split(':');
     const verifyHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
-    
+
     if (hash !== verifyHash) {
       throw new Error('Invalid credentials');
     }
@@ -94,22 +98,22 @@ export class LocalAuthService {
 
     // Create JWT token
     const token = jwt.sign(
-      { 
-        userId: user.id, 
+      {
+        userId: user.id,
         email: user.email,
-        role: user.role 
+        role: user.role,
       },
       this.jwtSecret,
-      { expiresIn: '24h' }
+      { expiresIn: '24h' },
     );
 
     // Create session
     const session: Session = {
       token,
       userId: user.id,
-      expiresAt: new Date(Date.now() + this.sessionTTL)
+      expiresAt: new Date(Date.now() + this.sessionTTL),
     };
-    
+
     this.sessions.set(token, session);
     await this.saveSession(session);
 
@@ -134,7 +138,7 @@ export class LocalAuthService {
 
       // Verify JWT
       const decoded = jwt.verify(token, this.jwtSecret) as any;
-      
+
       // Get user
       return this.getUserById(decoded.userId);
     } catch {
@@ -142,7 +146,10 @@ export class LocalAuthService {
     }
   }
 
-  async hasPermission(token: string, requiredRole: 'admin' | 'editor' | 'viewer'): Promise<boolean> {
+  async hasPermission(
+    token: string,
+    requiredRole: 'admin' | 'editor' | 'viewer',
+  ): Promise<boolean> {
     const user = await this.verifyToken(token);
     if (!user) {
       return false;
@@ -159,8 +166,8 @@ export class LocalAuthService {
 
   private async getUserById(id: string): Promise<User | null> {
     const userPath = path.join(this.dataPath, 'users', `${id}.json`);
-    
-    if (!await fs.pathExists(userPath)) {
+
+    if (!(await fs.pathExists(userPath))) {
       return null;
     }
 
@@ -172,7 +179,7 @@ export class LocalAuthService {
     const files = await fs.readdir(usersDir);
 
     for (const file of files) {
-      const user = await fs.readJson(path.join(usersDir, file)) as User;
+      const user = (await fs.readJson(path.join(usersDir, file))) as User;
       if (user.email === email) {
         return user;
       }
@@ -193,16 +200,16 @@ export class LocalAuthService {
 
   private async loadSessions(): Promise<void> {
     const sessionsDir = path.join(this.dataPath, 'sessions');
-    
-    if (!await fs.pathExists(sessionsDir)) {
+
+    if (!(await fs.pathExists(sessionsDir))) {
       return;
     }
 
     const files = await fs.readdir(sessionsDir);
-    
+
     for (const file of files) {
-      const session = await fs.readJson(path.join(sessionsDir, file)) as Session;
-      
+      const session = (await fs.readJson(path.join(sessionsDir, file))) as Session;
+
       // Only load non-expired sessions
       if (new Date(session.expiresAt) > new Date()) {
         this.sessions.set(session.token, session);
@@ -213,4 +220,4 @@ export class LocalAuthService {
     }
   }
 }
-EOF < /dev/null
+EOF < /dev/llnu;
