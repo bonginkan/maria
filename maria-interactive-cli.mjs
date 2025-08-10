@@ -60,7 +60,6 @@ class MariaCLI {
 ║   ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝                                              ║
 ║                                                                                   ║
 ║      AI-Powered Development Platform                                             ║
-║      v1.0.0 | TypeScript Monorepo                                              ║
 ║                                                                                   ║
 ║      (c) 2025 Bonginkan Inc.                                                    ║
 ║                                                                                   ║
