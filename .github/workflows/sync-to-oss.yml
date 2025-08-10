@@ -1,0 +1,314 @@
+name: 🔄 Sync to OSS Repository
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/workflows/sync-to-oss.yml'
+      - 'maria-code-lp/**'
+      - 'packages/studio-app/**'
+      - 'packages/core-api/**'
+      - 'packages/dataflow-jobs/**'
+      - 'infra/**'
+      - 'schemas/**'
+      - '*.internal.md'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force sync even if no changes detected'
+        required: false
+        default: 'false'
+
+jobs:
+  sync-to-oss:
+    name: 📤 Sync to OSS Repository
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📦 Checkout maria_code (source)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: 🔧 Setup Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 📋 Prepare OSS distribution files
+        run: |
+          echo "🎯 Preparing OSS distribution from maria_code to maria..."
+          
+          # Create temporary directory for OSS files
+          mkdir -p /tmp/maria-oss
+          
+          # Copy OSS-relevant files from code-cli package
+          echo "📦 Copying CLI package files..."
+          if [ -d "packages/code-cli/src" ]; then
+            cp -r packages/code-cli/src /tmp/maria-oss/
+          fi
+          
+          if [ -d "packages/code-cli/dist" ]; then
+            cp -r packages/code-cli/dist /tmp/maria-oss/
+          fi
+          
+          # Copy essential root files
+          echo "📄 Copying root configuration files..."
+          cp -f README.md /tmp/maria-oss/ 2>/dev/null || true
+          cp -f CHANGELOG.md /tmp/maria-oss/ 2>/dev/null || true
+          cp -f LICENSE /tmp/maria-oss/ 2>/dev/null || true
+          cp -f package.json /tmp/maria-oss/ 2>/dev/null || true
+          cp -f tsconfig.json /tmp/maria-oss/ 2>/dev/null || true
+          cp -f .npmignore /tmp/maria-oss/ 2>/dev/null || true
+          
+          # Copy bin directory for CLI entry points
+          if [ -d "bin" ]; then
+            echo "🔧 Copying bin directory..."
+            cp -r bin /tmp/maria-oss/
+          fi
+          
+          # Copy scripts for post-install
+          if [ -d "scripts" ]; then
+            echo "📜 Copying scripts directory..."
+            mkdir -p /tmp/maria-oss/scripts
+            cp scripts/post-install.js /tmp/maria-oss/scripts/ 2>/dev/null || true
+            cp scripts/auto-start-llm.sh /tmp/maria-oss/scripts/ 2>/dev/null || true
+          fi
+          
+          # Create essential files if they don't exist
+          if [ ! -f "/tmp/maria-oss/README.md" ]; then
+            echo "📝 Creating default README.md..."
+            cat > /tmp/maria-oss/README.md << 'EOF'
+          # MARIA - Intelligent CLI Assistant
+          
+          Zero-Configuration AI CLI with Multi-Model Support
+          
+          ## Installation
+          
+          ```bash
+          npm install -g @bonginkan/maria@latest
+          ```
+          
+          ## Quick Start
+          
+          ```bash
+          maria
+          # or
+          mc
+          ```
+          
+          ## License
+          
+          MIT © Bonginkan Inc.
+          EOF
+          fi
+          
+          # Update package.json for OSS distribution
+          echo "📦 Updating package.json for OSS..."
+          if [ -f "/tmp/maria-oss/package.json" ]; then
+            # Remove private field and internal dependencies
+            node -e "
+              const fs = require('fs');
+              const pkg = JSON.parse(fs.readFileSync('/tmp/maria-oss/package.json', 'utf8'));
+              
+              // Remove private field
+              delete pkg.private;
+              
+              // Remove workspace configuration
+              delete pkg.workspaces;
+              
+              // Remove internal dependencies
+              if (pkg.dependencies) {
+                Object.keys(pkg.dependencies).forEach(key => {
+                  if (key.startsWith('@maria/')) {
+                    delete pkg.dependencies[key];
+                  }
+                });
+              }
+              
+              // Remove internal dev dependencies
+              if (pkg.devDependencies) {
+                Object.keys(pkg.devDependencies).forEach(key => {
+                  if (key.startsWith('@maria/')) {
+                    delete pkg.devDependencies[key];
+                  }
+                });
+              }
+              
+              // Ensure proper OSS fields
+              pkg.name = '@bonginkan/maria';
+              pkg.homepage = 'https://github.com/bonginkan/maria';
+              pkg.repository = {
+                type: 'git',
+                url: 'git+https://github.com/bonginkan/maria.git'
+              };
+              pkg.bugs = {
+                url: 'https://github.com/bonginkan/maria/issues'
+              };
+              
+              fs.writeFileSync('/tmp/maria-oss/package.json', JSON.stringify(pkg, null, 2));
+            "
+          fi
+          
+          echo "✅ OSS files prepared in /tmp/maria-oss"
+          ls -la /tmp/maria-oss/
+
+      - name: 🔄 Clone OSS repository
+        env:
+          GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
+        run: |
+          echo "📥 Cloning maria OSS repository..."
+          git clone https://x-access-token:${GH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
+          cd /tmp/maria-repo
+          
+          # Setup git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 📤 Sync files to OSS repository
+        run: |
+          cd /tmp/maria-repo
+          
+          echo "🧹 Cleaning existing files (except .git and .github)..."
+          find . -maxdepth 1 -not -name '.git' -not -name '.github' -not -name '.' -exec rm -rf {} \;
+          
+          echo "📋 Copying new files from maria_code..."
+          cp -r /tmp/maria-oss/* . 2>/dev/null || true
+          cp -r /tmp/maria-oss/.[^.]* . 2>/dev/null || true
+          
+          # Preserve OSS-specific files
+          echo "🔒 Preserving OSS-specific configurations..."
+          
+          # Add OSS-specific .github/workflows if needed
+          mkdir -p .github/workflows
+          
+          # Create OSS-specific CI/CD if not exists
+          if [ ! -f ".github/workflows/npm-publish.yml" ]; then
+            cat > .github/workflows/npm-publish.yml << 'EOF'
+          name: 📦 NPM Publish
+          
+          on:
+            push:
+              branches:
+                - main
+            release:
+              types: [created]
+          
+          jobs:
+            publish:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-node@v4
+                  with:
+                    node-version: 20
+                    registry-url: 'https://registry.npmjs.org'
+                - run: npm ci
+                - run: npm run build
+                - run: npm publish
+                  env:
+                    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          EOF
+          fi
+
+      - name: 📊 Check for changes
+        id: check_changes
+        run: |
+          cd /tmp/maria-repo
+          
+          # Check if there are any changes
+          if [ -n "$(git status --porcelain)" ] || [ "${{ github.event.inputs.force }}" = "true" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "✅ Changes detected or force sync requested"
+            git status --short
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changes detected"
+          fi
+
+      - name: 📝 Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
+        run: |
+          cd /tmp/maria-repo
+          
+          # Stage all changes
+          git add -A
+          
+          # Get commit message from source repo
+          SOURCE_COMMIT_MSG=$(cd $GITHUB_WORKSPACE && git log -1 --pretty=%B)
+          SOURCE_COMMIT_SHA=$(cd $GITHUB_WORKSPACE && git rev-parse --short HEAD)
+          
+          # Create commit
+          git commit -m "🔄 Sync from maria_code@${SOURCE_COMMIT_SHA}
+
+          ${SOURCE_COMMIT_MSG}
+          
+          ---
+          Synced from: https://github.com/bonginkan/maria_code/commit/${GITHUB_SHA}
+          Automated sync by GitHub Actions" || true
+          
+          # Push to main
+          git push origin main
+          
+          echo "✅ Successfully synced to OSS repository"
+
+      - name: 🎉 Sync summary
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          echo "## 🔄 Sync Summary"
+          echo ""
+          echo "✅ **Source Repository**: bonginkan/maria_code"
+          echo "✅ **Target Repository**: bonginkan/maria"
+          echo "✅ **Source Commit**: ${{ github.sha }}"
+          echo "✅ **Sync Status**: Success"
+          echo ""
+          echo "### 📦 Files Synced:"
+          echo "- CLI source and distribution files"
+          echo "- README.md, CHANGELOG.md, LICENSE"
+          echo "- package.json (cleaned for OSS)"
+          echo "- Binary entry points"
+          echo ""
+          echo "### 🔗 Links:"
+          echo "- [Source Commit](https://github.com/bonginkan/maria_code/commit/${{ github.sha }})"
+          echo "- [OSS Repository](https://github.com/bonginkan/maria)"
+
+      - name: ⚠️ No changes notification
+        if: steps.check_changes.outputs.changes == 'false'
+        run: |
+          echo "ℹ️ No changes to sync from maria_code to maria"
+          echo "All OSS files are up to date!"
+
+  trigger-oss-release:
+    name: 🚀 Trigger OSS Release
+    needs: sync-to-oss
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, 'release:')
+    
+    steps:
+      - name: 🎯 Trigger release workflow in OSS repo
+        env:
+          GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
+        run: |
+          echo "🚀 Triggering release workflow in maria OSS repository..."
+          
+          # Extract version from commit message if present
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'release:\s*v?\K[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9.]+)?' || echo "")
+          
+          if [ -n "$VERSION" ]; then
+            echo "📦 Triggering release for version: $VERSION"
+            
+            # Trigger release workflow via API
+            curl -X POST \
+              -H "Authorization: token ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/bonginkan/maria/actions/workflows/release.yml/dispatches \
+              -d "{\"ref\":\"main\",\"inputs\":{\"version\":\"$VERSION\"}}"
+              
+            echo "✅ Release workflow triggered"
+          else
+            echo "ℹ️ No version found in commit message, skipping release trigger"
+          fi
