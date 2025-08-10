@@ -91,3 +91,6 @@ Thumbs.db
 
 # Local development
 *.local
+
+# Landing page (not for OSS distribution)
+maria-code-lp/
