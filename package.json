@@ -1,0 +1,48 @@
+{
+  "name": "@bonginkan/maria",
+  "version": "1.0.0-alpha.1",
+  "description": "MARIA CODE - Advanced AI-powered development CLI by Bonginkan Inc.",
+  "author": {
+    "name": "Bongin",
+    "email": "bongin@bonginkan.ai",
+    "organization": "Bonginkan Inc."
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/bonginkan/maria",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bonginkan/maria.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bonginkan/maria/issues"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "assistant",
+    "bonginkan",
+    "maria",
+    "agi"
+  ],
+  "main": "./dist/index.js",
+  "bin": {
+    "maria": "./dist/bin/mc.js",
+    "mc": "./dist/bin/mc.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "postinstall": "node dist/scripts/post-install.js || true"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}
