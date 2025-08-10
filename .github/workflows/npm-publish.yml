@@ -41,17 +41,10 @@ jobs:
         run: pnpm install
 
       - name: Build project
-        run: pnpm --filter @maria/code-cli build
-
-      - name: Prepare npm release
-        run: |
-          cd packages/code-cli
-          chmod +x scripts/prepare-npm-release.sh
-          ./scripts/prepare-npm-release.sh
+        run: pnpm run build
 
       - name: Publish to npm
         run: |
-          cd packages/code-cli/dist-npm
           npm publish --access public --tag ${{ github.event.inputs.tag || 'alpha' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -61,7 +54,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const version = require('./packages/code-cli/dist-npm/package.json').version;
+            const version = require('./package.json').version;
             const tag = context.payload.inputs?.tag || 'alpha';
             
             const body = `
