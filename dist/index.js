@@ -16,7 +16,6 @@ var tty = require('tty');
 var web = require('stream/web');
 var events = require('events');
 
-var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var Stream__default = /*#__PURE__*/_interopDefault(Stream);
@@ -28,9 +27,6 @@ var process2__default = /*#__PURE__*/_interopDefault(process2);
 var os__default = /*#__PURE__*/_interopDefault(os);
 var tty__default = /*#__PURE__*/_interopDefault(tty);
 
-const { createRequire } = require$1('module');
-const require$1 = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('index.js', document.baseURI).href)) || __filename);
-      
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -38,10 +34,10 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __require = /* @__PURE__ */ ((x3) => typeof require$1 !== "undefined" ? require$1 : typeof Proxy !== "undefined" ? new Proxy(x3, {
-  get: (a2, b2) => (typeof require$1 !== "undefined" ? require$1 : a2)[b2]
+var __require = /* @__PURE__ */ ((x3) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x3, {
+  get: (a2, b2) => (typeof require !== "undefined" ? require : a2)[b2]
 }) : x3)(function(x3) {
-  if (typeof require$1 !== "undefined") return require$1.apply(this, arguments);
+  if (typeof require !== "undefined") return require.apply(this, arguments);
   throw Error('Dynamic require of "' + x3 + '" is not supported');
 });
 var __esm = (fn, res) => function __init() {

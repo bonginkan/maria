@@ -1,0 +1,130 @@
+name: Manual NPM Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (auto/patch/minor/major)'
+        required: true
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - patch
+          - minor
+          - major
+      tag:
+        description: 'NPM tag (alpha, beta, latest)'
+        required: true
+        default: 'alpha'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - latest
+      dry_run:
+        description: 'Dry run (build only, no publish)'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10'
+
+jobs:
+  manual-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📦 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏗️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: 📦 Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      - name: 🔧 Build project
+        run: pnpm run build
+
+      - name: 🧪 Run quality checks
+        run: |
+          pnpm run lint
+          pnpm run typecheck
+
+      - name: 📝 Version bump (if not auto)
+        if: github.event.inputs.version != 'auto'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if [[ "${{ github.event.inputs.version }}" == "patch" ]]; then
+            pnpm version patch --no-git-tag-version
+          elif [[ "${{ github.event.inputs.version }}" == "minor" ]]; then
+            pnpm version minor --no-git-tag-version  
+          elif [[ "${{ github.event.inputs.version }}" == "major" ]]; then
+            pnpm version major --no-git-tag-version
+          fi
+          
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "🔄 Version bumped to: $NEW_VERSION"
+
+      - name: 📊 Package info
+        run: |
+          echo "📦 Package: @bonginkan/maria"
+          echo "📋 Version: $(node -p "require('./package.json').version")"
+          echo "🏷️  Tag: ${{ github.event.inputs.tag }}"
+          echo "🔧 Dry run: ${{ github.event.inputs.dry_run }}"
+          
+          echo "📦 Package contents:"
+          npm pack --dry-run
+
+      - name: 🚀 Publish to NPM (Real)
+        if: github.event.inputs.dry_run == 'false' && env.NODE_AUTH_TOKEN
+        run: |
+          echo "🚀 Publishing to npm with tag: ${{ github.event.inputs.tag }}"
+          npm publish --access public --tag ${{ github.event.inputs.tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: 🔍 Dry run result
+        if: github.event.inputs.dry_run == 'true'
+        run: |
+          echo "🔍 DRY RUN - No actual publishing performed"
+          echo "✅ Build successful"
+          echo "✅ Quality checks passed"
+          echo "📦 Package ready for publishing"
+
+      - name: ⚠️  Missing NPM_TOKEN
+        if: github.event.inputs.dry_run == 'false' && !env.NODE_AUTH_TOKEN
+        run: |
+          echo "⚠️  NPM_TOKEN not configured in GitHub Secrets"
+          echo "💡 To enable publishing:"
+          echo "   1. Create npm automation token"
+          echo "   2. Add NPM_TOKEN to GitHub Repository Secrets"
+          echo "   3. Re-run this workflow"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: ✅ Success summary
+        if: success()
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "${{ github.event.inputs.dry_run }}" == "true" ]]; then
+            echo "🎉 Dry run completed successfully!"
+          elif [[ -n "${{ env.NODE_AUTH_TOKEN }}" ]]; then
+            echo "🎉 Successfully published @bonginkan/maria@$VERSION"
+            echo "📥 Install with: npm install -g @bonginkan/maria@${{ github.event.inputs.tag }}"
+          else
+            echo "✅ Build completed, awaiting NPM_TOKEN configuration"
+          fi

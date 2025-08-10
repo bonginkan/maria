@@ -21,11 +21,5 @@ export default defineConfig({
   onSuccess: 'chmod +x dist/cli.js',
   esbuildOptions(options) {
     // CommonJS互換性の向上
-    options.banner = {
-      js: `
-const { createRequire } = require('module');
-const require = createRequire(import.meta.url || __filename);
-      `,
-    };
   },
 });

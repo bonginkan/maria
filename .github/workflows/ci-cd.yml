@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -114,11 +114,7 @@ jobs:
           echo "Current version: $CURRENT_VERSION"
           
           # Auto-increment alpha version
-          if [[ $CURRENT_VERSION == *"alpha"* ]]; then
-            pnpm version prerelease --preid=alpha --no-git-tag-version
-          else
-            pnpm version patch --no-git-tag-version
-          fi
+          pnpm version prerelease --preid=alpha --no-git-tag-version
           
           NEW_VERSION=$(node -p "require('./package.json').version")
           echo "New version: $NEW_VERSION"
@@ -132,48 +128,10 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: 📝 Create Git tag
+      - name: 🎉 Success notification
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -a "v${{ env.NEW_VERSION }}" -m "Release v${{ env.NEW_VERSION }}"
-          git push origin "v${{ env.NEW_VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: 🎉 Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.NEW_VERSION }}
-          release_name: MARIA CODE v${{ env.NEW_VERSION }}
-          body: |
-            ## 🎉 MARIA CODE v${{ env.NEW_VERSION }} (alpha)
-            
-            ### 📦 Installation
-            ```bash
-            npm install -g @bonginkan/maria@alpha
-            ```
-            
-            ### 🚀 Quick Start
-            ```bash
-            maria        # Interactive CLI
-            mc chat      # Chat mode
-            ```
-            
-            ### 📋 Changes
-            - Auto-published from main branch
-            - Latest alpha build with all features
-            
-            ### 🆘 Support
-            - Website: https://bonginkan.ai/
-            - Issues: https://github.com/bonginkan/maria/issues
-            
-            ---
-            🤖 Auto-published by GitHub Actions
-          draft: false
-          prerelease: true
+          echo "🎉 Successfully published @bonginkan/maria@${{ env.NEW_VERSION }}"
+          echo "📦 Install with: npm install -g @bonginkan/maria@alpha"
 
   # Manual NPM Publish
   manual-publish:
