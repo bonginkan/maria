@@ -1556,15 +1556,24 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
   }
 
   private async handleVersion(): Promise<SlashCommandResult> {
-    const packageJson = {
-      name: '@maria/code-cli',
-      version: '1.0.0'
-    };
-    
-    return {
-      success: true,
-      message: `MARIA CODE CLI v${packageJson.version}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.`
-    };
+    try {
+      // Try to read version from package.json
+      const fs = await import('fs/promises');
+      const path = await import('path');
+      const packagePath = path.resolve(process.cwd(), 'package.json');
+      const packageData = JSON.parse(await fs.readFile(packagePath, 'utf8'));
+      
+      return {
+        success: true,
+        message: `MARIA CODE CLI v${packageData.version || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`
+      };
+    } catch {
+      // Fallback if package.json can't be read
+      return {
+        success: true,
+        message: `MARIA CODE CLI v1.0.0\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`
+      };
+    }
   }
 
   private async handleHelp(args: string[]): Promise<SlashCommandResult> {
