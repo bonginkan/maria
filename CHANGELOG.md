@@ -5,6 +5,32 @@ All notable changes to MARIA will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2-alpha.1] - 2025-08-10
+
+### 🆕 Added
+- **📚 Update History Feature**
+  - Automated GitHub Releases integration with CHANGELOG.md
+  - Enhanced release notes with installation instructions and links
+  - Automatic NPM publishing with release tagging
+  - Version badge updates in README.md
+- **📦 NPM Distribution Enhancement**
+  - Explicit `@latest` tag support for stable releases
+  - Clear installation paths: `@latest`, `@alpha`, `@beta`
+  - Automatic latest tag assignment for stable versions
+  - Enhanced npx support with version tags
+
+### 🔧 Improvements
+- **📋 Documentation Enhancement**
+  - Added dedicated "Documentation & Updates" section in README
+  - Direct links to Releases, Changelog, and Downloads
+  - Better visibility of version history and updates
+
+### 🚀 CI/CD Enhancements
+- Automated release workflow with changelog extraction
+- Smart version detection from package.json or manual input
+- Release asset uploads and artifact management
+- Automatic NPM publishing with proper tagging (alpha/beta/stable)
+
 ## [1.0.0] - 2025-08-10
 
 ### Added
