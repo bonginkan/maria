@@ -1,0 +1,176 @@
+--- ChatInterface.tsx
++++ ChatInterface.tsx
+@@ -9,6 +9,7 @@ import SOWReview from './SOWReview.js';
+ import TaskProgress from './TaskProgress.js';
+ import StepConfirmation from './StepConfirmation.js';
++import { AIChatServiceV2, ChatContext } from '../services/ai-chat-service-v2.js';
+ 
+ interface ChatInterfaceProps {
+   initialPrompt?: string;
+@@ -29,6 +30,9 @@ interface Message {
+     sow?: any;
+     executionId?: string;
+     commandResult?: any;
++    provider?: string;
++    model?: string;
++    streaming?: boolean;
+   };
+ }
+ 
+@@ -46,8 +50,16 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ mode, projectPath }) => {
+   const [executionSteps, setExecutionSteps] = useState<any[]>([]);
+   const [currentSlashCommand, setCurrentSlashCommand] = useState<string | null>(null);
+   const [slashCommandArgs, setSlashCommandArgs] = useState<string[]>([]);
++  const [aiService] = useState(() => new AIChatServiceV2());
++  const [streamingContent, setStreamingContent] = useState<string>('');
+ 
+   useEffect(() => {
++    // Initialize AI service
++    aiService.initialize().catch(err => {
++      setError(`Failed to initialize AI service: ${err.message}`);
++    });
++
+     const welcome: Message = {
+       id: Date.now().toString(),
+       content: `Welcome to MARIA CODE Chat (Mode: ${mode?.name || 'chat'})\nProject: ${projectPath}\n\nHow can I help you today?`,
+@@ -55,7 +67,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ mode, projectPath }) => {
+       timestamp: new Date(),
+     };
+     setMessages([welcome]);
+-  }, [mode, projectPath]);
++  }, [mode, projectPath, aiService]);
+ 
+   const handleInput = useCallback(async (value: string) => {
+     if (!value.trim()) return;
+@@ -77,10 +89,75 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ mode, projectPath }) => {
+     setState('processing');
+     setIsLoading(true);
+     setError(null);
++    setStreamingContent('');
+ 
+     try {
+-      // Simulate AI processing with realistic responses
+-      await new Promise(resolve => setTimeout(resolve, 1500));
++      // Create chat context
++      const chatContext: ChatContext = {
++        sessionId: `session-${Date.now()}`,
++        projectRoot: projectPath,
++        mode: mode?.name || 'chat',
++        history: messages.map(m => ({
++          role: m.role,
++          content: m.content,
++          timestamp: m.timestamp,
++          metadata: m.metadata
++        }))
++      };
++
++      // Process message with AI service
++      const response = await aiService.processMessage(value, chatContext, true); // Enable streaming
++      
++      const assistantMessage: Message = {
++        id: Date.now().toString(),
++        content: '',
++        role: 'assistant',
++        timestamp: new Date(),
++        metadata: response.message.metadata
++      };
++
++      // Add empty message that will be filled by stream
++      setMessages((prev: Message[]) => [...prev, assistantMessage]);
++
++      // Handle streaming response
++      if (response.stream) {
++        let fullContent = '';
++        for await (const chunk of response.stream) {
++          fullContent += chunk;
++          setStreamingContent(fullContent);
++          
++          // Update the last message with streaming content
++          setMessages((prev: Message[]) => {
++            const newMessages = [...prev];
++            newMessages[newMessages.length - 1] = {
++              ...assistantMessage,
++              content: fullContent
++            };
++            return newMessages;
++          });
++        }
++        setStreamingContent('');
++      } else {
++        // Non-streaming response
++        setMessages((prev: Message[]) => {
++          const newMessages = [...prev];
++          newMessages[newMessages.length - 1] = {
++            ...assistantMessage,
++            content: response.message.content
++          };
++          return newMessages;
++        });
++      }
++
++      // Check if response contains SOW data
++      if (response.message.metadata?.type === 'sow') {
++        // Parse SOW from response content
++        const sowData = parseSowFromContent(response.message.content);
++        if (sowData) {
++          setCurrentSOW(sowData);
++          setState('sow-review');
++        } else {
++          setState('input');
++        }
+       
+       // ... rest of the existing logic for SOW handling ...
+       
+@@ -355,6 +432,47 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ mode, projectPath }) => {
+     setMessages((prev: Message[]) => [...prev, userMessage]);
+     setInputValue('');
+ 
++    // Handle model switching commands
++    if (cmd === 'model') {
++      const modelName = args.join(' ');
++      if (modelName) {
++        try {
++          await aiService.switchModel(modelName);
++          const info = aiService.getProviderInfo();
++          const responseMessage: Message = {
++            id: Date.now().toString(),
++            content: `✅ Switched to model: ${info?.model} (Provider: ${info?.provider})`,
++            role: 'system',
++            timestamp: new Date(),
++          };
++          setMessages((prev: Message[]) => [...prev, responseMessage]);
++        } catch (err) {
++          const errorMessage: Message = {
++            id: Date.now().toString(),
++            content: `❌ Failed to switch model: ${err instanceof Error ? err.message : 'Unknown error'}`,
++            role: 'system',
++            timestamp: new Date(),
++          };
++          setMessages((prev: Message[]) => [...prev, errorMessage]);
++        }
++      } else {
++        // Show current model info
++        const info = aiService.getProviderInfo();
++        const infoMessage: Message = {
++          id: Date.now().toString(),
++          content: `Current Model: ${info?.model || 'Not initialized'}\nProvider: ${info?.provider || 'Not initialized'}\n\nAvailable providers: ${info?.available ? JSON.stringify(info.available, null, 2) : 'None'}`,
++          role: 'system',
++          timestamp: new Date(),
++        };
++        setMessages((prev: Message[]) => [...prev, infoMessage]);
++      }
++      return;
++    }
++
+     // Handle other slash commands
+     if (['exit', 'quit', 'q'].includes(cmd)) {
+       exit();
+@@ -486,7 +604,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ mode, projectPath }) => {
+         {isLoading ? (
+           <Box>
+             <Text color="cyan">
+-              <Spinner type="dots" /> Processing...
++              <Spinner type="dots" /> {streamingContent ? 'Streaming response...' : 'Processing...'}
+             </Text>
+           </Box>
+         ) : (

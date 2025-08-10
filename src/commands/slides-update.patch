@@ -1,0 +1,80 @@
+--- slides.tsx (original with mock responses)
++++ slides.tsx (updated with real AI)
+@@ -5,6 +5,7 @@ import { Box, Text } from 'ink';
+ import SelectInput from 'ink-select-input';
+ import Spinner from 'ink-spinner';
++import { AIChatServiceV2, ChatContext } from '../services/ai-chat-service-v2.js';
+ 
+ interface SlidesCommand {
+   action: 'structure' | 'content' | 'visuals' | 'sync';
+@@ -15,37 +16,88 @@ interface SlidesCommand {
+ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({ command, onExit }) => {
+   const [status, setStatus] = React.useState<'processing' | 'done'>('processing');
+   const [result, setResult] = React.useState<string>('');
++  const [streamingContent, setStreamingContent] = React.useState<string>('');
++  const [aiService] = React.useState(() => new AIChatServiceV2());
+ 
+   React.useEffect(() => {
+     const executeAgent = async () => {
+       try {
+-        // Simulate presentation agent execution
+-        await new Promise(resolve => setTimeout(resolve, 2000));
++        // Initialize AI service
++        await aiService.initialize();
+         
+-        let mockResult = '';
++        // Create chat context
++        const context: ChatContext = {
++          sessionId: `slides-${Date.now()}`,
++          projectRoot: process.cwd(),
++          mode: 'creative',
++          history: []
++        };
++
++        let prompt = '';
+         switch (command.action) {
+           case 'structure':
+-            mockResult = `Generated slide structure for: ${command.topic || 'Presentation'}\n\n...`;
++            prompt = `Create a comprehensive slide structure for a presentation about "${command.topic || 'Modern Software Development'}"...`;
+             break;
+           case 'content':
+-            mockResult = `Content created for slides: ${command.file || 'presentation.pptx'}\n\n...`;
++            prompt = `Create detailed content for presentation slides...`;
+             break;
+           // ... other cases
+         }
++
++        // Process with AI service (streaming enabled)
++        const response = await aiService.processMessage(prompt, context, true);
+         
+-        setResult(mockResult);
++        if (response.stream) {
++          let fullContent = '';
++          for await (const chunk of response.stream) {
++            fullContent += chunk;
++            setStreamingContent(fullContent);
++          }
++          setResult(fullContent);
++        } else {
++          setResult(response.message.content);
++        }
++        
+         setStatus('done');
++        setStreamingContent('');
+       } catch (error) {
+         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+         setStatus('done');
+       }
+     };
+ 
+     executeAgent();
+-  }, [command]);
++  }, [command, aiService]);
+
+Key changes:
+1. Import AIChatServiceV2 for real AI functionality
+2. Add streaming content state for real-time responses
+3. Initialize AI service in component
+4. Replace mock responses with actual AI prompts
+5. Handle streaming responses from AI
+6. Provide detailed, context-aware prompts for each action
