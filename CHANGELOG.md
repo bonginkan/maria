@@ -1,89 +1,65 @@
 # Changelog
 
-All notable changes to MARIA CODE will be documented in this file.
+All notable changes to MARIA will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0-alpha.1] - 2025-08-10
+## [1.0.0] - 2025-08-10
 
-### 🎉 Initial Alpha Release
+### Added
+- 🚀 **Initial Release** - MARIA Intelligent CLI Assistant
+- 🔒 **Privacy-First Design** - Local LLM support with offline capabilities
+- 🧠 **Multi-Model Support** - 60+ models across 8 AI providers
+- ⚡ **Zero Configuration** - Automatic provider detection and setup
+- 🎯 **Intelligent Routing** - Task-based provider and model selection
+- 🛡️ **Health Monitoring** - Real-time system and provider status monitoring
+- 🌐 **Multilingual Support** - English, Japanese, Chinese language support
+- 💰 **Cost Optimization** - Smart routing to minimize API costs
 
-#### Added
-- **Core Commands**
-  - `mc code` - AI-powered code generation with intelligent model selection
-  - `mc vision` - Image analysis using vision-capable providers
-  - `mc review` - Comprehensive code review with suggestions
-  - `mc test` - AI-powered test generation (unit/integration/e2e)
-  - `mc commit` - Enhanced AI commit messages with Git integration
-  - `mc chat` - Interactive chat with 40+ slash commands
+### Supported Providers
+- **Cloud Providers**: OpenAI (GPT-5, GPT-4o, o1), Anthropic (Claude 4.1, 3.5), Google (Gemini 2.5), Groq (Llama 3.3), xAI Grok
+- **Local Providers**: LM Studio, Ollama, vLLM
 
-- **AI Provider Support**
-  - OpenAI (GPT-4o, GPT-4-turbo)
-  - Anthropic (Claude 3 Opus/Sonnet)
-  - Google (Gemini 2.5 Pro)
-  - Groq (Mixtral, Llama 3)
-  - LM Studio (Local models with 32K context)
-  - Ollama (100+ local models)
-  - vLLM (High-performance inference)
+### Core Features
+- Interactive chat sessions with streaming responses
+- One-shot commands for quick tasks
+- Vision analysis capabilities
+- Code generation with language detection
+- System health monitoring and recommendations
+- Configurable priority modes (privacy-first, performance, cost-effective, auto)
+- Comprehensive setup wizard
+- Real-time provider health checks
 
-- **Intelligent Features**
-  - Automatic model selection based on task type
-  - Privacy-first with local model prioritization
-  - Smart fallback mechanism
-  - Context window management (up to 200K tokens)
-  - Natural language understanding
+### Technical Highlights
+- TypeScript-first implementation
+- Zero external dependencies for core functionality  
+- Modular provider architecture
+- Comprehensive error handling and fallback mechanisms
+- Cross-platform support (Windows, macOS, Linux)
+- ESM module support
+- Tree-shaking optimized build
 
-- **Interactive Mode**
-  - 40+ slash commands for various operations
-  - Model management and switching
-  - Session management and export
-  - Real-time status and metrics
+### Initial Models Supported
+- **OpenAI**: GPT-5, GPT-5 Mini, GPT-4o, GPT-4o Mini, o1, o1-mini
+- **Anthropic**: Claude Opus 4.1, Claude Opus 4, Claude Sonnet 4, Claude 3.5 Sonnet, Claude 3.5 Haiku
+- **Google**: Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 1.5 Pro/Flash
+- **Groq**: Llama 3.3 70B, Llama 3.2 90B Vision, Mixtral 8x7B, Gemma 2 9B
+- **Grok**: Grok 2, Grok 2 Mini
+- **Local Models**: GPT-OSS 120B/20B, Qwen 2.5 VL/32B, Llama 3.2, Code Llama, Japanese Stable LM
 
-- **Developer Experience**
-  - Zero-configuration setup
-  - Auto-detection of local LLM servers
-  - Progress indicators and feedback
-  - Comprehensive error handling
+## [Unreleased]
 
-#### Technical Details
-- Built with TypeScript
-- React-based interactive CLI using Ink
-- Commander.js for command parsing
-- Support for Node.js 18+
-
-#### Known Issues
-- Windows support is experimental
-- Some local models may require manual configuration
-- Video/Image generation commands require additional setup
-
-### Contributors
-- Bongin (@bonginkan) - Lead Developer, Bonginkan Inc.
-
----
-
-## Previous Development (Pre-Alpha)
-
-### Phase 4 (2025-08-10)
-- Implemented core MVP commands
-- Integrated AI routing system
-- Added multi-provider support
-
-### Phase 3 (2025-02-10)
-- Removed external dependencies
-- Created local storage services
-- Single package structure
-
-### Phase 2 (2025-02-01)
-- Context window management
-- Memory optimization
-- Session persistence
-
-### Phase 1 (2025-01-31)
-- CLI foundation with 38 slash commands
-- UI/UX implementation
-- Build system setup
+### Planned Features
+- Video generation support (Wan 2.2 integration)
+- Image generation support (Qwen-Image integration)
+- Plugin system for custom providers
+- Advanced conversation memory
+- Team collaboration features
+- Docker containerization
+- Web interface option
+- API server mode
 
 ---
 
-For more details, visit [GitHub Releases](https://github.com/bonginkan/maria/releases)
+For more information about upcoming features, see our [roadmap](https://github.com/bonginkan/maria/projects).
