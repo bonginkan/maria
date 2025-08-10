@@ -16,6 +16,7 @@ var tty = require('tty');
 var web = require('stream/web');
 var events = require('events');
 
+var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 var Stream__default = /*#__PURE__*/_interopDefault(Stream);
@@ -27,6 +28,9 @@ var process2__default = /*#__PURE__*/_interopDefault(process2);
 var os__default = /*#__PURE__*/_interopDefault(os);
 var tty__default = /*#__PURE__*/_interopDefault(tty);
 
+const { createRequire } = require$1('module');
+const require$1 = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('index.js', document.baseURI).href)) || __filename);
+      
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -34,10 +38,10 @@ var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
-var __require = /* @__PURE__ */ ((x3) => typeof require !== "undefined" ? require : typeof Proxy !== "undefined" ? new Proxy(x3, {
-  get: (a2, b2) => (typeof require !== "undefined" ? require : a2)[b2]
+var __require = /* @__PURE__ */ ((x3) => typeof require$1 !== "undefined" ? require$1 : typeof Proxy !== "undefined" ? new Proxy(x3, {
+  get: (a2, b2) => (typeof require$1 !== "undefined" ? require$1 : a2)[b2]
 }) : x3)(function(x3) {
-  if (typeof require !== "undefined") return require.apply(this, arguments);
+  if (typeof require$1 !== "undefined") return require$1.apply(this, arguments);
   throw Error('Dynamic require of "' + x3 + '" is not supported');
 });
 var __esm = (fn, res) => function __init() {
@@ -67,9 +71,16 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
+// node_modules/tsup/assets/cjs_shims.js
+var init_cjs_shims = __esm({
+  "node_modules/tsup/assets/cjs_shims.js"() {
+  }
+});
+
 // node_modules/commander/lib/error.js
 var require_error = __commonJS({
   "node_modules/commander/lib/error.js"(exports) {
+    init_cjs_shims();
     var CommanderError2 = class extends Error {
       static {
         __name(this, "CommanderError");
@@ -111,6 +122,7 @@ var require_error = __commonJS({
 // node_modules/commander/lib/argument.js
 var require_argument = __commonJS({
   "node_modules/commander/lib/argument.js"(exports) {
+    init_cjs_shims();
     var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
     var Argument2 = class {
       static {
@@ -242,6 +254,7 @@ var require_argument = __commonJS({
 // node_modules/commander/lib/help.js
 var require_help = __commonJS({
   "node_modules/commander/lib/help.js"(exports) {
+    init_cjs_shims();
     var { humanReadableArgName } = require_argument();
     var Help2 = class {
       static {
@@ -661,6 +674,7 @@ var require_help = __commonJS({
 // node_modules/commander/lib/option.js
 var require_option = __commonJS({
   "node_modules/commander/lib/option.js"(exports) {
+    init_cjs_shims();
     var { InvalidArgumentError: InvalidArgumentError2 } = require_error();
     var Option2 = class {
       static {
@@ -941,6 +955,7 @@ var require_option = __commonJS({
 // node_modules/commander/lib/suggestSimilar.js
 var require_suggestSimilar = __commonJS({
   "node_modules/commander/lib/suggestSimilar.js"(exports) {
+    init_cjs_shims();
     var maxDistance = 3;
     function editDistance(a2, b2) {
       if (Math.abs(a2.length - b2.length) > maxDistance)
@@ -1023,6 +1038,7 @@ var require_suggestSimilar = __commonJS({
 // node_modules/commander/lib/command.js
 var require_command = __commonJS({
   "node_modules/commander/lib/command.js"(exports) {
+    init_cjs_shims();
     var EventEmitter2 = __require("events").EventEmitter;
     var childProcess = __require("child_process");
     var path = __require("path");
@@ -3071,6 +3087,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
 // node_modules/commander/index.js
 var require_commander = __commonJS({
   "node_modules/commander/index.js"(exports) {
+    init_cjs_shims();
     var { Argument: Argument2 } = require_argument();
     var { Command: Command2 } = require_command();
     var { CommanderError: CommanderError2, InvalidArgumentError: InvalidArgumentError2 } = require_error();
@@ -3093,6 +3110,7 @@ var require_commander = __commonJS({
 // node_modules/webidl-conversions/lib/index.js
 var require_lib = __commonJS({
   "node_modules/webidl-conversions/lib/index.js"(exports, module) {
+    init_cjs_shims();
     var conversions = {};
     module.exports = conversions;
     function sign(x3) {
@@ -3248,6 +3266,7 @@ var require_lib = __commonJS({
 // node_modules/whatwg-url/lib/utils.js
 var require_utils = __commonJS({
   "node_modules/whatwg-url/lib/utils.js"(exports, module) {
+    init_cjs_shims();
     module.exports.mixin = /* @__PURE__ */ __name(function mixin(target, source) {
       const keys = Object.getOwnPropertyNames(source);
       for (let i3 = 0; i3 < keys.length; ++i3) {
@@ -3275,6 +3294,7 @@ var require_mappingTable = __commonJS({
 // node_modules/tr46/index.js
 var require_tr46 = __commonJS({
   "node_modules/tr46/index.js"(exports, module) {
+    init_cjs_shims();
     var punycode = __require("punycode");
     var mappingTable = require_mappingTable();
     var PROCESSING_OPTIONS = {
@@ -3441,6 +3461,7 @@ var require_tr46 = __commonJS({
 // node_modules/whatwg-url/lib/url-state-machine.js
 var require_url_state_machine = __commonJS({
   "node_modules/whatwg-url/lib/url-state-machine.js"(exports, module) {
+    init_cjs_shims();
     var punycode = __require("punycode");
     var tr46 = require_tr46();
     var specialSchemes = {
@@ -4552,6 +4573,7 @@ var require_url_state_machine = __commonJS({
 // node_modules/whatwg-url/lib/URL-impl.js
 var require_URL_impl = __commonJS({
   "node_modules/whatwg-url/lib/URL-impl.js"(exports) {
+    init_cjs_shims();
     var usm = require_url_state_machine();
     exports.implementation = class URLImpl {
       static {
@@ -4711,6 +4733,7 @@ var require_URL_impl = __commonJS({
 // node_modules/whatwg-url/lib/URL.js
 var require_URL = __commonJS({
   "node_modules/whatwg-url/lib/URL.js"(exports, module) {
+    init_cjs_shims();
     var conversions = require_lib();
     var utils = require_utils();
     var Impl = require_URL_impl();
@@ -4893,6 +4916,7 @@ var require_URL = __commonJS({
 // node_modules/whatwg-url/lib/public-api.js
 var require_public_api = __commonJS({
   "node_modules/whatwg-url/lib/public-api.js"(exports) {
+    init_cjs_shims();
     exports.URL = require_URL().interface;
     exports.serializeURL = require_url_state_machine().serializeURL;
     exports.serializeURLOrigin = require_url_state_machine().serializeURLOrigin;
@@ -4908,6 +4932,7 @@ var require_public_api = __commonJS({
 // ../node_modules/safer-buffer/safer.js
 var require_safer = __commonJS({
   "../node_modules/safer-buffer/safer.js"(exports, module) {
+    init_cjs_shims();
     var buffer = __require("buffer");
     var Buffer4 = buffer.Buffer;
     var safer = {};
@@ -4975,6 +5000,7 @@ var require_safer = __commonJS({
 // ../node_modules/iconv-lite/lib/bom-handling.js
 var require_bom_handling = __commonJS({
   "../node_modules/iconv-lite/lib/bom-handling.js"(exports) {
+    init_cjs_shims();
     var BOMChar = "\uFEFF";
     exports.PrependBOM = PrependBOMWrapper;
     function PrependBOMWrapper(encoder, options) {
@@ -5020,6 +5046,7 @@ var require_bom_handling = __commonJS({
 // ../node_modules/iconv-lite/encodings/internal.js
 var require_internal = __commonJS({
   "../node_modules/iconv-lite/encodings/internal.js"(exports, module) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     module.exports = {
       // Encodings
@@ -5177,6 +5204,7 @@ var require_internal = __commonJS({
 // ../node_modules/iconv-lite/encodings/utf32.js
 var require_utf32 = __commonJS({
   "../node_modules/iconv-lite/encodings/utf32.js"(exports) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     exports._utf32 = Utf32Codec;
     function Utf32Codec(codecOptions, iconv) {
@@ -5403,6 +5431,7 @@ var require_utf32 = __commonJS({
 // ../node_modules/iconv-lite/encodings/utf16.js
 var require_utf16 = __commonJS({
   "../node_modules/iconv-lite/encodings/utf16.js"(exports) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     exports.utf16be = Utf16BECodec;
     function Utf16BECodec() {
@@ -5543,6 +5572,7 @@ var require_utf16 = __commonJS({
 // ../node_modules/iconv-lite/encodings/utf7.js
 var require_utf7 = __commonJS({
   "../node_modules/iconv-lite/encodings/utf7.js"(exports) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     exports.utf7 = Utf7Codec;
     exports.unicode11utf7 = "utf7";
@@ -5749,6 +5779,7 @@ var require_utf7 = __commonJS({
 // ../node_modules/iconv-lite/encodings/sbcs-codec.js
 var require_sbcs_codec = __commonJS({
   "../node_modules/iconv-lite/encodings/sbcs-codec.js"(exports) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     exports._sbcs = SBCSCodec;
     function SBCSCodec(codecOptions, iconv) {
@@ -5807,6 +5838,7 @@ var require_sbcs_codec = __commonJS({
 // ../node_modules/iconv-lite/encodings/sbcs-data.js
 var require_sbcs_data = __commonJS({
   "../node_modules/iconv-lite/encodings/sbcs-data.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       // Not supported by iconv, not sure why.
       "10029": "maccenteuro",
@@ -5959,6 +5991,7 @@ var require_sbcs_data = __commonJS({
 // ../node_modules/iconv-lite/encodings/sbcs-data-generated.js
 var require_sbcs_data_generated = __commonJS({
   "../node_modules/iconv-lite/encodings/sbcs-data-generated.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       "437": "cp437",
       "737": "cp737",
@@ -6413,6 +6446,7 @@ var require_sbcs_data_generated = __commonJS({
 // ../node_modules/iconv-lite/encodings/dbcs-codec.js
 var require_dbcs_codec = __commonJS({
   "../node_modules/iconv-lite/encodings/dbcs-codec.js"(exports) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     exports._dbcs = DBCSCodec;
     var UNASSIGNED = -1;
@@ -8078,6 +8112,7 @@ var require_big5_added = __commonJS({
 // ../node_modules/iconv-lite/encodings/dbcs-data.js
 var require_dbcs_data = __commonJS({
   "../node_modules/iconv-lite/encodings/dbcs-data.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       // == Japanese/ShiftJIS ====================================================
       // All japanese encodings are based on JIS X set of standards:
@@ -8324,6 +8359,7 @@ var require_dbcs_data = __commonJS({
 // ../node_modules/iconv-lite/encodings/index.js
 var require_encodings = __commonJS({
   "../node_modules/iconv-lite/encodings/index.js"(exports, module) {
+    init_cjs_shims();
     var modules = [
       require_internal(),
       require_utf32(),
@@ -8350,6 +8386,7 @@ var require_encodings = __commonJS({
 // ../node_modules/iconv-lite/lib/streams.js
 var require_streams = __commonJS({
   "../node_modules/iconv-lite/lib/streams.js"(exports, module) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     module.exports = function(stream_module) {
       var Transform = stream_module.Transform;
@@ -8446,6 +8483,7 @@ var require_streams = __commonJS({
 // ../node_modules/iconv-lite/lib/index.js
 var require_lib2 = __commonJS({
   "../node_modules/iconv-lite/lib/index.js"(exports, module) {
+    init_cjs_shims();
     var Buffer4 = require_safer().Buffer;
     var bomHandling = require_bom_handling();
     var iconv = module.exports;
@@ -8562,6 +8600,7 @@ var require_lib2 = __commonJS({
 // ../node_modules/encoding/lib/encoding.js
 var require_encoding = __commonJS({
   "../node_modules/encoding/lib/encoding.js"(exports, module) {
+    init_cjs_shims();
     var iconvLite = require_lib2();
     module.exports.convert = convert4;
     function convert4(str2, to, from) {
@@ -9613,6 +9652,7 @@ function Cr(e3) {
 var e, o, a, i, l, s, y, S, v, R, T, q, C, z, L, ReadableStreamDefaultReader, te, re, ae, ReadableStreamBYOBRequest, ReadableByteStreamController, ReadableStreamBYOBReader, Ue, WritableStream, WritableStreamDefaultWriter, lt, WritableStreamDefaultController, Pt, Wt, ReadableStreamDefaultController, ReadableStream3, er, ByteLengthQueuingStrategy, or, CountQueuingStrategy, TransformStream, TransformStreamDefaultController;
 var init_ponyfill = __esm({
   "node_modules/web-streams-polyfill/dist/ponyfill.mjs"() {
+    init_cjs_shims();
     e = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? Symbol : (e3) => `Symbol(${e3})`;
     __name(t, "t");
     __name(r, "r");
@@ -10659,6 +10699,7 @@ var init_ponyfill = __esm({
 var isFunction;
 var init_isFunction = __esm({
   "node_modules/formdata-node/lib/esm/isFunction.js"() {
+    init_cjs_shims();
     isFunction = /* @__PURE__ */ __name((value) => typeof value === "function", "isFunction");
   }
 });
@@ -10730,6 +10771,7 @@ function* sliceBlob(blobParts, blobSize, start = 0, end) {
 var CHUNK_SIZE;
 var init_blobHelpers = __esm({
   "node_modules/formdata-node/lib/esm/blobHelpers.js"() {
+    init_cjs_shims();
     init_isFunction();
     CHUNK_SIZE = 65536;
     __name(clonePart, "clonePart");
@@ -10743,6 +10785,7 @@ var init_blobHelpers = __esm({
 var __classPrivateFieldGet, __classPrivateFieldSet, _Blob_parts, _Blob_type, _Blob_size, Blob3;
 var init_Blob = __esm({
   "node_modules/formdata-node/lib/esm/Blob.js"() {
+    init_cjs_shims();
     init_ponyfill();
     init_isFunction();
     init_blobHelpers();
@@ -10859,6 +10902,7 @@ var init_Blob = __esm({
 var __classPrivateFieldSet2, __classPrivateFieldGet2, _File_name, _File_lastModified, File2;
 var init_File = __esm({
   "node_modules/formdata-node/lib/esm/File.js"() {
+    init_cjs_shims();
     init_Blob();
     __classPrivateFieldSet2 = function(receiver, state, value, kind4, f4) {
       if (kind4 === "m") throw new TypeError("Private method is not writable");
@@ -10911,6 +10955,7 @@ var init_File = __esm({
 var isFile;
 var init_isFile = __esm({
   "node_modules/formdata-node/lib/esm/isFile.js"() {
+    init_cjs_shims();
     init_File();
     isFile = /* @__PURE__ */ __name((value) => value instanceof File2, "isFile");
   }
@@ -10919,6 +10964,7 @@ var init_isFile = __esm({
 // node_modules/ms/index.js
 var require_ms = __commonJS({
   "node_modules/ms/index.js"(exports, module) {
+    init_cjs_shims();
     var s3 = 1e3;
     var m3 = s3 * 60;
     var h3 = m3 * 60;
@@ -11039,6 +11085,7 @@ var require_ms = __commonJS({
 // node_modules/humanize-ms/index.js
 var require_humanize_ms = __commonJS({
   "node_modules/humanize-ms/index.js"(exports, module) {
+    init_cjs_shims();
     var util = __require("util");
     var ms = require_ms();
     module.exports = function(t3) {
@@ -11056,6 +11103,7 @@ var require_humanize_ms = __commonJS({
 // node_modules/agentkeepalive/lib/constants.js
 var require_constants = __commonJS({
   "node_modules/agentkeepalive/lib/constants.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       // agent
       CURRENT_ID: Symbol("agentkeepalive#currentId"),
@@ -11074,6 +11122,7 @@ var require_constants = __commonJS({
 // node_modules/agentkeepalive/lib/agent.js
 var require_agent = __commonJS({
   "node_modules/agentkeepalive/lib/agent.js"(exports, module) {
+    init_cjs_shims();
     var OriginalAgent = __require("http").Agent;
     var ms = require_humanize_ms();
     var debug4 = __require("util").debuglog("agentkeepalive");
@@ -11412,6 +11461,7 @@ var require_agent = __commonJS({
 // node_modules/agentkeepalive/lib/https_agent.js
 var require_https_agent = __commonJS({
   "node_modules/agentkeepalive/lib/https_agent.js"(exports, module) {
+    init_cjs_shims();
     var OriginalHttpsAgent = __require("https").Agent;
     var HttpAgent = require_agent();
     var {
@@ -11460,6 +11510,7 @@ var require_https_agent = __commonJS({
 // node_modules/agentkeepalive/index.js
 var require_agentkeepalive = __commonJS({
   "node_modules/agentkeepalive/index.js"(exports, module) {
+    init_cjs_shims();
     var HttpAgent = require_agent();
     module.exports = HttpAgent;
     module.exports.HttpAgent = HttpAgent;
@@ -11471,6 +11522,7 @@ var require_agentkeepalive = __commonJS({
 // node_modules/event-target-shim/dist/event-target-shim.js
 var require_event_target_shim = __commonJS({
   "node_modules/event-target-shim/dist/event-target-shim.js"(exports, module) {
+    init_cjs_shims();
     Object.defineProperty(exports, "__esModule", { value: true });
     var privateData = /* @__PURE__ */ new WeakMap();
     var wrappers = /* @__PURE__ */ new WeakMap();
@@ -12062,6 +12114,7 @@ var require_event_target_shim = __commonJS({
 // node_modules/abort-controller/dist/abort-controller.js
 var require_abort_controller = __commonJS({
   "node_modules/abort-controller/dist/abort-controller.js"(exports, module) {
+    init_cjs_shims();
     Object.defineProperty(exports, "__esModule", { value: true });
     var eventTargetShim = require_event_target_shim();
     var AbortSignal2 = class extends eventTargetShim.EventTarget {
@@ -12166,6 +12219,7 @@ var require_abort_controller = __commonJS({
 // node_modules/node-domexception/index.js
 var require_node_domexception = __commonJS({
   "node_modules/node-domexception/index.js"(exports, module) {
+    init_cjs_shims();
     if (!globalThis.DOMException) {
       try {
         const { MessageChannel } = __require("worker_threads"), port = new MessageChannel().port1, ab = new ArrayBuffer();
@@ -12193,6 +12247,7 @@ function isPlainObject2(value) {
 var getType2, isPlainObject_default2;
 var init_isPlainObject = __esm({
   "node_modules/formdata-node/lib/esm/isPlainObject.js"() {
+    init_cjs_shims();
     getType2 = /* @__PURE__ */ __name((value) => Object.prototype.toString.call(value).slice(8, -1).toLowerCase(), "getType");
     __name(isPlainObject2, "isPlainObject");
     isPlainObject_default2 = isPlainObject2;
@@ -12233,6 +12288,7 @@ async function fileFromPath2(path, filenameOrOptions, options) {
 var import_node_domexception, __classPrivateFieldSet4, __classPrivateFieldGet5, _FileFromPath_path, _FileFromPath_start, MESSAGE, FileFromPath;
 var init_fileFromPath = __esm({
   "node_modules/formdata-node/lib/esm/fileFromPath.js"() {
+    init_cjs_shims();
     import_node_domexception = __toESM(require_node_domexception(), 1);
     init_File();
     init_isPlainObject();
@@ -12295,6 +12351,7 @@ var init_fileFromPath = __esm({
 // node_modules/@anthropic-ai/sdk/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js
 var require_ponyfill_es2018 = __commonJS({
   "node_modules/@anthropic-ai/sdk/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js"(exports, module) {
+    init_cjs_shims();
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, factory(global2.WebStreamsPolyfill = {}));
     })(exports, function(exports2) {
@@ -16947,6 +17004,7 @@ function dataUriToBuffer(uri) {
 var dist_default;
 var init_dist = __esm({
   "node_modules/data-uri-to-buffer/dist/index.js"() {
+    init_cjs_shims();
     __name(dataUriToBuffer, "dataUriToBuffer");
     dist_default = dataUriToBuffer;
   }
@@ -16955,6 +17013,7 @@ var init_dist = __esm({
 // node_modules/fetch-blob/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js
 var require_ponyfill_es20182 = __commonJS({
   "node_modules/fetch-blob/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js"(exports, module) {
+    init_cjs_shims();
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, factory(global2.WebStreamsPolyfill = {}));
     })(exports, function(exports2) {
@@ -21570,6 +21629,7 @@ var require_ponyfill_es20182 = __commonJS({
 // node_modules/fetch-blob/streams.cjs
 var require_streams2 = __commonJS({
   "node_modules/fetch-blob/streams.cjs"() {
+    init_cjs_shims();
     var POOL_SIZE2 = 65536;
     if (!globalThis.ReadableStream) {
       try {
@@ -21651,6 +21711,7 @@ async function* toIterator(parts, clone5 = true) {
 var POOL_SIZE, _Blob, Blob7, fetch_blob_default;
 var init_fetch_blob = __esm({
   "node_modules/fetch-blob/index.js"() {
+    init_cjs_shims();
     __toESM(require_streams2(), 1);
     POOL_SIZE = 65536;
     __name(toIterator, "toIterator");
@@ -21825,6 +21886,7 @@ var init_fetch_blob = __esm({
 var _File, File5, file_default;
 var init_file = __esm({
   "node_modules/fetch-blob/file.js"() {
+    init_cjs_shims();
     init_fetch_blob();
     _File = class File4 extends fetch_blob_default {
       static {
@@ -21885,6 +21947,7 @@ Content-Type: ${v2.type || "application/octet-stream"}\r
 var t2, i2, h2, r2, m2, f2, e2, x2, FormData4;
 var init_esm_min = __esm({
   "node_modules/formdata-polyfill/esm.min.js"() {
+    init_cjs_shims();
     init_fetch_blob();
     init_file();
     ({ toStringTag: t2, iterator: i2, hasInstance: h2 } = Symbol);
@@ -21973,6 +22036,7 @@ var init_esm_min = __esm({
 var FetchBaseError;
 var init_base = __esm({
   "node_modules/node-fetch/src/errors/base.js"() {
+    init_cjs_shims();
     FetchBaseError = class extends Error {
       static {
         __name(this, "FetchBaseError");
@@ -21996,6 +22060,7 @@ var init_base = __esm({
 var FetchError3;
 var init_fetch_error = __esm({
   "node_modules/node-fetch/src/errors/fetch-error.js"() {
+    init_cjs_shims();
     init_base();
     FetchError3 = class extends FetchBaseError {
       static {
@@ -22021,6 +22086,7 @@ var init_fetch_error = __esm({
 var NAME, isURLSearchParameters, isBlob4, isAbortSignal3, isDomainOrSubdomain5, isSameProtocol5;
 var init_is = __esm({
   "node_modules/node-fetch/src/utils/is.js"() {
+    init_cjs_shims();
     NAME = Symbol.toStringTag;
     isURLSearchParameters = /* @__PURE__ */ __name((object) => {
       return typeof object === "object" && typeof object.append === "function" && typeof object.delete === "function" && typeof object.get === "function" && typeof object.getAll === "function" && typeof object.has === "function" && typeof object.set === "function" && typeof object.sort === "function" && object[NAME] === "URLSearchParams";
@@ -22046,6 +22112,7 @@ var init_is = __esm({
 var import_node_domexception2, stat, blobFromSync, blobFrom, fileFrom, fileFromSync, fromBlob, fromFile, BlobDataItem;
 var init_from = __esm({
   "node_modules/fetch-blob/from.js"() {
+    init_cjs_shims();
     import_node_domexception2 = __toESM(require_node_domexception(), 1);
     init_file();
     init_fetch_blob();
@@ -22202,6 +22269,7 @@ async function toFormData(Body5, ct2) {
 var s2, S2, f3, F2, LF, CR, SPACE, HYPHEN, COLON, A2, Z2, lower, noop, MultipartParser;
 var init_multipart_parser = __esm({
   "node_modules/node-fetch/src/utils/multipart-parser.js"() {
+    init_cjs_shims();
     init_from();
     init_esm_min();
     s2 = 0;
@@ -22520,6 +22588,7 @@ async function consumeBody3(data) {
 var pipeline, INTERNALS3, Body3, clone3, getNonSpecFormDataBoundary, extractContentType3, getTotalBytes3, writeToStream3;
 var init_body = __esm({
   "node_modules/node-fetch/src/body.js"() {
+    init_cjs_shims();
     init_fetch_blob();
     init_esm_min();
     init_fetch_error();
@@ -22748,6 +22817,7 @@ function fromRawHeaders(headers = []) {
 var validateHeaderName, validateHeaderValue, Headers5;
 var init_headers = __esm({
   "node_modules/node-fetch/src/headers.js"() {
+    init_cjs_shims();
     validateHeaderName = typeof http3__default.default.validateHeaderName === "function" ? http3__default.default.validateHeaderName : (name) => {
       if (!/^[\^`\-\w!#$%&'*+.|~]+$/.test(name)) {
         const error = new TypeError(`Header name must be a valid HTTP token [${name}]`);
@@ -22922,6 +22992,7 @@ var init_headers = __esm({
 var redirectStatus, isRedirect;
 var init_is_redirect = __esm({
   "node_modules/node-fetch/src/utils/is-redirect.js"() {
+    init_cjs_shims();
     redirectStatus = /* @__PURE__ */ new Set([301, 302, 303, 307, 308]);
     isRedirect = /* @__PURE__ */ __name((code) => {
       return redirectStatus.has(code);
@@ -22933,6 +23004,7 @@ var init_is_redirect = __esm({
 var INTERNALS4, Response5;
 var init_response = __esm({
   "node_modules/node-fetch/src/response.js"() {
+    init_cjs_shims();
     init_headers();
     init_body();
     init_is_redirect();
@@ -23062,6 +23134,7 @@ var init_response = __esm({
 var getSearch;
 var init_get_search = __esm({
   "node_modules/node-fetch/src/utils/get-search.js"() {
+    init_cjs_shims();
     getSearch = /* @__PURE__ */ __name((parsedURL) => {
       if (parsedURL.search) {
         return parsedURL.search;
@@ -23200,6 +23273,7 @@ function parseReferrerPolicyFromHeader(headers) {
 var ReferrerPolicy, DEFAULT_REFERRER_POLICY;
 var init_referrer = __esm({
   "node_modules/node-fetch/src/utils/referrer.js"() {
+    init_cjs_shims();
     __name(stripURLForUseAsAReferrer, "stripURLForUseAsAReferrer");
     ReferrerPolicy = /* @__PURE__ */ new Set([
       "",
@@ -23223,6 +23297,7 @@ var init_referrer = __esm({
 var INTERNALS5, isRequest3, doBadDataWarn, Request5, getNodeRequestOptions3;
 var init_request = __esm({
   "node_modules/node-fetch/src/request.js"() {
+    init_cjs_shims();
     init_headers();
     init_body();
     init_is();
@@ -23429,6 +23504,7 @@ var init_request = __esm({
 var AbortError3;
 var init_abort_error = __esm({
   "node_modules/node-fetch/src/errors/abort-error.js"() {
+    init_cjs_shims();
     init_base();
     AbortError3 = class extends FetchBaseError {
       static {
@@ -23723,6 +23799,7 @@ function fixResponseChunkedTransferBadEnding3(request, errorCallback) {
 var supportedSchemas;
 var init_src = __esm({
   "node_modules/node-fetch/src/index.js"() {
+    init_cjs_shims();
     init_dist();
     init_body();
     init_response();
@@ -23744,6 +23821,7 @@ var init_src = __esm({
 // node_modules/groq-sdk/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js
 var require_ponyfill_es20183 = __commonJS({
   "node_modules/groq-sdk/node_modules/web-streams-polyfill/dist/ponyfill.es2018.js"(exports, module) {
+    init_cjs_shims();
     (function(global2, factory) {
       typeof exports === "object" && typeof module !== "undefined" ? factory(exports) : typeof define === "function" && define.amd ? define(["exports"], factory) : (global2 = typeof globalThis !== "undefined" ? globalThis : global2 || self, factory(global2.WebStreamsPolyfill = {}));
     })(exports, function(exports2) {
@@ -28359,6 +28437,7 @@ var require_ponyfill_es20183 = __commonJS({
 // node_modules/universalify/index.js
 var require_universalify = __commonJS({
   "node_modules/universalify/index.js"(exports) {
+    init_cjs_shims();
     exports.fromCallback = function(fn) {
       return Object.defineProperty(function(...args) {
         if (typeof args[args.length - 1] === "function") fn.apply(this, args);
@@ -28386,6 +28465,7 @@ var require_universalify = __commonJS({
 // node_modules/graceful-fs/polyfills.js
 var require_polyfills = __commonJS({
   "node_modules/graceful-fs/polyfills.js"(exports, module) {
+    init_cjs_shims();
     var constants = __require("constants");
     var origCwd = process.cwd;
     var cwd = null;
@@ -28687,6 +28767,7 @@ var require_polyfills = __commonJS({
 // node_modules/graceful-fs/legacy-streams.js
 var require_legacy_streams = __commonJS({
   "node_modules/graceful-fs/legacy-streams.js"(exports, module) {
+    init_cjs_shims();
     var Stream9 = __require("stream").Stream;
     module.exports = legacy;
     function legacy(fs4) {
@@ -28784,6 +28865,7 @@ var require_legacy_streams = __commonJS({
 // node_modules/graceful-fs/clone.js
 var require_clone = __commonJS({
   "node_modules/graceful-fs/clone.js"(exports, module) {
+    init_cjs_shims();
     module.exports = clone5;
     var getPrototypeOf = Object.getPrototypeOf || function(obj) {
       return obj.__proto__;
@@ -28807,6 +28889,7 @@ var require_clone = __commonJS({
 // node_modules/graceful-fs/graceful-fs.js
 var require_graceful_fs = __commonJS({
   "node_modules/graceful-fs/graceful-fs.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = __require("fs");
     var polyfills = require_polyfills();
     var legacy = require_legacy_streams();
@@ -29197,6 +29280,7 @@ var require_graceful_fs = __commonJS({
 // node_modules/fs-extra/lib/fs/index.js
 var require_fs = __commonJS({
   "node_modules/fs-extra/lib/fs/index.js"(exports) {
+    init_cjs_shims();
     var u2 = require_universalify().fromCallback;
     var fs4 = require_graceful_fs();
     var api = [
@@ -29312,6 +29396,7 @@ var require_fs = __commonJS({
 // node_modules/fs-extra/lib/mkdirs/utils.js
 var require_utils2 = __commonJS({
   "node_modules/fs-extra/lib/mkdirs/utils.js"(exports, module) {
+    init_cjs_shims();
     var path = __require("path");
     module.exports.checkPath = /* @__PURE__ */ __name(function checkPath(pth) {
       if (process.platform === "win32") {
@@ -29329,6 +29414,7 @@ var require_utils2 = __commonJS({
 // node_modules/fs-extra/lib/mkdirs/make-dir.js
 var require_make_dir = __commonJS({
   "node_modules/fs-extra/lib/mkdirs/make-dir.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_fs();
     var { checkPath } = require_utils2();
     var getMode = /* @__PURE__ */ __name((options) => {
@@ -29356,6 +29442,7 @@ var require_make_dir = __commonJS({
 // node_modules/fs-extra/lib/mkdirs/index.js
 var require_mkdirs = __commonJS({
   "node_modules/fs-extra/lib/mkdirs/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var { makeDir: _makeDir, makeDirSync } = require_make_dir();
     var makeDir = u2(_makeDir);
@@ -29374,6 +29461,7 @@ var require_mkdirs = __commonJS({
 // node_modules/fs-extra/lib/path-exists/index.js
 var require_path_exists = __commonJS({
   "node_modules/fs-extra/lib/path-exists/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var fs4 = require_fs();
     function pathExists(path) {
@@ -29390,6 +29478,7 @@ var require_path_exists = __commonJS({
 // node_modules/fs-extra/lib/util/utimes.js
 var require_utimes = __commonJS({
   "node_modules/fs-extra/lib/util/utimes.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_fs();
     var u2 = require_universalify().fromPromise;
     async function utimesMillis(path, atime, mtime) {
@@ -29425,6 +29514,7 @@ var require_utimes = __commonJS({
 // node_modules/fs-extra/lib/util/stat.js
 var require_stat = __commonJS({
   "node_modules/fs-extra/lib/util/stat.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_fs();
     var path = __require("path");
     var u2 = require_universalify().fromPromise;
@@ -29565,6 +29655,7 @@ var require_stat = __commonJS({
 // node_modules/fs-extra/lib/copy/copy.js
 var require_copy = __commonJS({
   "node_modules/fs-extra/lib/copy/copy.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_fs();
     var path = __require("path");
     var { mkdirs } = require_mkdirs();
@@ -29702,6 +29793,7 @@ var require_copy = __commonJS({
 // node_modules/fs-extra/lib/copy/copy-sync.js
 var require_copy_sync = __commonJS({
   "node_modules/fs-extra/lib/copy/copy-sync.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_graceful_fs();
     var path = __require("path");
     var mkdirsSync = require_mkdirs().mkdirsSync;
@@ -29853,6 +29945,7 @@ var require_copy_sync = __commonJS({
 // node_modules/fs-extra/lib/copy/index.js
 var require_copy2 = __commonJS({
   "node_modules/fs-extra/lib/copy/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     module.exports = {
       copy: u2(require_copy()),
@@ -29864,6 +29957,7 @@ var require_copy2 = __commonJS({
 // node_modules/fs-extra/lib/remove/index.js
 var require_remove = __commonJS({
   "node_modules/fs-extra/lib/remove/index.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_graceful_fs();
     var u2 = require_universalify().fromCallback;
     function remove(path, callback) {
@@ -29884,6 +29978,7 @@ var require_remove = __commonJS({
 // node_modules/fs-extra/lib/empty/index.js
 var require_empty = __commonJS({
   "node_modules/fs-extra/lib/empty/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var fs4 = require_fs();
     var path = __require("path");
@@ -29923,6 +30018,7 @@ var require_empty = __commonJS({
 // node_modules/fs-extra/lib/ensure/file.js
 var require_file = __commonJS({
   "node_modules/fs-extra/lib/ensure/file.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var path = __require("path");
     var fs4 = require_fs();
@@ -29983,6 +30079,7 @@ var require_file = __commonJS({
 // node_modules/fs-extra/lib/ensure/link.js
 var require_link = __commonJS({
   "node_modules/fs-extra/lib/ensure/link.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var path = __require("path");
     var fs4 = require_fs();
@@ -30041,6 +30138,7 @@ var require_link = __commonJS({
 // node_modules/fs-extra/lib/ensure/symlink-paths.js
 var require_symlink_paths = __commonJS({
   "node_modules/fs-extra/lib/ensure/symlink-paths.js"(exports, module) {
+    init_cjs_shims();
     var path = __require("path");
     var fs4 = require_fs();
     var { pathExists } = require_path_exists();
@@ -30115,6 +30213,7 @@ var require_symlink_paths = __commonJS({
 // node_modules/fs-extra/lib/ensure/symlink-type.js
 var require_symlink_type = __commonJS({
   "node_modules/fs-extra/lib/ensure/symlink-type.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_fs();
     var u2 = require_universalify().fromPromise;
     async function symlinkType(srcpath, type) {
@@ -30149,6 +30248,7 @@ var require_symlink_type = __commonJS({
 // node_modules/fs-extra/lib/ensure/symlink.js
 var require_symlink = __commonJS({
   "node_modules/fs-extra/lib/ensure/symlink.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var path = __require("path");
     var fs4 = require_fs();
@@ -30211,6 +30311,7 @@ var require_symlink = __commonJS({
 // node_modules/fs-extra/lib/ensure/index.js
 var require_ensure = __commonJS({
   "node_modules/fs-extra/lib/ensure/index.js"(exports, module) {
+    init_cjs_shims();
     var { createFile, createFileSync } = require_file();
     var { createLink, createLinkSync } = require_link();
     var { createSymlink, createSymlinkSync } = require_symlink();
@@ -30237,6 +30338,7 @@ var require_ensure = __commonJS({
 // node_modules/jsonfile/utils.js
 var require_utils3 = __commonJS({
   "node_modules/jsonfile/utils.js"(exports, module) {
+    init_cjs_shims();
     function stringify2(obj, { EOL = "\n", finalEOL = true, replacer = null, spaces } = {}) {
       const EOF = finalEOL ? EOL : "";
       const str2 = JSON.stringify(obj, replacer, spaces);
@@ -30255,6 +30357,7 @@ var require_utils3 = __commonJS({
 // node_modules/jsonfile/index.js
 var require_jsonfile = __commonJS({
   "node_modules/jsonfile/index.js"(exports, module) {
+    init_cjs_shims();
     var _fs;
     try {
       _fs = require_graceful_fs();
@@ -30332,6 +30435,7 @@ var require_jsonfile = __commonJS({
 // node_modules/fs-extra/lib/json/jsonfile.js
 var require_jsonfile2 = __commonJS({
   "node_modules/fs-extra/lib/json/jsonfile.js"(exports, module) {
+    init_cjs_shims();
     var jsonFile = require_jsonfile();
     module.exports = {
       // jsonfile exports
@@ -30346,6 +30450,7 @@ var require_jsonfile2 = __commonJS({
 // node_modules/fs-extra/lib/output-file/index.js
 var require_output_file = __commonJS({
   "node_modules/fs-extra/lib/output-file/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var fs4 = require_fs();
     var path = __require("path");
@@ -30377,6 +30482,7 @@ var require_output_file = __commonJS({
 // node_modules/fs-extra/lib/json/output-json.js
 var require_output_json = __commonJS({
   "node_modules/fs-extra/lib/json/output-json.js"(exports, module) {
+    init_cjs_shims();
     var { stringify: stringify2 } = require_utils3();
     var { outputFile } = require_output_file();
     async function outputJson(file, data, options = {}) {
@@ -30391,6 +30497,7 @@ var require_output_json = __commonJS({
 // node_modules/fs-extra/lib/json/output-json-sync.js
 var require_output_json_sync = __commonJS({
   "node_modules/fs-extra/lib/json/output-json-sync.js"(exports, module) {
+    init_cjs_shims();
     var { stringify: stringify2 } = require_utils3();
     var { outputFileSync } = require_output_file();
     function outputJsonSync(file, data, options) {
@@ -30405,6 +30512,7 @@ var require_output_json_sync = __commonJS({
 // node_modules/fs-extra/lib/json/index.js
 var require_json = __commonJS({
   "node_modules/fs-extra/lib/json/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var jsonFile = require_jsonfile2();
     jsonFile.outputJson = u2(require_output_json());
@@ -30422,6 +30530,7 @@ var require_json = __commonJS({
 // node_modules/fs-extra/lib/move/move.js
 var require_move = __commonJS({
   "node_modules/fs-extra/lib/move/move.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_fs();
     var path = __require("path");
     var { copy } = require_copy2();
@@ -30476,6 +30585,7 @@ var require_move = __commonJS({
 // node_modules/fs-extra/lib/move/move-sync.js
 var require_move_sync = __commonJS({
   "node_modules/fs-extra/lib/move/move-sync.js"(exports, module) {
+    init_cjs_shims();
     var fs4 = require_graceful_fs();
     var path = __require("path");
     var copySync = require_copy2().copySync;
@@ -30533,6 +30643,7 @@ var require_move_sync = __commonJS({
 // node_modules/fs-extra/lib/move/index.js
 var require_move2 = __commonJS({
   "node_modules/fs-extra/lib/move/index.js"(exports, module) {
+    init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     module.exports = {
       move: u2(require_move()),
@@ -30544,6 +30655,7 @@ var require_move2 = __commonJS({
 // node_modules/fs-extra/lib/index.js
 var require_lib3 = __commonJS({
   "node_modules/fs-extra/lib/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       // Export promiseified graceful-fs:
       ...require_fs(),
@@ -30564,6 +30676,7 @@ var require_lib3 = __commonJS({
 // ../node_modules/kleur/index.js
 var require_kleur = __commonJS({
   "../node_modules/kleur/index.js"(exports, module) {
+    init_cjs_shims();
     var { FORCE_COLOR, NODE_DISABLE_COLORS, TERM } = process.env;
     var $2 = {
       enabled: !NODE_DISABLE_COLORS && TERM !== "dumb" && FORCE_COLOR !== "0",
@@ -30663,6 +30776,7 @@ var require_kleur = __commonJS({
 // ../node_modules/prompts/dist/util/action.js
 var require_action = __commonJS({
   "../node_modules/prompts/dist/util/action.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (key, isSelect) => {
       if (key.meta && key.name !== "escape") return;
       if (key.ctrl) {
@@ -30699,6 +30813,7 @@ var require_action = __commonJS({
 // ../node_modules/prompts/dist/util/strip.js
 var require_strip = __commonJS({
   "../node_modules/prompts/dist/util/strip.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (str2) => {
       const pattern = ["[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)", "(?:(?:\\d{1,4}(?:;\\d{0,4})*)?[\\dA-PRZcf-ntqry=><~]))"].join("|");
       const RGX = new RegExp(pattern, "g");
@@ -30710,6 +30825,7 @@ var require_strip = __commonJS({
 // ../node_modules/sisteransi/src/index.js
 var require_src = __commonJS({
   "../node_modules/sisteransi/src/index.js"(exports, module) {
+    init_cjs_shims();
     var ESC = "\x1B";
     var CSI = `${ESC}[`;
     var beep = "\x07";
@@ -30765,6 +30881,7 @@ var require_src = __commonJS({
 // ../node_modules/prompts/dist/util/clear.js
 var require_clear = __commonJS({
   "../node_modules/prompts/dist/util/clear.js"(exports, module) {
+    init_cjs_shims();
     function _createForOfIteratorHelper(o2, allowArrayLike) {
       var it2 = typeof Symbol !== "undefined" && o2[Symbol.iterator] || o2["@@iterator"];
       if (!it2) {
@@ -30844,6 +30961,7 @@ var require_clear = __commonJS({
 // ../node_modules/prompts/dist/util/figures.js
 var require_figures = __commonJS({
   "../node_modules/prompts/dist/util/figures.js"(exports, module) {
+    init_cjs_shims();
     var main = {
       arrowUp: "\u2191",
       arrowDown: "\u2193",
@@ -30880,6 +30998,7 @@ var require_figures = __commonJS({
 // ../node_modules/prompts/dist/util/style.js
 var require_style = __commonJS({
   "../node_modules/prompts/dist/util/style.js"(exports, module) {
+    init_cjs_shims();
     var c2 = require_kleur();
     var figures = require_figures();
     var styles3 = Object.freeze({
@@ -30924,6 +31043,7 @@ var require_style = __commonJS({
 // ../node_modules/prompts/dist/util/lines.js
 var require_lines = __commonJS({
   "../node_modules/prompts/dist/util/lines.js"(exports, module) {
+    init_cjs_shims();
     var strip = require_strip();
     module.exports = function(msg, perLine) {
       let lines = String(strip(msg) || "").split(/\r?\n/);
@@ -30936,6 +31056,7 @@ var require_lines = __commonJS({
 // ../node_modules/prompts/dist/util/wrap.js
 var require_wrap = __commonJS({
   "../node_modules/prompts/dist/util/wrap.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (msg, opts = {}) => {
       const tab = Number.isSafeInteger(parseInt(opts.margin)) ? new Array(parseInt(opts.margin)).fill(" ").join("") : opts.margin || "";
       const width = opts.width;
@@ -30951,6 +31072,7 @@ var require_wrap = __commonJS({
 // ../node_modules/prompts/dist/util/entriesToDisplay.js
 var require_entriesToDisplay = __commonJS({
   "../node_modules/prompts/dist/util/entriesToDisplay.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (cursor, total, maxVisible) => {
       maxVisible = maxVisible || total;
       let startIndex = Math.min(total - maxVisible, cursor - Math.floor(maxVisible / 2));
@@ -30967,6 +31089,7 @@ var require_entriesToDisplay = __commonJS({
 // ../node_modules/prompts/dist/util/index.js
 var require_util = __commonJS({
   "../node_modules/prompts/dist/util/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       action: require_action(),
       clear: require_clear(),
@@ -30983,6 +31106,7 @@ var require_util = __commonJS({
 // ../node_modules/prompts/dist/elements/prompt.js
 var require_prompt = __commonJS({
   "../node_modules/prompts/dist/elements/prompt.js"(exports, module) {
+    init_cjs_shims();
     var readline = __require("readline");
     var _require = require_util();
     var action = _require.action;
@@ -31050,6 +31174,7 @@ var require_prompt = __commonJS({
 // ../node_modules/prompts/dist/elements/text.js
 var require_text = __commonJS({
   "../node_modules/prompts/dist/elements/text.js"(exports, module) {
+    init_cjs_shims();
     function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
@@ -31272,6 +31397,7 @@ ${i3 ? " " : figures.pointerSmall} ${color.red().italic(l2)}`, ``);
 // ../node_modules/prompts/dist/elements/select.js
 var require_select = __commonJS({
   "../node_modules/prompts/dist/elements/select.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt();
     var _require = require_util();
@@ -31422,6 +31548,7 @@ var require_select = __commonJS({
 // ../node_modules/prompts/dist/elements/toggle.js
 var require_toggle = __commonJS({
   "../node_modules/prompts/dist/elements/toggle.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt();
     var _require = require_util();
@@ -31522,6 +31649,7 @@ var require_toggle = __commonJS({
 // ../node_modules/prompts/dist/dateparts/datepart.js
 var require_datepart = __commonJS({
   "../node_modules/prompts/dist/dateparts/datepart.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = class _DatePart {
       static {
         __name(this, "DatePart");
@@ -31563,6 +31691,7 @@ var require_datepart = __commonJS({
 // ../node_modules/prompts/dist/dateparts/meridiem.js
 var require_meridiem = __commonJS({
   "../node_modules/prompts/dist/dateparts/meridiem.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Meridiem = class extends DatePart {
       static {
@@ -31589,6 +31718,7 @@ var require_meridiem = __commonJS({
 // ../node_modules/prompts/dist/dateparts/day.js
 var require_day = __commonJS({
   "../node_modules/prompts/dist/dateparts/day.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var pos = /* @__PURE__ */ __name((n2) => {
       n2 = n2 % 10;
@@ -31623,6 +31753,7 @@ var require_day = __commonJS({
 // ../node_modules/prompts/dist/dateparts/hours.js
 var require_hours = __commonJS({
   "../node_modules/prompts/dist/dateparts/hours.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Hours = class extends DatePart {
       static {
@@ -31653,6 +31784,7 @@ var require_hours = __commonJS({
 // ../node_modules/prompts/dist/dateparts/milliseconds.js
 var require_milliseconds = __commonJS({
   "../node_modules/prompts/dist/dateparts/milliseconds.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Milliseconds = class extends DatePart {
       static {
@@ -31681,6 +31813,7 @@ var require_milliseconds = __commonJS({
 // ../node_modules/prompts/dist/dateparts/minutes.js
 var require_minutes = __commonJS({
   "../node_modules/prompts/dist/dateparts/minutes.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Minutes = class extends DatePart {
       static {
@@ -31710,6 +31843,7 @@ var require_minutes = __commonJS({
 // ../node_modules/prompts/dist/dateparts/month.js
 var require_month = __commonJS({
   "../node_modules/prompts/dist/dateparts/month.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Month = class extends DatePart {
       static {
@@ -31741,6 +31875,7 @@ var require_month = __commonJS({
 // ../node_modules/prompts/dist/dateparts/seconds.js
 var require_seconds = __commonJS({
   "../node_modules/prompts/dist/dateparts/seconds.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Seconds = class extends DatePart {
       static {
@@ -31770,6 +31905,7 @@ var require_seconds = __commonJS({
 // ../node_modules/prompts/dist/dateparts/year.js
 var require_year = __commonJS({
   "../node_modules/prompts/dist/dateparts/year.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart();
     var Year = class extends DatePart {
       static {
@@ -31799,6 +31935,7 @@ var require_year = __commonJS({
 // ../node_modules/prompts/dist/dateparts/index.js
 var require_dateparts = __commonJS({
   "../node_modules/prompts/dist/dateparts/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       DatePart: require_datepart(),
       Meridiem: require_meridiem(),
@@ -31816,6 +31953,7 @@ var require_dateparts = __commonJS({
 // ../node_modules/prompts/dist/elements/date.js
 var require_date = __commonJS({
   "../node_modules/prompts/dist/elements/date.js"(exports, module) {
+    init_cjs_shims();
     function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
@@ -32048,6 +32186,7 @@ ${i3 ? ` ` : figures.pointerSmall} ${color.red().italic(l2)}`, ``);
 // ../node_modules/prompts/dist/elements/number.js
 var require_number = __commonJS({
   "../node_modules/prompts/dist/elements/number.js"(exports, module) {
+    init_cjs_shims();
     function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
@@ -32269,6 +32408,7 @@ ${i3 ? ` ` : figures.pointerSmall} ${color.red().italic(l2)}`, ``);
 // ../node_modules/prompts/dist/elements/multiselect.js
 var require_multiselect = __commonJS({
   "../node_modules/prompts/dist/elements/multiselect.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var _require = require_src();
     var cursor = _require.cursor;
@@ -32502,6 +32642,7 @@ Instructions:
 // ../node_modules/prompts/dist/elements/autocomplete.js
 var require_autocomplete = __commonJS({
   "../node_modules/prompts/dist/elements/autocomplete.js"(exports, module) {
+    init_cjs_shims();
     function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
       try {
         var info = gen[key](arg);
@@ -32763,6 +32904,7 @@ var require_autocomplete = __commonJS({
 // ../node_modules/prompts/dist/elements/autocompleteMultiselect.js
 var require_autocompleteMultiselect = __commonJS({
   "../node_modules/prompts/dist/elements/autocompleteMultiselect.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var _require = require_src();
     var cursor = _require.cursor;
@@ -32924,6 +33066,7 @@ Filtered results for: ${this.inputValue ? this.inputValue : color.gray("Enter so
 // ../node_modules/prompts/dist/elements/confirm.js
 var require_confirm = __commonJS({
   "../node_modules/prompts/dist/elements/confirm.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt();
     var _require = require_util();
@@ -32998,6 +33141,7 @@ var require_confirm = __commonJS({
 // ../node_modules/prompts/dist/elements/index.js
 var require_elements = __commonJS({
   "../node_modules/prompts/dist/elements/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       TextPrompt: require_text(),
       SelectPrompt: require_select(),
@@ -33015,6 +33159,7 @@ var require_elements = __commonJS({
 // ../node_modules/prompts/dist/prompts.js
 var require_prompts = __commonJS({
   "../node_modules/prompts/dist/prompts.js"(exports) {
+    init_cjs_shims();
     var $2 = exports;
     var el = require_elements();
     var noop2 = /* @__PURE__ */ __name((v2) => v2, "noop");
@@ -33079,6 +33224,7 @@ var require_prompts = __commonJS({
 // ../node_modules/prompts/dist/index.js
 var require_dist = __commonJS({
   "../node_modules/prompts/dist/index.js"(exports, module) {
+    init_cjs_shims();
     function ownKeys(object, enumerableOnly) {
       var keys = Object.keys(object);
       if (Object.getOwnPropertySymbols) {
@@ -33313,6 +33459,7 @@ var require_dist = __commonJS({
 // ../node_modules/prompts/lib/util/action.js
 var require_action2 = __commonJS({
   "../node_modules/prompts/lib/util/action.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (key, isSelect) => {
       if (key.meta && key.name !== "escape") return;
       if (key.ctrl) {
@@ -33349,6 +33496,7 @@ var require_action2 = __commonJS({
 // ../node_modules/prompts/lib/util/strip.js
 var require_strip2 = __commonJS({
   "../node_modules/prompts/lib/util/strip.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (str2) => {
       const pattern = [
         "[\\u001B\\u009B][[\\]()#;?]*(?:(?:(?:(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]+)*|[a-zA-Z\\d]+(?:;[-a-zA-Z\\d\\/#&.:=?%@~_]*)*)?\\u0007)",
@@ -33363,6 +33511,7 @@ var require_strip2 = __commonJS({
 // ../node_modules/prompts/lib/util/clear.js
 var require_clear2 = __commonJS({
   "../node_modules/prompts/lib/util/clear.js"(exports, module) {
+    init_cjs_shims();
     var strip = require_strip2();
     var { erase, cursor } = require_src();
     var width = /* @__PURE__ */ __name((str2) => [...strip(str2)].length, "width");
@@ -33381,6 +33530,7 @@ var require_clear2 = __commonJS({
 // ../node_modules/prompts/lib/util/figures.js
 var require_figures2 = __commonJS({
   "../node_modules/prompts/lib/util/figures.js"(exports, module) {
+    init_cjs_shims();
     var main = {
       arrowUp: "\u2191",
       arrowDown: "\u2193",
@@ -33417,6 +33567,7 @@ var require_figures2 = __commonJS({
 // ../node_modules/prompts/lib/util/style.js
 var require_style2 = __commonJS({
   "../node_modules/prompts/lib/util/style.js"(exports, module) {
+    init_cjs_shims();
     var c2 = require_kleur();
     var figures = require_figures2();
     var styles3 = Object.freeze({
@@ -33449,6 +33600,7 @@ var require_style2 = __commonJS({
 // ../node_modules/prompts/lib/util/lines.js
 var require_lines2 = __commonJS({
   "../node_modules/prompts/lib/util/lines.js"(exports, module) {
+    init_cjs_shims();
     var strip = require_strip2();
     module.exports = function(msg, perLine) {
       let lines = String(strip(msg) || "").split(/\r?\n/);
@@ -33461,6 +33613,7 @@ var require_lines2 = __commonJS({
 // ../node_modules/prompts/lib/util/wrap.js
 var require_wrap2 = __commonJS({
   "../node_modules/prompts/lib/util/wrap.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (msg, opts = {}) => {
       const tab = Number.isSafeInteger(parseInt(opts.margin)) ? new Array(parseInt(opts.margin)).fill(" ").join("") : opts.margin || "";
       const width = opts.width;
@@ -33477,6 +33630,7 @@ var require_wrap2 = __commonJS({
 // ../node_modules/prompts/lib/util/entriesToDisplay.js
 var require_entriesToDisplay2 = __commonJS({
   "../node_modules/prompts/lib/util/entriesToDisplay.js"(exports, module) {
+    init_cjs_shims();
     module.exports = (cursor, total, maxVisible) => {
       maxVisible = maxVisible || total;
       let startIndex = Math.min(total - maxVisible, cursor - Math.floor(maxVisible / 2));
@@ -33490,6 +33644,7 @@ var require_entriesToDisplay2 = __commonJS({
 // ../node_modules/prompts/lib/util/index.js
 var require_util2 = __commonJS({
   "../node_modules/prompts/lib/util/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       action: require_action2(),
       clear: require_clear2(),
@@ -33506,6 +33661,7 @@ var require_util2 = __commonJS({
 // ../node_modules/prompts/lib/elements/prompt.js
 var require_prompt2 = __commonJS({
   "../node_modules/prompts/lib/elements/prompt.js"(exports, module) {
+    init_cjs_shims();
     var readline = __require("readline");
     var { action } = require_util2();
     var EventEmitter2 = __require("events");
@@ -33567,6 +33723,7 @@ var require_prompt2 = __commonJS({
 // ../node_modules/prompts/lib/elements/text.js
 var require_text2 = __commonJS({
   "../node_modules/prompts/lib/elements/text.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { erase, cursor } = require_src();
@@ -33750,6 +33907,7 @@ ${i3 ? " " : figures.pointerSmall} ${color.red().italic(l2)}`, ``);
 // ../node_modules/prompts/lib/elements/select.js
 var require_select2 = __commonJS({
   "../node_modules/prompts/lib/elements/select.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { style, clear, figures, wrap, entriesToDisplay } = require_util2();
@@ -33895,6 +34053,7 @@ var require_select2 = __commonJS({
 // ../node_modules/prompts/lib/elements/toggle.js
 var require_toggle2 = __commonJS({
   "../node_modules/prompts/lib/elements/toggle.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { style, clear } = require_util2();
@@ -33998,6 +34157,7 @@ var require_toggle2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/datepart.js
 var require_datepart2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/datepart.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = class _DatePart {
       static {
         __name(this, "DatePart");
@@ -34034,6 +34194,7 @@ var require_datepart2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/meridiem.js
 var require_meridiem2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/meridiem.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Meridiem = class extends DatePart {
       static {
@@ -34060,6 +34221,7 @@ var require_meridiem2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/day.js
 var require_day2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/day.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var pos = /* @__PURE__ */ __name((n2) => {
       n2 = n2 % 10;
@@ -34094,6 +34256,7 @@ var require_day2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/hours.js
 var require_hours2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/hours.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Hours = class extends DatePart {
       static {
@@ -34125,6 +34288,7 @@ var require_hours2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/milliseconds.js
 var require_milliseconds2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/milliseconds.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Milliseconds = class extends DatePart {
       static {
@@ -34153,6 +34317,7 @@ var require_milliseconds2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/minutes.js
 var require_minutes2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/minutes.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Minutes = class extends DatePart {
       static {
@@ -34182,6 +34347,7 @@ var require_minutes2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/month.js
 var require_month2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/month.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Month = class extends DatePart {
       static {
@@ -34213,6 +34379,7 @@ var require_month2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/seconds.js
 var require_seconds2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/seconds.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Seconds = class extends DatePart {
       static {
@@ -34242,6 +34409,7 @@ var require_seconds2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/year.js
 var require_year2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/year.js"(exports, module) {
+    init_cjs_shims();
     var DatePart = require_datepart2();
     var Year = class extends DatePart {
       static {
@@ -34271,6 +34439,7 @@ var require_year2 = __commonJS({
 // ../node_modules/prompts/lib/dateparts/index.js
 var require_dateparts2 = __commonJS({
   "../node_modules/prompts/lib/dateparts/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       DatePart: require_datepart2(),
       Meridiem: require_meridiem2(),
@@ -34288,6 +34457,7 @@ var require_dateparts2 = __commonJS({
 // ../node_modules/prompts/lib/elements/date.js
 var require_date2 = __commonJS({
   "../node_modules/prompts/lib/elements/date.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { style, clear, figures } = require_util2();
@@ -34469,6 +34639,7 @@ ${i3 ? ` ` : figures.pointerSmall} ${color.red().italic(l2)}`,
 // ../node_modules/prompts/lib/elements/number.js
 var require_number2 = __commonJS({
   "../node_modules/prompts/lib/elements/number.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { cursor, erase } = require_src();
@@ -34651,6 +34822,7 @@ ${i3 ? ` ` : figures.pointerSmall} ${color.red().italic(l2)}`, ``);
 // ../node_modules/prompts/lib/elements/multiselect.js
 var require_multiselect2 = __commonJS({
   "../node_modules/prompts/lib/elements/multiselect.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var { cursor } = require_src();
     var Prompt = require_prompt2();
@@ -34878,6 +35050,7 @@ Instructions:
 // ../node_modules/prompts/lib/elements/autocomplete.js
 var require_autocomplete2 = __commonJS({
   "../node_modules/prompts/lib/elements/autocomplete.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { erase, cursor } = require_src();
@@ -35096,6 +35269,7 @@ var require_autocomplete2 = __commonJS({
 // ../node_modules/prompts/lib/elements/autocompleteMultiselect.js
 var require_autocompleteMultiselect2 = __commonJS({
   "../node_modules/prompts/lib/elements/autocompleteMultiselect.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var { cursor } = require_src();
     var MultiselectPrompt = require_multiselect2();
@@ -35258,6 +35432,7 @@ Filtered results for: ${this.inputValue ? this.inputValue : color.gray("Enter so
 // ../node_modules/prompts/lib/elements/confirm.js
 var require_confirm2 = __commonJS({
   "../node_modules/prompts/lib/elements/confirm.js"(exports, module) {
+    init_cjs_shims();
     var color = require_kleur();
     var Prompt = require_prompt2();
     var { style, clear } = require_util2();
@@ -35333,6 +35508,7 @@ var require_confirm2 = __commonJS({
 // ../node_modules/prompts/lib/elements/index.js
 var require_elements2 = __commonJS({
   "../node_modules/prompts/lib/elements/index.js"(exports, module) {
+    init_cjs_shims();
     module.exports = {
       TextPrompt: require_text2(),
       SelectPrompt: require_select2(),
@@ -35350,6 +35526,7 @@ var require_elements2 = __commonJS({
 // ../node_modules/prompts/lib/prompts.js
 var require_prompts2 = __commonJS({
   "../node_modules/prompts/lib/prompts.js"(exports) {
+    init_cjs_shims();
     var $2 = exports;
     var el = require_elements2();
     var noop2 = /* @__PURE__ */ __name((v2) => v2, "noop");
@@ -35416,6 +35593,7 @@ var require_prompts2 = __commonJS({
 // ../node_modules/prompts/lib/index.js
 var require_lib4 = __commonJS({
   "../node_modules/prompts/lib/index.js"(exports, module) {
+    init_cjs_shims();
     var prompts2 = require_prompts2();
     var passOn = ["suggest", "format", "onState", "validate", "onRender", "type"];
     var noop2 = /* @__PURE__ */ __name(() => {
@@ -35493,6 +35671,7 @@ var require_lib4 = __commonJS({
 // ../node_modules/prompts/index.js
 var require_prompts3 = __commonJS({
   "../node_modules/prompts/index.js"(exports, module) {
+    init_cjs_shims();
     function isNodeLT(tar) {
       tar = (Array.isArray(tar) ? tar : tar.split(".")).map(Number);
       let i3 = 0, src = process.versions.node.split(".").map(Number);
@@ -35507,7 +35686,14 @@ var require_prompts3 = __commonJS({
   }
 });
 
+// src/index.ts
+init_cjs_shims();
+
+// src/cli.ts
+init_cjs_shims();
+
 // node_modules/commander/esm.mjs
+init_cjs_shims();
 var import_index = __toESM(require_commander(), 1);
 var {
   program,
@@ -35524,7 +35710,11 @@ var {
   Help
 } = import_index.default;
 
+// node_modules/chalk/source/index.js
+init_cjs_shims();
+
 // node_modules/chalk/source/vendor/ansi-styles/index.js
+init_cjs_shims();
 var ANSI_BACKGROUND_OFFSET = 10;
 var wrapAnsi16 = /* @__PURE__ */ __name((offset = 0) => (code) => `\x1B[${code + offset}m`, "wrapAnsi16");
 var wrapAnsi256 = /* @__PURE__ */ __name((offset = 0) => (code) => `\x1B[${38 + offset};5;${code}m`, "wrapAnsi256");
@@ -35710,6 +35900,9 @@ function assembleStyles() {
 __name(assembleStyles, "assembleStyles");
 var ansiStyles = assembleStyles();
 var ansi_styles_default = ansiStyles;
+
+// node_modules/chalk/source/vendor/supports-color/index.js
+init_cjs_shims();
 function hasFlag(flag, argv = globalThis.Deno ? globalThis.Deno.args : process2__default.default.argv) {
   const prefix = flag.startsWith("-") ? "" : flag.length === 1 ? "-" : "--";
   const position = argv.indexOf(prefix + flag);
@@ -35841,6 +36034,7 @@ var supportsColor = {
 var supports_color_default = supportsColor;
 
 // node_modules/chalk/source/utilities.js
+init_cjs_shims();
 function stringReplaceAll(string, substring, replacer) {
   let index = string.indexOf(substring);
   if (index === -1) {
@@ -36020,7 +36214,23 @@ var chalk = createChalk();
 createChalk({ level: stderrColor ? stderrColor.level : 0 });
 var source_default = chalk;
 
+// src/maria-ai.ts
+init_cjs_shims();
+
+// src/providers/manager.ts
+init_cjs_shims();
+
+// src/providers/openai-provider.ts
+init_cjs_shims();
+
+// node_modules/openai/index.mjs
+init_cjs_shims();
+
+// node_modules/openai/internal/qs/index.mjs
+init_cjs_shims();
+
 // node_modules/openai/internal/qs/formats.mjs
+init_cjs_shims();
 var default_format = "RFC3986";
 var formatters = {
   RFC1738: /* @__PURE__ */ __name((v2) => String(v2).replace(/%20/g, "+"), "RFC1738"),
@@ -36028,7 +36238,11 @@ var formatters = {
 };
 var RFC1738 = "RFC1738";
 
+// node_modules/openai/internal/qs/stringify.mjs
+init_cjs_shims();
+
 // node_modules/openai/internal/qs/utils.mjs
+init_cjs_shims();
 var is_array = Array.isArray;
 var hex_table = (() => {
   const array = [];
@@ -36394,10 +36608,21 @@ function stringify(object, opts = {}) {
 }
 __name(stringify, "stringify");
 
+// node_modules/openai/core.mjs
+init_cjs_shims();
+
 // node_modules/openai/version.mjs
+init_cjs_shims();
 var VERSION = "4.104.0";
 
+// node_modules/openai/streaming.mjs
+init_cjs_shims();
+
+// node_modules/openai/_shims/index.mjs
+init_cjs_shims();
+
 // node_modules/openai/_shims/registry.mjs
+init_cjs_shims();
 var auto = false;
 var kind = void 0;
 var fetch = void 0;
@@ -36432,7 +36657,11 @@ function setShims(shims, options = { auto: false }) {
 }
 __name(setShims, "setShims");
 
+// node_modules/openai/_shims/node-runtime.mjs
+init_cjs_shims();
+
 // node_modules/openai/node_modules/node-fetch/lib/index.mjs
+init_cjs_shims();
 var import_whatwg_url = __toESM(require_public_api(), 1);
 var Readable = Stream__default.default.Readable;
 var BUFFER = Symbol("buffer");
@@ -37688,16 +37917,24 @@ fetch2.isRedirect = function(code) {
 fetch2.Promise = global.Promise;
 var lib_default = fetch2;
 
+// node_modules/formdata-node/lib/esm/index.js
+init_cjs_shims();
+
 // node_modules/formdata-node/lib/esm/FormData.js
+init_cjs_shims();
 init_File();
 init_isFile();
 
 // node_modules/formdata-node/lib/esm/isBlob.js
+init_cjs_shims();
 init_Blob();
 var isBlob2 = /* @__PURE__ */ __name((value) => value instanceof Blob3, "isBlob");
 
 // node_modules/formdata-node/lib/esm/FormData.js
 init_isFunction();
+
+// node_modules/formdata-node/lib/esm/deprecateConstructorEntries.js
+init_cjs_shims();
 var deprecateConstructorEntries = util.deprecate(() => {
 }, 'Constructor "entries" argument is not spec-compliant and will be removed in next major release.');
 
@@ -37834,7 +38071,14 @@ init_File();
 var import_agentkeepalive = __toESM(require_agentkeepalive(), 1);
 var import_abort_controller = __toESM(require_abort_controller(), 1);
 
+// node_modules/form-data-encoder/lib/esm/index.js
+init_cjs_shims();
+
+// node_modules/form-data-encoder/lib/esm/FormDataEncoder.js
+init_cjs_shims();
+
 // node_modules/form-data-encoder/lib/esm/util/createBoundary.js
+init_cjs_shims();
 var alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
 function createBoundary() {
   let size = 16;
@@ -37848,6 +38092,7 @@ __name(createBoundary, "createBoundary");
 var createBoundary_default = createBoundary;
 
 // node_modules/form-data-encoder/lib/esm/util/isPlainObject.js
+init_cjs_shims();
 var getType = /* @__PURE__ */ __name((value) => Object.prototype.toString.call(value).slice(8, -1).toLowerCase(), "getType");
 function isPlainObject(value) {
   if (getType(value) !== "object") {
@@ -37864,6 +38109,7 @@ __name(isPlainObject, "isPlainObject");
 var isPlainObject_default = isPlainObject;
 
 // node_modules/form-data-encoder/lib/esm/util/normalizeValue.js
+init_cjs_shims();
 var normalizeValue = /* @__PURE__ */ __name((value) => String(value).replace(/\r|\n/g, (match, i3, str2) => {
   if (match === "\r" && str2[i3 + 1] !== "\n" || match === "\n" && str2[i3 - 1] !== "\r") {
     return "\r\n";
@@ -37873,10 +38119,15 @@ var normalizeValue = /* @__PURE__ */ __name((value) => String(value).replace(/\r
 var normalizeValue_default = normalizeValue;
 
 // node_modules/form-data-encoder/lib/esm/util/escapeName.js
+init_cjs_shims();
 var escapeName = /* @__PURE__ */ __name((name) => String(name).replace(/\r/g, "%0D").replace(/\n/g, "%0A").replace(/"/g, "%22"), "escapeName");
 var escapeName_default = escapeName;
 
+// node_modules/form-data-encoder/lib/esm/util/isFileLike.js
+init_cjs_shims();
+
 // node_modules/form-data-encoder/lib/esm/util/isFunction.js
+init_cjs_shims();
 var isFunction2 = /* @__PURE__ */ __name((value) => typeof value === "function", "isFunction");
 var isFunction_default = isFunction2;
 
@@ -37884,6 +38135,7 @@ var isFunction_default = isFunction2;
 var isFileLike = /* @__PURE__ */ __name((value) => Boolean(value && typeof value === "object" && isFunction_default(value.constructor) && value[Symbol.toStringTag] === "File" && isFunction_default(value.stream) && value.name != null && value.size != null && value.lastModified != null), "isFileLike");
 
 // node_modules/form-data-encoder/lib/esm/util/isFormData.js
+init_cjs_shims();
 var isFormData = /* @__PURE__ */ __name((value) => Boolean(value && isFunction_default(value.constructor) && value[Symbol.toStringTag] === "FormData" && isFunction_default(value.append) && isFunction_default(value.getAll) && isFunction_default(value.entries) && isFunction_default(value[Symbol.iterator])), "isFormData");
 
 // node_modules/form-data-encoder/lib/esm/FormDataEncoder.js
@@ -38008,7 +38260,14 @@ var FormDataEncoder = class {
   }
 };
 
+// node_modules/form-data-encoder/lib/esm/FileLike.js
+init_cjs_shims();
+
+// node_modules/form-data-encoder/lib/esm/FormDataLike.js
+init_cjs_shims();
+
 // node_modules/openai/_shims/MultipartBody.mjs
+init_cjs_shims();
 var MultipartBody = class {
   static {
     __name(this, "MultipartBody");
@@ -38073,6 +38332,7 @@ var init = /* @__PURE__ */ __name(() => {
 init();
 
 // node_modules/openai/error.mjs
+init_cjs_shims();
 var OpenAIError = class extends Error {
   static {
     __name(this, "OpenAIError");
@@ -38222,6 +38482,7 @@ var ContentFilterFinishReasonError = class extends OpenAIError {
 };
 
 // node_modules/openai/internal/decoders/line.mjs
+init_cjs_shims();
 var __classPrivateFieldSet5 = function(receiver, state, value, kind4, f4) {
   if (typeof state === "function" ? receiver !== state || true : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
   return state.set(receiver, value), value;
@@ -38336,6 +38597,7 @@ function findDoubleNewlineIndex(buffer) {
 __name(findDoubleNewlineIndex, "findDoubleNewlineIndex");
 
 // node_modules/openai/internal/stream-utils.mjs
+init_cjs_shims();
 function ReadableStreamToAsyncIterable(stream) {
   if (stream[Symbol.asyncIterator])
     return stream;
@@ -38630,6 +38892,7 @@ function partition(str2, delimiter) {
 __name(partition, "partition");
 
 // node_modules/openai/uploads.mjs
+init_cjs_shims();
 var isResponseLike = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function", "isResponseLike");
 var isFileLike2 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike(value), "isFileLike");
 var isBlobLike = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function", "isBlobLike");
@@ -39512,6 +39775,7 @@ function isObj(obj) {
 __name(isObj, "isObj");
 
 // node_modules/openai/pagination.mjs
+init_cjs_shims();
 var Page = class extends AbstractPage {
   static {
     __name(this, "Page");
@@ -39579,7 +39843,17 @@ var CursorPage = class extends AbstractPage {
   }
 };
 
+// node_modules/openai/resources/index.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/chat/index.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/chat/chat.mjs
+init_cjs_shims();
+
 // node_modules/openai/resource.mjs
+init_cjs_shims();
 var APIResource = class {
   static {
     __name(this, "APIResource");
@@ -39589,7 +39863,11 @@ var APIResource = class {
   }
 };
 
+// node_modules/openai/resources/chat/completions/completions.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/chat/completions/messages.mjs
+init_cjs_shims();
 var Messages = class extends APIResource {
   static {
     __name(this, "Messages");
@@ -39689,7 +39967,11 @@ var Chat = class extends APIResource {
 Chat.Completions = Completions;
 Chat.ChatCompletionsPage = ChatCompletionsPage;
 
+// node_modules/openai/resources/audio/audio.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/audio/speech.mjs
+init_cjs_shims();
 var Speech = class extends APIResource {
   static {
     __name(this, "Speech");
@@ -39720,6 +40002,7 @@ var Speech = class extends APIResource {
 };
 
 // node_modules/openai/resources/audio/transcriptions.mjs
+init_cjs_shims();
 var Transcriptions = class extends APIResource {
   static {
     __name(this, "Transcriptions");
@@ -39735,6 +40018,7 @@ var Transcriptions = class extends APIResource {
 };
 
 // node_modules/openai/resources/audio/translations.mjs
+init_cjs_shims();
 var Translations = class extends APIResource {
   static {
     __name(this, "Translations");
@@ -39761,6 +40045,7 @@ Audio.Translations = Translations;
 Audio.Speech = Speech;
 
 // node_modules/openai/resources/batches.mjs
+init_cjs_shims();
 var Batches = class extends APIResource {
   static {
     __name(this, "Batches");
@@ -39799,7 +40084,17 @@ var BatchesPage = class extends CursorPage {
 };
 Batches.BatchesPage = BatchesPage;
 
+// node_modules/openai/resources/beta/beta.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/beta/assistants.mjs
+init_cjs_shims();
+
+// node_modules/openai/lib/AssistantStream.mjs
+init_cjs_shims();
+
 // node_modules/openai/lib/EventStream.mjs
+init_cjs_shims();
 var __classPrivateFieldSet7 = function(receiver, state, value, kind4, f4) {
   if (typeof state === "function" ? receiver !== state || true : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
   return state.set(receiver, value), value;
@@ -40633,13 +40928,27 @@ var AssistantsPage = class extends CursorPage {
 };
 Assistants.AssistantsPage = AssistantsPage;
 
+// node_modules/openai/resources/beta/chat/chat.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/beta/chat/completions.mjs
+init_cjs_shims();
+
+// node_modules/openai/lib/ChatCompletionRunner.mjs
+init_cjs_shims();
+
+// node_modules/openai/lib/AbstractChatCompletionRunner.mjs
+init_cjs_shims();
+
 // node_modules/openai/lib/RunnableFunction.mjs
+init_cjs_shims();
 function isRunnableFunctionWithParse(fn) {
   return typeof fn.parse === "function";
 }
 __name(isRunnableFunctionWithParse, "isRunnableFunctionWithParse");
 
 // node_modules/openai/lib/chatCompletionUtils.mjs
+init_cjs_shims();
 var isAssistantMessage = /* @__PURE__ */ __name((message) => {
   return message?.role === "assistant";
 }, "isAssistantMessage");
@@ -40651,6 +40960,7 @@ var isToolMessage = /* @__PURE__ */ __name((message) => {
 }, "isToolMessage");
 
 // node_modules/openai/lib/parser.mjs
+init_cjs_shims();
 function isAutoParsableResponseFormat(response_format) {
   return response_format?.["$brand"] === "auto-parseable-response-format";
 }
@@ -41132,7 +41442,14 @@ var ChatCompletionRunner = class _ChatCompletionRunner extends AbstractChatCompl
   }
 };
 
+// node_modules/openai/lib/ChatCompletionStreamingRunner.mjs
+init_cjs_shims();
+
+// node_modules/openai/lib/ChatCompletionStream.mjs
+init_cjs_shims();
+
 // node_modules/openai/_vendor/partial-json-parser/parser.mjs
+init_cjs_shims();
 var STR = 1;
 var NUM = 2;
 var ARR = 4;
@@ -41928,7 +42245,11 @@ var Chat2 = class extends APIResource {
   Chat4.Completions = Completions2;
 })(Chat2 || (Chat2 = {}));
 
+// node_modules/openai/resources/beta/realtime/realtime.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/beta/realtime/sessions.mjs
+init_cjs_shims();
 var Sessions = class extends APIResource {
   static {
     __name(this, "Sessions");
@@ -41958,6 +42279,7 @@ var Sessions = class extends APIResource {
 };
 
 // node_modules/openai/resources/beta/realtime/transcription-sessions.mjs
+init_cjs_shims();
 var TranscriptionSessions = class extends APIResource {
   static {
     __name(this, "TranscriptionSessions");
@@ -42000,7 +42322,11 @@ var Realtime = class extends APIResource {
 Realtime.Sessions = Sessions;
 Realtime.TranscriptionSessions = TranscriptionSessions;
 
+// node_modules/openai/resources/beta/threads/threads.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/beta/threads/messages.mjs
+init_cjs_shims();
 var Messages2 = class extends APIResource {
   static {
     __name(this, "Messages");
@@ -42069,7 +42395,11 @@ var MessagesPage = class extends CursorPage {
 };
 Messages2.MessagesPage = MessagesPage;
 
+// node_modules/openai/resources/beta/threads/runs/runs.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/beta/threads/runs/steps.mjs
+init_cjs_shims();
 var Steps = class extends APIResource {
   static {
     __name(this, "Steps");
@@ -42370,6 +42700,7 @@ Beta.AssistantsPage = AssistantsPage;
 Beta.Threads = Threads;
 
 // node_modules/openai/resources/completions.mjs
+init_cjs_shims();
 var Completions3 = class extends APIResource {
   static {
     __name(this, "Completions");
@@ -42379,7 +42710,14 @@ var Completions3 = class extends APIResource {
   }
 };
 
+// node_modules/openai/resources/containers/containers.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/containers/files/files.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/containers/files/content.mjs
+init_cjs_shims();
 var Content = class extends APIResource {
   static {
     __name(this, "Content");
@@ -42494,6 +42832,7 @@ Containers.Files = Files;
 Containers.FileListResponsesPage = FileListResponsesPage;
 
 // node_modules/openai/resources/embeddings.mjs
+init_cjs_shims();
 var Embeddings = class extends APIResource {
   static {
     __name(this, "Embeddings");
@@ -42539,7 +42878,14 @@ var Embeddings = class extends APIResource {
   }
 };
 
+// node_modules/openai/resources/evals/evals.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/evals/runs/runs.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/evals/runs/output-items.mjs
+init_cjs_shims();
 var OutputItems = class extends APIResource {
   static {
     __name(this, "OutputItems");
@@ -42670,6 +43016,7 @@ Evals.Runs = Runs2;
 Evals.RunListResponsesPage = RunListResponsesPage;
 
 // node_modules/openai/resources/files.mjs
+init_cjs_shims();
 var Files2 = class extends APIResource {
   static {
     __name(this, "Files");
@@ -42762,14 +43109,22 @@ var FileObjectsPage = class extends CursorPage {
 };
 Files2.FileObjectsPage = FileObjectsPage;
 
+// node_modules/openai/resources/fine-tuning/fine-tuning.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/fine-tuning/methods.mjs
+init_cjs_shims();
 var Methods = class extends APIResource {
   static {
     __name(this, "Methods");
   }
 };
 
+// node_modules/openai/resources/fine-tuning/alpha/alpha.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/fine-tuning/alpha/graders.mjs
+init_cjs_shims();
 var Graders = class extends APIResource {
   static {
     __name(this, "Graders");
@@ -42829,7 +43184,11 @@ var Alpha = class extends APIResource {
 };
 Alpha.Graders = Graders;
 
+// node_modules/openai/resources/fine-tuning/checkpoints/checkpoints.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/fine-tuning/checkpoints/permissions.mjs
+init_cjs_shims();
 var Permissions = class extends APIResource {
   static {
     __name(this, "Permissions");
@@ -42902,7 +43261,11 @@ var Checkpoints = class extends APIResource {
 Checkpoints.Permissions = Permissions;
 Checkpoints.PermissionCreateResponsesPage = PermissionCreateResponsesPage;
 
+// node_modules/openai/resources/fine-tuning/jobs/jobs.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/fine-tuning/jobs/checkpoints.mjs
+init_cjs_shims();
 var Checkpoints2 = class extends APIResource {
   static {
     __name(this, "Checkpoints");
@@ -43055,7 +43418,11 @@ FineTuning.FineTuningJobEventsPage = FineTuningJobEventsPage;
 FineTuning.Checkpoints = Checkpoints;
 FineTuning.Alpha = Alpha;
 
+// node_modules/openai/resources/graders/graders.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/graders/grader-models.mjs
+init_cjs_shims();
 var GraderModels = class extends APIResource {
   static {
     __name(this, "GraderModels");
@@ -43075,6 +43442,7 @@ var Graders2 = class extends APIResource {
 Graders2.GraderModels = GraderModels;
 
 // node_modules/openai/resources/images.mjs
+init_cjs_shims();
 var Images = class extends APIResource {
   static {
     __name(this, "Images");
@@ -43124,6 +43492,7 @@ var Images = class extends APIResource {
 };
 
 // node_modules/openai/resources/models.mjs
+init_cjs_shims();
 var Models = class extends APIResource {
   static {
     __name(this, "Models");
@@ -43158,6 +43527,7 @@ var ModelsPage = class extends Page {
 Models.ModelsPage = ModelsPage;
 
 // node_modules/openai/resources/moderations.mjs
+init_cjs_shims();
 var Moderations = class extends APIResource {
   static {
     __name(this, "Moderations");
@@ -43171,7 +43541,11 @@ var Moderations = class extends APIResource {
   }
 };
 
+// node_modules/openai/resources/responses/responses.mjs
+init_cjs_shims();
+
 // node_modules/openai/lib/ResponsesParser.mjs
+init_cjs_shims();
 function maybeParseResponse(response, params) {
   if (!params || !hasAutoParseableInput2(params)) {
     return {
@@ -43301,6 +43675,7 @@ function addOutputText(rsp) {
 __name(addOutputText, "addOutputText");
 
 // node_modules/openai/resources/responses/input-items.mjs
+init_cjs_shims();
 var InputItems = class extends APIResource {
   static {
     __name(this, "InputItems");
@@ -43317,6 +43692,7 @@ var InputItems = class extends APIResource {
 };
 
 // node_modules/openai/lib/responses/ResponseStream.mjs
+init_cjs_shims();
 var __classPrivateFieldSet10 = function(receiver, state, value, kind4, f4) {
   if (typeof state === "function" ? receiver !== state || true : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
   return state.set(receiver, value), value;
@@ -43642,7 +44018,11 @@ var ResponseItemsPage = class extends CursorPage {
 };
 Responses.InputItems = InputItems;
 
+// node_modules/openai/resources/uploads/uploads.mjs
+init_cjs_shims();
+
 // node_modules/openai/resources/uploads/parts.mjs
+init_cjs_shims();
 var Parts = class extends APIResource {
   static {
     __name(this, "Parts");
@@ -43725,7 +44105,14 @@ var Uploads = class extends APIResource {
 };
 Uploads.Parts = Parts;
 
+// node_modules/openai/resources/vector-stores/vector-stores.mjs
+init_cjs_shims();
+
+// node_modules/openai/resources/vector-stores/file-batches.mjs
+init_cjs_shims();
+
 // node_modules/openai/lib/Util.mjs
+init_cjs_shims();
 var allSettledWithThrow = /* @__PURE__ */ __name(async (promises) => {
   const results = await Promise.allSettled(promises);
   const rejected = results.filter((result) => result.status === "rejected");
@@ -43745,6 +44132,7 @@ var allSettledWithThrow = /* @__PURE__ */ __name(async (promises) => {
 }, "allSettledWithThrow");
 
 // node_modules/openai/resources/vector-stores/files.mjs
+init_cjs_shims();
 var Files3 = class extends APIResource {
   static {
     __name(this, "Files");
@@ -44216,6 +44604,7 @@ OpenAI.ContainerListResponsesPage = ContainerListResponsesPage;
 var openai_default = OpenAI;
 
 // src/providers/ai-provider.ts
+init_cjs_shims();
 var BaseAIProvider = class {
   static {
     __name(this, "BaseAIProvider");
@@ -44378,10 +44767,27 @@ var OpenAIProvider = class extends BaseAIProvider {
   }
 };
 
+// src/providers/anthropic-provider.ts
+init_cjs_shims();
+
+// node_modules/@anthropic-ai/sdk/index.mjs
+init_cjs_shims();
+
+// node_modules/@anthropic-ai/sdk/core.mjs
+init_cjs_shims();
+
 // node_modules/@anthropic-ai/sdk/version.mjs
+init_cjs_shims();
 var VERSION2 = "0.20.9";
 
+// node_modules/@anthropic-ai/sdk/streaming.mjs
+init_cjs_shims();
+
+// node_modules/@anthropic-ai/sdk/_shims/index.mjs
+init_cjs_shims();
+
 // node_modules/@anthropic-ai/sdk/_shims/registry.mjs
+init_cjs_shims();
 var auto2 = false;
 var kind2 = void 0;
 var fetch3 = void 0;
@@ -44413,7 +44819,11 @@ function setShims2(shims, options = { auto: false }) {
 }
 __name(setShims2, "setShims");
 
+// node_modules/@anthropic-ai/sdk/_shims/node-runtime.mjs
+init_cjs_shims();
+
 // node_modules/@anthropic-ai/sdk/node_modules/node-fetch/lib/index.mjs
+init_cjs_shims();
 var import_whatwg_url2 = __toESM(require_public_api(), 1);
 var Readable3 = Stream__default.default.Readable;
 var BUFFER2 = Symbol("buffer");
@@ -45674,6 +46084,7 @@ var import_agentkeepalive2 = __toESM(require_agentkeepalive(), 1);
 var import_abort_controller2 = __toESM(require_abort_controller(), 1);
 
 // node_modules/@anthropic-ai/sdk/_shims/MultipartBody.mjs
+init_cjs_shims();
 var MultipartBody2 = class {
   static {
     __name(this, "MultipartBody");
@@ -45754,6 +46165,7 @@ __export(error_exports2, {
   RateLimitError: () => RateLimitError2,
   UnprocessableEntityError: () => UnprocessableEntityError2
 });
+init_cjs_shims();
 var AnthropicError = class extends Error {
   static {
     __name(this, "AnthropicError");
@@ -46289,6 +46701,7 @@ function readableStreamAsyncIterable(stream) {
 __name(readableStreamAsyncIterable, "readableStreamAsyncIterable");
 
 // node_modules/@anthropic-ai/sdk/uploads.mjs
+init_cjs_shims();
 var isResponseLike2 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function", "isResponseLike");
 var isFileLike3 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike2(value), "isFileLike");
 var isBlobLike2 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function", "isBlobLike");
@@ -47000,7 +47413,14 @@ var uuid42 = /* @__PURE__ */ __name(() => {
   });
 }, "uuid4");
 
+// node_modules/@anthropic-ai/sdk/resources/index.mjs
+init_cjs_shims();
+
+// node_modules/@anthropic-ai/sdk/resources/beta/beta.mjs
+init_cjs_shims();
+
 // node_modules/@anthropic-ai/sdk/resource.mjs
+init_cjs_shims();
 var APIResource2 = class {
   static {
     __name(this, "APIResource");
@@ -47010,7 +47430,11 @@ var APIResource2 = class {
   }
 };
 
+// node_modules/@anthropic-ai/sdk/resources/beta/tools/tools.mjs
+init_cjs_shims();
+
 // node_modules/@anthropic-ai/sdk/resources/beta/tools/messages.mjs
+init_cjs_shims();
 var Messages3 = class extends APIResource2 {
   static {
     __name(this, "Messages");
@@ -47057,6 +47481,7 @@ var Beta2 = class extends APIResource2 {
 })(Beta2 || (Beta2 = {}));
 
 // node_modules/@anthropic-ai/sdk/resources/completions.mjs
+init_cjs_shims();
 var Completions4 = class extends APIResource2 {
   static {
     __name(this, "Completions");
@@ -47073,7 +47498,11 @@ var Completions4 = class extends APIResource2 {
 /* @__PURE__ */ (function(Completions6) {
 })(Completions4 || (Completions4 = {}));
 
+// node_modules/@anthropic-ai/sdk/resources/messages.mjs
+init_cjs_shims();
+
 // node_modules/@anthropic-ai/sdk/lib/MessageStream.mjs
+init_cjs_shims();
 var __classPrivateFieldSet12 = function(receiver, state, value, kind4, f4) {
   if (typeof state === "function" ? receiver !== state || true : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
   return state.set(receiver, value), value;
@@ -47778,7 +48207,11 @@ var AnthropicProvider = class extends BaseAIProvider {
   }
 };
 
+// src/providers/google-provider.ts
+init_cjs_shims();
+
 // src/providers/base-provider.ts
+init_cjs_shims();
 var BaseProvider = class {
   static {
     __name(this, "BaseProvider");
@@ -47977,6 +48410,7 @@ var GoogleProvider = class extends BaseProvider {
 };
 
 // src/providers/groq-provider.ts
+init_cjs_shims();
 var GroqProvider = class extends BaseProvider {
   static {
     __name(this, "GroqProvider");
@@ -48158,10 +48592,27 @@ var GroqProvider = class extends BaseProvider {
   }
 };
 
+// src/providers/grok-provider.ts
+init_cjs_shims();
+
+// node_modules/groq-sdk/index.mjs
+init_cjs_shims();
+
+// node_modules/groq-sdk/core.mjs
+init_cjs_shims();
+
 // node_modules/groq-sdk/version.mjs
+init_cjs_shims();
 var VERSION3 = "0.3.3";
 
+// node_modules/groq-sdk/lib/streaming.mjs
+init_cjs_shims();
+
+// node_modules/groq-sdk/_shims/index.mjs
+init_cjs_shims();
+
 // node_modules/groq-sdk/_shims/registry.mjs
+init_cjs_shims();
 var auto3 = false;
 var kind3 = void 0;
 var fetch6 = void 0;
@@ -48196,7 +48647,11 @@ function setShims3(shims, options = { auto: false }) {
 }
 __name(setShims3, "setShims");
 
+// node_modules/groq-sdk/_shims/node-runtime.mjs
+init_cjs_shims();
+
 // node_modules/groq-sdk/node_modules/node-fetch/lib/index.mjs
+init_cjs_shims();
 var import_whatwg_url3 = __toESM(require_public_api(), 1);
 var Readable5 = Stream__default.default.Readable;
 var BUFFER3 = Symbol("buffer");
@@ -49457,6 +49912,7 @@ var import_agentkeepalive3 = __toESM(require_agentkeepalive(), 1);
 var import_abort_controller3 = __toESM(require_abort_controller(), 1);
 
 // node_modules/groq-sdk/_shims/MultipartBody.mjs
+init_cjs_shims();
 var MultipartBody3 = class {
   static {
     __name(this, "MultipartBody");
@@ -49537,6 +49993,7 @@ __export(error_exports3, {
   RateLimitError: () => RateLimitError4,
   UnprocessableEntityError: () => UnprocessableEntityError4
 });
+init_cjs_shims();
 var GroqError = class extends Error {
   static {
     __name(this, "GroqError");
@@ -50023,6 +50480,7 @@ function readableStreamAsyncIterable2(stream) {
 __name(readableStreamAsyncIterable2, "readableStreamAsyncIterable");
 
 // node_modules/groq-sdk/uploads.mjs
+init_cjs_shims();
 var isResponseLike3 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.url === "string" && typeof value.blob === "function", "isResponseLike");
 var isFileLike4 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.name === "string" && typeof value.lastModified === "number" && isBlobLike3(value), "isFileLike");
 var isBlobLike3 = /* @__PURE__ */ __name((value) => value != null && typeof value === "object" && typeof value.size === "number" && typeof value.type === "string" && typeof value.text === "function" && typeof value.slice === "function" && typeof value.arrayBuffer === "function", "isBlobLike");
@@ -50772,7 +51230,14 @@ var isRunningInBrowser2 = /* @__PURE__ */ __name(() => {
   );
 }, "isRunningInBrowser");
 
+// node_modules/groq-sdk/resources/index.mjs
+init_cjs_shims();
+
+// node_modules/groq-sdk/resources/chat/chat.mjs
+init_cjs_shims();
+
 // node_modules/groq-sdk/resource.mjs
+init_cjs_shims();
 var APIResource3 = class {
   static {
     __name(this, "APIResource");
@@ -50783,6 +51248,7 @@ var APIResource3 = class {
 };
 
 // node_modules/groq-sdk/resources/chat/completions.mjs
+init_cjs_shims();
 var Completions5 = class extends APIResource3 {
   static {
     __name(this, "Completions");
@@ -50809,6 +51275,7 @@ var Chat3 = class extends APIResource3 {
 })(Chat3 || (Chat3 = {}));
 
 // node_modules/groq-sdk/resources/models.mjs
+init_cjs_shims();
 var Models2 = class extends APIResource3 {
   static {
     __name(this, "Models");
@@ -50838,7 +51305,11 @@ var Models2 = class extends APIResource3 {
 /* @__PURE__ */ (function(Models3) {
 })(Models2 || (Models2 = {}));
 
+// node_modules/groq-sdk/resources/audio/audio.mjs
+init_cjs_shims();
+
 // node_modules/groq-sdk/resources/audio/transcriptions.mjs
+init_cjs_shims();
 var Transcriptions2 = class extends APIResource3 {
   static {
     __name(this, "Transcriptions");
@@ -50854,6 +51325,7 @@ var Transcriptions2 = class extends APIResource3 {
 })(Transcriptions2 || (Transcriptions2 = {}));
 
 // node_modules/groq-sdk/resources/audio/translations.mjs
+init_cjs_shims();
 var Translations2 = class extends APIResource3 {
   static {
     __name(this, "Translations");
@@ -51084,6 +51556,7 @@ var GrokProvider = class extends BaseAIProvider {
 };
 
 // src/providers/lmstudio-provider.ts
+init_cjs_shims();
 init_src();
 var LMStudioProvider = class extends BaseAIProvider {
   static {
@@ -51332,6 +51805,7 @@ var LMStudioProvider = class extends BaseAIProvider {
 };
 
 // src/providers/ollama-provider.ts
+init_cjs_shims();
 init_src();
 var OllamaProvider = class extends BaseAIProvider {
   static {
@@ -51650,6 +52124,7 @@ var OllamaProvider = class extends BaseAIProvider {
 };
 
 // src/providers/vllm-provider.ts
+init_cjs_shims();
 init_src();
 var VLLMProvider = class extends BaseAIProvider {
   static {
@@ -52050,7 +52525,11 @@ var AIProviderManager = class {
   }
 };
 
+// src/services/intelligent-router.ts
+init_cjs_shims();
+
 // src/config/models.ts
+init_cjs_shims();
 var TASK_ROUTING = {
   coding: ["gpt-5", "claude-sonnet-4-20250514", "qwen2.5:32b", "codellama:13b"],
   reasoning: ["o1", "claude-opus-4-1-20250805", "gpt-5", "llama-3.3-70b-versatile"],
@@ -52193,6 +52672,9 @@ var IntelligentRouter = class {
     this.config.set("priority", mode);
   }
 };
+
+// src/services/health-monitor.ts
+init_cjs_shims();
 var HealthMonitor = class extends events.EventEmitter {
   static {
     __name(this, "HealthMonitor");
@@ -52569,6 +53051,7 @@ var HealthMonitor = class extends events.EventEmitter {
 };
 
 // src/config/config-manager.ts
+init_cjs_shims();
 var ConfigManager = class _ConfigManager {
   static {
     __name(this, "ConfigManager");
@@ -52762,6 +53245,7 @@ var MariaAI = class {
 };
 
 // src/services/interactive-session.ts
+init_cjs_shims();
 var import_prompts = __toESM(require_prompts3());
 function createInteractiveSession(maria) {
   let running = false;
@@ -52946,6 +53430,7 @@ function showConfig(maria) {
 __name(showConfig, "showConfig");
 
 // src/config/loader.ts
+init_cjs_shims();
 async function loadConfig(options = {}) {
   const configManager = await ConfigManager.load(options.config);
   const baseConfig = configManager.getAll();
@@ -52983,6 +53468,7 @@ async function loadConfig(options = {}) {
 __name(loadConfig, "loadConfig");
 
 // src/utils/ui.ts
+init_cjs_shims();
 function printWelcome() {
   console.log(source_default.blue("\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557"));
   console.log(source_default.blue("\u2551                                                          \u2551"));
