@@ -781,17 +781,68 @@ vi.mock('gpt-3-encoder', () => ({
 - **Week 8-10**: Stable v1.0.0
 
 ### 📦 NPM Package Ready
+
+#### 1. 明確なインストール方法
 ```bash
-# Ready for global installation
+# ✅ 最新安定版 (推奨)
+npm install -g @bonginkan/maria@latest
+npm install -g @bonginkan/maria  # 同じ意味
+
+# 🧪 開発版
+npm install -g @bonginkan/maria@alpha    # 最新機能
+npm install -g @bonginkan/maria@beta     # テスト版
+
+# ⚡ 一時使用
+npx @bonginkan/maria@latest
+```
+
+#### 2. GitHub Actions自動化
+- ✅ `stable`リリース時に自動で`latest`タグを付与
+- ✅ `alpha`/`beta`リリース時は専用タグで公開
+- ✅ 明示的なdist-tagコマンドでタグ保証
+
+#### 3. Package.json強化
+- ✅ `release:latest`スクリプト追加
+- ✅ 手動リリース時のタグ管理機能
+
+#### 4. ドキュメント更新
+- ✅ README.mdに階層的インストール手順
+- ✅ CHANGELOG.mdに詳細な変更内容記録
+
+### 📦 結果として実現される動作
+
+**ユーザー体験:**
+```bash
+# 🎯 この2つのコマンドで常に最新安定版がインストール
+npm install -g @bonginkan/maria@latest
 npm install -g @bonginkan/maria
 
-# All features available immediately
+# 🔄 アップデート時も同様
+npm update -g @bonginkan/maria@latest
+```
+
+**開発者体験:**
+```bash
+# 🛠️ リリース時のタグ管理が自動化
+git push origin main                    # 自動でalphaリリース
+npm run release:latest                  # 手動でlatestリリース
+```
+
+**NPMレジストリでの表示:**
+- ✅ `latest`: 安定版（一般ユーザー向け）
+- ✅ `alpha`: 開発版（最新機能テスト）
+- ✅ `beta`: RC版（リリース候補）
+
+**All features available immediately:**
+```bash
 maria init              # Project setup
-maria chat              # Interactive mode with 38 slash commands
+maria chat              # Interactive mode with 40 slash commands
 maria video "prompt"    # AI video generation
 maria image "prompt"    # AI image generation
 maria --help            # Complete documentation
 ```
+
+これで、`npm install -g @bonginkan/maria@latest` で確実に最新の安定版がインストールされるようになりました！🎉
 
 For details, see [OSS_TODO.md](./OSS_TODO.md)
 

@@ -1,0 +1,48 @@
+
+> @maria/shared@1.0.0 build /Users/bongin_max/maria_code/packages/shared
+> tsup
+
+CLI Building entry: src/index.ts, src/types/index.ts, src/ui/index.ts, src/utils/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.0
+CLI Using tsup config: /Users/bongin_max/maria_code/packages/shared/package.json
+CLI Target: es2022
+CLI Cleaning output folder
+ESM Build start
+CJS Build start
+
+ WARN  [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mCannot find base config file "../../tsconfig.base.json"[0m [tsconfig.json]
+
+    tsconfig.json:2:13:
+[37m      2 │   "extends": [32m"../../tsconfig.base.json"[37m,
+        ╵              [32m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+
+
+ WARN  [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mCannot find base config file "../../tsconfig.base.json"[0m [tsconfig.json]
+
+    tsconfig.json:2:13:
+[37m      2 │   "extends": [32m"../../tsconfig.base.json"[37m,
+        ╵              [32m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+
+CJS dist/ui/index.cjs        1.40 KB
+CJS dist/types/index.cjs     7.12 KB
+CJS dist/index.cjs           9.71 KB
+CJS dist/utils/index.cjs     3.61 KB
+CJS dist/ui/index.cjs.map    978.00 B
+CJS dist/index.cjs.map       13.80 KB
+CJS dist/types/index.cjs.map 9.94 KB
+CJS dist/utils/index.cjs.map 4.29 KB
+CJS ⚡️ Build success in 42ms
+ESM dist/index.js           6.20 KB
+ESM dist/types/index.js     4.32 KB
+ESM dist/utils/index.js     1.92 KB
+ESM dist/ui/index.js        316.00 B
+ESM dist/index.js.map       13.63 KB
+ESM dist/types/index.js.map 9.54 KB
+ESM dist/ui/index.js.map    788.00 B
+ESM dist/utils/index.js.map 4.16 KB
+ESM ⚡️ Build success in 43ms

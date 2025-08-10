@@ -1,0 +1,36 @@
+
+> @maria/ai-agents@1.0.0 build /Users/bongin_max/maria_code/packages/ai-agents
+> tsup
+
+CLI Building entry: src/index.ts
+CLI Using tsconfig: tsconfig.json
+CLI tsup v8.5.0
+CLI Using tsup config: /Users/bongin_max/maria_code/packages/ai-agents/package.json
+CLI Target: node20
+CLI Cleaning output folder
+ESM Build start
+CJS Build start
+
+ WARN  [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mCannot find base config file "../../tsconfig.base.json"[0m [tsconfig.json]
+
+    tsconfig.json:2:13:
+[37m      2 │   "extends": [32m"../../tsconfig.base.json"[37m,
+        ╵              [32m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+
+
+ WARN  [33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mCannot find base config file "../../tsconfig.base.json"[0m [tsconfig.json]
+
+    tsconfig.json:2:13:
+[37m      2 │   "extends": [32m"../../tsconfig.base.json"[37m,
+        ╵              [32m~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+
+ESM dist/index.js     57.70 KB
+ESM dist/index.js.map 113.70 KB
+ESM ⚡️ Build success in 23ms
+CJS dist/index.cjs     60.05 KB
+CJS dist/index.cjs.map 114.25 KB
+CJS ⚡️ Build success in 22ms

@@ -1,0 +1,13 @@
+[user]
+email = "bongin_max@example.com"
+
+[project]
+name = "maria_code"
+id = "maria_code"
+
+[neo4j]
+
+[ai]
+
+[logging]
+level = "info"
