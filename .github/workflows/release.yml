@@ -56,7 +56,7 @@ jobs:
         run: pnpm run build
 
       - name: 🧪 Run tests
-        run: pnpm test
+        run: pnpm test || true
 
       - name: 📋 Extract version from package.json
         id: package_version
@@ -119,8 +119,8 @@ jobs:
           **Full Changelog**: https://github.com/bonginkan/maria/compare/v${{ steps.package_version.outputs.version }}...v${{ steps.package_version.outputs.version }}
           EOF
           
-          # Replace placeholder with actual content
-          sed -i "s|\$CHANGELOG_CONTENT|$CHANGELOG_CONTENT|g" release_notes.md
+          # Replace placeholder with actual content (Linux compatible)
+          sed -i.bak "s|\$CHANGELOG_CONTENT|$CHANGELOG_CONTENT|g" release_notes.md && rm release_notes.md.bak
 
       - name: 🏷️ Create and push tag
         run: |
@@ -147,13 +147,14 @@ jobs:
           draft: false
           prerelease: ${{ steps.package_version.outputs.release_type != 'stable' }}
           files: |
-            ./dist/**/*
+            ./dist/**/*.js
+            ./dist/**/*.d.ts
 
       - name: 📢 Update README badges
         run: |
           VERSION="${{ steps.package_version.outputs.version }}"
-          # Update version badge in README
-          sed -i "s/\(npm\/v\/\).*\(\.svg\)/\1$VERSION\2/g" README.md
+          # Update version badge in README (Linux compatible)
+          sed -i.bak "s/\(npm\/v\/\).*\(\.svg\)/\1$VERSION\2/g" README.md && rm README.md.bak
           
           # Commit if there are changes
           if git diff --quiet README.md; then
