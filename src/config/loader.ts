@@ -16,7 +16,7 @@ export async function loadConfig(options: CLIOptions = {}): Promise<MariaAIConfi
   const config: MariaAIConfig = {
     priority: options.priority || baseConfig.priority,
     autoStart: !options.offline, // Disable auto-start in offline mode
-    healthMonitoring: baseConfig.healthMonitoring
+    healthMonitoring: baseConfig.healthMonitoring,
   };
 
   // Load API keys from environment
@@ -25,14 +25,14 @@ export async function loadConfig(options: CLIOptions = {}): Promise<MariaAIConfi
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
     GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '',
     GROQ_API_KEY: process.env.GROQ_API_KEY || '',
-    GROK_API_KEY: process.env.GROK_API_KEY || ''
+    GROK_API_KEY: process.env.GROK_API_KEY || '',
   };
 
   // Local provider settings
   config.localProviders = {
     lmstudio: process.env.LMSTUDIO_ENABLED !== 'false' && !options.offline,
     ollama: process.env.OLLAMA_ENABLED !== 'false' && !options.offline,
-    vllm: process.env.VLLM_ENABLED !== 'false' && !options.offline
+    vllm: process.env.VLLM_ENABLED !== 'false' && !options.offline,
   };
 
   // Handle offline mode
@@ -42,7 +42,7 @@ export async function loadConfig(options: CLIOptions = {}): Promise<MariaAIConfi
     config.localProviders = {
       lmstudio: true,
       ollama: true,
-      vllm: true
+      vllm: true,
     };
   }
 
@@ -59,11 +59,11 @@ export async function loadEnvironmentConfig(): Promise<void> {
   try {
     const fs = await import('fs-extra');
     const path = await import('path');
-    
+
     const envPath = path.join(process.cwd(), '.env.local');
     if (await fs.pathExists(envPath)) {
       const envContent = await fs.readFile(envPath, 'utf-8');
-      
+
       // Simple env parsing (no external dependency)
       const lines = envContent.split('\n');
       for (const line of lines) {

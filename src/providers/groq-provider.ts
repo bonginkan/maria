@@ -10,9 +10,9 @@ export class GroqProvider extends BaseProvider {
   private modelsCache?: ModelInfo[];
 
   constructor(apiKey?: string) {
-    super({ 
-      apiKey, 
-      apiBase: 'https://api.groq.com/openai/v1' 
+    super({
+      apiKey,
+      apiBase: 'https://api.groq.com/openai/v1',
     });
   }
 
@@ -25,8 +25,8 @@ export class GroqProvider extends BaseProvider {
       await this.makeRequest(`${this.apiBase}/models`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`
-        }
+          Authorization: `Bearer ${this.apiKey}`,
+        },
       });
       return true;
     } catch {
@@ -47,7 +47,7 @@ export class GroqProvider extends BaseProvider {
         capabilities: ['text', 'reasoning', 'code'],
         pricing: { input: 0.00059, output: 0.00079 },
         available: await this.isAvailable(),
-        recommendedFor: ['complex_reasoning', 'coding', 'analysis']
+        recommendedFor: ['complex_reasoning', 'coding', 'analysis'],
       },
       {
         id: 'llama-3.2-90b-vision-preview',
@@ -58,7 +58,7 @@ export class GroqProvider extends BaseProvider {
         capabilities: ['text', 'vision', 'reasoning'],
         pricing: { input: 0.0009, output: 0.0009 },
         available: await this.isAvailable(),
-        recommendedFor: ['vision_tasks', 'multimodal', 'analysis']
+        recommendedFor: ['vision_tasks', 'multimodal', 'analysis'],
       },
       {
         id: 'mixtral-8x7b-32768',
@@ -69,19 +69,19 @@ export class GroqProvider extends BaseProvider {
         capabilities: ['text', 'reasoning', 'code'],
         pricing: { input: 0.00024, output: 0.00024 },
         available: await this.isAvailable(),
-        recommendedFor: ['balanced_performance', 'multilingual']
+        recommendedFor: ['balanced_performance', 'multilingual'],
       },
       {
         id: 'gemma2-9b-it',
         name: 'Gemma 2 9B',
         provider: this.name,
-        description: 'Google\'s efficient open model',
+        description: "Google's efficient open model",
         contextLength: 8192,
         capabilities: ['text', 'reasoning'],
         pricing: { input: 0.0002, output: 0.0002 },
         available: await this.isAvailable(),
-        recommendedFor: ['quick_tasks', 'cost_effective']
-      }
+        recommendedFor: ['quick_tasks', 'cost_effective'],
+      },
     ];
 
     this.modelsCache = models;
@@ -89,7 +89,7 @@ export class GroqProvider extends BaseProvider {
   }
 
   async chat(request: AIRequest): Promise<AIResponse> {
-    if (!await this.isAvailable()) {
+    if (!(await this.isAvailable())) {
       throw new Error('Groq API not available');
     }
 
@@ -101,32 +101,32 @@ export class GroqProvider extends BaseProvider {
       messages: request.messages,
       temperature: request.temperature || 0.7,
       max_tokens: request.maxTokens || 4000,
-      stream: request.stream || false
+      stream: request.stream || false,
     };
 
     if (request.stream) {
       const stream = await this.makeStreamRequest(`${this.apiBase}/chat/completions`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.apiKey}`,
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       });
 
       return {
         stream,
         model,
         provider: this.name,
-        responseTime: Date.now() - startTime
+        responseTime: Date.now() - startTime,
       };
     }
 
     const response = await this.makeRequest(`${this.apiBase}/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`
+        Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     return {
@@ -136,14 +136,14 @@ export class GroqProvider extends BaseProvider {
       usage: {
         promptTokens: response.usage?.prompt_tokens || 0,
         completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0
+        totalTokens: response.usage?.total_tokens || 0,
       },
-      responseTime: Date.now() - startTime
+      responseTime: Date.now() - startTime,
     };
   }
 
   async vision(image: Buffer, prompt: string): Promise<AIResponse> {
-    if (!await this.isAvailable()) {
+    if (!(await this.isAvailable())) {
       throw new Error('Groq API not available');
     }
 
@@ -160,21 +160,21 @@ export class GroqProvider extends BaseProvider {
             {
               type: 'image_url',
               image_url: {
-                url: `data:image/jpeg;base64,${base64Image}`
-              }
-            }
-          ]
-        }
+                url: `data:image/jpeg;base64,${base64Image}`,
+              },
+            },
+          ],
+        },
       ],
-      max_tokens: 4000
+      max_tokens: 4000,
     };
 
     const response = await this.makeRequest(`${this.apiBase}/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.apiKey}`
+        Authorization: `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     return {
@@ -184,9 +184,9 @@ export class GroqProvider extends BaseProvider {
       usage: {
         promptTokens: response.usage?.prompt_tokens || 0,
         completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0
+        totalTokens: response.usage?.total_tokens || 0,
       },
-      responseTime: Date.now() - startTime
+      responseTime: Date.now() - startTime,
     };
   }
 
@@ -195,7 +195,7 @@ export class GroqProvider extends BaseProvider {
       'llama-3.3-70b-versatile': { input: 0.00059, output: 0.00079 },
       'llama-3.2-90b-vision-preview': { input: 0.0009, output: 0.0009 },
       'mixtral-8x7b-32768': { input: 0.00024, output: 0.00024 },
-      'gemma2-9b-it': { input: 0.0002, output: 0.0002 }
+      'gemma2-9b-it': { input: 0.0002, output: 0.0002 },
     };
 
     const modelPricing = pricing[model as keyof typeof pricing] || pricing['mixtral-8x7b-32768'];

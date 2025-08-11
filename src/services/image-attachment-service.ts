@@ -40,7 +40,7 @@ export class ImageAttachmentService {
    */
   public detectFilePaths(input: string): string[] {
     const paths: string[] = [];
-    
+
     // Common file path patterns
     const patterns = [
       // Absolute paths
@@ -50,9 +50,9 @@ export class ImageAttachmentService {
       // Windows paths
       /(?:^|\s)([a-zA-Z]:[\\\/][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
       // Just filename if in current directory
-      /(?:^|\s)([^\s\/\\]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi
+      /(?:^|\s)([^\s\/\\]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
     ];
-    
+
     for (const pattern of patterns) {
       const matches = input.matchAll(pattern);
       for (const match of matches) {
@@ -61,7 +61,7 @@ export class ImageAttachmentService {
         }
       }
     }
-    
+
     return [...new Set(paths)]; // Remove duplicates
   }
 
@@ -72,12 +72,12 @@ export class ImageAttachmentService {
     try {
       const stats = await fs.stat(filepath);
       if (!stats.isFile()) return false;
-      
+
       const ext = path.extname(filepath).toLowerCase();
       if (!this.supportedFormats.includes(ext)) return false;
-      
+
       if (stats.size > this.maxFileSize) return false;
-      
+
       return true;
     } catch {
       return false;
@@ -95,21 +95,21 @@ export class ImageAttachmentService {
       const stats = await fs.stat(filepath);
       const buffer = await fs.readFile(filepath);
       const base64 = buffer.toString('base64');
-      
+
       const ext = path.extname(filepath).toLowerCase();
       const mimeType = this.getMimeType(ext);
       const filename = path.basename(filepath);
-      
+
       // Try to get image dimensions (basic implementation)
       const dimensions = await this.getImageDimensions(buffer, ext);
-      
+
       return {
         filename,
         filepath,
         base64,
         mimeType,
         size: stats.size,
-        dimensions
+        dimensions,
       };
     } catch (error) {
       console.error(chalk.red(`Error processing image: ${error}`));
@@ -128,16 +128,19 @@ export class ImageAttachmentService {
       '.gif': 'image/gif',
       '.bmp': 'image/bmp',
       '.webp': 'image/webp',
-      '.svg': 'image/svg+xml'
+      '.svg': 'image/svg+xml',
     };
-    
+
     return mimeTypes[ext] || 'image/jpeg';
   }
 
   /**
    * Basic image dimensions detection (simplified)
    */
-  private async getImageDimensions(buffer: Buffer, ext: string): Promise<{width: number, height: number} | undefined> {
+  private async getImageDimensions(
+    buffer: Buffer,
+    ext: string,
+  ): Promise<{ width: number; height: number } | undefined> {
     try {
       // PNG signature and dimensions
       if (ext === '.png' && buffer.length > 24) {
@@ -147,18 +150,18 @@ export class ImageAttachmentService {
           return { width, height };
         }
       }
-      
+
       // JPEG dimensions (basic SOF0 parsing)
       if ((ext === '.jpg' || ext === '.jpeg') && buffer.length > 10) {
         for (let i = 0; i < buffer.length - 4; i++) {
-          if (buffer[i] === 0xFF && buffer[i + 1] === 0xC0) {
+          if (buffer[i] === 0xff && buffer[i + 1] === 0xc0) {
             const height = buffer.readUInt16BE(i + 5);
             const width = buffer.readUInt16BE(i + 7);
             return { width, height };
           }
         }
       }
-      
+
       // For other formats, return undefined (dimensions unknown)
       return undefined;
     } catch {
@@ -171,11 +174,11 @@ export class ImageAttachmentService {
    */
   public formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
-    
+
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    
+
     return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`;
   }
 
@@ -185,26 +188,30 @@ export class ImageAttachmentService {
   public displayImagePreview(attachment: ImageAttachment): void {
     console.log('\n' + chalk.cyan('🖼️  Image Attachment'));
     console.log(chalk.gray('=' + '='.repeat(40)));
-    
+
     // Basic info
     console.log(chalk.white.bold(`📁 ${attachment.filename}`));
     console.log(chalk.gray(`   Size: ${this.formatFileSize(attachment.size)}`));
     console.log(chalk.gray(`   Type: ${attachment.mimeType}`));
-    
+
     if (attachment.dimensions) {
-      console.log(chalk.gray(`   Dimensions: ${attachment.dimensions.width}x${attachment.dimensions.height}px`));
+      console.log(
+        chalk.gray(
+          `   Dimensions: ${attachment.dimensions.width}x${attachment.dimensions.height}px`,
+        ),
+      );
     }
-    
+
     console.log(chalk.gray(`   Path: ${attachment.filepath}`));
-    
+
     // Base64 info
     const base64Length = attachment.base64.length;
     const base64Preview = attachment.base64.substring(0, 50) + '...';
     console.log(chalk.gray(`   Base64: ${base64Length} chars (${base64Preview})`));
-    
+
     // Simple ASCII art representation
     this.displayAsciiPreview();
-    
+
     console.log(chalk.green('✅ Image processed and ready for AI analysis'));
   }
 
@@ -213,14 +220,14 @@ export class ImageAttachmentService {
    */
   private displayAsciiPreview(): void {
     console.log(chalk.gray('\n   Preview:'));
-    
+
     // Create a simple frame representation
     const frameWidth = 20;
     const frameHeight = 8;
-    
+
     // Top border
     console.log(chalk.gray('   ┌' + '─'.repeat(frameWidth - 2) + '┐'));
-    
+
     // Content area with image icon
     for (let row = 0; row < frameHeight - 2; row++) {
       if (row === Math.floor((frameHeight - 2) / 2)) {
@@ -233,7 +240,7 @@ export class ImageAttachmentService {
         console.log(chalk.gray('   │' + ' '.repeat(frameWidth - 2) + '│'));
       }
     }
-    
+
     // Bottom border
     console.log(chalk.gray('   └' + '─'.repeat(frameWidth - 2) + '┘'));
   }
@@ -243,12 +250,12 @@ export class ImageAttachmentService {
    */
   public async processMultipleImages(filepaths: string[]): Promise<ImageAttachment[]> {
     const attachments: ImageAttachment[] = [];
-    
+
     console.log(chalk.cyan(`\n🔍 Processing ${filepaths.length} image file(s)...`));
-    
+
     for (const filepath of filepaths) {
       console.log(chalk.gray(`   Checking: ${filepath}`));
-      
+
       const attachment = await this.processImageFile(filepath);
       if (attachment) {
         attachments.push(attachment);
@@ -257,7 +264,7 @@ export class ImageAttachmentService {
         console.log(chalk.red(`   ❌ Failed: ${filepath} (invalid or too large)`));
       }
     }
-    
+
     return attachments;
   }
 
@@ -266,9 +273,9 @@ export class ImageAttachmentService {
    */
   public createAttachmentSummary(attachments: ImageAttachment[]): string {
     if (attachments.length === 0) return '';
-    
+
     let summary = `\n[ATTACHED IMAGES: ${attachments.length}]\n`;
-    
+
     attachments.forEach((attachment, index) => {
       summary += `Image ${index + 1}: ${attachment.filename}\n`;
       summary += `  Type: ${attachment.mimeType}\n`;
@@ -279,7 +286,7 @@ export class ImageAttachmentService {
       summary += `  Base64: data:${attachment.mimeType};base64,${attachment.base64}\n`;
       summary += '\n';
     });
-    
+
     return summary;
   }
 
@@ -293,26 +300,28 @@ export class ImageAttachmentService {
       /\[Clipboard\s+content\]/i,
       /\[Paste\]/i,
       // macOS/iOS paste patterns
-      /\[.*?\s+from\s+.*?\]/i
+      /\[.*?\s+from\s+.*?\]/i,
     ];
-    
-    return pastePatterns.some(pattern => pattern.test(input));
+
+    return pastePatterns.some((pattern) => pattern.test(input));
   }
 
   /**
    * Extract pasted content information
    */
   public extractPasteInfo(input: string): { lineCount: number; type: string } | null {
-    const pasteMatch = input.match(/\[Pasted\s+(?:text|image|content)\s*#?(\d*)\s*\+?(\d*)\s*lines?\]/i);
-    
+    const pasteMatch = input.match(
+      /\[Pasted\s+(?:text|image|content)\s*#?(\d*)\s*\+?(\d*)\s*lines?\]/i,
+    );
+
     if (pasteMatch) {
       const lineCount = parseInt(pasteMatch[2] || pasteMatch[1] || '0', 10);
       return {
         lineCount,
-        type: 'text'
+        type: 'text',
       };
     }
-    
+
     return null;
   }
 }

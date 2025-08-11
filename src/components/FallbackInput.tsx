@@ -8,10 +8,10 @@ interface FallbackInputProps {
   placeholder?: string;
 }
 
-export const FallbackInput: React.FC<FallbackInputProps> = ({ 
-  onSubmit, 
+export const FallbackInput: React.FC<FallbackInputProps> = ({
+  onSubmit,
   disabled = false,
-  placeholder = "Enter command..."
+  placeholder = 'Enter command...',
 }) => {
   const [currentInput, setCurrentInput] = useState('');
   const [isWaiting, setIsWaiting] = useState(false);
@@ -22,7 +22,7 @@ export const FallbackInput: React.FC<FallbackInputProps> = ({
     const rl = createInterface({
       input: process.stdin,
       output: process.stdout,
-      prompt: '➤ '
+      prompt: '➤ ',
     });
 
     const handleLine = (input: string) => {
@@ -30,7 +30,7 @@ export const FallbackInput: React.FC<FallbackInputProps> = ({
         setCurrentInput(input.trim());
         onSubmit(input.trim());
         setIsWaiting(true);
-        
+
         // Clear input after submission
         setTimeout(() => {
           setCurrentInput('');
@@ -58,7 +58,7 @@ export const FallbackInput: React.FC<FallbackInputProps> = ({
             💻 MARIA Shell (Fallback Mode)
           </Text>
         </Box>
-        
+
         <Box>
           <Text color="cyan">➤ </Text>
           {isWaiting ? (
@@ -67,13 +67,12 @@ export const FallbackInput: React.FC<FallbackInputProps> = ({
             <Text color="gray">{placeholder}</Text>
           )}
         </Box>
-        
+
         <Box marginTop={1}>
           <Text color="gray" dimColor>
-            {disabled 
-              ? '⏳ Processing command...' 
-              : '💡 Type commands and press Enter (fallback mode - Ink raw mode not supported)'
-            }
+            {disabled
+              ? '⏳ Processing command...'
+              : '💡 Type commands and press Enter (fallback mode - Ink raw mode not supported)'}
           </Text>
         </Box>
       </Box>

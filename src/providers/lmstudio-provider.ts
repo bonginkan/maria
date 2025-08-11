@@ -20,7 +20,7 @@ export class LMStudioProvider extends BaseAIProvider {
     'qwen3-30b',
     'llama-3-70b',
     'mistral-7b',
-    'codellama-34b'
+    'codellama-34b',
   ];
 
   private apiBase: string = 'http://localhost:1234/v1';
@@ -32,11 +32,12 @@ export class LMStudioProvider extends BaseAIProvider {
 
   async initialize(apiKey: string = 'lm-studio', config?: Record<string, any>): Promise<void> {
     await super.initialize(apiKey, config);
-    
+
     const lmConfig = config as LMStudioConfig;
     this.apiBase = lmConfig?.apiBase || process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1';
     this.timeout = lmConfig?.timeout || parseInt(process.env.LMSTUDIO_TIMEOUT || '300000');
-    this.retryAttempts = lmConfig?.retryAttempts || parseInt(process.env.LMSTUDIO_RETRY_ATTEMPTS || '3');
+    this.retryAttempts =
+      lmConfig?.retryAttempts || parseInt(process.env.LMSTUDIO_RETRY_ATTEMPTS || '3');
     this.retryDelay = lmConfig?.retryDelay || parseInt(process.env.LMSTUDIO_RETRY_DELAY || '1000');
 
     // Check health and get available models
@@ -51,9 +52,9 @@ export class LMStudioProvider extends BaseAIProvider {
       const response = await fetch(`${this.apiBase}/models`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.apiKey}`,
         },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5000),
       });
 
       this.isHealthy = response.ok;
@@ -70,12 +71,12 @@ export class LMStudioProvider extends BaseAIProvider {
       const response = await fetch(`${this.apiBase}/models`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`
-        }
+          Authorization: `Bearer ${this.apiKey}`,
+        },
       });
 
       if (response.ok) {
-        const data = await response.json() as any;
+        const data = (await response.json()) as any;
         this.availableModels = data.data.map((model: any) => model.id);
       }
     } catch {
@@ -90,14 +91,14 @@ export class LMStudioProvider extends BaseAIProvider {
 
   private async retryWithBackoff<T>(
     fn: () => Promise<T>,
-    attempts: number = this.retryAttempts
+    attempts: number = this.retryAttempts,
   ): Promise<T> {
     for (let i = 0; i < attempts; i++) {
       try {
         return await fn();
       } catch (error) {
         if (i === attempts - 1) throw error;
-        await new Promise(resolve => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
+        await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
       }
     }
     throw new Error('Max retry attempts reached');
@@ -109,15 +110,15 @@ export class LMStudioProvider extends BaseAIProvider {
 
     const payload = {
       model: selectedModel,
-      messages: messages.map(m => ({
+      messages: messages.map((m) => ({
         role: m.role,
-        content: m.content
+        content: m.content,
       })),
       max_tokens: options?.maxTokens || 4096,
       temperature: options?.temperature || 0.7,
       top_p: options?.topP || 0.95,
       stop: options?.stopSequences,
-      stream: false
+      stream: false,
     };
 
     const makeRequest = async () => {
@@ -125,10 +126,10 @@ export class LMStudioProvider extends BaseAIProvider {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(this.timeout)
+        signal: AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
@@ -140,25 +141,29 @@ export class LMStudioProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const data = await response.json() as any;
+    const data = (await response.json()) as any;
     return data.choices[0]?.message?.content || '';
   }
 
-  async *chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string> {
+  async *chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string> {
     this.ensureInitialized();
     const selectedModel = model || this.getDefaultModel();
 
     const payload = {
       model: selectedModel,
-      messages: messages.map(m => ({
+      messages: messages.map((m) => ({
         role: m.role,
-        content: m.content
+        content: m.content,
       })),
       max_tokens: options?.maxTokens || 4096,
       temperature: options?.temperature || 0.7,
       top_p: options?.topP || 0.95,
       stop: options?.stopSequences,
-      stream: true
+      stream: true,
     };
 
     const makeRequest = async () => {
@@ -166,10 +171,10 @@ export class LMStudioProvider extends BaseAIProvider {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${this.apiKey}`
+          Authorization: `Bearer ${this.apiKey}`,
         },
         body: JSON.stringify(payload),
-        signal: options?.streamOptions?.signal || AbortSignal.timeout(this.timeout)
+        signal: options?.streamOptions?.signal || AbortSignal.timeout(this.timeout),
       });
 
       if (!response.ok) {
@@ -227,22 +232,30 @@ export class LMStudioProvider extends BaseAIProvider {
     }
   }
 
-  async generateCode(prompt: string, language: string = 'typescript', model?: string): Promise<string> {
+  async generateCode(
+    prompt: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<string> {
     const messages: Message[] = [
       {
         role: 'system',
-        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`
+        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`,
       },
       {
         role: 'user',
-        content: prompt
-      }
+        content: prompt,
+      },
     ];
 
     return this.chat(messages, model, { temperature: 0.2, maxTokens: 8192 });
   }
 
-  async reviewCode(code: string, language: string = 'typescript', model?: string): Promise<CodeReviewResult> {
+  async reviewCode(
+    code: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<CodeReviewResult> {
     const messages: Message[] = [
       {
         role: 'system',
@@ -258,12 +271,12 @@ export class LMStudioProvider extends BaseAIProvider {
   ],
   "summary": "<overall code quality summary>",
   "improvements": ["<improvement suggestion 1>", "<improvement suggestion 2>", ...]
-}`
+}`,
       },
       {
         role: 'user',
-        content: code
-      }
+        content: code,
+      },
     ];
 
     const response = await this.chat(messages, model, { temperature: 0.1, maxTokens: 4096 });
@@ -275,7 +288,7 @@ export class LMStudioProvider extends BaseAIProvider {
       return {
         issues: [],
         summary: response,
-        improvements: []
+        improvements: [],
       };
     }
   }

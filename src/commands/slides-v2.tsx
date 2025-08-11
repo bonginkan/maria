@@ -13,7 +13,10 @@ interface SlidesCommand {
   slidesId?: string;
 }
 
-const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({ command, onExit }) => {
+const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
+  command,
+  onExit,
+}) => {
   const [status, setStatus] = React.useState<'processing' | 'done'>('processing');
   const [result, setResult] = React.useState<string>('');
   const [streamingContent, setStreamingContent] = React.useState<string>('');
@@ -24,13 +27,13 @@ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
       try {
         // Initialize AI service
         await aiService.initialize();
-        
+
         // Create chat context
         const context: ChatContext = {
           sessionId: `slides-${Date.now()}`,
           projectRoot: process.cwd(),
           mode: 'creative',
-          history: []
+          history: [],
         };
 
         let prompt = '';
@@ -102,7 +105,7 @@ Provide step-by-step instructions and best practices.`;
 
         // Process with AI service (streaming enabled)
         const response = await aiService.processMessage(prompt, context, true);
-        
+
         if (response.stream) {
           let fullContent = '';
           for await (const chunk of response.stream) {
@@ -113,7 +116,7 @@ Provide step-by-step instructions and best practices.`;
         } else {
           setResult(response.message.content);
         }
-        
+
         setStatus('done');
         setStreamingContent('');
       } catch (error) {
@@ -134,10 +137,12 @@ Provide step-by-step instructions and best practices.`;
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="magenta">Presentation Agent (AI-Powered)</Text>
+        <Text bold color="magenta">
+          Presentation Agent (AI-Powered)
+        </Text>
         <Text> - {command.action} action</Text>
       </Box>
-      
+
       {status === 'processing' ? (
         <Box flexDirection="column">
           <Box>
@@ -178,7 +183,9 @@ const InteractiveSlidesMenu: React.FC<{ onSelect: (action: string) => void }> = 
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="magenta">Presentation Agent - AI-Powered Slide Creation</Text>
+        <Text bold color="magenta">
+          Presentation Agent - AI-Powered Slide Creation
+        </Text>
       </Box>
       <SelectInput items={actions} onSelect={handleSelect} />
     </Box>
@@ -205,7 +212,10 @@ export const slidesCommand = new Command('slides')
     else if (options.visuals) command.action = 'visuals';
     else if (options.sync) command.action = 'sync';
 
-    if (options.interactive || (!options.structure && !options.content && !options.visuals && !options.sync)) {
+    if (
+      options.interactive ||
+      (!options.structure && !options.content && !options.visuals && !options.sync)
+    ) {
       // Interactive mode
       const { waitUntilExit } = render(
         <InteractiveSlidesMenu
@@ -220,26 +230,18 @@ export const slidesCommand = new Command('slides')
               file: 'presentation.pptx',
               slidesId: 'demo-presentation-id',
             };
-            render(
-              <SlidesAgent
-                command={interactiveCommand}
-                onExit={() => process.exit(0)}
-              />
-            );
+            render(<SlidesAgent command={interactiveCommand} onExit={() => process.exit(0)} />);
           }}
-        />
+        />,
       );
-      
+
       await waitUntilExit();
     } else {
       // Direct command mode
       const { waitUntilExit } = render(
-        <SlidesAgent
-          command={command}
-          onExit={() => process.exit(0)}
-        />
+        <SlidesAgent command={command} onExit={() => process.exit(0)} />,
       );
-      
+
       await waitUntilExit();
     }
   });

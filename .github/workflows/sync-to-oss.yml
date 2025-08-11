@@ -44,23 +44,49 @@ jobs:
           # Create temporary directory for OSS files
           mkdir -p /tmp/maria-oss
           
-          # Copy OSS-relevant files from code-cli package
-          echo "📦 Copying CLI package files..."
-          if [ -d "packages/code-cli/src" ]; then
-            cp -r packages/code-cli/src /tmp/maria-oss/
+          # Copy maria-oss directory contents if exists
+          echo "📦 Copying maria-oss distribution files..."
+          if [ -d "maria-oss" ]; then
+            cp -r maria-oss/* /tmp/maria-oss/
+            cp -r maria-oss/.[^.]* /tmp/maria-oss/ 2>/dev/null || true
           fi
           
-          if [ -d "packages/code-cli/dist" ]; then
-            cp -r packages/code-cli/dist /tmp/maria-oss/
+          # Copy dist directory (built CLI)
+          if [ -d "dist" ]; then
+            echo "📦 Copying built CLI files..."
+            cp -r dist /tmp/maria-oss/
+          fi
+          
+          # Copy src directory (source code)
+          if [ -d "src" ]; then
+            echo "📦 Copying source files..."
+            cp -r src /tmp/maria-oss/
+          fi
+          
+          # Copy bin directory
+          if [ -d "bin" ]; then
+            echo "🔧 Copying bin directory..."
+            cp -r bin /tmp/maria-oss/
           fi
           
           # Copy essential root files
-          echo "📄 Copying root configuration files..."
-          cp -f README.md /tmp/maria-oss/ 2>/dev/null || true
+          echo "📄 Copying configuration files..."
+          
+          # Use maria-oss/README.md if exists, otherwise use root README
+          if [ -f "maria-oss/README.md" ]; then
+            echo "Using maria-oss/README.md for OSS distribution"
+          elif [ -f "README.md" ]; then
+            cp -f README.md /tmp/maria-oss/
+          fi
+          
           cp -f CHANGELOG.md /tmp/maria-oss/ 2>/dev/null || true
           cp -f LICENSE /tmp/maria-oss/ 2>/dev/null || true
+          cp -f CONTRIBUTING.md /tmp/maria-oss/ 2>/dev/null || true
+          cp -f SECURITY.md /tmp/maria-oss/ 2>/dev/null || true
           cp -f package.json /tmp/maria-oss/ 2>/dev/null || true
+          cp -f package-oss.json /tmp/maria-oss/ 2>/dev/null || true
           cp -f tsconfig.json /tmp/maria-oss/ 2>/dev/null || true
+          cp -f tsup.config.ts /tmp/maria-oss/ 2>/dev/null || true
           cp -f .npmignore /tmp/maria-oss/ 2>/dev/null || true
           
           # Copy bin directory for CLI entry points

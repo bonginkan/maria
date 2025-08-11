@@ -94,3 +94,19 @@ Thumbs.db
 
 # Landing page (not for OSS distribution)
 maria-code-lp/
+
+# Root level build artifacts (should not be committed)
+chunk-*.js
+chunk-*.js.map
+enhanced-cli*.js
+enhanced-cli*.js.map
+enhanced-cli*.cjs
+enhanced-cli*.cjs.map
+simple*.js
+simple*.js.map
+simple*.cjs
+simple*.cjs.map
+index.js
+index.js.map
+index.cjs
+index.cjs.map

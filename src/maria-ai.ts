@@ -41,7 +41,7 @@ export class MariaAI {
 
   private async initialize(): Promise<void> {
     await this.providerManager.initialize();
-    
+
     if (this.config.get('healthMonitoring', true)) {
       this.healthMonitor.start();
     }
@@ -53,7 +53,7 @@ export class MariaAI {
   async chat(message: string, options: Partial<AIRequest> = {}): Promise<AIResponse> {
     const request: AIRequest = {
       messages: [{ role: 'user', content: message }],
-      ...options
+      ...options,
     };
 
     return this.router.route(request);
@@ -66,7 +66,7 @@ export class MariaAI {
     const request: AIRequest = {
       messages: [{ role: 'user', content: message }],
       stream: true,
-      ...options
+      ...options,
     };
 
     const response = await this.router.route(request);

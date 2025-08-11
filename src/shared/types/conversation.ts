@@ -45,18 +45,22 @@ export const SOWDocumentSchema = z.object({
   timeline: z.object({
     startDate: z.string(),
     endDate: z.string(),
-    milestones: z.array(z.object({
-      name: z.string(),
-      date: z.string(),
-      deliverables: z.array(z.string()),
-    })),
+    milestones: z.array(
+      z.object({
+        name: z.string(),
+        date: z.string(),
+        deliverables: z.array(z.string()),
+      }),
+    ),
   }),
   estimatedCost: z.number(),
-  resources: z.array(z.object({
-    role: z.string(),
-    allocation: z.number(),
-    skills: z.array(z.string()),
-  })),
+  resources: z.array(
+    z.object({
+      role: z.string(),
+      allocation: z.number(),
+      skills: z.array(z.string()),
+    }),
+  ),
 });
 
 // Task Plan types

@@ -34,8 +34,8 @@ export default function analyzeCommand(command: Command): void {
           columns: [
             { name: 'label', title: 'Label', alignment: 'left' },
             { name: 'count', title: 'Count', alignment: 'right' },
-            { name: 'properties', title: 'Properties', alignment: 'left' }
-          ]
+            { name: 'properties', title: 'Properties', alignment: 'left' },
+          ],
         });
         // TODO: Update when Neo4jService schema format is finalized
         const nodes = (schema as any).nodes || [];
@@ -43,7 +43,7 @@ export default function analyzeCommand(command: Command): void {
           nodeTable.addRow({
             label: node.label,
             count: node.count,
-            properties: node.properties.join(', ')
+            properties: node.properties.join(', '),
           });
         });
         nodeTable.printTable();
@@ -54,8 +54,8 @@ export default function analyzeCommand(command: Command): void {
           columns: [
             { name: 'type', title: 'Type', alignment: 'left' },
             { name: 'count', title: 'Count', alignment: 'right' },
-            { name: 'fromTo', title: 'From → To', alignment: 'left' }
-          ]
+            { name: 'fromTo', title: 'From → To', alignment: 'left' },
+          ],
         });
         // TODO: Update when Neo4jService schema format is finalized
         const relationships = (schema as any).relationships || [];
@@ -63,11 +63,10 @@ export default function analyzeCommand(command: Command): void {
           relTable.addRow({
             type: rel.type,
             count: rel.count,
-            fromTo: `${rel.startLabel} → ${rel.endLabel}`
+            fromTo: `${rel.startLabel} → ${rel.endLabel}`,
           });
         });
         relTable.printTable();
-
       } catch (error) {
         spinner.fail('Schema analysis failed');
         logger.error('Schema analysis error:', error);
@@ -96,7 +95,6 @@ export default function analyzeCommand(command: Command): void {
             console.log(`   Example: ${JSON.stringify(pattern.example, null, 2)}`);
           }
         });
-
       } catch (error) {
         spinner.fail('Pattern analysis failed');
         logger.error('Pattern analysis error:', error);
@@ -116,18 +114,22 @@ export default function analyzeCommand(command: Command): void {
         const neo4j = new Neo4jService();
         const metrics = await neo4j.calculateMetrics({
           type: options.type,
-          limit: parseInt(options.limit)
+          limit: parseInt(options.limit),
         });
         spinner.succeed('Metrics calculation complete');
 
-        console.log(chalk.bold.cyan(`\n📈 ${options.type.charAt(0).toUpperCase() + options.type.slice(1)} Metrics:`));
+        console.log(
+          chalk.bold.cyan(
+            `\n📈 ${options.type.charAt(0).toUpperCase() + options.type.slice(1)} Metrics:`,
+          ),
+        );
         const table = new Table({
           columns: [
             { name: 'rank', title: '#', alignment: 'right' },
             { name: 'node', title: 'Node', alignment: 'left' },
             { name: 'score', title: 'Score', alignment: 'right' },
-            { name: 'details', title: 'Details', alignment: 'left' }
-          ]
+            { name: 'details', title: 'Details', alignment: 'left' },
+          ],
         });
 
         (metrics as any[]).forEach((metric: any, index: number) => {
@@ -135,11 +137,10 @@ export default function analyzeCommand(command: Command): void {
             rank: index + 1,
             node: metric.node,
             score: metric.score.toFixed(4),
-            details: metric.details || '-'
+            details: metric.details || '-',
           });
         });
         table.printTable();
-
       } catch (error) {
         spinner.fail('Metrics calculation failed');
         logger.error('Metrics calculation error:', error);
@@ -157,7 +158,7 @@ export default function analyzeCommand(command: Command): void {
       try {
         const neo4j = new Neo4jService();
         const communities = await neo4j.detectCommunities({
-          algorithm: options.algorithm
+          algorithm: options.algorithm,
         });
         spinner.succeed('Community detection complete');
 
@@ -165,13 +166,14 @@ export default function analyzeCommand(command: Command): void {
         communities.forEach((community: any, index: number) => {
           console.log(chalk.yellow(`\nCommunity ${index + 1}:`));
           console.log(`  Size: ${community.size} nodes`);
-          console.log(`  Key Members: ${community.keyMembers.slice(0, 5).join(', ')}${community.keyMembers.length > 5 ? '...' : ''}`);
+          console.log(
+            `  Key Members: ${community.keyMembers.slice(0, 5).join(', ')}${community.keyMembers.length > 5 ? '...' : ''}`,
+          );
           console.log(`  Density: ${(community.density * 100).toFixed(1)}%`);
           if (community.centralNode) {
             console.log(`  Central Node: ${community.centralNode}`);
           }
         });
-
       } catch (error) {
         spinner.fail('Community detection failed');
         logger.error('Community detection error:', error);
@@ -189,7 +191,7 @@ export default function analyzeCommand(command: Command): void {
       const spinner = ora('Executing query...').start();
       try {
         const neo4j = new Neo4jService();
-        
+
         // Add LIMIT if not present
         if (!cypher.toLowerCase().includes('limit') && options.limit) {
           cypher += ` LIMIT ${options.limit}`;
@@ -215,7 +217,6 @@ export default function analyzeCommand(command: Command): void {
         }
 
         console.log(chalk.dim(`\n${results.length} results returned`));
-
       } catch (error) {
         spinner.fail('Query execution failed');
         logger.error('Query error:', error);
@@ -237,11 +238,15 @@ export default function analyzeCommand(command: Command): void {
         const recommendations = await neo4j.generateRecommendations({
           type: options.type,
           startNode: options.node,
-          limit: parseInt(options.limit)
+          limit: parseInt(options.limit),
         });
         spinner.succeed('Recommendations generated');
 
-        console.log(chalk.bold.cyan(`\n💡 ${options.type.charAt(0).toUpperCase() + options.type.slice(1)} Recommendations:`));
+        console.log(
+          chalk.bold.cyan(
+            `\n💡 ${options.type.charAt(0).toUpperCase() + options.type.slice(1)} Recommendations:`,
+          ),
+        );
         recommendations.forEach((rec: any, index: number) => {
           console.log(chalk.yellow(`\n${index + 1}. ${rec.node}`));
           console.log(`   Score: ${rec.score.toFixed(3)}`);
@@ -250,7 +255,6 @@ export default function analyzeCommand(command: Command): void {
             console.log(`   Connections: ${rec.connections.join(' → ')}`);
           }
         });
-
       } catch (error) {
         spinner.fail('Recommendation generation failed');
         logger.error('Recommendation error:', error);
@@ -272,7 +276,7 @@ export default function analyzeCommand(command: Command): void {
           from,
           to,
           type: options.type,
-          maxLength: parseInt(options.maxLength)
+          maxLength: parseInt(options.maxLength),
         });
         spinner.succeed('Path analysis complete');
 
@@ -288,7 +292,6 @@ export default function analyzeCommand(command: Command): void {
             }
           });
         }
-
       } catch (error) {
         spinner.fail('Path finding failed');
         logger.error('Path finding error:', error);

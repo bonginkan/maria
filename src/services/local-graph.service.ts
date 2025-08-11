@@ -72,11 +72,11 @@ export class LocalGraphService extends EventEmitter {
     try {
       // Load nodes
       const nodeItems = await this.storage.query({ type: 'memory' });
-      const graphData = nodeItems.find(item => item.content.type === 'graph');
-      
+      const graphData = nodeItems.find((item) => item.content.type === 'graph');
+
       if (graphData) {
         const { nodes, edges } = graphData.content.data;
-        
+
         // Rebuild nodes
         for (const node of nodes) {
           this.nodes.set(node.id, node);
@@ -113,19 +113,19 @@ export class LocalGraphService extends EventEmitter {
       type: 'graph',
       data: {
         nodes: Array.from(this.nodes.values()),
-        edges: Array.from(this.edges.values())
+        edges: Array.from(this.edges.values()),
       },
       stats: {
         nodeCount: this.nodes.size,
         edgeCount: this.edges.size,
         labels: Array.from(this.nodesByLabel.keys()),
-        edgeTypes: Array.from(this.edgesByType.keys())
-      }
+        edgeTypes: Array.from(this.edgesByType.keys()),
+      },
     };
 
     // Check if graph data exists
     const existing = await this.storage.query({ type: 'memory' });
-    const graphItem = existing.find(item => item.content.type === 'graph');
+    const graphItem = existing.find((item) => item.content.type === 'graph');
 
     if (graphItem) {
       await this.storage.update(graphItem.id, graphData);
@@ -147,7 +147,7 @@ export class LocalGraphService extends EventEmitter {
       labels,
       properties,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     this.nodes.set(node.id, node);
@@ -214,11 +214,18 @@ export class LocalGraphService extends EventEmitter {
   getNodesByLabel(label: string): GraphNode[] {
     const nodeIds = this.nodesByLabel.get(label);
     if (!nodeIds) return [];
-    return Array.from(nodeIds).map(id => this.nodes.get(id)!).filter(Boolean);
+    return Array.from(nodeIds)
+      .map((id) => this.nodes.get(id)!)
+      .filter(Boolean);
   }
 
   // Edge operations
-  async createEdge(type: string, fromId: string, toId: string, properties: Record<string, any> = {}): Promise<GraphEdge | null> {
+  async createEdge(
+    type: string,
+    fromId: string,
+    toId: string,
+    properties: Record<string, any> = {},
+  ): Promise<GraphEdge | null> {
     await this.initialize();
 
     // Verify nodes exist
@@ -232,7 +239,7 @@ export class LocalGraphService extends EventEmitter {
       fromId,
       toId,
       properties,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.edges.set(edge.id, edge);
@@ -279,7 +286,9 @@ export class LocalGraphService extends EventEmitter {
   getEdgesByType(type: string): GraphEdge[] {
     const edgeIds = this.edgesByType.get(type);
     if (!edgeIds) return [];
-    return Array.from(edgeIds).map(id => this.edges.get(id)!).filter(Boolean);
+    return Array.from(edgeIds)
+      .map((id) => this.edges.get(id)!)
+      .filter(Boolean);
   }
 
   // Query operations
@@ -299,7 +308,7 @@ export class LocalGraphService extends EventEmitter {
 
     // Filter by properties
     if (query.properties) {
-      results = results.filter(node => {
+      results = results.filter((node) => {
         for (const [key, value] of Object.entries(query.properties!)) {
           if (node.properties[key] !== value) {
             return false;
@@ -328,25 +337,25 @@ export class LocalGraphService extends EventEmitter {
     // BFS to find shortest path
     const visited = new Set<string>();
     const queue: Array<{ nodeId: string; path: string[]; edges: string[] }> = [
-      { nodeId: fromId, path: [fromId], edges: [] }
+      { nodeId: fromId, path: [fromId], edges: [] },
     ];
 
     while (queue.length > 0) {
       const current = queue.shift()!;
-      
+
       if (current.path.length > maxDepth + 1) {
         continue;
       }
 
       if (current.nodeId === toId) {
         // Found path
-        const nodes = current.path.map(id => this.nodes.get(id)!);
+        const nodes = current.path.map((id) => this.nodes.get(id)!);
         const edges: GraphEdge[] = [];
 
         for (let i = 0; i < current.path.length - 1; i++) {
           const fromNode = current.path[i];
           const toNode = current.path[i + 1];
-          
+
           // Find edge
           for (const edge of this.edges.values()) {
             if (edge.fromId === fromNode && edge.toId === toNode) {
@@ -359,7 +368,7 @@ export class LocalGraphService extends EventEmitter {
         return {
           nodes,
           edges,
-          length: current.path.length - 1
+          length: current.path.length - 1,
         };
       }
 
@@ -376,7 +385,7 @@ export class LocalGraphService extends EventEmitter {
             queue.push({
               nodeId: neighbor,
               path: [...current.path, neighbor],
-              edges: [...current.edges]
+              edges: [...current.edges],
             });
           }
         }
@@ -387,18 +396,19 @@ export class LocalGraphService extends EventEmitter {
   }
 
   // Traversal
-  async traverse(startId: string, depth: number = 2): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
+  async traverse(
+    startId: string,
+    depth: number = 2,
+  ): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
     await this.initialize();
 
     const visitedNodes = new Set<string>();
     const visitedEdges = new Set<string>();
-    const nodesToVisit: Array<{ id: string; depth: number }> = [
-      { id: startId, depth: 0 }
-    ];
+    const nodesToVisit: Array<{ id: string; depth: number }> = [{ id: startId, depth: 0 }];
 
     while (nodesToVisit.length > 0) {
       const current = nodesToVisit.shift()!;
-      
+
       if (current.depth >= depth) {
         continue;
       }
@@ -437,8 +447,12 @@ export class LocalGraphService extends EventEmitter {
     }
 
     return {
-      nodes: Array.from(visitedNodes).map(id => this.nodes.get(id)!).filter(Boolean),
-      edges: Array.from(visitedEdges).map(id => this.edges.get(id)!).filter(Boolean)
+      nodes: Array.from(visitedNodes)
+        .map((id) => this.nodes.get(id)!)
+        .filter(Boolean),
+      edges: Array.from(visitedEdges)
+        .map((id) => this.edges.get(id)!)
+        .filter(Boolean),
     };
   }
 
@@ -450,9 +464,11 @@ export class LocalGraphService extends EventEmitter {
     edgeTypes: string[];
     avgDegree: number;
   } {
-    const totalDegree = Array.from(this.adjacencyList.values())
-      .reduce((sum, neighbors) => sum + neighbors.size, 0);
-    
+    const totalDegree = Array.from(this.adjacencyList.values()).reduce(
+      (sum, neighbors) => sum + neighbors.size,
+      0,
+    );
+
     const avgDegree = this.nodes.size > 0 ? totalDegree / this.nodes.size : 0;
 
     return {
@@ -460,7 +476,7 @@ export class LocalGraphService extends EventEmitter {
       edgeCount: this.edges.size,
       labels: Array.from(this.nodesByLabel.keys()),
       edgeTypes: Array.from(this.edgesByType.keys()),
-      avgDegree
+      avgDegree,
     };
   }
 
@@ -471,7 +487,7 @@ export class LocalGraphService extends EventEmitter {
     this.nodesByLabel.clear();
     this.edgesByType.clear();
     this.adjacencyList.clear();
-    
+
     await this.saveGraph();
     this.emit('graph-cleared');
   }
@@ -483,7 +499,7 @@ export class LocalGraphService extends EventEmitter {
   } {
     return {
       nodes: Array.from(this.nodes.values()),
-      edges: Array.from(this.edges.values())
+      edges: Array.from(this.edges.values()),
     };
   }
 

@@ -14,7 +14,7 @@ import {
   Table,
   Timeline,
   HeatMap,
-  SmartSummary
+  SmartSummary,
 } from './visualizations';
 
 interface CostStats {
@@ -49,14 +49,13 @@ export const CostDisplay: React.FC<{
 
   const tabs = ['overview', 'breakdown', 'trends', 'projections'];
 
-
   const renderOverview = () => (
     <Box flexDirection="column" marginTop={1}>
       <SmartSummary
         data={{
           cost: stats.session.cost,
           trend: stats.session.cost > 0.003 ? 'up' : 'stable',
-          mostExpensive: 'AI Model Calls'
+          mostExpensive: 'AI Model Calls',
         }}
         type="cost"
       />
@@ -106,13 +105,19 @@ export const CostDisplay: React.FC<{
             <Table
               columns={[
                 { key: 'metric', header: 'Metric', width: 20 },
-                { key: 'value', header: 'Value', width: 20, align: 'right', color: 'cyan' }
+                { key: 'value', header: 'Value', width: 20, align: 'right', color: 'cyan' },
               ]}
               data={[
                 { metric: 'Daily Limit', value: stats.user.dailyLimit.toLocaleString() },
-                { metric: 'Credits Used', value: (stats.user.dailyLimit - stats.user.remainingCredits).toLocaleString() },
-                { metric: 'Credits Remaining', value: stats.user.remainingCredits.toLocaleString() },
-                { metric: 'Usage Percentage', value: `${stats.user.usagePercent}%` }
+                {
+                  metric: 'Credits Used',
+                  value: (stats.user.dailyLimit - stats.user.remainingCredits).toLocaleString(),
+                },
+                {
+                  metric: 'Credits Remaining',
+                  value: stats.user.remainingCredits.toLocaleString(),
+                },
+                { metric: 'Usage Percentage', value: `${stats.user.usagePercent}%` },
               ]}
               showHeader={false}
               compact
@@ -128,7 +133,9 @@ export const CostDisplay: React.FC<{
         <Box>
           <Box marginRight={2}>
             <Text color="gray">Hourly Rate: </Text>
-            <Text color="yellow" bold>${stats.projected.hourlyRate.toFixed(4)}</Text>
+            <Text color="yellow" bold>
+              ${stats.projected.hourlyRate.toFixed(4)}
+            </Text>
           </Box>
           <Box>
             <Text color="gray">Daily Projection: </Text>
@@ -144,7 +151,9 @@ export const CostDisplay: React.FC<{
   const renderBreakdown = () => (
     <Box flexDirection="column" marginTop={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Cost Breakdown Analysis</Text>
+        <Text bold color="cyan">
+          Cost Breakdown Analysis
+        </Text>
       </Box>
 
       <Box flexDirection="column" marginBottom={2}>
@@ -154,7 +163,11 @@ export const CostDisplay: React.FC<{
         <BarChart
           data={[
             { label: 'Input Tokens', value: Math.floor(stats.session.tokens * 0.4), color: 'cyan' },
-            { label: 'Output Tokens', value: Math.floor(stats.session.tokens * 0.6), color: 'yellow' }
+            {
+              label: 'Output Tokens',
+              value: Math.floor(stats.session.tokens * 0.6),
+              color: 'yellow',
+            },
           ]}
           width={40}
         />
@@ -167,7 +180,7 @@ export const CostDisplay: React.FC<{
         <BarChart
           data={[
             { label: 'Gemini 2.5 Pro', value: stats.session.cost * 0.7, color: 'green' },
-            { label: 'Grok-4', value: stats.session.cost * 0.3, color: 'magenta' }
+            { label: 'Grok-4', value: stats.session.cost * 0.3, color: 'magenta' },
           ]}
           width={40}
           showValues={false}
@@ -178,21 +191,21 @@ export const CostDisplay: React.FC<{
               { key: 'model', header: 'Model', width: 20 },
               { key: 'calls', header: 'Calls', width: 10, align: 'right' },
               { key: 'avgTokens', header: 'Avg Tokens', width: 12, align: 'right' },
-              { key: 'cost', header: 'Cost', width: 15, align: 'right', color: 'yellow' }
+              { key: 'cost', header: 'Cost', width: 15, align: 'right', color: 'yellow' },
             ]}
             data={[
-              { 
-                model: 'Gemini 2.5 Pro', 
+              {
+                model: 'Gemini 2.5 Pro',
                 calls: Math.floor(stats.session.messages * 0.6),
                 avgTokens: Math.floor(stats.session.tokens / stats.session.messages),
-                cost: `$${(stats.session.cost * 0.7).toFixed(6)}`
+                cost: `$${(stats.session.cost * 0.7).toFixed(6)}`,
               },
-              { 
-                model: 'Grok-4', 
+              {
+                model: 'Grok-4',
                 calls: Math.floor(stats.session.messages * 0.4),
-                avgTokens: Math.floor(stats.session.tokens / stats.session.messages * 0.8),
-                cost: `$${(stats.session.cost * 0.3).toFixed(6)}`
-              }
+                avgTokens: Math.floor((stats.session.tokens / stats.session.messages) * 0.8),
+                cost: `$${(stats.session.cost * 0.3).toFixed(6)}`,
+              },
             ]}
           />
         </Box>
@@ -208,7 +221,7 @@ export const CostDisplay: React.FC<{
             { label: 'Code Analysis', value: 25, color: 'green' },
             { label: 'Documentation', value: 20, color: 'yellow' },
             { label: 'Conversation', value: 15, color: 'magenta' },
-            { label: 'Other', value: 5, color: 'gray' }
+            { label: 'Other', value: 5, color: 'gray' },
           ]}
           width={35}
         />
@@ -219,7 +232,9 @@ export const CostDisplay: React.FC<{
   const renderTrends = () => (
     <Box flexDirection="column" marginTop={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">Usage Trends</Text>
+        <Text bold color="cyan">
+          Usage Trends
+        </Text>
       </Box>
 
       <Box flexDirection="column" marginBottom={2}>
@@ -242,11 +257,24 @@ export const CostDisplay: React.FC<{
             [8, 12, 18, 30, 38, 42, 40, 30, 22, 18, 14, 10],
             [12, 18, 25, 40, 45, 50, 45, 35, 28, 20, 16, 12],
             [15, 22, 30, 45, 50, 55, 48, 38, 30, 22, 18, 14],
-            [18, 25, 35, 48, 55, 60, 52, 40, 32, 25, 20, 16]
+            [18, 25, 35, 48, 55, 60, 52, 40, 32, 25, 20, 16],
           ]}
           labels={{
-            x: ['12am', '2am', '4am', '6am', '8am', '10am', '12pm', '2pm', '4pm', '6pm', '8pm', '10pm'],
-            y: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
+            x: [
+              '12am',
+              '2am',
+              '4am',
+              '6am',
+              '8am',
+              '10am',
+              '12pm',
+              '2pm',
+              '4pm',
+              '6pm',
+              '8pm',
+              '10pm',
+            ],
+            y: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
           }}
         />
         <Text color="gray">Higher usage shown in red</Text>
@@ -258,11 +286,15 @@ export const CostDisplay: React.FC<{
         </Box>
         <Timeline
           events={[
-            { time: 'Now', event: `Cost analysis: $${stats.session.cost.toFixed(6)}`, type: 'info' },
+            {
+              time: 'Now',
+              event: `Cost analysis: $${stats.session.cost.toFixed(6)}`,
+              type: 'info',
+            },
             { time: '30m ago', event: 'High token usage detected', type: 'warning' },
             { time: '1h ago', event: 'Switched to efficient mode', type: 'success' },
             { time: '2h ago', event: 'Model optimization applied', type: 'success' },
-            { time: '3h ago', event: 'Cost threshold alert', type: 'warning' }
+            { time: '3h ago', event: 'Cost threshold alert', type: 'warning' },
           ]}
         />
       </Box>
@@ -272,11 +304,13 @@ export const CostDisplay: React.FC<{
   const renderProjections = () => {
     const monthlyProjection = stats.projected.dailyProjection * 30;
     const yearlyProjection = stats.projected.dailyProjection * 365;
-    
+
     return (
       <Box flexDirection="column" marginTop={1}>
         <Box marginBottom={1}>
-          <Text bold color="cyan">Cost Projections & Optimization</Text>
+          <Text bold color="cyan">
+            Cost Projections & Optimization
+          </Text>
         </Box>
 
         <Box marginBottom={2}>
@@ -333,13 +367,18 @@ export const CostDisplay: React.FC<{
               { key: 'plan', header: 'Plan', width: 12 },
               { key: 'dailyLimit', header: 'Daily Limit', width: 12, align: 'right' },
               { key: 'monthlyCost', header: 'Monthly', width: 12, align: 'right' },
-              { key: 'savings', header: 'Savings', width: 12, align: 'right', color: 'green' }
+              { key: 'savings', header: 'Savings', width: 12, align: 'right', color: 'green' },
             ]}
             data={[
               { plan: 'FREE', dailyLimit: '100', monthlyCost: '$0', savings: '-' },
               { plan: 'PRO', dailyLimit: '5,000', monthlyCost: '$20', savings: '$50/mo' },
               { plan: 'MAX', dailyLimit: '20,000', monthlyCost: '$100', savings: '$200/mo' },
-              { plan: 'API Mode', dailyLimit: 'Unlimited', monthlyCost: 'Pay as you go', savings: 'Variable' }
+              {
+                plan: 'API Mode',
+                dailyLimit: 'Unlimited',
+                monthlyCost: 'Pay as you go',
+                savings: 'Variable',
+              },
             ]}
           />
         </Box>
@@ -359,10 +398,7 @@ export const CostDisplay: React.FC<{
       <Box marginBottom={1}>
         {tabs.map((tab, i) => (
           <Box key={tab} marginRight={2}>
-            <Text
-              color={activeTab === tab ? 'yellow' : 'gray'}
-              bold={activeTab === tab}
-            >
+            <Text color={activeTab === tab ? 'yellow' : 'gray'} bold={activeTab === tab}>
               {i + 1}. {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </Text>
           </Box>

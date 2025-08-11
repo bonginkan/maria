@@ -16,11 +16,11 @@ interface CommandHistoryProps {
 export const CommandHistory: React.FC<CommandHistoryProps> = ({ commands }) => {
   if (commands.length === 0) {
     return (
-      <Box 
-        justifyContent="center" 
-        alignItems="center" 
+      <Box
+        justifyContent="center"
+        alignItems="center"
         flexGrow={1}
-        borderStyle="round" 
+        borderStyle="round"
         borderColor="gray"
         padding={2}
       >
@@ -28,9 +28,7 @@ export const CommandHistory: React.FC<CommandHistoryProps> = ({ commands }) => {
           <Text bold color="magenta">
             🌟 Welcome to MARIA CODE CLI! 🌟
           </Text>
-          <Text color="gray">
-            Start by typing a command below, or try:
-          </Text>
+          <Text color="gray">Start by typing a command below, or try:</Text>
           <Box marginTop={1} flexDirection="column">
             <Text color="cyan">• /help - Show available commands</Text>
             <Text color="cyan">• mc chat - Start AI chat session</Text>
@@ -48,22 +46,20 @@ export const CommandHistory: React.FC<CommandHistoryProps> = ({ commands }) => {
           {/* Command Input */}
           <Box>
             <Text color="cyan" bold>
-              ➤ 
+              ➤
             </Text>
-            <Text color="white">
-              {command.input}
-            </Text>
+            <Text color="white">{command.input}</Text>
             <Text color="gray" dimColor>
-              {' '}({command.timestamp.toLocaleTimeString()})
+              {' '}
+              ({command.timestamp.toLocaleTimeString()})
             </Text>
           </Box>
-          
+
           {/* Command Output */}
-          <Box 
-            borderStyle="round" 
+          <Box
+            borderStyle="round"
             borderColor={
-              command.status === 'success' ? 'green' : 
-              command.status === 'error' ? 'red' : 'yellow'
+              command.status === 'success' ? 'green' : command.status === 'error' ? 'red' : 'yellow'
             }
             padding={1}
             marginLeft={2}

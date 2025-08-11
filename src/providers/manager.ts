@@ -43,7 +43,10 @@ export class AIProviderManager {
     }
 
     if (apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY) {
-      this.providers.set('google', new GoogleProvider(apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY));
+      this.providers.set(
+        'google',
+        new GoogleProvider(apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY),
+      );
     }
 
     if (apiKeys.GROQ_API_KEY) {
@@ -112,8 +115,8 @@ export class AIProviderManager {
   }
 
   selectOptimalProvider(
-    taskType?: string, 
-    priorityMode: PriorityMode = 'auto'
+    taskType?: string,
+    priorityMode: PriorityMode = 'auto',
   ): string | undefined {
     const available = this.getAvailableProviders();
     if (available.length === 0) return undefined;
@@ -135,13 +138,13 @@ export class AIProviderManager {
     switch (mode) {
       case 'privacy-first':
         return ['lmstudio', 'ollama', 'vllm', 'anthropic', 'openai', 'google', 'groq', 'grok'];
-      
+
       case 'performance':
         return ['groq', 'grok', 'ollama', 'lmstudio', 'google', 'openai', 'anthropic', 'vllm'];
-      
+
       case 'cost-effective':
         return ['ollama', 'vllm', 'google', 'groq', 'openai', 'anthropic', 'grok', 'lmstudio'];
-      
+
       case 'auto':
       default:
         return ['lmstudio', 'ollama', 'google', 'groq', 'openai', 'anthropic', 'grok', 'vllm'];

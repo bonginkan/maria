@@ -1,6 +1,6 @@
 /**
  * MARIA CODE CLI - Enhanced Status Command
- * 
+ *
  * Example implementation using the new unified design system
  * and architecture components.
  */
@@ -8,6 +8,7 @@
 import { BaseCommand, CommandContext, CommandResult, CommandExample } from '../ui/base-command';
 import { CommandCategory, Severity } from '../ui/design-system';
 import { ArgumentSchema } from '../ui/argument-validator';
+import * as os from 'os';
 import { TreeNode } from '../ui/response-formatter';
 import { showSteps, ProgressIndicator } from '../ui/progress-indicator';
 import { readConfig } from '../utils/config';
@@ -63,7 +64,7 @@ export class StatusEnhancedCommand extends BaseCommand {
   category = CommandCategory.User;
   description = 'Display comprehensive system status and session information';
   aliases = ['/s', '/info'];
-  
+
   protected getSchema(): ArgumentSchema {
     return {
       arguments: [
@@ -91,7 +92,7 @@ export class StatusEnhancedCommand extends BaseCommand {
       allowExtraArgs: false,
     };
   }
-  
+
   protected getExamples(): CommandExample[] {
     return [
       {
@@ -116,11 +117,11 @@ export class StatusEnhancedCommand extends BaseCommand {
       },
     ];
   }
-  
+
   protected getRelatedCommands(): string[] {
     return ['/login', '/config', '/doctor', '/cost', '/mode'];
   }
-  
+
   protected getTips(): string[] {
     return [
       'Use /s as a shortcut for /status',
@@ -129,15 +130,15 @@ export class StatusEnhancedCommand extends BaseCommand {
       'Run /doctor if you see any errors in the status',
     ];
   }
-  
+
   async execute(args: string[], context: CommandContext): Promise<CommandResult> {
     const parsedArgs = await this.validateArgs(args);
     if (!parsedArgs.valid || !parsedArgs.parsed) {
       throw new Error('Invalid arguments');
     }
-    
+
     const { format, section, refresh } = parsedArgs.parsed;
-    
+
     // Show progress for data collection
     const progress = showSteps('Collecting system status...', [
       'User authentication',
@@ -146,16 +147,15 @@ export class StatusEnhancedCommand extends BaseCommand {
       'AI configuration',
       'Session metrics',
     ]);
-    
+
     try {
       // Collect status data
       const status = await this.collectStatus(context, progress);
-      
+
       // Filter by section if requested
-      const filteredStatus = section === 'all' 
-        ? status 
-        : { [section]: status[section as keyof SystemStatus] };
-      
+      const filteredStatus =
+        section === 'all' ? status : { [section]: status[section as keyof SystemStatus] };
+
       // Format based on requested format
       let formattedOutput: any;
       switch (format) {
@@ -171,14 +171,14 @@ export class StatusEnhancedCommand extends BaseCommand {
         default:
           formattedOutput = this.formatFull(filteredStatus);
       }
-      
+
       progress.succeed('Status collected successfully');
-      
+
       // Handle refresh mode
       if (refresh && format !== 'json') {
         this.startAutoRefresh();
       }
-      
+
       return {
         success: true,
         message: 'System status',
@@ -194,78 +194,78 @@ export class StatusEnhancedCommand extends BaseCommand {
       throw error;
     }
   }
-  
+
   private async collectStatus(
     context: CommandContext,
-    progress: ProgressIndicator
+    progress: ProgressIndicator,
   ): Promise<SystemStatus> {
     const config = await readConfig();
-    
+
     // Step 1: User authentication
     progress.addStep({
       name: 'User authentication',
       status: 'running',
     });
-    
+
     const userStatus = await this.getUserStatus(context);
-    
+
     progress.addStep({
       name: 'User authentication',
       status: 'completed',
     });
-    
+
     // Step 2: System information
     progress.addStep({
       name: 'System information',
       status: 'running',
     });
-    
+
     const systemStatus = await this.getSystemStatus(config);
-    
+
     progress.addStep({
       name: 'System information',
       status: 'completed',
     });
-    
+
     // Step 3: Project analysis
     progress.addStep({
       name: 'Project analysis',
       status: 'running',
     });
-    
+
     const projectStatus = await this.getProjectStatus(context);
-    
+
     progress.addStep({
       name: 'Project analysis',
       status: projectStatus ? 'completed' : 'skipped',
     });
-    
+
     // Step 4: AI configuration
     progress.addStep({
       name: 'AI configuration',
       status: 'running',
     });
-    
+
     const aiStatus = await this.getAIStatus(config);
-    
+
     progress.addStep({
       name: 'AI configuration',
       status: 'completed',
     });
-    
+
     // Step 5: Session metrics
     progress.addStep({
       name: 'Session metrics',
       status: 'running',
     });
-    
+
     const sessionStatus = await this.getSessionStatus(context);
-    
+
     progress.addStep({
       name: 'Session metrics',
       status: 'completed',
     });
-    
+
     return {
       user: userStatus,
       system: systemStatus,
@@ -274,7 +274,7 @@ export class StatusEnhancedCommand extends BaseCommand {
       session: sessionStatus,
     };
   }
-  
+
   private async getUserStatus(context: CommandContext): Promise<SystemStatus['user']> {
     // Simulate fetching user status
     return {
@@ -285,11 +285,11 @@ export class StatusEnhancedCommand extends BaseCommand {
       loginTime: new Date(Date.now() - 3600000), // 1 hour ago
     };
   }
-  
+
   private async getSystemStatus(config: any): Promise<SystemStatus['system']> {
     const memoryUsage = process.memoryUsage();
-    const totalMemory = require('os').totalmem();
-    
+    const totalMemory = os.totalmem();
+
     return {
       version: '2.5.3',
       mode: config.defaultMode || 'chat',
@@ -303,10 +303,12 @@ export class StatusEnhancedCommand extends BaseCommand {
       },
     };
   }
-  
-  private async getProjectStatus(context: CommandContext): Promise<SystemStatus['project'] | undefined> {
+
+  private async getProjectStatus(
+    context: CommandContext,
+  ): Promise<SystemStatus['project'] | undefined> {
     if (!context.projectPath) return undefined;
-    
+
     return {
       path: context.projectPath,
       type: context.projectType || 'unknown',
@@ -315,7 +317,7 @@ export class StatusEnhancedCommand extends BaseCommand {
       lastScan: new Date(Date.now() - 300000), // 5 minutes ago
     };
   }
-  
+
   private async getAIStatus(config: any): Promise<SystemStatus['ai']> {
     return {
       model: config.model || 'gemini-2.5-pro',
@@ -325,7 +327,7 @@ export class StatusEnhancedCommand extends BaseCommand {
       apiKeySet: !!process.env.GEMINI_API_KEY,
     };
   }
-  
+
   private async getSessionStatus(context: CommandContext): Promise<SystemStatus['session']> {
     return {
       startTime: new Date(Date.now() - 7200000), // 2 hours ago
@@ -334,11 +336,11 @@ export class StatusEnhancedCommand extends BaseCommand {
       estimatedCost: 0.0308,
     };
   }
-  
+
   private formatFull(status: any): any {
     // Use ResponseFormatter for rich display
     const tables: any[] = [];
-    
+
     // User section
     if (status.user) {
       tables.push({
@@ -348,11 +350,14 @@ export class StatusEnhancedCommand extends BaseCommand {
           { Property: 'User ID', Value: status.user.userId || 'Not logged in' },
           { Property: 'Plan', Value: status.user.plan.toUpperCase() },
           { Property: 'Credits', Value: status.user.credits },
-          { Property: 'Login Time', Value: status.user.loginTime ? this.formatTime(status.user.loginTime) : 'N/A' },
+          {
+            Property: 'Login Time',
+            Value: status.user.loginTime ? this.formatTime(status.user.loginTime) : 'N/A',
+          },
         ],
       });
     }
-    
+
     // System section
     if (status.system) {
       tables.push({
@@ -363,49 +368,58 @@ export class StatusEnhancedCommand extends BaseCommand {
           { Property: 'API URL', Value: status.system.apiUrl },
           { Property: 'Sandbox', Value: status.system.sandboxStatus },
           { Property: 'Uptime', Value: this.formatDuration(status.system.uptime * 1000) },
-          { Property: 'Memory', Value: `${Math.round(status.system.memory.used / 1024 / 1024)}MB / ${Math.round(status.system.memory.total / 1024 / 1024)}MB (${status.system.memory.percentage.toFixed(1)}%)` },
+          {
+            Property: 'Memory',
+            Value: `${Math.round(status.system.memory.used / 1024 / 1024)}MB / ${Math.round(status.system.memory.total / 1024 / 1024)}MB (${status.system.memory.percentage.toFixed(1)}%)`,
+          },
         ],
       });
     }
-    
+
     // Add other sections...
-    
+
     return { tables, format: 'full' };
   }
-  
+
   private formatCompact(status: any): string {
     const parts: string[] = [];
-    
+
     if (status.user) {
-      parts.push(`👤 ${status.user.isAuthenticated ? status.user.userId : 'Not logged in'} (${status.user.plan})`);
+      parts.push(
+        `👤 ${status.user.isAuthenticated ? status.user.userId : 'Not logged in'} (${status.user.plan})`,
+      );
     }
-    
+
     if (status.system) {
-      parts.push(`⚙️  v${status.system.version} | ${status.system.mode} mode | ${status.system.sandboxStatus}`);
+      parts.push(
+        `⚙️  v${status.system.version} | ${status.system.mode} mode | ${status.system.sandboxStatus}`,
+      );
     }
-    
+
     if (status.project) {
       parts.push(`📁 ${status.project.type} project | ${status.project.files} files`);
     }
-    
+
     if (status.ai) {
       parts.push(`🤖 ${status.ai.model} | ${status.ai.provider}`);
     }
-    
+
     if (status.session) {
-      parts.push(`💬 ${status.session.messagesCount} messages | $${status.session.estimatedCost.toFixed(4)}`);
+      parts.push(
+        `💬 ${status.session.messagesCount} messages | $${status.session.estimatedCost.toFixed(4)}`,
+      );
     }
-    
+
     return parts.join('\n');
   }
-  
+
   private formatTree(status: any): TreeNode {
     const root: TreeNode = {
       label: 'MARIA System Status',
       expanded: true,
       children: [],
     };
-    
+
     // Add sections as tree nodes
     Object.entries(status).forEach(([key, value]) => {
       if (value && typeof value === 'object') {
@@ -417,10 +431,10 @@ export class StatusEnhancedCommand extends BaseCommand {
         root.children!.push(node);
       }
     });
-    
+
     return root;
   }
-  
+
   private objectToTreeNodes(obj: any): TreeNode[] {
     return Object.entries(obj).map(([key, value]) => {
       if (typeof value === 'object' && value !== null && !(value instanceof Date)) {
@@ -430,13 +444,13 @@ export class StatusEnhancedCommand extends BaseCommand {
           expanded: false,
         };
       }
-      
+
       return {
         label: `${key}: ${this.formatValue(value)}`,
       };
     });
   }
-  
+
   private formatValue(value: any): string {
     if (value instanceof Date) {
       return this.formatTime(value);
@@ -449,10 +463,10 @@ export class StatusEnhancedCommand extends BaseCommand {
     }
     return String(value);
   }
-  
+
   private createVisualElements(status: SystemStatus): any[] {
     const elements: any[] = [];
-    
+
     // Memory usage progress bar
     if (status.system) {
       elements.push({
@@ -465,7 +479,7 @@ export class StatusEnhancedCommand extends BaseCommand {
         },
       });
     }
-    
+
     // Session cost chart
     if (status.session) {
       elements.push({
@@ -478,13 +492,13 @@ export class StatusEnhancedCommand extends BaseCommand {
         },
       });
     }
-    
+
     return elements;
   }
-  
+
   private getRecommendedActions(status: SystemStatus): any[] {
     const actions: any[] = [];
-    
+
     // Check authentication
     if (!status.user.isAuthenticated) {
       actions.push({
@@ -493,7 +507,7 @@ export class StatusEnhancedCommand extends BaseCommand {
         priority: 'high',
       });
     }
-    
+
     // Check credits
     if (status.user.credits < 100) {
       actions.push({
@@ -502,7 +516,7 @@ export class StatusEnhancedCommand extends BaseCommand {
         priority: 'medium',
       });
     }
-    
+
     // Check API key
     if (!status.ai.apiKeySet) {
       actions.push({
@@ -511,7 +525,7 @@ export class StatusEnhancedCommand extends BaseCommand {
         priority: 'high',
       });
     }
-    
+
     // Check project
     if (!status.project) {
       actions.push({
@@ -520,25 +534,25 @@ export class StatusEnhancedCommand extends BaseCommand {
         priority: 'medium',
       });
     }
-    
+
     return actions;
   }
-  
+
   private startAutoRefresh(): void {
     // In a real implementation, this would set up a refresh interval
     console.log('Auto-refresh enabled. Press Ctrl+C to stop.');
   }
-  
+
   private formatTime(date: Date): string {
     return date.toLocaleString();
   }
-  
+
   private formatDuration(ms: number): string {
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
     const days = Math.floor(hours / 24);
-    
+
     if (days > 0) {
       return `${days}d ${hours % 24}h`;
     }
