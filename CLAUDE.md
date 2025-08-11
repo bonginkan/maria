@@ -70,13 +70,14 @@ npm publishを実行するためには、事前にNPM_TOKENをGitHub Secretsに�
 
 **OSS_SYNC_TOKEN設定手順（OSS同期用）:**
 ```bash
-# GitHub Personal Access Token を生成
+# GitHub Personal Access Token (Classic) を生成 - 必須！
 1. https://github.com/settings/tokens/new
-2. Note: "OSS Sync Token"
-3. Expiration: 90 days (または適切な期間)
-4. Scopes: ✅ repo (full control)
-5. "Generate token" をクリック
-6. トークンをコピー
+2. "Generate new token (classic)" を選択
+3. Note: "OSS Sync Token"
+4. Expiration: 90 days (推奨)
+5. Scopes: ✅ repo (full control) - 必須
+6. "Generate token" をクリック
+7. トークンをコピー
 
 # GitHubリポジトリに追加
 1. https://github.com/bonginkan/maria_code/settings/secrets/actions
