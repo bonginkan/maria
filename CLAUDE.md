@@ -10,21 +10,106 @@
 - **CLI**: MARIA CODE (Advanced AGI by Bonginkan Inc.)
 - **Backend**: Vertex AI + Graph RAG + Self-Refine
 
-### 🎉 v1.0.3 NPM配布準備完了！✨ NEW
+### 🎉 v1.0.5 NPM公開完了！世界中で利用可能に！✨
 
-**MARIA CLI** が npm パッケージとして配布可能な状態になりました：
+**MARIA CLI** が npm パッケージとして正式公開されました：
+
+#### 🌍 インストール方法
+```bash
+# npmからクリーンインストール
+npm install -g @bonginkan/maria
+# Result: added 3 packages in 159ms (警告ゼロ！)
+
+# 動作確認
+maria --version
+# Result: 🚀 MARIA CODE CLI - Command Mode
+
+# 使用開始
+maria chat    # インタラクティブモード
+mc chat      # エイリアスも使用可能
+```
 
 #### 📦 Package Quality Achievements
+- ✅ **NPM公開済み**: https://www.npmjs.com/package/@bonginkan/maria
 - ✅ **依存関係の大幅最適化**: 30個 → 2個 (chalk, commander のみ)
 - ✅ **非推奨パッケージ完全除去**: lodash.isequal, node-domexception 削除
-- ✅ **ビルドサイズ最適化**: ~500KB (85%高速インストール)
+- ✅ **ビルドサイズ最適化**: 20.1KB unpackedSize
 - ✅ **警告ゼロ**: 非推奨警告・セキュリティ問題なし
-- ✅ **CI/CD準備完了**: 自動テスト・ビルド・公開パイプライン構築済み
+- ✅ **インストール高速**: 159ms でインストール完了
+- ✅ **Node.js v22互換性**: 全Node.jsバージョン対応
 
-#### 🚀 Distribution Strategy
-- **Primary**: `npm install -g @maria/cli` (準備完了)
-- **Backup**: GitHub Releases (maria-oss/) 
-- **Auto-sync**: maria_code → maria リポジトリ (CI/CD統合)
+#### 🚀 Distribution Details
+- **Package Name**: `@bonginkan/maria`
+- **Latest Version**: 1.0.5
+- **Registry**: https://registry.npmjs.org/@bonginkan/maria
+- **Total Versions**: 8 (alpha版含む)
+- **Publisher**: bongin <t@bonginkan.ai>
+
+#### 📈 バージョン管理
+
+##### ⚠️ 重要: NPM_TOKENの設定（必須）
+
+npm publishを実行するためには、事前にNPM_TOKENをGitHub Secretsに設定する必要があります。
+
+**NPM_TOKEN設定手順:**
+```bash
+# 1. npm.comでトークンを生成
+1. https://www.npmjs.com にログイン
+2. アカウントメニュー → Access Tokens
+3. "Generate New Token" → "Classic Token"
+4. Type: "Automation" を選択
+5. トークンをコピー
+
+# 2. GitHubリポジトリに追加
+1. https://github.com/bonginkan/maria_code/settings/secrets/actions
+2. "New repository secret" をクリック
+3. Name: NPM_TOKEN
+4. Secret: [コピーしたnpmトークン]
+5. "Add secret" をクリック
+```
+
+**OSS_SYNC_TOKEN設定手順（OSS同期用）:**
+```bash
+# GitHub Personal Access Token を生成
+1. https://github.com/settings/tokens/new
+2. Note: "OSS Sync Token"
+3. Expiration: 90 days (または適切な期間)
+4. Scopes: ✅ repo (full control)
+5. "Generate token" をクリック
+6. トークンをコピー
+
+# GitHubリポジトリに追加
+1. https://github.com/bonginkan/maria_code/settings/secrets/actions
+2. "New repository secret" をクリック
+3. Name: OSS_SYNC_TOKEN
+4. Secret: [コピーしたGitHubトークン]
+5. "Add secret" をクリック
+```
+
+**設定確認:**
+```bash
+# Secretsが追加されたか確認
+gh secret list --repo bonginkan/maria_code
+
+# ワークフローを再実行
+gh workflow run ci-cd.yml --ref main
+gh workflow run sync-to-oss.yml --ref main
+```
+
+**バージョン更新とリリース:**
+```bash
+# パッチバージョン更新（1.0.5 → 1.0.6）
+npm version patch
+npm publish --otp=YOUR_OTP
+
+# マイナーバージョン更新（1.0.5 → 1.1.0）
+npm version minor
+npm publish --otp=YOUR_OTP
+
+# メジャーバージョン更新（1.0.5 → 2.0.0）
+npm version major
+npm publish --otp=YOUR_OTP
+```
 
 ### リポジトリ構成
 - **開発用 (Private)**: https://github.com/bonginkan/maria_code (全コード、このリポジトリ)

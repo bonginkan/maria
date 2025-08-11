@@ -1,23 +1,36 @@
-# MARIA CODE - Advanced AGI Development Assistant
+# MARIA CLI - Intelligent Development Assistant
 
-[![npm version](https://img.shields.io/npm/v/@bonginkan/maria.svg)](https://www.npmjs.com/package/@bonginkan/maria)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
+[![npm version](https://img.shields.io/npm/v/@maria/cli)](https://www.npmjs.com/package/@maria/cli)
+[![Downloads](https://img.shields.io/npm/dt/@maria/cli)](https://www.npmjs.com/package/@maria/cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0%20%3C%3D22.0.0-brightgreen)](https://nodejs.org)
 
-🤖 **MARIA CODE** is an advanced AGI (Artificial General Intelligence) development assistant that brings senior engineer-level capabilities to your terminal. With support for 14+ AI models, intelligent routing, and comprehensive development tools, MARIA transforms how you write, review, and deploy code.
+🤖 **MARIA CLI** is an advanced AI development assistant that brings senior engineer-level capabilities to your terminal. With support for 22+ AI models, intelligent routing, and comprehensive development tools.
+
+## ⚠️ Node.js Compatibility Notice
+
+**Recommended: Node.js v22 or lower for best experience**
+
+```bash
+# Check your Node.js version
+node --version
+
+# If using Node.js v24, switch to v22:
+nvm install 22
+nvm use 22
+```
 
 ## 🚀 Quick Start
 
 ```bash
-# Install globally
-npm install -g @bonginkan/maria@latest
+# Install globally (Node.js 18-22 recommended)
+npm install -g @maria/cli
 
-# Initialize in your project
-maria init
+# Update to latest version
+npm update -g @maria/cli
 
 # Start interactive mode
-maria chat
+maria
 ```
 
 ## ✨ Key Features
@@ -126,17 +139,20 @@ maria review --diff --suggestions --severity warning
 ## 📦 Installation Options
 
 ```bash
-# Latest stable
-npm install -g @bonginkan/maria@latest
+# Latest stable (Node.js 18-22)
+npm install -g @maria/cli
+
+# Update existing installation
+npm update -g @maria/cli
 
 # Development version
-npm install -g @bonginkan/maria@alpha
+npm install -g @maria/cli@alpha
 
 # Beta version
-npm install -g @bonginkan/maria@beta
+npm install -g @maria/cli@beta
 
 # Run without installing
-npx @bonginkan/maria@latest
+npx @maria/cli
 ```
 
 ## 🔌 AI Provider Setup
@@ -179,7 +195,8 @@ export ANTHROPIC_API_KEY=your_key
 
 ## 🛠️ System Requirements
 
-- **Node.js**: 18.0.0 or higher
+- **Node.js**: 18.0.0 - 22.x.x (v22 recommended, v24 not yet supported)
+- **npm**: 6.0.0 or higher
 - **OS**: macOS, Linux, Windows (WSL recommended)
 - **Memory**: 4GB RAM minimum (8GB+ for local models)
 - **Storage**: 500MB for CLI, varies for local models
@@ -192,10 +209,32 @@ We welcome contributions! See [Contributing Guide](https://github.com/bonginkan/
 
 MIT License - see [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE) for details.
 
+## 🐛 Troubleshooting
+
+### Node.js v24 Compatibility
+If you encounter warnings with Node.js v24:
+
+```bash
+# Recommended solution: Switch to Node.js v22
+nvm install 22
+nvm use 22
+npm install -g @maria/cli
+```
+
+### Installation Issues
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Reinstall
+npm uninstall -g @maria/cli
+npm install -g @maria/cli
+```
+
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/bonginkan/maria)
-- [NPM Package](https://www.npmjs.com/package/@bonginkan/maria)
+- [NPM Package](https://www.npmjs.com/package/@maria/cli)
 - [Documentation](https://maria-code.vercel.app)
 - [Report Issues](https://github.com/bonginkan/maria/issues)
 

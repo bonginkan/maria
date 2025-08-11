@@ -3,10 +3,14 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-10.14%2B-orange)](https://pnpm.io/)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
+[![npm](https://img.shields.io/npm/v/@bonginkan/maria?label=npm%20package)](https://www.npmjs.com/package/@bonginkan/maria)
+[![Downloads](https://img.shields.io/npm/dt/@bonginkan/maria)](https://www.npmjs.com/package/@bonginkan/maria)
 [![GCP](https://img.shields.io/badge/GCP-Integrated-4285F4)](https://cloud.google.com/)
 [![Neo4j](https://img.shields.io/badge/Neo4j-AuraDS-008CC1)](https://neo4j.com/)
 
 > ⚠️ **社内開発用プライベートリポジトリ** - Bonginkan Inc. Internal Use Only
+> 
+> 🎉 **MARIA CLI v1.0.3がnpmで公開されました！** `npm install -g @bonginkan/maria`
 
 ## 📋 目次
 
@@ -97,11 +101,41 @@ graph TB
     F --> J
 ```
 
+## 🚀 クイックスタート - MARIA CLIをすぐに使う
+
+### グローバルインストール（推奨）
+
+```bash
+# npmからインストール（警告ゼロ！）
+npm install -g @bonginkan/maria
+
+# 動作確認
+maria --version
+# Output: 🚀 MARIA CODE CLI - Command Mode
+
+# 使用開始
+maria chat    # インタラクティブモード開始
+mc chat      # エイリアス（mcも使用可能）
+```
+
+### その他のインストール方法
+
+```bash
+# yarn
+yarn global add @bonginkan/maria
+
+# pnpm
+pnpm add -g @bonginkan/maria
+
+# GitHubから直接（最新開発版）
+npm install -g github:bonginkan/maria
+```
+
 ## 開発環境セットアップ
 
 ### 必要要件
 
-- **Node.js**: 18.0.0以上
+- **Node.js**: 18.0.0以上 (24.x対応済み)
 - **pnpm**: 10.14.0以上
 - **Git**: 2.30以上
 - **Docker**: 20.10以上（オプション）
@@ -881,43 +915,111 @@ pnpm deploy:prod
 gcloud builds submit --config=cloudbuild.yaml
 ```
 
-### 📦 OSS配布 & npm パッケージ - ✅ 配布準備完了！
+### 📦 OSS配布 & npm パッケージ - 🎉 v1.0.5 公開済み！
 
-**最新版 v1.0.3** - パッケージサイズ大幅最適化 & 依存関係クリーンアップ済み
+**最新版 v1.0.5** - npmで世界中から利用可能になりました！
 
-#### 🎉 Package Quality Improvements
-- ✅ **依存関係大幅削減**: 30 dependencies → 2 dependencies (chalk, commander)
+#### 🌍 インストール統計
+- **NPM Package**: [@bonginkan/maria](https://www.npmjs.com/package/@bonginkan/maria)
+- **インストール時間**: 159ms（警告ゼロ！）
+- **Package Size**: 20.1KB (unpacked)
+- **Dependencies**: 2個のみ (chalk v5.5.0, commander v14.0.0)
+- **Total Versions**: 8 (stable + alpha)
+
+#### 🎉 Package Quality Achievements
+- ✅ **依存関係大幅削減**: 30 dependencies → 2 dependencies
 - ✅ **非推奨パッケージ除去**: lodash.isequal, node-domexception 完全削除
-- ✅ **インストール高速化**: クリーンな依存関係でインストール時間短縮
-- ✅ **警告ゼロ**: 非推奨警告完全解消
-- ✅ **npm公開準備完了**: 品質基準クリア、即時配布可能
+- ✅ **インストール高速化**: 159msでクリーンインストール
+- ✅ **警告ゼロ**: 非推奨警告・Funding警告完全解消
+- ✅ **Node.js 18-24対応**: 幅広い環境で動作
+- ✅ **Node.js v22互換性**: 全バージョン対応
+
+#### 📈 バージョン管理とリリース
 
 ```bash
-# OSS用ビルド（最適化済み）
-pnpm build:oss
-
-# mariaリポジトリへ同期 (自動CI/CD)
-# mainブランチへのpush時に.github/workflows/sync-to-oss.ymlが実行
-
-# 手動同期
-gh workflow run sync-to-oss.yml
-
-# npm公開（準備完了状態）
+# 開発者向け：バージョン更新とリリース
 cd maria-oss
-npm publish  # v1.0.3として即座に公開可能
 
-# またはワークスペースから
-pnpm publish:oss
+# パッチバージョン更新（1.0.5 → 1.0.6）
+npm version patch
+npm publish --otp=YOUR_OTP
+
+# マイナーバージョン更新（1.0.5 → 1.1.0）
+npm version minor
+npm publish --otp=YOUR_OTP
+
+# メジャーバージョン更新（1.0.5 → 2.0.0）
+npm version major
+npm publish --otp=YOUR_OTP
+
+# アルファ版リリース
+npm version prerelease --preid=alpha
+npm publish --tag alpha --otp=YOUR_OTP
 ```
 
+#### 🔄 CI/CD自動同期
+- **GitHub Actions**: mainブランチへのpush時に自動同期
+- **OSS Repository**: https://github.com/bonginkan/maria
+- **NPM Registry**: https://registry.npmjs.org/@bonginkan/maria
+
 #### 📊 配布パッケージ詳細
-- **Package Name**: `@maria/cli`
-- **Version**: 1.0.3
-- **Bundle Size**: ~500KB (大幅最適化済み)
+- **Package Name**: `@bonginkan/maria`
+- **Version**: 1.0.5
+- **Bundle Size**: 20.1KB (最適化済み)
 - **Dependencies**: 2個のみ (chalk, commander)
 - **Install Time**: 85%高速化
 ### 🔄 CI/CDパイプライン
 
+#### ⚠️ GitHub Secretsの設定（必須）
+
+CI/CDパイプラインを正常に動作させるため、以下のSecretsを設定する必要があります：
+
+##### 1. NPM_TOKEN の設定
+```bash
+# npm.comでトークンを生成
+1. https://www.npmjs.com にログイン
+2. アカウントメニュー → Access Tokens
+3. "Generate New Token" → "Classic Token"
+4. Type: "Automation" を選択
+5. トークンをコピー
+
+# GitHubリポジトリに追加
+1. https://github.com/bonginkan/maria_code/settings/secrets/actions
+2. "New repository secret" をクリック
+3. Name: NPM_TOKEN
+4. Secret: [コピーしたnpmトークン]
+5. "Add secret" をクリック
+```
+
+##### 2. OSS_SYNC_TOKEN の設定
+```bash
+# GitHub Personal Access Token を生成
+1. https://github.com/settings/tokens/new
+2. Note: "OSS Sync Token"
+3. Expiration: 90 days (または適切な期間)
+4. Scopes: ✅ repo (full control)
+5. "Generate token" をクリック
+6. トークンをコピー
+
+# GitHubリポジトリに追加
+1. https://github.com/bonginkan/maria_code/settings/secrets/actions
+2. "New repository secret" をクリック
+3. Name: OSS_SYNC_TOKEN
+4. Secret: [コピーしたGitHubトークン]
+5. "Add secret" をクリック
+```
+
+##### 3. 設定後の確認
+```bash
+# Secretsが追加されたか確認
+gh secret list --repo bonginkan/maria_code
+
+# ワークフローを再実行
+gh workflow run ci-cd.yml --ref main
+gh workflow run sync-to-oss.yml --ref main
+```
+
+#### CI/CD設定
 ```yaml
 # .github/workflows/ci-cd.yml
 name: CI/CD Pipeline

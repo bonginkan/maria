@@ -1,6 +1,6 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Intelligent CLI Assistant with Multi-Model AI Support - Zero Configuration, Privacy First",
   "keywords": [
     "ai",
@@ -42,7 +42,7 @@
   ],
   "type": "commonjs",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0 <=22.0.0"
   },
   "scripts": {
     "build": "tsup",
