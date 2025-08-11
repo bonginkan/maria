@@ -123,6 +123,10 @@ jobs:
       - name: 🔧 Build project
         run: pnpm run build
 
+      - name: 🔑 Setup NPM authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
+
       - name: 🚀 Publish to NPM
         run: npm publish --access public --tag alpha
         env:
@@ -167,6 +171,10 @@ jobs:
 
       - name: 🔧 Build project
         run: pnpm run build
+
+      - name: 🔑 Setup NPM authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: 🚀 Publish to NPM
         run: npm publish --access public --tag ${{ github.event.inputs.tag }}

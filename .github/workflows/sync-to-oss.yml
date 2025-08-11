@@ -186,10 +186,14 @@ jobs:
           GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
         run: |
           echo "📥 Cloning maria OSS repository..."
-          git clone https://x-access-token:${GH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
+          # Use gh CLI for better authentication handling
+          gh repo clone bonginkan/maria /tmp/maria-repo -- --depth=1
           cd /tmp/maria-repo
           
-          # Setup git
+          # Setup git with the token
+          git remote set-url origin https://tsubouchi:${GH_TOKEN}@github.com/bonginkan/maria.git
+          
+          # Setup git config
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
