@@ -11,6 +11,7 @@ import fetch from 'node-fetch';
 import * as fs from 'fs';
 import * as path from 'path';
 import { loadEnvironmentVariables } from '../utils/env-loader.js';
+import { readConfig } from '../utils/config.js';
 
 const execAsync = promisify(exec);
 
@@ -31,6 +32,7 @@ export class InteractiveModelSelector {
   private selectedIndex = 0;
   private rl: readline.Interface;
   private lmStudioStatus: 'checking' | 'not-installed' | 'not-running' | 'running' = 'checking';
+  private currentModel: string | undefined;
 
   constructor() {
     // Ensure environment is loaded
@@ -52,33 +54,60 @@ export class InteractiveModelSelector {
   async initialize(): Promise<void> {
     console.log(chalk.cyan('🔍 Checking available AI models...\n'));
 
+    // Get current model from config
+    try {
+      const config = await readConfig();
+      this.currentModel = config.defaultModel || config.ai?.defaultModel;
+    } catch {
+      // Ignore errors reading config
+    }
+
     // Check LM Studio
     await this.checkLMStudio();
 
-    // Build model list
+    // Build model list with latest AI models (August 2025)
     this.models = [
-      // Local models
+      // OpenAI Models - August 2025
       {
-        id: 'gpt-oss-120b',
-        name: 'GPT-OSS 120B',
-        provider: 'LM Studio',
-        type: 'local' as const,
+        id: 'gpt-5',
+        name: 'GPT-5',
+        provider: 'OpenAI',
+        type: 'cloud' as const,
+        context: '256K',
+        available: !!process.env.OPENAI_API_KEY,
+        apiKeySet: !!process.env.OPENAI_API_KEY,
+        description: '🔥 Latest flagship, AGI-level capabilities',
+      },
+      {
+        id: 'gpt-5-mini',
+        name: 'GPT-5 mini',
+        provider: 'OpenAI',
+        type: 'cloud' as const,
         context: '128K',
-        vram: '~64GB',
-        available: this.lmStudioStatus === 'running',
-        description: 'Complex reasoning, large documents',
+        available: !!process.env.OPENAI_API_KEY,
+        apiKeySet: !!process.env.OPENAI_API_KEY,
+        description: 'Smaller GPT-5, still very powerful',
       },
       {
-        id: 'gpt-oss-20b',
-        name: 'GPT-OSS 20B',
-        provider: 'LM Studio',
-        type: 'local' as const,
-        context: '32K',
-        vram: '~12GB',
-        available: this.lmStudioStatus === 'running',
-        description: 'Balanced performance',
+        id: 'o3',
+        name: 'o3',
+        provider: 'OpenAI',
+        type: 'cloud' as const,
+        context: '512K',
+        available: !!process.env.OPENAI_API_KEY,
+        apiKeySet: !!process.env.OPENAI_API_KEY,
+        description: '🧠 Latest reasoning model, solves complex problems',
       },
-      // Cloud models
+      {
+        id: 'o3-mini',
+        name: 'o3-mini',
+        provider: 'OpenAI',
+        type: 'cloud' as const,
+        context: '256K',
+        available: !!process.env.OPENAI_API_KEY,
+        apiKeySet: !!process.env.OPENAI_API_KEY,
+        description: 'Fast reasoning, coding specialist',
+      },
       {
         id: 'gpt-4o',
         name: 'GPT-4o',
@@ -87,37 +116,173 @@ export class InteractiveModelSelector {
         context: '128K',
         available: !!process.env.OPENAI_API_KEY,
         apiKeySet: !!process.env.OPENAI_API_KEY,
-        description: 'High accuracy, multimodal',
+        description: 'Previous gen, still excellent',
+      },
+      // Anthropic Models - August 2025
+      {
+        id: 'claude-opus-4.1',
+        name: 'Claude Opus 4.1',
+        provider: 'Anthropic',
+        type: 'cloud' as const,
+        context: '500K',
+        available: !!process.env.ANTHROPIC_API_KEY,
+        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        description: '🎯 Latest Claude, exceptional reasoning',
       },
       {
-        id: 'claude-3-opus',
-        name: 'Claude 3 Opus',
+        id: 'claude-4-sonnet',
+        name: 'Claude 4 Sonnet',
+        provider: 'Anthropic',
+        type: 'cloud' as const,
+        context: '300K',
+        available: !!process.env.ANTHROPIC_API_KEY,
+        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        description: '⚡ Best for coding, ultra-fast',
+      },
+      {
+        id: 'claude-4-haiku',
+        name: 'Claude 4 Haiku',
+        provider: 'Anthropic',
+        type: 'cloud' as const,
+        context: '300K',
+        available: !!process.env.ANTHROPIC_API_KEY,
+        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        description: 'Lightning fast, cost-effective',
+      },
+      {
+        id: 'claude-3.5-sonnet',
+        name: 'Claude 3.5 Sonnet',
         provider: 'Anthropic',
         type: 'cloud' as const,
         context: '200K',
         available: !!process.env.ANTHROPIC_API_KEY,
         apiKeySet: !!process.env.ANTHROPIC_API_KEY,
-        description: 'Long text, complex tasks',
+        description: 'Previous gen, still great',
       },
+      // Google Models - Official Current Models
       {
         id: 'gemini-2.5-pro',
         name: 'Gemini 2.5 Pro',
         provider: 'Google',
         type: 'cloud' as const,
-        context: '128K',
-        available: !!process.env.GEMINI_API_KEY,
-        apiKeySet: !!process.env.GEMINI_API_KEY,
-        description: 'Research, analysis, vision',
+        context: '2M',
+        available: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        apiKeySet: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        description: '🧠 Enhanced reasoning, multimodal understanding',
       },
       {
-        id: 'groq-mixtral',
-        name: 'Mixtral 8x7B',
+        id: 'gemini-2.5-flash',
+        name: 'Gemini 2.5 Flash',
+        provider: 'Google',
+        type: 'cloud' as const,
+        context: '1M',
+        available: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        apiKeySet: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        description: '⚡ Adaptive thinking, cost-effective',
+      },
+      {
+        id: 'gemini-2.5-flash-lite',
+        name: 'Gemini 2.5 Flash-Lite',
+        provider: 'Google',
+        type: 'cloud' as const,
+        context: '1M',
+        available: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        apiKeySet: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        description: '🚀 Most cost-effective, high throughput',
+      },
+      // Meta Models - August 2025
+      {
+        id: 'llama-4-405b',
+        name: 'Llama 4 405B',
+        provider: 'Meta',
+        type: 'cloud' as const,
+        context: '256K',
+        available: !!process.env.META_API_KEY || !!process.env.GROQ_API_KEY,
+        apiKeySet: !!process.env.META_API_KEY || !!process.env.GROQ_API_KEY,
+        description: '🦙 Latest Llama, GPT-5 competitor',
+      },
+      {
+        id: 'llama-4-70b',
+        name: 'Llama 4 70B',
         provider: 'Groq',
         type: 'cloud' as const,
+        context: '128K',
+        available: !!process.env.GROQ_API_KEY,
+        apiKeySet: !!process.env.GROQ_API_KEY,
+        description: 'Groq-powered, ultra-fast inference',
+      },
+      // Mistral Models - August 2025
+      {
+        id: 'mistral-large-3',
+        name: 'Mistral Large 3',
+        provider: 'Mistral',
+        type: 'cloud' as const,
+        context: '256K',
+        available: !!process.env.MISTRAL_API_KEY,
+        apiKeySet: !!process.env.MISTRAL_API_KEY,
+        description: '🇫🇷 European AI, excellent multilingual',
+      },
+      // xAI Models - August 2025
+      {
+        id: 'grok-4',
+        name: 'Grok 4',
+        provider: 'xAI',
+        type: 'cloud' as const,
+        context: '1M',
+        available: !!process.env.XAI_API_KEY,
+        apiKeySet: !!process.env.XAI_API_KEY,
+        description: '🤖 Latest Grok, real-time web access',
+      },
+      {
+        id: 'grok-3-turbo',
+        name: 'Grok 3 Turbo',
+        provider: 'xAI',
+        type: 'cloud' as const,
+        context: '256K',
+        available: !!process.env.XAI_API_KEY,
+        apiKeySet: !!process.env.XAI_API_KEY,
+        description: 'Fast, with X.com integration',
+      },
+      // Local Models (LM Studio) - Actual Available Models
+      {
+        id: 'qwen3moe-30b',
+        name: 'Qwen 3 MoE 30B',
+        provider: 'LM Studio',
+        type: 'local' as const,
         context: '32K',
-        available: !!process.env.GROK_API_KEY,
-        apiKeySet: !!process.env.GROK_API_KEY,
-        description: 'Fast inference',
+        vram: '18.56GB',
+        available: this.lmStudioStatus === 'running',
+        description: '🏆 Q4_K_M quantized, excellent performance',
+      },
+      {
+        id: 'gpt-oss-120b',
+        name: 'GPT-OSS 120B',
+        provider: 'LM Studio',
+        type: 'local' as const,
+        context: '128K',
+        vram: '63.39GB',
+        available: this.lmStudioStatus === 'running',
+        description: '🧠 MXFP4, complex reasoning',
+      },
+      {
+        id: 'gpt-oss-20b',
+        name: 'GPT-OSS 20B',
+        provider: 'LM Studio',
+        type: 'local' as const,
+        context: '32K',
+        vram: '12.11GB',
+        available: this.lmStudioStatus === 'running',
+        description: '🚀 MXFP4, balanced performance',
+      },
+      {
+        id: 'mistral-7b-v0.3',
+        name: 'Mistral 7B v0.3',
+        provider: 'LM Studio',
+        type: 'local' as const,
+        context: '32K',
+        vram: '4.37GB',
+        available: this.lmStudioStatus === 'running',
+        description: '⚡ Q4_K_M, fast inference',
       },
     ];
 
@@ -248,7 +413,12 @@ export class InteractiveModelSelector {
   private render(): void {
     console.clear();
     console.log(chalk.bold.cyan('🤖 Select AI Model'));
-    console.log(chalk.gray('Use ↑↓ arrows to navigate, Enter to select, ESC to cancel\n'));
+    console.log(chalk.gray('Use ↑↓ arrows to navigate, Enter to select, ESC to cancel'));
+    if (this.currentModel) {
+      console.log(chalk.yellow(`Current: ${this.currentModel} ⭐\n`));
+    } else {
+      console.log();
+    }
 
     // Group by type
     const localModels = this.models.filter((m) => m.type === 'local');
@@ -261,9 +431,11 @@ export class InteractiveModelSelector {
       console.log(chalk.bold.green('💻 Local Models (Offline)'));
       localModels.forEach((model) => {
         const isSelected = currentIndex === this.selectedIndex;
+        const isCurrent = model.id === this.currentModel;
         const prefix = isSelected ? chalk.cyan('▶ ') : '  ';
         const status = model.available ? chalk.green('✓') : chalk.red('✗');
-        const line = `${prefix}${status} ${chalk.bold(model.name)} ${chalk.gray(`(${model.context}, ${model.vram})`)} - ${chalk.dim(model.description)}`;
+        const currentMark = isCurrent ? chalk.yellow(' ⭐') : '';
+        const line = `${prefix}${status} ${chalk.bold(model.name)}${currentMark} ${chalk.gray(`(${model.context}, ${model.vram})`)} - ${chalk.dim(model.description)}`;
         console.log(line);
         currentIndex++;
       });
@@ -275,10 +447,12 @@ export class InteractiveModelSelector {
       console.log(chalk.bold.blue('☁️  Cloud Models'));
       cloudModels.forEach((model) => {
         const isSelected = currentIndex === this.selectedIndex;
+        const isCurrent = model.id === this.currentModel;
         const prefix = isSelected ? chalk.cyan('▶ ') : '  ';
         const status = model.available ? chalk.green('✓') : chalk.red('✗');
         const apiStatus = model.apiKeySet ? '' : chalk.yellow(' (No API key)');
-        const line = `${prefix}${status} ${chalk.bold(model.name)} ${chalk.gray(`(${model.context})`)} - ${chalk.dim(model.description)}${apiStatus}`;
+        const currentMark = isCurrent ? chalk.yellow(' ⭐') : '';
+        const line = `${prefix}${status} ${chalk.bold(model.name)}${currentMark} ${chalk.gray(`(${model.context})`)} - ${chalk.dim(model.description)}${apiStatus}`;
         console.log(line);
         currentIndex++;
       });
@@ -286,13 +460,9 @@ export class InteractiveModelSelector {
 
     // Status bar
     console.log(chalk.gray('\n─'.repeat(60)));
-    console.log(
-      chalk.cyan('Current model: ') +
-        chalk.yellow(process.env.LMSTUDIO_DEFAULT_MODEL || process.env.AI_MODEL || 'None'),
-    );
 
     if (this.lmStudioStatus === 'running') {
-      console.log(chalk.green('LM Studio: Running at http://localhost:1234'));
+      console.log(chalk.green('LM Studio: ✓ Running at http://localhost:1234'));
     } else if (this.lmStudioStatus === 'not-running') {
       console.log(chalk.yellow('LM Studio: Not running (will start automatically)'));
     } else if (this.lmStudioStatus === 'not-installed') {

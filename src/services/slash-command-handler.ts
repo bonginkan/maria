@@ -26,6 +26,8 @@ import { BatchExecutionEngine } from './batch-execution';
 import { HotkeyManager } from './hotkey-manager';
 import { runInteractiveModelSelector } from '../commands/model-interactive.js';
 import { ChatContextService } from './chat-context.service';
+import { CodeGenerationService, CodeGenerationRequest } from './code-generation.service';
+import { TestGenerationService, TestGenerationRequest } from './test-generation.service';
 
 export interface SlashCommandResult {
   success: boolean;
@@ -252,6 +254,14 @@ export class SlashCommandHandler {
           break;
         case '/image':
           result = await this.handleImage(args);
+          break;
+
+        // コード生成・テスト (最重要)
+        case '/code':
+          result = await this.handleCode(args, context);
+          break;
+        case '/test':
+          result = await this.handleTest(args, context);
           break;
 
         default:
@@ -584,37 +594,38 @@ export class SlashCommandHandler {
     ];
 
     const localModels = [
+      // LM Studio - Actual Available Models
+      {
+        id: 'qwen3moe-30b',
+        provider: 'LM Studio',
+        name: 'Qwen 3 MoE 30B',
+        context: '32K',
+        vram: '18.56GB',
+        description: '🏆 Q4_K_M quantized, excellent performance',
+      },
       {
         id: 'gpt-oss-120b',
         provider: 'LM Studio',
         name: 'GPT-OSS 120B',
         context: '128K',
-        vram: '~64GB',
-        description: 'Complex reasoning, large documents',
+        vram: '63.39GB',
+        description: '🧠 MXFP4, complex reasoning',
       },
       {
         id: 'gpt-oss-20b',
         provider: 'LM Studio',
         name: 'GPT-OSS 20B',
         context: '32K',
-        vram: '~12GB',
-        description: 'Balanced performance, quick responses',
+        vram: '12.11GB',
+        description: '🚀 MXFP4, balanced performance',
       },
       {
-        id: 'qwen3-30b',
+        id: 'mistral-7b-v0.3',
         provider: 'LM Studio',
-        name: 'Qwen3 30B',
+        name: 'Mistral 7B v0.3',
         context: '32K',
-        vram: '~16GB',
-        description: 'Multilingual support',
-      },
-      {
-        id: 'qwen2.5-vl',
-        provider: 'Ollama',
-        name: 'Qwen2.5-VL',
-        context: '8K',
-        vram: '~8GB',
-        description: 'Vision capabilities',
+        vram: '4.37GB',
+        description: '⚡ Q4_K_M, fast inference',
       },
     ];
 
@@ -3384,6 +3395,379 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
       component: 'image-generator',
       data: { prompt, ...options },
     };
+  }
+
+  // === CODE GENERATION COMMAND (最重要) ===
+  private async handleCode(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+    const codeGenService = CodeGenerationService.getInstance();
+    
+    if (args.length === 0) {
+      return {
+        success: false,
+        message: `❌ Please provide a code generation request.
+
+Usage: /code <prompt> [options]
+
+Examples:
+  /code "Create a REST API for user management"
+  /code "Fix the authentication bug" --language typescript
+  /code "Add error handling to the payment service" --include-tests
+  /code "Refactor this component to use hooks" --framework react
+
+Options:
+  --language <lang>     Specify programming language
+  --framework <name>    Target framework (react, vue, express, etc.)
+  --include-tests       Generate unit tests along with code
+  --include-comments    Add detailed code comments
+  --style <style>       Code style: clean, verbose, minimal
+  --pattern <pattern>   Design pattern: mvc, functional, oop, reactive
+
+💡 Tip: Use natural language - I'll understand your intent!`,
+      };
+    }
+
+    // Parse arguments
+    const prompt = args.filter(arg => !arg.startsWith('--')).join(' ');
+    const options: any = {};
+    
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg.startsWith('--')) {
+        const key = arg.slice(2);
+        const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true;
+        
+        switch (key) {
+          case 'language':
+          case 'lang':
+            options.language = value;
+            break;
+          case 'framework':
+            options.framework = value;
+            break;
+          case 'include-tests':
+          case 'tests':
+            options.includeTests = true;
+            break;
+          case 'include-comments':
+          case 'comments':
+            options.includeComments = true;
+            break;
+          case 'style':
+            options.style = value;
+            break;
+          case 'pattern':
+            options.pattern = value;
+            break;
+        }
+      }
+    }
+
+    // Build code generation request
+    const request: CodeGenerationRequest = {
+      prompt,
+      language: options.language,
+      framework: options.framework,
+      context: {
+        currentFile: context.metadata?.currentFile,
+        files: context.metadata?.recentFiles || [],
+        projectType: await this.detectProjectType(),
+        dependencies: await this.getProjectDependencies(),
+      },
+      options: {
+        includeTests: options.includeTests,
+        includeComments: options.includeComments,
+        style: options.style || 'clean',
+        pattern: options.pattern,
+      },
+    };
+
+    try {
+      logger.info(`🚀 Generating code for: "${prompt}"`);
+      const result = await codeGenService.generateCode(request);
+      
+      if (result.success) {
+        let message = `✅ Code generated successfully!\n\n`;
+        message += `🔤 Language: ${result.language || 'Auto-detected'}\n`;
+        if (result.framework) {
+          message += `⚡ Framework: ${result.framework}\n`;
+        }
+        if (result.metadata) {
+          message += `🤖 Provider: ${result.metadata.provider} (${result.metadata.model})\n`;
+          message += `⏱️  Time: ${result.metadata.executionTime}ms\n`;
+          message += `🎯 Tokens: ${result.metadata.tokens}\n`;
+        }
+        message += `\n📝 Generated Code:\n\`\`\`${result.language || 'javascript'}\n${result.code}\n\`\`\``;
+        
+        if (result.tests) {
+          message += `\n\n🧪 Generated Tests:\n\`\`\`${result.language || 'javascript'}\n${result.tests}\n\`\`\``;
+        }
+        
+        if (result.documentation) {
+          message += `\n\n📚 Documentation:\n${result.documentation}`;
+        }
+        
+        if (result.suggestions && result.suggestions.length > 0) {
+          message += `\n\n💡 Next Steps:\n`;
+          result.suggestions.forEach((suggestion, i) => {
+            message += `${i + 1}. ${suggestion}\n`;
+          });
+        }
+
+        return {
+          success: true,
+          message,
+          data: result,
+        };
+      } else {
+        return {
+          success: false,
+          message: `❌ Code generation failed: ${result.error}\n\n💡 Try:\n- Being more specific about what you want\n- Specifying the programming language\n- Checking your API configuration with /config`,
+        };
+      }
+    } catch (error) {
+      logger.error('Code generation error:', error);
+      return {
+        success: false,
+        message: `❌ Unexpected error during code generation: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      };
+    }
+  }
+
+  // === TEST GENERATION COMMAND (重要) ===
+  private async handleTest(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+    const testGenService = TestGenerationService.getInstance();
+    
+    // Parse arguments
+    const options: any = {
+      coverage: false,
+      type: 'all',
+      verbose: false,
+    };
+    let target: string | undefined;
+    
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg.startsWith('--')) {
+        const key = arg.slice(2);
+        const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true;
+        
+        switch (key) {
+          case 'coverage':
+            options.coverage = true;
+            break;
+          case 'type':
+            options.type = value;
+            break;
+          case 'framework':
+            options.framework = value;
+            break;
+          case 'watch':
+            options.watch = true;
+            break;
+          case 'verbose':
+            options.verbose = true;
+            break;
+          case 'update-snapshots':
+            options.updateSnapshots = true;
+            break;
+          case 'bail':
+            options.bail = true;
+            break;
+        }
+      } else if (!target && !arg.startsWith('--')) {
+        target = arg;
+      }
+    }
+
+    // If no arguments, show help
+    if (args.length === 0) {
+      return {
+        success: true,
+        message: `🧪 **Test Generation & Execution**
+
+Usage: /test [target] [options]
+
+**Examples:**
+  \`/test\`                         - Test changed files
+  \`/test src/auth.js\`             - Test specific file
+  \`/test src/\`                    - Test directory
+  \`/test --coverage\`              - Run with coverage report
+  \`/test --type unit\`             - Run only unit tests
+  \`/test --watch\`                 - Watch mode
+  \`/test --framework jest\`        - Use specific framework
+
+**Options:**
+  \`--coverage\`          Generate coverage report
+  \`--type <type>\`       Test type: unit, integration, e2e, all
+  \`--framework <name>\`  Test framework (jest, vitest, mocha, pytest)
+  \`--watch\`            Watch mode for continuous testing
+  \`--verbose\`          Detailed output
+  \`--update-snapshots\` Update test snapshots
+  \`--bail\`             Stop on first failure
+
+**Detected Framework:** ${await this.detectTestFramework()}
+**Available Commands:**
+- 🏃 Run existing tests
+- ✨ Generate missing tests with AI
+- 📊 Coverage analysis
+- 🔍 Test failure debugging`,
+      };
+    }
+
+    // Build test request
+    const request: TestGenerationRequest = {
+      target,
+      type: options.type === 'all' ? undefined : options.type,
+      framework: options.framework,
+      coverage: options.coverage,
+      options: {
+        watch: options.watch,
+        updateSnapshots: options.updateSnapshots,
+        bail: options.bail,
+        verbose: options.verbose,
+      },
+    };
+
+    try {
+      logger.info(`🧪 Processing test request for: ${target || 'changed files'}`);
+      const result = await testGenService.generateTests(request);
+      
+      if (result.success) {
+        let message = `✅ Test operation completed!\n\n`;
+        
+        if (result.framework) {
+          message += `🔧 Framework: ${result.framework}\n`;
+        }
+        
+        if (result.metadata) {
+          message += `📊 Analysis:\n`;
+          message += `  • Files analyzed: ${result.metadata.filesAnalyzed}\n`;
+          message += `  • Tests generated: ${result.metadata.testsGenerated}\n`;
+          message += `  • Execution time: ${result.metadata.executionTime}ms\n\n`;
+        }
+
+        if (result.results) {
+          message += `🏃 **Test Results:**\n`;
+          message += `  ✅ Passed: ${result.results.passed}\n`;
+          message += `  ❌ Failed: ${result.results.failed}\n`;
+          message += `  ⏸️  Skipped: ${result.results.skipped}\n`;
+          message += `  ⏱️  Duration: ${result.results.duration.toFixed(2)}s\n\n`;
+          
+          if (result.results.failures && result.results.failures.length > 0) {
+            message += `💥 **Failures:**\n`;
+            result.results.failures.slice(0, 3).forEach((failure, i) => {
+              message += `${i + 1}. ${failure.test}\n   Error: ${failure.error}\n   File: ${failure.file}\n\n`;
+            });
+            
+            if (result.results.failures.length > 3) {
+              message += `... and ${result.results.failures.length - 3} more failures\n\n`;
+            }
+          }
+        }
+
+        if (result.coverage) {
+          message += `📈 **Coverage Report:**\n`;
+          message += `  • Statements: ${result.coverage.statements.covered}/${result.coverage.statements.total} (${result.coverage.statements.percentage}%)\n`;
+          message += `  • Branches: ${result.coverage.branches.covered}/${result.coverage.branches.total} (${result.coverage.branches.percentage}%)\n`;
+          message += `  • Functions: ${result.coverage.functions.covered}/${result.coverage.functions.total} (${result.coverage.functions.percentage}%)\n`;
+          message += `  • Lines: ${result.coverage.lines.covered}/${result.coverage.lines.total} (${result.coverage.lines.percentage}%)\n\n`;
+        }
+
+        if (result.tests && result.metadata?.testsGenerated! > 0) {
+          message += `✨ **Generated Tests:**\n\`\`\`javascript\n${result.tests.slice(0, 500)}${result.tests.length > 500 ? '...\n// (truncated)' : ''}\n\`\`\`\n\n`;
+        }
+
+        if (result.suggestions && result.suggestions.length > 0) {
+          message += `💡 **Recommendations:**\n`;
+          result.suggestions.forEach((suggestion, i) => {
+            message += `${i + 1}. ${suggestion}\n`;
+          });
+        }
+
+        return {
+          success: true,
+          message,
+          data: result,
+        };
+      } else {
+        return {
+          success: false,
+          message: `❌ Test operation failed: ${result.error}\n\n💡 Try:\n- Checking if test framework is properly configured\n- Running /doctor to diagnose issues\n- Specifying a different framework with --framework`,
+        };
+      }
+    } catch (error) {
+      logger.error('Test generation error:', error);
+      return {
+        success: false,
+        message: `❌ Unexpected error during test operation: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      };
+    }
+  }
+
+  // Helper methods for code/test commands
+  private async detectProjectType(): Promise<string | undefined> {
+    try {
+      const files = await fs.readdir(process.cwd());
+      
+      if (files.includes('package.json')) {
+        const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
+        if (pkg.dependencies?.react) return 'React';
+        if (pkg.dependencies?.vue) return 'Vue';
+        if (pkg.dependencies?.angular) return 'Angular';
+        if (pkg.dependencies?.express) return 'Express';
+        return 'Node.js';
+      }
+      
+      if (files.includes('requirements.txt') || files.includes('setup.py')) return 'Python';
+      if (files.includes('go.mod')) return 'Go';
+      if (files.includes('Cargo.toml')) return 'Rust';
+      if (files.includes('pom.xml') || files.includes('build.gradle')) return 'Java';
+    } catch {
+      // Ignore errors
+    }
+    return undefined;
+  }
+
+  private async getProjectDependencies(): Promise<string[]> {
+    try {
+      const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
+      return [
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.devDependencies || {}),
+      ];
+    } catch {
+      return [];
+    }
+  }
+
+  private async detectTestFramework(): Promise<string> {
+    try {
+      const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
+      
+      if (pkg.devDependencies?.jest) return 'Jest';
+      if (pkg.devDependencies?.vitest) return 'Vitest';
+      if (pkg.devDependencies?.mocha) return 'Mocha';
+    } catch {
+      // Not a Node.js project
+    }
+    
+    // Check for other frameworks
+    try {
+      await fs.access('pytest.ini');
+      return 'pytest';
+    } catch {}
+    
+    try {
+      await fs.access('go.mod');
+      return 'go test';
+    } catch {}
+    
+    try {
+      await fs.access('Cargo.toml');
+      return 'cargo test';
+    } catch {}
+    
+    return 'npm test';
   }
 }
 
