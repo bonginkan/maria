@@ -186,7 +186,14 @@ jobs:
           GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
         run: |
           echo "📥 Cloning maria OSS repository..."
-          # Use Classic PAT with username for authentication
+          
+          # Debug: Test token authentication
+          echo "🔍 Testing token authentication..."
+          curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: token ${GH_TOKEN}" \
+            https://api.github.com/repos/bonginkan/maria | grep -q "200" && echo "✅ Token is valid" || echo "❌ Token authentication failed"
+          
+          # Clone with PAT - use username:token format for Classic PAT
           git clone https://tsubouchi:${GH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
           cd /tmp/maria-repo
           
