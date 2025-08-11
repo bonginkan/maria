@@ -24,11 +24,7 @@ interface ToolOption {
 
 type View = 'servers' | 'tools' | 'params' | 'executing' | 'result';
 
-const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
-  mcpService,
-  onExecute,
-  onCancel
-}) => {
+const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute, onCancel }) => {
   const [currentView, setCurrentView] = useState<View>('servers');
   const [selectedServer, setSelectedServer] = useState<string>('');
   const [selectedTool, setSelectedTool] = useState<string>('');
@@ -68,17 +64,17 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
     // Get available tools when component mounts
     const tools = mcpService.getAvailableTools();
     const options: ToolOption[] = [];
-    
+
     for (const { server, tools: serverTools } of tools) {
       for (const tool of serverTools) {
         options.push({
           server,
           tool: tool.name,
-          description: tool.description
+          description: tool.description,
         });
       }
     }
-    
+
     setAvailableTools(options);
   }, [mcpService]);
 
@@ -87,29 +83,32 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
     setCurrentView('tools');
   }, []);
 
-  const handleToolSelect = useCallback((toolOption: ToolOption) => {
-    setSelectedTool(toolOption.tool);
-    setSelectedServer(toolOption.server);
-    
-    // Get tool schema to determine required parameters
-    const tools = mcpService.getAvailableTools();
-    const serverTools = tools.find(t => t.server === toolOption.server);
-    const tool = serverTools?.tools.find(t => t.name === toolOption.tool);
-    
-    if (tool?.inputSchema?.properties) {
-      const params = Object.keys(tool.inputSchema.properties);
-      if (params.length > 0) {
-        setCurrentParam(params[0] || '');
-        setCurrentView('params');
+  const handleToolSelect = useCallback(
+    (toolOption: ToolOption) => {
+      setSelectedTool(toolOption.tool);
+      setSelectedServer(toolOption.server);
+
+      // Get tool schema to determine required parameters
+      const tools = mcpService.getAvailableTools();
+      const serverTools = tools.find((t) => t.server === toolOption.server);
+      const tool = serverTools?.tools.find((t) => t.name === toolOption.tool);
+
+      if (tool?.inputSchema?.properties) {
+        const params = Object.keys(tool.inputSchema.properties);
+        if (params.length > 0) {
+          setCurrentParam(params[0] || '');
+          setCurrentView('params');
+        } else {
+          // No parameters needed, execute directly
+          executeTool({});
+        }
       } else {
-        // No parameters needed, execute directly
+        // No schema, execute without parameters
         executeTool({});
       }
-    } else {
-      // No schema, execute without parameters
-      executeTool({});
-    }
-  }, [mcpService]);
+    },
+    [mcpService],
+  );
 
   const handleParamInput = useCallback((value: string) => {
     setParamValue(value);
@@ -120,16 +119,16 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
     const newParams = { ...toolParams, [currentParam]: paramValue };
     setToolParams(newParams);
     setParamValue('');
-    
+
     // Get next parameter
     const tools = mcpService.getAvailableTools();
-    const serverTools = tools.find(t => t.server === selectedServer);
-    const tool = serverTools?.tools.find(t => t.name === selectedTool);
-    
+    const serverTools = tools.find((t) => t.server === selectedServer);
+    const tool = serverTools?.tools.find((t) => t.name === selectedTool);
+
     if (tool?.inputSchema?.properties) {
       const allParams = Object.keys(tool.inputSchema.properties);
       const currentIndex = allParams.indexOf(currentParam);
-      
+
       if (currentIndex < allParams.length - 1) {
         // More parameters to fill
         setCurrentParam(allParams[currentIndex + 1] || '');
@@ -140,85 +139,90 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
     }
   }, [currentParam, paramValue, toolParams, selectedServer, selectedTool, mcpService]);
 
-  const executeTool = useCallback(async (params: Record<string, any>) => {
-    setCurrentView('executing');
-    setError(null);
-    
-    const exec: MCPToolExecution = {
-      server: selectedServer,
-      tool: selectedTool,
-      args: params,
-      startTime: new Date()
-    };
-    setExecution(exec);
-    
-    try {
-      const result = await mcpService.executeTool(selectedServer, selectedTool, params);
-      setResult(result);
-      setCurrentView('result');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-      setCurrentView('result');
-    }
-  }, [selectedServer, selectedTool, mcpService]);
+  const executeTool = useCallback(
+    async (params: Record<string, any>) => {
+      setCurrentView('executing');
+      setError(null);
+
+      const exec: MCPToolExecution = {
+        server: selectedServer,
+        tool: selectedTool,
+        args: params,
+        startTime: new Date(),
+      };
+      setExecution(exec);
+
+      try {
+        const result = await mcpService.executeTool(selectedServer, selectedTool, params);
+        setResult(result);
+        setCurrentView('result');
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+        setCurrentView('result');
+      }
+    },
+    [selectedServer, selectedTool, mcpService],
+  );
 
   const renderServerSelection = () => {
     const servers = mcpService.getServerStatus();
-    const runningServers = servers.filter(s => s.status === 'running');
-    
+    const runningServers = servers.filter((s) => s.status === 'running');
+
     if (runningServers.length === 0) {
       return (
         <Box flexDirection="column">
-          <Text color="yellow">⚠️  No MCP servers are currently running</Text>
+          <Text color="yellow">⚠️ No MCP servers are currently running</Text>
           <Text color="gray">Start a server using /mcp command first</Text>
-          <Text color="gray" dimColor>Press ESC to go back</Text>
+          <Text color="gray" dimColor>
+            Press ESC to go back
+          </Text>
         </Box>
       );
     }
-    
-    const items = runningServers.map(server => ({
+
+    const items = runningServers.map((server) => ({
       label: `${server.id} (${server.status})`,
-      value: server.id
+      value: server.id,
     }));
-    
+
     return (
       <Box flexDirection="column">
-        <Text color="cyan" bold>Select MCP Server</Text>
+        <Text color="cyan" bold>
+          Select MCP Server
+        </Text>
         <Box marginTop={1}>
-          <SelectInput
-            items={items}
-            onSelect={(item) => handleServerSelect(item.value)}
-          />
+          <SelectInput items={items} onSelect={(item) => handleServerSelect(item.value)} />
         </Box>
       </Box>
     );
   };
 
   const renderToolSelection = () => {
-    const serverTools = availableTools.filter(t => t.server === selectedServer);
-    
+    const serverTools = availableTools.filter((t) => t.server === selectedServer);
+
     if (serverTools.length === 0) {
       return (
         <Box flexDirection="column">
           <Text color="yellow">No tools available for {selectedServer}</Text>
-          <Text color="gray" dimColor>Press ESC to go back</Text>
+          <Text color="gray" dimColor>
+            Press ESC to go back
+          </Text>
         </Box>
       );
     }
-    
-    const items = serverTools.map(tool => ({
+
+    const items = serverTools.map((tool) => ({
       label: `${tool.tool} - ${tool.description}`,
-      value: tool
+      value: tool,
     }));
-    
+
     return (
       <Box flexDirection="column">
-        <Text color="cyan" bold>Select Tool from {selectedServer}</Text>
+        <Text color="cyan" bold>
+          Select Tool from {selectedServer}
+        </Text>
         <Box marginTop={1}>
-          <SelectInput
-            items={items}
-            onSelect={(item) => handleToolSelect(item.value)}
-          />
+          <SelectInput items={items} onSelect={(item) => handleToolSelect(item.value)} />
         </Box>
       </Box>
     );
@@ -227,14 +231,12 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
   const renderParameterInput = () => {
     return (
       <Box flexDirection="column">
-        <Text color="cyan" bold>Enter Parameters for {selectedTool}</Text>
+        <Text color="cyan" bold>
+          Enter Parameters for {selectedTool}
+        </Text>
         <Box marginTop={1}>
           <Text>{currentParam}: </Text>
-          <TextInput
-            value={paramValue}
-            onChange={handleParamInput}
-            onSubmit={handleParamSubmit}
-          />
+          <TextInput value={paramValue} onChange={handleParamInput} onSubmit={handleParamSubmit} />
         </Box>
         <Box marginTop={1}>
           <Text color="gray" dimColor>
@@ -266,29 +268,27 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({
         <Text color={error ? 'red' : 'green'} bold>
           {error ? '❌ Execution Failed' : '✅ Execution Successful'}
         </Text>
-        
+
         <Box marginTop={1} flexDirection="column">
           <Text color="yellow">Tool: {selectedTool}</Text>
           <Text color="gray">Server: {selectedServer}</Text>
           {execution && (
             <Text color="gray">
-              Duration: {execution.endTime ? 
-                `${execution.endTime.getTime() - execution.startTime.getTime()}ms` : 
-                'N/A'
-              }
+              Duration:{' '}
+              {execution.endTime
+                ? `${execution.endTime.getTime() - execution.startTime.getTime()}ms`
+                : 'N/A'}
             </Text>
           )}
         </Box>
-        
+
         <Box marginTop={1} flexDirection="column">
           <Text color="cyan">Result:</Text>
           <Box paddingLeft={2}>
-            <Text color={error ? 'red' : 'white'}>
-              {error || JSON.stringify(result, null, 2)}
-            </Text>
+            <Text color={error ? 'red' : 'white'}>{error || JSON.stringify(result, null, 2)}</Text>
           </Box>
         </Box>
-        
+
         <Box marginTop={1}>
           <Text color="gray" dimColor>
             Press ESC to continue

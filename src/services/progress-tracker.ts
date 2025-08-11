@@ -49,12 +49,12 @@ export class ProgressTracker extends EventEmitter {
    */
   startTracking(missionId: string, tasks: Task[]): void {
     const taskMap = new Map<string, TaskProgress>();
-    
-    tasks.forEach(task => {
+
+    tasks.forEach((task) => {
       taskMap.set(task.id, {
         taskId: task.id,
         status: task.status,
-        progress: 0
+        progress: 0,
       });
     });
 
@@ -63,7 +63,7 @@ export class ProgressTracker extends EventEmitter {
       tasks: taskMap,
       startTime: new Date(),
       completedTasks: 0,
-      totalTasks: tasks.length
+      totalTasks: tasks.length,
     });
 
     logger.info(`Started tracking mission: ${missionId} with ${tasks.length} tasks`);
@@ -72,7 +72,11 @@ export class ProgressTracker extends EventEmitter {
   /**
    * タスクの進捗を更新
    */
-  updateTask(missionId: string, taskId: string, update: Partial<Task> & { progress?: number }): void {
+  updateTask(
+    missionId: string,
+    taskId: string,
+    update: Partial<Task> & { progress?: number },
+  ): void {
     const mission = this.missions.get(missionId);
     if (!mission) {
       logger.warn(`Mission ${missionId} not found for progress update`);
@@ -100,7 +104,7 @@ export class ProgressTracker extends EventEmitter {
         taskProgress.endTime = new Date();
         taskProgress.progress = 100;
         mission.completedTasks++;
-        
+
         if (taskProgress.startTime) {
           taskProgress.duration = taskProgress.endTime.getTime() - taskProgress.startTime.getTime();
         }
@@ -137,7 +141,7 @@ export class ProgressTracker extends EventEmitter {
       tasksCompleted: mission.completedTasks,
       totalTasks: mission.totalTasks,
       estimatedTimeRemaining,
-      message: this.generateProgressMessage(mission, currentTask)
+      message: this.generateProgressMessage(mission, currentTask),
     };
   }
 
@@ -153,9 +157,7 @@ export class ProgressTracker extends EventEmitter {
    * 現在実行中のタスクを取得
    */
   private getCurrentTask(mission: MissionProgress): TaskProgress | undefined {
-    return Array.from(mission.tasks.values()).find(
-      task => task.status === 'in_progress'
-    );
+    return Array.from(mission.tasks.values()).find((task) => task.status === 'in_progress');
   }
 
   /**
@@ -163,7 +165,7 @@ export class ProgressTracker extends EventEmitter {
    */
   private getCurrentPhase(mission: MissionProgress): string {
     const completionRate = mission.completedTasks / mission.totalTasks;
-    
+
     if (completionRate === 0) {
       return '開始';
     } else if (completionRate < 0.25) {
@@ -186,7 +188,7 @@ export class ProgressTracker extends EventEmitter {
     if (mission.totalTasks === 0) return 0;
 
     let totalProgress = 0;
-    mission.tasks.forEach(task => {
+    mission.tasks.forEach((task) => {
       if (task.status === 'completed') {
         totalProgress += 100;
       } else if (task.status === 'in_progress') {
@@ -202,7 +204,7 @@ export class ProgressTracker extends EventEmitter {
    */
   private estimateTimeRemaining(mission: MissionProgress): number {
     const completedTasks = Array.from(mission.tasks.values()).filter(
-      task => task.status === 'completed' && task.duration
+      (task) => task.status === 'completed' && task.duration,
     );
 
     if (completedTasks.length === 0) {
@@ -211,9 +213,8 @@ export class ProgressTracker extends EventEmitter {
     }
 
     // 完了済みタスクの平均時間から推定
-    const avgDuration = completedTasks.reduce((sum, task) => 
-      sum + (task.duration || 0), 0
-    ) / completedTasks.length;
+    const avgDuration =
+      completedTasks.reduce((sum, task) => sum + (task.duration || 0), 0) / completedTasks.length;
 
     const remainingTasks = mission.totalTasks - mission.completedTasks;
     return Math.round(avgDuration * remainingTasks);
@@ -222,10 +223,7 @@ export class ProgressTracker extends EventEmitter {
   /**
    * 進捗メッセージを生成
    */
-  private generateProgressMessage(
-    mission: MissionProgress,
-    currentTask?: TaskProgress
-  ): string {
+  private generateProgressMessage(mission: MissionProgress, currentTask?: TaskProgress): string {
     if (mission.completedTasks === mission.totalTasks) {
       return 'すべてのタスクが完了しました！';
     }
@@ -259,9 +257,9 @@ export class ProgressTracker extends EventEmitter {
       this.missions.forEach((mission, missionId) => {
         // 実行中のタスクがある場合のみ更新
         const hasActiveTasks = Array.from(mission.tasks.values()).some(
-          task => task.status === 'in_progress'
+          (task) => task.status === 'in_progress',
         );
-        
+
         if (hasActiveTasks) {
           this.emitProgress(missionId);
         }
@@ -277,7 +275,7 @@ export class ProgressTracker extends EventEmitter {
       clearInterval(this.updateInterval);
       this.updateInterval = null;
     }
-    
+
     this.missions.clear();
     this.removeAllListeners();
   }
@@ -293,16 +291,12 @@ export class ProgressTracker extends EventEmitter {
 
     const elapsedTime = Date.now() - mission.startTime.getTime();
     const completedTasks = Array.from(mission.tasks.values()).filter(
-      task => task.status === 'completed'
-    );
-    
-    const totalDuration = completedTasks.reduce((sum, task) => 
-      sum + (task.duration || 0), 0
+      (task) => task.status === 'completed',
     );
 
-    const avgTaskDuration = completedTasks.length > 0 
-      ? totalDuration / completedTasks.length 
-      : 0;
+    const totalDuration = completedTasks.reduce((sum, task) => sum + (task.duration || 0), 0);
+
+    const avgTaskDuration = completedTasks.length > 0 ? totalDuration / completedTasks.length : 0;
 
     return {
       missionId,
@@ -312,7 +306,7 @@ export class ProgressTracker extends EventEmitter {
       totalTasks: mission.totalTasks,
       averageTaskDuration: avgTaskDuration,
       estimatedTotalTime: avgTaskDuration * mission.totalTasks,
-      completionRate: mission.completedTasks / mission.totalTasks
+      completionRate: mission.completedTasks / mission.totalTasks,
     };
   }
 }

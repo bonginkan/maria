@@ -36,19 +36,16 @@ export class OfflineAIService {
   async initialize(): Promise<boolean> {
     try {
       console.log('🚀 Initializing Offline AI Service with LM Studio...');
-      
+
       this.provider = new LMStudioProvider();
-      await this.provider.initialize(
-        process.env.LMSTUDIO_API_KEY || 'lm-studio', 
-        {
-          apiBase: process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1',
-          model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
-          maxTokens: parseInt(process.env.LMSTUDIO_MAX_TOKENS || '8192'),
-          temperature: parseFloat(process.env.LMSTUDIO_TEMPERATURE || '0.7'),
-          stream: process.env.LMSTUDIO_STREAM === 'true',
-          timeout: parseInt(process.env.LMSTUDIO_TIMEOUT || '600000')
-        }
-      );
+      await this.provider.initialize(process.env.LMSTUDIO_API_KEY || 'lm-studio', {
+        apiBase: process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1',
+        model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
+        maxTokens: parseInt(process.env.LMSTUDIO_MAX_TOKENS || '8192'),
+        temperature: parseFloat(process.env.LMSTUDIO_TEMPERATURE || '0.7'),
+        stream: process.env.LMSTUDIO_STREAM === 'true',
+        timeout: parseInt(process.env.LMSTUDIO_TIMEOUT || '600000'),
+      });
 
       // Verify server is running
       const isRunning = await (this.provider as LMStudioProvider).isServerRunning();
@@ -61,7 +58,7 @@ export class OfflineAIService {
       // Get available models
       const models = await (this.provider as LMStudioProvider).getAvailableModels();
       console.log('✅ Available models:', models);
-      
+
       console.log(`✅ Offline AI Service initialized with ${this.modelType} model`);
       return true;
     } catch (error) {
@@ -101,17 +98,14 @@ export class OfflineAIService {
     this.modelType = modelType;
     if (this.provider) {
       // Re-initialize with new model
-      await this.provider.initialize(
-        process.env.LMSTUDIO_API_KEY || 'lm-studio', 
-        {
-          apiBase: process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1',
-          model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
-          maxTokens: parseInt(process.env.LMSTUDIO_MAX_TOKENS || '8192'),
-          temperature: parseFloat(process.env.LMSTUDIO_TEMPERATURE || '0.7'),
-          stream: process.env.LMSTUDIO_STREAM === 'true',
-          timeout: parseInt(process.env.LMSTUDIO_TIMEOUT || '600000')
-        }
-      );
+      await this.provider.initialize(process.env.LMSTUDIO_API_KEY || 'lm-studio', {
+        apiBase: process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1',
+        model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
+        maxTokens: parseInt(process.env.LMSTUDIO_MAX_TOKENS || '8192'),
+        temperature: parseFloat(process.env.LMSTUDIO_TEMPERATURE || '0.7'),
+        stream: process.env.LMSTUDIO_STREAM === 'true',
+        timeout: parseInt(process.env.LMSTUDIO_TIMEOUT || '600000'),
+      });
       console.log(`✅ Switched to ${modelType} model`);
     }
   }
@@ -130,7 +124,7 @@ export class OfflineAIService {
       mode: 'offline',
       provider: 'LM Studio',
       model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
-      isOffline: this.isOfflineMode
+      isOffline: this.isOfflineMode,
     };
   }
 }

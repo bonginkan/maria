@@ -24,28 +24,28 @@ export class CommandMapper {
         parameters: (intent) => ({
           action: 'create',
           title: intent.parameters.title,
-          template: intent.parameters.template || 'blank'
+          template: intent.parameters.template || 'blank',
         }),
-        description: '新しい論文を作成'
+        description: '新しい論文を作成',
       },
       {
         pattern: 'edit',
         command: 'mc paper',
         parameters: (intent) => ({
           action: 'edit',
-          title: intent.parameters.title
+          title: intent.parameters.title,
         }),
-        description: '既存の論文を編集'
+        description: '既存の論文を編集',
       },
       {
         pattern: 'analyze',
         command: '/review',
         parameters: () => ({
           type: 'paper',
-          depth: 'thorough'
+          depth: 'thorough',
         }),
-        description: '論文をレビュー・分析'
-      }
+        description: '論文をレビュー・分析',
+      },
     ],
     slides: [
       {
@@ -55,19 +55,19 @@ export class CommandMapper {
           action: 'create',
           title: intent.parameters.title,
           count: intent.parameters.count || 10,
-          template: intent.parameters.template || 'business'
+          template: intent.parameters.template || 'business',
         }),
-        description: '新しいスライドを作成'
+        description: '新しいスライドを作成',
       },
       {
         pattern: 'edit',
         command: 'mc slides',
         parameters: (intent) => ({
           action: 'edit',
-          title: intent.parameters.title
+          title: intent.parameters.title,
         }),
-        description: '既存のスライドを編集'
-      }
+        description: '既存のスライドを編集',
+      },
     ],
     chat: [
       {
@@ -75,52 +75,52 @@ export class CommandMapper {
         command: 'mc chat',
         parameters: (intent) => ({
           mode: 'chat',
-          context: intent.parameters.additionalContext
+          context: intent.parameters.additionalContext,
         }),
-        description: '対話モードを開始'
+        description: '対話モードを開始',
       },
       {
         pattern: /research|調査|分析/,
         command: 'mc chat',
         parameters: () => ({
-          mode: 'research'
+          mode: 'research',
         }),
-        description: 'リサーチモードで対話'
-      }
+        description: 'リサーチモードで対話',
+      },
     ],
     devops: [
       {
         pattern: 'execute',
         command: 'mc deploy',
         parameters: () => ({
-          environment: 'staging'
+          environment: 'staging',
         }),
-        description: 'デプロイを実行'
+        description: 'デプロイを実行',
       },
       {
         pattern: /test|テスト/,
         command: 'mc test',
         parameters: () => ({}),
-        description: 'テストを実行'
+        description: 'テストを実行',
       },
       {
         pattern: /build|ビルド/,
         command: 'mc build',
         parameters: () => ({}),
-        description: 'ビルドを実行'
-      }
+        description: 'ビルドを実行',
+      },
     ],
     general: [
       {
         pattern: /.*/,
         command: 'mc chat',
         parameters: () => ({
-          mode: 'chat'
+          mode: 'chat',
         }),
         confidence: 0.5,
-        description: '一般的な対話を開始'
-      }
-    ]
+        description: '一般的な対話を開始',
+      },
+    ],
   };
 
   /**
@@ -128,25 +128,25 @@ export class CommandMapper {
    */
   mapToCommands(intent: IntentAnalysis): CommandSuggestion[] {
     logger.debug('Mapping intent to commands:', intent);
-    
+
     const suggestions: CommandSuggestion[] = [];
     const mappings = this.commandMappings[intent.taskType] || this.commandMappings.general || [];
-    
+
     for (const mapping of mappings) {
       if (this.matchesPattern(intent, mapping)) {
         const suggestion = this.createSuggestion(intent, mapping);
         suggestions.push(suggestion);
       }
     }
-    
+
     // Auto Mode のサジェストを追加
     if (this.shouldSuggestAutoMode(intent)) {
       suggestions.push(this.createAutoModeSuggestion(intent));
     }
-    
+
     // 信頼度でソート
     suggestions.sort((a, b) => b.confidence - a.confidence);
-    
+
     return suggestions;
   }
 
@@ -157,8 +157,7 @@ export class CommandMapper {
     if (typeof mapping.pattern === 'string') {
       return intent.action === mapping.pattern;
     } else if (mapping.pattern instanceof RegExp) {
-      return mapping.pattern.test(intent.originalInput) || 
-             mapping.pattern.test(intent.action);
+      return mapping.pattern.test(intent.originalInput) || mapping.pattern.test(intent.action);
     }
     return false;
   }
@@ -166,18 +165,15 @@ export class CommandMapper {
   /**
    * コマンドサジェストを作成
    */
-  private createSuggestion(
-    intent: IntentAnalysis,
-    mapping: CommandMapping
-  ): CommandSuggestion {
+  private createSuggestion(intent: IntentAnalysis, mapping: CommandMapping): CommandSuggestion {
     const baseConfidence = mapping.confidence || 0.8;
     const adjustedConfidence = this.adjustConfidence(baseConfidence, intent);
-    
+
     return {
       command: mapping.command,
       confidence: adjustedConfidence,
       parameters: mapping.parameters ? mapping.parameters(intent) : {},
-      description: mapping.description
+      description: mapping.description,
     };
   }
 
@@ -187,12 +183,18 @@ export class CommandMapper {
   private shouldSuggestAutoMode(intent: IntentAnalysis): boolean {
     // 複雑なタスクや曖昧な要求の場合
     const complexKeywords = [
-      '全部', 'すべて', '完成', '最後まで', 
-      'complete', 'entire', 'full', 'automate'
+      '全部',
+      'すべて',
+      '完成',
+      '最後まで',
+      'complete',
+      'entire',
+      'full',
+      'automate',
     ];
-    
-    return complexKeywords.some(keyword => 
-      intent.originalInput.toLowerCase().includes(keyword.toLowerCase())
+
+    return complexKeywords.some((keyword) =>
+      intent.originalInput.toLowerCase().includes(keyword.toLowerCase()),
     );
   }
 
@@ -206,9 +208,9 @@ export class CommandMapper {
       parameters: {
         mode: 'auto',
         taskType: intent.taskType,
-        initialRequest: intent.originalInput
+        initialRequest: intent.originalInput,
       },
-      description: 'Auto Modeで自動実行'
+      description: 'Auto Modeで自動実行',
     };
   }
 
@@ -218,13 +220,13 @@ export class CommandMapper {
   private adjustConfidence(baseConfidence: number, intent: IntentAnalysis): number {
     // 意図の信頼度を考慮
     const adjusted = baseConfidence * intent.confidence;
-    
+
     // パラメータが多いほど信頼度を上げる
-    const paramCount = Object.keys(intent.parameters).filter(k => 
-      intent.parameters[k as keyof typeof intent.parameters] !== undefined
+    const paramCount = Object.keys(intent.parameters).filter(
+      (k) => intent.parameters[k as keyof typeof intent.parameters] !== undefined,
     ).length;
-    
-    return Math.min(adjusted + (paramCount * 0.05), 1.0);
+
+    return Math.min(adjusted + paramCount * 0.05, 1.0);
   }
 
   /**
@@ -232,13 +234,13 @@ export class CommandMapper {
    */
   getAvailableCommands(): string[] {
     const commands = new Set<string>();
-    
+
     for (const mappings of Object.values(this.commandMappings)) {
       for (const mapping of mappings) {
         commands.add(mapping.command);
       }
     }
-    
+
     return Array.from(commands);
   }
 
@@ -247,7 +249,7 @@ export class CommandMapper {
    */
   getCommandInfo(command: string): CommandMapping | undefined {
     for (const mappings of Object.values(this.commandMappings)) {
-      const mapping = mappings.find(m => m.command === command);
+      const mapping = mappings.find((m) => m.command === command);
       if (mapping) {
         return mapping;
       }

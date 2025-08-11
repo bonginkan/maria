@@ -19,19 +19,25 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
         <Box key={message.id} marginBottom={1}>
           {message.role === 'user' && (
             <Box>
-              <Text color="yellow" bold>You: </Text>
+              <Text color="yellow" bold>
+                You:{' '}
+              </Text>
               <Text>{message.content}</Text>
             </Box>
           )}
           {message.role === 'assistant' && (
             <Box>
-              <Text color="cyan" bold>MARIA: </Text>
+              <Text color="cyan" bold>
+                MARIA:{' '}
+              </Text>
               <Text>{message.content}</Text>
             </Box>
           )}
           {message.role === 'system' && (
             <Box>
-              <Text color="gray" italic>{message.content}</Text>
+              <Text color="gray" italic>
+                {message.content}
+              </Text>
             </Box>
           )}
         </Box>

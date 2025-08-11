@@ -38,7 +38,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
     'Storage permissions',
     'Neo4j connection',
     'AI model availability',
-    'System resources'
+    'System resources',
   ];
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Neo4j',
         status: 'success' as const,
         message: 'Graph database disabled (optional feature)',
-        details: 'Set NEO4J_ENABLED=true to enable'
+        details: 'Set NEO4J_ENABLED=true to enable',
       });
     }
     setResults([...newResults]);
@@ -109,13 +109,13 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
   const checkConfiguration = async (): Promise<DiagnosticResult> => {
     try {
       const config = await readConfig();
-      
+
       if (!config.apiUrl) {
         return {
           name: 'Configuration',
           status: 'warning',
           message: 'API URL not configured',
-          details: 'Using default localhost:8080'
+          details: 'Using default localhost:8080',
         };
       }
 
@@ -123,14 +123,14 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Configuration',
         status: 'success',
         message: 'Configuration valid',
-        details: `API URL: ${config.apiUrl}`
+        details: `API URL: ${config.apiUrl}`,
       };
     } catch (error) {
       return {
         name: 'Configuration',
         status: 'error',
         message: 'Configuration file error',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   };
@@ -142,7 +142,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Node.js',
         status: 'error',
         message: 'Unable to determine Node.js version',
-        details: 'process.version is undefined'
+        details: 'process.version is undefined',
       };
     }
     const majorVersion = parseInt(version.slice(1).split('.')[0] || '0');
@@ -152,21 +152,21 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Node.js',
         status: 'success',
         message: 'Node.js version compatible',
-        details: `Version: ${version}`
+        details: `Version: ${version}`,
       };
     } else if (majorVersion >= 16) {
       return {
         name: 'Node.js',
         status: 'warning',
         message: 'Node.js version outdated',
-        details: `Version: ${version} (recommended: 18+)`
+        details: `Version: ${version} (recommended: 18+)`,
       };
     } else {
       return {
         name: 'Node.js',
         status: 'error',
         message: 'Node.js version too old',
-        details: `Version: ${version} (minimum: 16+)`
+        details: `Version: ${version} (minimum: 16+)`,
       };
     }
   };
@@ -190,14 +190,14 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
           name: 'Dependencies',
           status: 'success',
           message: 'All dependencies available',
-          details: `Checked: ${criticalDeps.join(', ')}`
+          details: `Checked: ${criticalDeps.join(', ')}`,
         };
       } else {
         return {
           name: 'Dependencies',
           status: 'error',
           message: 'Missing dependencies',
-          details: `Missing: ${missingDeps.join(', ')}`
+          details: `Missing: ${missingDeps.join(', ')}`,
         };
       }
     } catch (error) {
@@ -205,7 +205,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Dependencies',
         status: 'error',
         message: 'Dependency check failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   };
@@ -214,11 +214,11 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
     try {
       const config = await readConfig();
       const apiUrl = config.apiUrl || 'http://localhost:8080';
-      
+
       // ヘルスチェックエンドポイントをテスト
       const response = await fetch(`${apiUrl}/health`, {
         method: 'GET',
-        timeout: 5000
+        timeout: 5000,
       } as RequestInit);
 
       if (response.ok) {
@@ -226,14 +226,14 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
           name: 'API Connectivity',
           status: 'success',
           message: 'API server reachable',
-          details: `Status: ${response.status} (${apiUrl})`
+          details: `Status: ${response.status} (${apiUrl})`,
         };
       } else {
         return {
           name: 'API Connectivity',
           status: 'warning',
           message: 'API server responded with error',
-          details: `Status: ${response.status} (${apiUrl})`
+          details: `Status: ${response.status} (${apiUrl})`,
         };
       }
     } catch (error) {
@@ -241,7 +241,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'API Connectivity',
         status: 'error',
         message: 'Cannot reach API server',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   };
@@ -252,7 +252,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
       name: 'Authentication',
       status: 'warning',
       message: 'Authentication not configured',
-      details: 'Run /login to authenticate'
+      details: 'Run /login to authenticate',
     };
   };
 
@@ -263,7 +263,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
       const path = await import('path');
 
       const testDir = path.join(os.homedir(), '.maria-code-test');
-      
+
       // 書き込みテスト
       fs.writeFileSync(testDir, 'test');
       fs.unlinkSync(testDir);
@@ -272,14 +272,14 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Storage',
         status: 'success',
         message: 'File system permissions OK',
-        details: 'Read/write access verified'
+        details: 'Read/write access verified',
       };
     } catch (error) {
       return {
         name: 'Storage',
         status: 'error',
         message: 'File system permission error',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   };
@@ -287,13 +287,13 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
   const checkNeo4jConnection = async (): Promise<DiagnosticResult> => {
     try {
       const config = await readConfig();
-      
+
       if (!config.neo4j?.instanceId) {
         return {
           name: 'Neo4j',
           status: 'warning',
           message: 'Neo4j not configured',
-          details: 'Graph features unavailable'
+          details: 'Graph features unavailable',
         };
       }
 
@@ -302,21 +302,21 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'Neo4j',
         status: 'success',
         message: 'Neo4j configuration found',
-        details: `Instance: ${config.neo4j.instanceId}`
+        details: `Instance: ${config.neo4j.instanceId}`,
       };
     } catch (error) {
       return {
         name: 'Neo4j',
         status: 'error',
         message: 'Neo4j connection failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   };
 
   const checkAIModels = async (): Promise<DiagnosticResult> => {
     const availableModels = [];
-    
+
     // Gemini可用性チェック
     if (process.env.GROK_API_KEY || process.env.VERTEX_TOKEN) {
       availableModels.push('AI models configured');
@@ -327,14 +327,14 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'AI Models',
         status: 'success',
         message: 'AI models available',
-        details: availableModels.join(', ')
+        details: availableModels.join(', '),
       };
     } else {
       return {
         name: 'AI Models',
         status: 'warning',
         message: 'No AI API keys configured',
-        details: 'Set GROK_API_KEY or VERTEX_TOKEN'
+        details: 'Set GROK_API_KEY or VERTEX_TOKEN',
       };
     }
   };
@@ -349,60 +349,74 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         name: 'System Resources',
         status: 'success',
         message: 'Memory usage normal',
-        details: `${memoryUsedMB}MB / ${memoryTotalMB}MB used`
+        details: `${memoryUsedMB}MB / ${memoryTotalMB}MB used`,
       };
     } else if (memoryUsedMB < 200) {
       return {
         name: 'System Resources',
         status: 'warning',
         message: 'Memory usage elevated',
-        details: `${memoryUsedMB}MB / ${memoryTotalMB}MB used`
+        details: `${memoryUsedMB}MB / ${memoryTotalMB}MB used`,
       };
     } else {
       return {
         name: 'System Resources',
         status: 'error',
         message: 'High memory usage',
-        details: `${memoryUsedMB}MB / ${memoryTotalMB}MB used`
+        details: `${memoryUsedMB}MB / ${memoryTotalMB}MB used`,
       };
     }
   };
 
   const getStatusColor = (status: DiagnosticResult['status']) => {
     switch (status) {
-      case 'success': return 'green';
-      case 'warning': return 'yellow';
-      case 'error': return 'red';
-      case 'checking': return 'blue';
-      default: return 'gray';
+      case 'success':
+        return 'green';
+      case 'warning':
+        return 'yellow';
+      case 'error':
+        return 'red';
+      case 'checking':
+        return 'blue';
+      default:
+        return 'gray';
     }
   };
 
   const getStatusIcon = (status: DiagnosticResult['status']) => {
     switch (status) {
-      case 'success': return '✅';
-      case 'warning': return '⚠️';
-      case 'error': return '❌';
-      case 'checking': return '🔍';
-      default: return '⏸️';
+      case 'success':
+        return '✅';
+      case 'warning':
+        return '⚠️';
+      case 'error':
+        return '❌';
+      case 'checking':
+        return '🔍';
+      default:
+        return '⏸️';
     }
   };
 
   return (
     <Box flexDirection="column">
-      <Text color="cyan" bold>🔧 System Diagnostics</Text>
+      <Text color="cyan" bold>
+        🔧 System Diagnostics
+      </Text>
       <Text color="gray">Running diagnostic checks...</Text>
-      
+
       <Box marginTop={1} flexDirection="column">
         {diagnosticChecks.map((checkName, index) => {
           const result = results[index];
           const isCurrentCheck = index === currentCheck && !result;
-          
+
           return (
             <Box key={index} marginBottom={0}>
               <Box minWidth={3}>
                 {isCurrentCheck ? (
-                  <Text color="blue"><Spinner type="dots" /></Text>
+                  <Text color="blue">
+                    <Spinner type="dots" />
+                  </Text>
                 ) : result ? (
                   <Text>{getStatusIcon(result.status)}</Text>
                 ) : (

@@ -30,7 +30,10 @@ export function createCLI(): Command {
   program
     .command('chat', { isDefault: true })
     .description('Start interactive chat session')
-    .option('--priority <mode>', 'Set priority mode (privacy-first|performance|cost-effective|auto)')
+    .option(
+      '--priority <mode>',
+      'Set priority mode (privacy-first|performance|cost-effective|auto)',
+    )
     .option('--provider <name>', 'Force specific provider')
     .option('--model <name>', 'Force specific model')
     .option('--offline', 'Use only local providers')
@@ -108,16 +111,16 @@ export function createCLI(): Command {
 
 async function startInteractiveChat(config: MariaAIConfig): Promise<void> {
   printWelcome();
-  
+
   const maria = new MariaAI(config);
   const session = createInteractiveSession(maria);
-  
+
   await session.start();
 }
 
 async function askSingle(message: string, config: MariaAIConfig): Promise<void> {
   const maria = new MariaAI(config);
-  
+
   try {
     console.log(chalk.blue('🤖 Thinking...'));
     const response = await maria.chat(message);
@@ -130,9 +133,13 @@ async function askSingle(message: string, config: MariaAIConfig): Promise<void> 
   }
 }
 
-async function generateCode(prompt: string, language: string | undefined, config: MariaAIConfig): Promise<void> {
+async function generateCode(
+  prompt: string,
+  language: string | undefined,
+  config: MariaAIConfig,
+): Promise<void> {
   const maria = new MariaAI(config);
-  
+
   try {
     console.log(chalk.blue('🔧 Generating code...'));
     const response = await maria.generateCode(prompt, language);
@@ -145,10 +152,14 @@ async function generateCode(prompt: string, language: string | undefined, config
   }
 }
 
-async function processVision(imagePath: string, prompt: string, config: MariaAIConfig): Promise<void> {
+async function processVision(
+  imagePath: string,
+  prompt: string,
+  config: MariaAIConfig,
+): Promise<void> {
   const maria = new MariaAI(config);
   const fs = await import('fs-extra');
-  
+
   try {
     console.log(chalk.blue('👁️  Analyzing image...'));
     const imageBuffer = await fs.readFile(imagePath);
@@ -164,26 +175,27 @@ async function processVision(imagePath: string, prompt: string, config: MariaAIC
 
 async function showStatus(): Promise<void> {
   const maria = new MariaAI({ autoStart: false });
-  await maria.getHealth().then(health => {
-    printStatus(health);
-  }).catch(error => {
-    console.error(chalk.red('❌ Failed to get status:'), error);
-  });
+  await maria
+    .getHealth()
+    .then((health) => {
+      printStatus(health);
+    })
+    .catch((error) => {
+      console.error(chalk.red('❌ Failed to get status:'), error);
+    });
   await maria.close();
 }
 
 async function listModels(provider?: string): Promise<void> {
   const maria = new MariaAI({ autoStart: false });
-  
+
   try {
     const models = await maria.getModels();
-    const filtered = provider 
-      ? models.filter(m => m.provider === provider)
-      : models;
-    
+    const filtered = provider ? models.filter((m) => m.provider === provider) : models;
+
     console.log(chalk.blue(`\n📋 Available Models (${filtered.length}):\n`));
-    
-    filtered.forEach(model => {
+
+    filtered.forEach((model) => {
       const status = model.available ? '✅' : '⚠️';
       const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : '';
       console.log(`${status} ${chalk.bold(model.name)} - ${model.provider}${pricing}`);
@@ -202,11 +214,11 @@ async function listModels(provider?: string): Promise<void> {
 
 async function runSetup(): Promise<void> {
   console.log(chalk.blue('🚀 Running MARIA setup wizard...'));
-  
+
   const { spawn } = await import('child_process');
   const setupProcess = spawn('./scripts/setup-wizard.sh', [], {
     stdio: 'inherit',
-    cwd: process.cwd()
+    cwd: process.cwd(),
   });
 
   setupProcess.on('close', (code) => {
@@ -222,11 +234,11 @@ async function runSetup(): Promise<void> {
 async function checkHealth(options: { json?: boolean; watch?: boolean }): Promise<void> {
   if (options.watch) {
     console.log(chalk.blue('🔄 Starting health monitoring... Press Ctrl+C to stop'));
-    
+
     const { spawn } = await import('child_process');
     const healthProcess = spawn('./scripts/health-monitor.sh', ['monitor'], {
       stdio: 'inherit',
-      cwd: process.cwd()
+      cwd: process.cwd(),
     });
 
     process.on('SIGINT', () => {
@@ -238,7 +250,7 @@ async function checkHealth(options: { json?: boolean; watch?: boolean }): Promis
     const args = options.json ? ['json'] : ['status'];
     const healthProcess = spawn('./scripts/health-monitor.sh', args, {
       stdio: 'inherit',
-      cwd: process.cwd()
+      cwd: process.cwd(),
     });
 
     healthProcess.on('close', (code) => {

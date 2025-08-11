@@ -28,21 +28,21 @@ function ensureMariaDir() {
 // Generate JWT for Neo4j Bloom access
 async function generateJWT(): Promise<string> {
   const spinner = ora('Generating Neo4j Bloom JWT...').start();
-  
+
   try {
     // Load configuration
     const config = loadConfig();
     const userEmail = config.user?.email || process.env.MARIA_USER_EMAIL || 'user@example.com';
-    
+
     // TODO: In production, retrieve the secret from Secret Manager
     const secret = process.env.NEO4J_BLOOM_JWT_SECRET || 'temporary-dev-secret';
-    
+
     const jwt = generateNeo4jJWT(userEmail, {
       secret,
       expiryMinutes: JWT_EXPIRY_MINUTES,
-      role: 'editor'
+      role: 'editor',
     });
-    
+
     spinner.succeed('JWT generated successfully');
     return jwt;
   } catch (error) {
@@ -69,11 +69,11 @@ function getBloomURL(jwt: string, query?: string): string {
 // Open URL in default browser
 async function openInBrowser(url: string) {
   const spinner = ora('Opening Graph Database in browser...').start();
-  
+
   try {
     const platform = process.platform;
     const command = platform === 'darwin' ? 'open' : platform === 'win32' ? 'start' : 'xdg-open';
-    
+
     await execa(command, [url]);
     spinner.succeed('Graph Database interface opened in browser');
   } catch {
@@ -84,11 +84,11 @@ async function openInBrowser(url: string) {
 // Export graph as PNG
 async function exportGraphAsPNG(bloomURL: string, outputPath: string) {
   const spinner = ora(`Exporting graph to ${outputPath}...`).start();
-  
+
   try {
     // In a real implementation, this would use Puppeteer or similar
     // to capture a screenshot of the Bloom visualization
-    
+
     // Create a placeholder file for now
     const placeholderContent = `# Graph Export Placeholder
     
@@ -100,7 +100,7 @@ To manually export:
 2. Use Neo4j Bloom's built-in export feature
 3. Save the visualization as PNG
 `;
-    
+
     writeFileSync(outputPath, placeholderContent);
     spinner.succeed(`Export instructions saved to ${outputPath}`);
   } catch (error) {
@@ -111,19 +111,18 @@ To manually export:
 
 // Main graph command handler
 async function graphHandler(options: GraphOptions) {
-  
   try {
     // Generate JWT
     const jwt = await generateJWT();
     saveJWT(jwt);
-    
+
     // Build Bloom URL
     const bloomURL = getBloomURL(jwt, options.query);
-    
-    
+
     if (options.query) {
+      // Query will be passed through URL parameter
     }
-    
+
     // Handle PNG export if requested
     if (options.png) {
       await exportGraphAsPNG(bloomURL, options.png);
@@ -131,12 +130,12 @@ async function graphHandler(options: GraphOptions) {
       // Open in browser
       await openInBrowser(bloomURL);
     }
-    
+
     console.log(chalk.bold('\n✨ Graph viewer launched successfully!\n'));
-    
+
     if (!options.png) {
       console.log(chalk.gray('Tips:'));
-      console.log(chalk.gray('  • Use Bloom\'s search to explore nodes'));
+      console.log(chalk.gray("  • Use Bloom's search to explore nodes"));
     }
   } catch {
     process.exit(1);

@@ -71,11 +71,7 @@ export class LocalAuthService {
 
   private generateToken(userId: string, type: 'access' | 'refresh' = 'access'): string {
     const expiry = type === 'access' ? this.tokenExpiry : this.refreshTokenExpiry;
-    return jwt.sign(
-      { userId, type, timestamp: Date.now() },
-      this.jwtSecret,
-      { expiresIn: expiry }
-    );
+    return jwt.sign({ userId, type, timestamp: Date.now() }, this.jwtSecret, { expiresIn: expiry });
   }
 
   private verifyToken(token: string): { userId: string; type: string } | null {
@@ -91,8 +87,8 @@ export class LocalAuthService {
   async createUser(email: string, password: string, username?: string): Promise<User> {
     // Check if user already exists
     const existingUsers = await this.storage.query({ type: 'config' });
-    const userConfigs = existingUsers.filter(item => 
-      item.content.type === 'user' && item.content.email === email
+    const userConfigs = existingUsers.filter(
+      (item) => item.content.type === 'user' && item.content.email === email,
     );
 
     if (userConfigs.length > 0) {
@@ -101,14 +97,14 @@ export class LocalAuthService {
 
     const salt = this.generateSalt();
     const hashedPassword = this.hashPassword(password, salt);
-    
+
     const user: User = {
       id: crypto.randomBytes(16).toString('hex'),
       email,
       username: username || email.split('@')[0],
       displayName: username || email.split('@')[0],
       role: 'user',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     // Store user data
@@ -120,7 +116,7 @@ export class LocalAuthService {
       role: user.role,
       hashedPassword,
       salt,
-      user
+      user,
     });
 
     return user;
@@ -129,8 +125,8 @@ export class LocalAuthService {
   async login(email: string, password: string): Promise<{ user: User; session: Session }> {
     // Find user
     const users = await this.storage.query({ type: 'config' });
-    const userConfig = users.find(item => 
-      item.content.type === 'user' && item.content.email === email
+    const userConfig = users.find(
+      (item) => item.content.type === 'user' && item.content.email === email,
     );
 
     if (!userConfig) {
@@ -152,20 +148,20 @@ export class LocalAuthService {
       token: this.generateToken(user.id),
       refreshToken: this.generateToken(user.id, 'refresh'),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     // Store session
     await this.storage.create('config', {
       type: 'session',
       userId: user.id,
-      session
+      session,
     });
 
     // Update user last login
     await this.storage.update(userConfig.id, {
       ...userConfig.content,
-      user
+      user,
     });
 
     this.currentUser = user;
@@ -178,9 +174,10 @@ export class LocalAuthService {
     if (this.currentSession) {
       // Find and delete session
       const sessions = await this.storage.query({ type: 'config' });
-      const sessionConfig = sessions.find(item =>
-        item.content.type === 'session' && 
-        item.content.session.token === this.currentSession!.token
+      const sessionConfig = sessions.find(
+        (item) =>
+          item.content.type === 'session' &&
+          item.content.session.token === this.currentSession!.token,
       );
 
       if (sessionConfig) {
@@ -200,9 +197,8 @@ export class LocalAuthService {
 
     // Find user
     const users = await this.storage.query({ type: 'config' });
-    const userConfig = users.find(item =>
-      item.content.type === 'user' && 
-      item.content.userId === decoded.userId
+    const userConfig = users.find(
+      (item) => item.content.type === 'user' && item.content.userId === decoded.userId,
     );
 
     if (!userConfig) {
@@ -225,14 +221,14 @@ export class LocalAuthService {
       token: this.generateToken(decoded.userId),
       refreshToken: this.generateToken(decoded.userId, 'refresh'),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     // Store new session
     await this.storage.create('config', {
       type: 'session',
       userId: decoded.userId,
-      session: newSession
+      session: newSession,
     });
 
     this.currentSession = newSession;
@@ -249,9 +245,8 @@ export class LocalAuthService {
 
   async updateUser(userId: string, updates: Partial<User>): Promise<User | null> {
     const users = await this.storage.query({ type: 'config' });
-    const userConfig = users.find(item =>
-      item.content.type === 'user' && 
-      item.content.userId === userId
+    const userConfig = users.find(
+      (item) => item.content.type === 'user' && item.content.userId === userId,
     );
 
     if (!userConfig) {
@@ -261,12 +256,12 @@ export class LocalAuthService {
     const updatedUser = {
       ...userConfig.content.user,
       ...updates,
-      id: userId // Ensure ID doesn't change
+      id: userId, // Ensure ID doesn't change
     };
 
     await this.storage.update(userConfig.id, {
       ...userConfig.content,
-      user: updatedUser
+      user: updatedUser,
     });
 
     if (this.currentUser?.id === userId) {
@@ -278,11 +273,10 @@ export class LocalAuthService {
 
   async deleteUser(userId: string): Promise<boolean> {
     const items = await this.storage.query({ type: 'config' });
-    
+
     // Delete user config
-    const userConfig = items.find(item =>
-      item.content.type === 'user' && 
-      item.content.userId === userId
+    const userConfig = items.find(
+      (item) => item.content.type === 'user' && item.content.userId === userId,
     );
 
     if (!userConfig) {
@@ -290,9 +284,8 @@ export class LocalAuthService {
     }
 
     // Delete all user sessions
-    const sessions = items.filter(item =>
-      item.content.type === 'session' && 
-      item.content.userId === userId
+    const sessions = items.filter(
+      (item) => item.content.type === 'session' && item.content.userId === userId,
     );
 
     for (const session of sessions) {
@@ -318,7 +311,7 @@ export class LocalAuthService {
       username: 'guest',
       displayName: 'Guest User',
       role: 'viewer',
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     const session: Session = {
@@ -326,7 +319,7 @@ export class LocalAuthService {
       token: this.generateToken(guestUser.id),
       refreshToken: this.generateToken(guestUser.id, 'refresh'),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     this.currentUser = guestUser;
@@ -342,7 +335,7 @@ export class LocalAuthService {
     const permissions: Record<string, string[]> = {
       admin: ['read', 'write', 'delete', 'admin'],
       user: ['read', 'write'],
-      viewer: ['read']
+      viewer: ['read'],
     };
 
     return permissions[this.currentUser.role]?.includes(permission) || false;

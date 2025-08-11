@@ -24,13 +24,13 @@ export abstract class BaseProvider implements AIProvider {
   }
 
   async generateCode(prompt: string, language?: string): Promise<AIResponse> {
-    const codePrompt = language 
+    const codePrompt = language
       ? `Generate ${language} code for: ${prompt}`
       : `Generate code for: ${prompt}`;
-      
+
     return this.chat({
       messages: [{ role: 'user', content: codePrompt }],
-      taskType: 'coding'
+      taskType: 'coding',
     });
   }
 
@@ -40,13 +40,13 @@ export abstract class BaseProvider implements AIProvider {
 
   protected async makeRequest(url: string, options: any): Promise<any> {
     const fetch = (await import('node-fetch')).default;
-    
+
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
-      }
+        ...options.headers,
+      },
     });
 
     if (!response.ok) {
@@ -59,13 +59,13 @@ export abstract class BaseProvider implements AIProvider {
 
   protected async makeStreamRequest(url: string, options: any): Promise<AsyncGenerator<string>> {
     const fetch = (await import('node-fetch')).default;
-    
+
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
-      }
+        ...options.headers,
+      },
     });
 
     if (!response.ok) {
@@ -88,7 +88,7 @@ export abstract class BaseProvider implements AIProvider {
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim());
+        const lines = chunk.split('\n').filter((line) => line.trim());
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
@@ -127,7 +127,7 @@ export abstract class BaseProvider implements AIProvider {
       local: model.local || false,
       available: true,
       memoryRequired: model.memory_required,
-      recommendedFor: model.recommended_for || ['general_purpose']
+      recommendedFor: model.recommended_for || ['general_purpose'],
     };
   }
 }

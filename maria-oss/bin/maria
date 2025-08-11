@@ -1,0 +1,42 @@
+#!/usr/bin/env node
+
+/**
+ * MARIA CODE - OSS Distribution Entry Point
+ * Launches the beautiful interactive CLI interface
+ * Bonginkan Inc.
+ */
+
+const { spawn } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
+// Get the script directory and project root
+const binDir = __dirname;
+const projectRoot = path.dirname(binDir);
+const cliFile = path.join(projectRoot, 'dist', 'cli.js');
+
+console.log('🚀 MARIA CODE CLI Starting...');
+
+// Check if CLI file exists
+if (!fs.existsSync(cliFile)) {
+  console.error('❌ CLI file not found:', cliFile);
+  console.error('💡 Please ensure MARIA is properly installed.');
+  process.exit(1);
+}
+
+console.log('✅ Launching MARIA Interactive CLI...\n');
+
+// Launch the CLI directly with node
+const child = spawn('node', [cliFile], {
+  stdio: 'inherit',
+  cwd: process.cwd()
+});
+
+child.on('error', (err) => {
+  console.error('❌ Error:', err.message);
+  process.exit(1);
+});
+
+child.on('exit', (code) => {
+  process.exit(code || 0);
+});

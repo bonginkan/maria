@@ -10,9 +10,9 @@ export class GoogleProvider extends BaseProvider {
   private modelsCache?: ModelInfo[];
 
   constructor(apiKey?: string) {
-    super({ 
-      apiKey, 
-      apiBase: 'https://generativelanguage.googleapis.com/v1beta' 
+    super({
+      apiKey,
+      apiBase: 'https://generativelanguage.googleapis.com/v1beta',
     });
   }
 
@@ -23,7 +23,7 @@ export class GoogleProvider extends BaseProvider {
 
     try {
       await this.makeRequest(`${this.apiBase}/models?key=${this.apiKey}`, {
-        method: 'GET'
+        method: 'GET',
       });
       return true;
     } catch {
@@ -44,7 +44,7 @@ export class GoogleProvider extends BaseProvider {
         capabilities: ['text', 'vision', 'code', 'multimodal'],
         pricing: { input: 0.0025, output: 0.01 },
         available: await this.isAvailable(),
-        recommendedFor: ['complex_tasks', 'multimodal', 'analysis']
+        recommendedFor: ['complex_tasks', 'multimodal', 'analysis'],
       },
       {
         id: 'gemini-2.5-flash',
@@ -55,8 +55,8 @@ export class GoogleProvider extends BaseProvider {
         capabilities: ['text', 'vision', 'code'],
         pricing: { input: 0.0001, output: 0.0004 },
         available: await this.isAvailable(),
-        recommendedFor: ['quick_tasks', 'cost_effective', 'general_use']
-      }
+        recommendedFor: ['quick_tasks', 'cost_effective', 'general_use'],
+      },
     ];
 
     this.modelsCache = models;
@@ -64,7 +64,7 @@ export class GoogleProvider extends BaseProvider {
   }
 
   async chat(request: AIRequest): Promise<AIResponse> {
-    if (!await this.isAvailable()) {
+    if (!(await this.isAvailable())) {
       throw new Error('Google AI API not available');
     }
 
@@ -72,28 +72,30 @@ export class GoogleProvider extends BaseProvider {
     const startTime = Date.now();
 
     const payload = {
-      contents: [{
-        parts: [{ text: request.messages.map(m => `${m.role}: ${m.content}`).join('\n') }]
-      }],
+      contents: [
+        {
+          parts: [{ text: request.messages.map((m) => `${m.role}: ${m.content}`).join('\n') }],
+        },
+      ],
       generationConfig: {
         temperature: request.temperature || 0.7,
-        maxOutputTokens: request.maxTokens || 4000
-      }
+        maxOutputTokens: request.maxTokens || 4000,
+      },
     };
 
     const response = await this.makeRequest(
-      `${this.apiBase}/models/${model}:generateContent?key=${this.apiKey}`, 
+      `${this.apiBase}/models/${model}:generateContent?key=${this.apiKey}`,
       {
         method: 'POST',
-        body: JSON.stringify(payload)
-      }
+        body: JSON.stringify(payload),
+      },
     );
 
     return {
       content: response.candidates?.[0]?.content?.parts?.[0]?.text || '',
       model,
       provider: this.name,
-      responseTime: Date.now() - startTime
+      responseTime: Date.now() - startTime,
     };
   }
 
@@ -102,7 +104,7 @@ export class GoogleProvider extends BaseProvider {
       'gemini-2.5-pro': { input: 0.0025, output: 0.01 },
       'gemini-2.5-flash': { input: 0.0001, output: 0.0004 },
       'gemini-1.5-pro': { input: 0.00125, output: 0.005 },
-      'gemini-1.5-flash': { input: 0.00005, output: 0.00015 }
+      'gemini-1.5-flash': { input: 0.00005, output: 0.00015 },
     };
 
     const modelPricing = pricing[model as keyof typeof pricing] || pricing['gemini-2.5-flash'];

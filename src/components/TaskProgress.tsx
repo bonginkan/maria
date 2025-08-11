@@ -50,10 +50,10 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
       try {
         const config = await readConfig();
         const apiUrl = config.apiUrl || 'http://localhost:8080';
-        
+
         const response = await fetch(`${apiUrl}/api/conversation/status/${executionId}`);
         if (!response.ok) throw new Error('Failed to fetch status');
-        
+
         const data = await response.json();
         setStatus(data);
 
@@ -97,7 +97,7 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
     try {
       const config = await readConfig();
       const apiUrl = config.apiUrl || 'http://localhost:8080';
-      
+
       await fetch(`${apiUrl}/api/conversation/pause/${executionId}`, {
         method: 'POST',
       });
@@ -111,7 +111,7 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
     try {
       const config = await readConfig();
       const apiUrl = config.apiUrl || 'http://localhost:8080';
-      
+
       await fetch(`${apiUrl}/api/conversation/cancel/${executionId}`, {
         method: 'POST',
       });
@@ -124,30 +124,33 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
 
   const generateReport = async () => {
     if (!status) return;
-    
+
     try {
-      const completedSteps = status.steps.filter(s => s.status === 'completed').length;
-      const failedSteps = status.steps.filter(s => s.status === 'failed').length;
+      const completedSteps = status.steps.filter((s) => s.status === 'completed').length;
+      const failedSteps = status.steps.filter((s) => s.status === 'failed').length;
       const successRate = status.totalSteps > 0 ? completedSteps / status.totalSteps : 0;
-      
+
       const results = {
         executionId: status.id,
         status: status.status,
-        duration: status.startTime ? 
-          `${Math.round((Date.now() - new Date(status.startTime).getTime()) / 1000)}s` : 'Unknown',
+        duration: status.startTime
+          ? `${Math.round((Date.now() - new Date(status.startTime).getTime()) / 1000)}s`
+          : 'Unknown',
         totalSteps: status.totalSteps,
         completedSteps,
         failedSteps,
         successRate,
-        steps: status.steps.map(step => ({
+        steps: status.steps.map((step) => ({
           name: step.name,
           status: step.status,
-          duration: step.startTime && step.endTime ? 
-            `${Math.round((new Date(step.endTime).getTime() - new Date(step.startTime).getTime()) / 1000)}s` : 'N/A',
+          duration:
+            step.startTime && step.endTime
+              ? `${Math.round((new Date(step.endTime).getTime() - new Date(step.startTime).getTime()) / 1000)}s`
+              : 'N/A',
           message: step.message,
-          error: step.status === 'failed' ? 'Execution failed' : undefined
+          error: step.status === 'failed' ? 'Execution failed' : undefined,
         })),
-        generatedAt: new Date().toISOString()
+        generatedAt: new Date().toISOString(),
       };
 
       const filepath = await saveExecutionResults(results, { format: 'markdown' });
@@ -174,18 +177,27 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
     );
   }
 
-  const progressPercentage = status.totalSteps > 0 
-    ? Math.round((status.currentStep / status.totalSteps) * 100)
-    : 0;
+  const progressPercentage =
+    status.totalSteps > 0 ? Math.round((status.currentStep / status.totalSteps) * 100) : 0;
 
   const renderTimelineView = () => (
     <Box flexDirection="column">
       <Text bold>Execution Timeline</Text>
       {status?.steps.map((step) => (
         <Box key={step.id} marginLeft={2}>
-          <Text>{step.startTime ? new Date(step.startTime).toLocaleTimeString() : 'Pending'}: {step.name}</Text>
+          <Text>
+            {step.startTime ? new Date(step.startTime).toLocaleTimeString() : 'Pending'}:{' '}
+            {step.name}
+          </Text>
           {step.endTime && (
-            <Text color="gray"> (Duration: {Math.round((new Date(step.endTime).getTime() - new Date(step.startTime!).getTime()) / 1000)}s)</Text>
+            <Text color="gray">
+              {' '}
+              (Duration:{' '}
+              {Math.round(
+                (new Date(step.endTime).getTime() - new Date(step.startTime!).getTime()) / 1000,
+              )}
+              s)
+            </Text>
           )}
         </Box>
       ))}
@@ -204,22 +216,25 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
             {step.status === 'skipped' && <Text color="gray">-</Text>}
             <Text bold> {step.name}</Text>
           </Box>
-          
+
           {step.message && (
             <Box marginLeft={2}>
               <Text color="gray">{step.message}</Text>
             </Box>
           )}
-          
+
           {step.status === 'running' && step.progress > 0 && (
             <Box marginLeft={2}>
               <Text color="cyan">Progress: {step.progress}%</Text>
               {step.estimatedTimeRemaining && (
-                <Text color="gray"> (~{Math.round(step.estimatedTimeRemaining / 1000)}s remaining)</Text>
+                <Text color="gray">
+                  {' '}
+                  (~{Math.round(step.estimatedTimeRemaining / 1000)}s remaining)
+                </Text>
               )}
             </Box>
           )}
-          
+
           {step.blockedBy && step.blockedBy.length > 0 && (
             <Box marginLeft={2}>
               <Text color="yellow">Blocked by: {step.blockedBy.join(', ')}</Text>
@@ -239,7 +254,9 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
             { label: 'Yes, pause execution', value: 'yes' },
             { label: 'No, continue', value: 'no' },
           ]}
-          onSelect={(item) => item.value === 'yes' ? handlePauseExecution() : setActionMode('viewing')}
+          onSelect={(item) =>
+            item.value === 'yes' ? handlePauseExecution() : setActionMode('viewing')
+          }
         />
       </Box>
     );
@@ -248,14 +265,18 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
   if (actionMode === 'canceling') {
     return (
       <Box flexDirection="column">
-        <Text bold color="red">Cancel Execution?</Text>
+        <Text bold color="red">
+          Cancel Execution?
+        </Text>
         <Text>This will permanently stop the current execution.</Text>
         <SelectInput
           items={[
             { label: 'Yes, cancel execution', value: 'yes' },
             { label: 'No, continue', value: 'no' },
           ]}
-          onSelect={(item) => item.value === 'yes' ? handleCancelExecution() : setActionMode('viewing')}
+          onSelect={(item) =>
+            item.value === 'yes' ? handleCancelExecution() : setActionMode('viewing')
+          }
         />
       </Box>
     );
@@ -265,41 +286,48 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
     <Box flexDirection="column">
       <Box marginBottom={1}>
         <Text bold>Task Execution Progress</Text>
-        <Text> ({progressPercentage}%) - View: {viewMode}</Text>
+        <Text>
+          {' '}
+          ({progressPercentage}%) - View: {viewMode}
+        </Text>
         {status?.estimatedCompletion && (
-          <Text color="gray"> (ETA: {new Date(status.estimatedCompletion).toLocaleTimeString()})</Text>
+          <Text color="gray">
+            {' '}
+            (ETA: {new Date(status.estimatedCompletion).toLocaleTimeString()})
+          </Text>
         )}
       </Box>
 
       <Box marginBottom={1}>
         <Text>[</Text>
         {Array.from({ length: 20 }).map((_, i) => (
-          <Text
-            key={i}
-            color={i < Math.floor(progressPercentage / 5) ? 'green' : 'gray'}
-          >
+          <Text key={i} color={i < Math.floor(progressPercentage / 5) ? 'green' : 'gray'}>
             {'█'}
           </Text>
         ))}
         <Text>] </Text>
-        <Text color="cyan">Step {status.currentStep} of {status.totalSteps}</Text>
+        <Text color="cyan">
+          Step {status.currentStep} of {status.totalSteps}
+        </Text>
       </Box>
 
       <Box flexDirection="column" borderStyle="single" padding={1}>
         {viewMode === 'summary' && (
           <Box flexDirection="column">
-            {status.steps.slice(Math.max(0, status.currentStep - 2), status.currentStep + 1).map((step) => (
-              <Box key={step.id}>
-                {step.status === 'running' && <Spinner type="dots" />}
-                {step.status === 'completed' && <Text color="green">✓</Text>}
-                {step.status === 'failed' && <Text color="red">✗</Text>}
-                {step.status === 'pending' && <Text color="gray">○</Text>}
-                <Text> {step.name}</Text>
-              </Box>
-            ))}
+            {status.steps
+              .slice(Math.max(0, status.currentStep - 2), status.currentStep + 1)
+              .map((step) => (
+                <Box key={step.id}>
+                  {step.status === 'running' && <Spinner type="dots" />}
+                  {step.status === 'completed' && <Text color="green">✓</Text>}
+                  {step.status === 'failed' && <Text color="red">✗</Text>}
+                  {step.status === 'pending' && <Text color="gray">○</Text>}
+                  <Text> {step.name}</Text>
+                </Box>
+              ))}
           </Box>
         )}
-        
+
         {viewMode === 'detailed' && renderDetailedView()}
         {viewMode === 'timeline' && renderTimelineView()}
       </Box>
@@ -311,9 +339,9 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
           <Text>C - Toggle controls</Text>
           {status?.status === 'running' && <Text>P - Pause execution</Text>}
           <Text>Q - Cancel execution</Text>
-          {(status?.status === 'completed' || status?.status === 'failed') && 
+          {(status?.status === 'completed' || status?.status === 'failed') && (
             <Text>R - Generate report</Text>
-          }
+          )}
           <Text>ESC - Hide this menu</Text>
         </Box>
       )}
@@ -321,8 +349,8 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
       {status?.performance && (
         <Box marginTop={1}>
           <Text color="gray">
-            Avg step time: {Math.round(status.performance.avgStepTime / 1000)}s | 
-            Success rate: {Math.round(status.performance.successRate * 100)}%
+            Avg step time: {Math.round(status.performance.avgStepTime / 1000)}s | Success rate:{' '}
+            {Math.round(status.performance.successRate * 100)}%
           </Text>
         </Box>
       )}
@@ -333,20 +361,26 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
 
       {status.status === 'completed' && (
         <Box marginTop={1}>
-          <Text color="green" bold>✓ Execution completed successfully!</Text>
+          <Text color="green" bold>
+            ✓ Execution completed successfully!
+          </Text>
         </Box>
       )}
 
       {status.status === 'failed' && (
         <Box marginTop={1}>
-          <Text color="red" bold>✗ Execution failed</Text>
+          <Text color="red" bold>
+            ✗ Execution failed
+          </Text>
           {status.error && <Text color="red">{status.error}</Text>}
         </Box>
       )}
 
       {status.status === 'paused' && (
         <Box marginTop={1}>
-          <Text color="yellow" bold>⏸ Execution paused</Text>
+          <Text color="yellow" bold>
+            ⏸ Execution paused
+          </Text>
         </Box>
       )}
     </Box>

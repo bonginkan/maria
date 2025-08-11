@@ -23,7 +23,7 @@ export function registerAllProviders(): void {
   AIProviderRegistry.register(new AnthropicProvider());
   AIProviderRegistry.register(new GoogleAIProvider());
   AIProviderRegistry.register(new GrokProvider());
-  
+
   // Local providers - always register (they'll handle availability internally)
   AIProviderRegistry.register(new LMStudioProvider());
   AIProviderRegistry.register(new VLLMProvider());
@@ -42,13 +42,19 @@ export interface AIProviderConfig {
 export async function initializeProvider(config: AIProviderConfig): Promise<void> {
   const provider = AIProviderRegistry.get(config.provider);
   if (!provider) {
-    throw new Error(`Provider ${config.provider} not found. Available providers: ${AIProviderRegistry.getAll().map(p => p.name).join(', ')}`);
+    throw new Error(
+      `Provider ${config.provider} not found. Available providers: ${AIProviderRegistry.getAll()
+        .map((p) => p.name)
+        .join(', ')}`,
+    );
   }
-  
+
   await provider.initialize(config.apiKey, config.config);
-  
+
   if (config.model && !provider.getModels().includes(config.model)) {
-    throw new Error(`Model ${config.model} is not supported by ${provider.name}. Available models: ${provider.getModels().join(', ')}`);
+    throw new Error(
+      `Model ${config.model} is not supported by ${provider.name}. Available models: ${provider.getModels().join(', ')}`,
+    );
   }
 }
 
@@ -65,15 +71,15 @@ export function getProviderConfigFromEnv(): AIProviderConfig | null {
   const vllmKey = process.env.VLLM_API_KEY || 'vllm-local';
   const ollamaEnabled = process.env.OLLAMA_ENABLED === 'true';
   const ollamaKey = process.env.OLLAMA_API_KEY || 'ollama';
-  
+
   // Check for preferred provider
   const preferredProvider = process.env.AI_PROVIDER || process.env.LLM_PROVIDER;
   const preferredModel = process.env.AI_MODEL || process.env.LLM_MODEL;
-  
+
   // If preferred provider is specified, use it
   if (preferredProvider) {
     let apiKey: string | undefined;
-    
+
     switch (preferredProvider.toLowerCase()) {
       case 'openai':
         apiKey = openaiKey;
@@ -101,77 +107,80 @@ export function getProviderConfigFromEnv(): AIProviderConfig | null {
         apiKey = ollamaKey;
         break;
     }
-    
+
     if (apiKey) {
       return {
         provider: preferredProvider,
         apiKey,
-        model: preferredModel
+        model: preferredModel,
       };
     }
   }
-  
+
   // Otherwise, use the first available provider
   // Priority order: Local models first (for privacy/speed), then cloud
-  
+
   // Check vLLM first if enabled (highest performance local)
   if (vllmEnabled && vllmKey) {
     return {
       provider: 'vllm',
       apiKey: vllmKey,
-      model: preferredModel || process.env.VLLM_DEFAULT_MODEL || 'stabilityai/japanese-stablelm-2-instruct-1_6b'
+      model:
+        preferredModel ||
+        process.env.VLLM_DEFAULT_MODEL ||
+        'stabilityai/japanese-stablelm-2-instruct-1_6b',
     };
   }
-  
+
   // Check LM Studio if enabled (local models)
   if (lmstudioEnabled && lmstudioKey) {
     return {
       provider: 'lmstudio',
       apiKey: lmstudioKey,
-      model: preferredModel || process.env.LMSTUDIO_DEFAULT_MODEL || 'gpt-oss-20b'
+      model: preferredModel || process.env.LMSTUDIO_DEFAULT_MODEL || 'gpt-oss-20b',
     };
   }
-  
+
   // Check Ollama if enabled (local models)
   if (ollamaEnabled && ollamaKey) {
     return {
       provider: 'ollama',
       apiKey: ollamaKey,
-      model: preferredModel || process.env.OLLAMA_DEFAULT_MODEL || 'llama3.2:3b'
+      model: preferredModel || process.env.OLLAMA_DEFAULT_MODEL || 'llama3.2:3b',
     };
   }
-  
+
   if (openaiKey) {
     return {
       provider: 'openai',
       apiKey: openaiKey,
-      model: preferredModel || 'gpt-5-2025-08-07'
+      model: preferredModel || 'gpt-5-2025-08-07',
     };
   }
-  
+
   if (anthropicKey) {
     return {
       provider: 'anthropic',
       apiKey: anthropicKey,
-      model: preferredModel || 'claude-opus-4.1'
+      model: preferredModel || 'claude-opus-4.1',
     };
   }
-  
+
   if (googleKey) {
     return {
       provider: 'googleai',
       apiKey: googleKey,
-      model: preferredModel || 'gemini-2.5-pro'
+      model: preferredModel || 'gemini-2.5-pro',
     };
   }
-  
+
   if (grokKey) {
     return {
       provider: 'grok',
       apiKey: grokKey,
-      model: preferredModel || 'grok-4-0709'
+      model: preferredModel || 'grok-4-0709',
     };
   }
-  
+
   return null;
 }

@@ -3,10 +3,7 @@
  * Provides intelligent command suggestions based on context and execution history
  */
 
-import { 
-  getRelatedCommands, 
-  getCommandChain,
-} from '../lib/command-groups';
+import { getRelatedCommands, getCommandChain } from '../lib/command-groups';
 
 export interface CommandSuggestion {
   command: string;
@@ -53,10 +50,10 @@ export class SuggestionService {
    */
   async getSuggestionsAfterCommand(
     command: string,
-    success: boolean
+    success: boolean,
   ): Promise<CommandSuggestion[]> {
     const suggestions: CommandSuggestion[] = [];
-    
+
     // Check if part of a workflow
     const chain = getCommandChain(command);
     if (chain && success) {
@@ -69,62 +66,62 @@ export class SuggestionService {
             command: nextCommand,
             description: `Next in ${chain.name} workflow`,
             reason: `Continue the ${chain.name} workflow`,
-            priority: 'high'
+            priority: 'high',
           });
         }
       } else if (currentIndex === chain.commands.length - 1) {
         // Workflow completed, suggest next workflow commands
-        chain.nextSuggestions?.forEach(cmd => {
+        chain.nextSuggestions?.forEach((cmd) => {
           suggestions.push({
             command: cmd,
             description: `Recommended after ${chain.name}`,
-            priority: 'medium'
+            priority: 'medium',
           });
         });
       }
     }
-    
+
     // Get related commands
     const related = getRelatedCommands(command);
-    related.forEach(rel => {
-      if (!suggestions.find(s => s.command === rel.command)) {
+    related.forEach((rel) => {
+      if (!suggestions.find((s) => s.command === rel.command)) {
         suggestions.push({
           command: rel.command,
           description: rel.description,
           reason: `Related to ${command}`,
-          priority: 'medium'
+          priority: 'medium',
         });
       }
     });
-    
+
     // Context-based suggestions
     if (command === '/init' && success) {
       this.addContextualSuggestion(suggestions, '/add-dir', 'Add project directories', 'high');
       this.addContextualSuggestion(suggestions, '/memory', 'Set up AI memory', 'medium');
     }
-    
+
     if (command === '/login' && success) {
       this.addContextualSuggestion(suggestions, '/upgrade', 'Upgrade your plan', 'low');
       this.addContextualSuggestion(suggestions, '/config', 'Configure settings', 'medium');
     }
-    
+
     if (command === '/doctor' && !success) {
       this.addContextualSuggestion(suggestions, '/bug', 'Report the issue', 'high');
       this.addContextualSuggestion(suggestions, '/help', 'Get help', 'medium');
     }
-    
+
     // Time-based suggestions
     const sessionMinutes = (Date.now() - this.sessionStartTime) / 60000;
     if (sessionMinutes > 30 && !this.commandHistory.includes('/compact')) {
       this.addContextualSuggestion(
-        suggestions, 
-        '/compact', 
-        'Optimize conversation memory', 
+        suggestions,
+        '/compact',
+        'Optimize conversation memory',
         'medium',
-        'Long session detected'
+        'Long session detected',
       );
     }
-    
+
     // Limit suggestions to top 3
     return suggestions
       .sort((a, b) => {
@@ -139,48 +136,43 @@ export class SuggestionService {
    */
   async getContextualSuggestions(context: SuggestionContext): Promise<CommandSuggestion[]> {
     const suggestions: CommandSuggestion[] = [];
-    
+
     // Check for common scenarios
     if (!context.userLoggedIn) {
       suggestions.push({
         command: '/login',
         description: 'Sign in to access all features',
         reason: 'Not logged in',
-        priority: 'high'
+        priority: 'high',
       });
     }
-    
+
     if (!context.projectInitialized) {
       suggestions.push({
         command: '/init',
         description: 'Initialize project',
         reason: 'No MARIA.md found',
-        priority: 'high'
+        priority: 'high',
       });
     }
-    
+
     // Mode-specific suggestions
     if (context.currentMode === 'research') {
-      this.addContextualSuggestion(
-        suggestions,
-        '/memory',
-        'Save research findings',
-        'medium'
-      );
+      this.addContextualSuggestion(suggestions, '/memory', 'Save research findings', 'medium');
     }
-    
+
     // History-based patterns
     const recentCommands = this.commandHistory.slice(-5);
-    if (recentCommands.filter(cmd => cmd.startsWith('/pr')).length >= 2) {
+    if (recentCommands.filter((cmd) => cmd.startsWith('/pr')).length >= 2) {
       this.addContextualSuggestion(
         suggestions,
         '/commit',
         'Commit your changes',
         'high',
-        'PR activity detected'
+        'PR activity detected',
       );
     }
-    
+
     return suggestions.slice(0, 3);
   }
 
@@ -189,7 +181,7 @@ export class SuggestionService {
    */
   formatSuggestions(suggestions: CommandSuggestion[]): string {
     if (suggestions.length === 0) return '';
-    
+
     let output = '\n💡 Suggested next actions:\n';
     suggestions.forEach((sug) => {
       const icon = sug.priority === 'high' ? '🔥' : sug.priority === 'medium' ? '💫' : '✨';
@@ -199,7 +191,7 @@ export class SuggestionService {
       }
       output += '\n';
     });
-    
+
     return output;
   }
 
@@ -211,9 +203,9 @@ export class SuggestionService {
     command: string,
     description: string,
     priority: 'high' | 'medium' | 'low',
-    reason?: string
+    reason?: string,
   ): void {
-    if (!suggestions.find(s => s.command === command)) {
+    if (!suggestions.find((s) => s.command === command)) {
       suggestions.push({ command, description, priority, reason });
     }
   }
@@ -223,7 +215,7 @@ export class SuggestionService {
    */
   getCommandFrequency(): Map<string, number> {
     const frequency = new Map<string, number>();
-    this.commandHistory.forEach(cmd => {
+    this.commandHistory.forEach((cmd) => {
       frequency.set(cmd, (frequency.get(cmd) || 0) + 1);
     });
     return frequency;

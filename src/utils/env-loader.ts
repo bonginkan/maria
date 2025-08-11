@@ -57,6 +57,6 @@ export function getEnvironmentStatus(): {
     hasApiKeys: providers.length > 0,
     providers,
     offlineMode: process.env.OFFLINE_MODE === 'true',
-    lmStudioEnabled: process.env.LMSTUDIO_ENABLED === 'true'
+    lmStudioEnabled: process.env.LMSTUDIO_ENABLED === 'true',
   };
 }

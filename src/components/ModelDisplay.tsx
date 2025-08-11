@@ -15,8 +15,10 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
     <Box flexDirection="column" gap={1}>
       {/* Cloud Models Section */}
       <Box flexDirection="column">
-        <Text bold color="cyan">☁️ Cloud Models:</Text>
-        
+        <Text bold color="cyan">
+          ☁️ Cloud Models:
+        </Text>
+
         <Box flexDirection="column" marginLeft={2} marginTop={1}>
           <ModelItem
             provider="OpenAI"
@@ -25,7 +27,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             context="128K"
             description="High accuracy, multimodal capabilities"
           />
-          
+
           <ModelItem
             provider="OpenAI"
             model="GPT-4 Turbo"
@@ -33,7 +35,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             context="128K"
             description="Fast reasoning and code generation"
           />
-          
+
           <ModelItem
             provider="Anthropic"
             model="Claude 3 Opus"
@@ -41,7 +43,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             context="200K"
             description="Long text processing, complex tasks"
           />
-          
+
           <ModelItem
             provider="Anthropic"
             model="Claude 3 Sonnet"
@@ -49,7 +51,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             context="200K"
             description="Balanced performance and cost"
           />
-          
+
           <ModelItem
             provider="Google"
             model="Gemini 2.5 Pro"
@@ -58,7 +60,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             description="Research, analysis, vision capabilities"
             isActive={true}
           />
-          
+
           <ModelItem
             provider="Groq"
             model="Mixtral 8x7B"
@@ -66,7 +68,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             context="32K"
             description="Fast inference, real-time responses"
           />
-          
+
           <ModelItem
             provider="Groq"
             model="Llama 3 70B"
@@ -79,8 +81,10 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
 
       {/* Local Models Section */}
       <Box flexDirection="column" marginTop={1}>
-        <Text bold color="cyan">💻 Local Models:</Text>
-        
+        <Text bold color="cyan">
+          💻 Local Models:
+        </Text>
+
         <Box flexDirection="column" marginLeft={2} marginTop={1}>
           <LocalModelItem
             model="GPT-OSS 120B"
@@ -89,7 +93,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             vram="~64GB"
             description="Complex reasoning, large documents"
           />
-          
+
           <LocalModelItem
             model="GPT-OSS 20B"
             command="/model gpt-oss-20b"
@@ -97,7 +101,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             vram="~12GB"
             description="Balanced performance, quick responses"
           />
-          
+
           <LocalModelItem
             model="Qwen3 30B"
             command="/model qwen3-30b"
@@ -105,7 +109,7 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
             vram="~16GB"
             description="Multilingual support"
           />
-          
+
           <LocalModelItem
             model="Qwen2.5-VL"
             command="/model qwen2.5-vl"
@@ -119,7 +123,9 @@ export const ModelDisplay: React.FC<ModelDisplayProps> = ({ showUsageExamples = 
       {/* Usage Examples */}
       {showUsageExamples && (
         <Box flexDirection="column" marginTop={1}>
-          <Text bold color="cyan">Usage Examples:</Text>
+          <Text bold color="cyan">
+            Usage Examples:
+          </Text>
           <Box flexDirection="column" marginLeft={2} marginTop={1}>
             <Text color="gray">• /model gpt-4o - Switch to OpenAI GPT-4o</Text>
             <Text color="gray">• /model claude-3-opus - Switch to Claude 3 Opus</Text>
@@ -149,7 +155,7 @@ const ModelItem: React.FC<ModelItemProps> = ({
   command,
   context,
   description,
-  isActive = false
+  isActive = false,
 }) => {
   return (
     <Box flexDirection="column" marginBottom={1}>
@@ -186,14 +192,17 @@ const LocalModelItem: React.FC<LocalModelItemProps> = ({
   command,
   context,
   vram,
-  description
+  description,
 }) => {
   return (
     <Box flexDirection="column" marginBottom={1}>
       <Text bold>• {model}</Text>
       <Box marginLeft={2}>
         <Text color="blue">{command}</Text>
-        <Text color="gray"> | Context: {context} | VRAM: {vram}</Text>
+        <Text color="gray">
+          {' '}
+          | Context: {context} | VRAM: {vram}
+        </Text>
       </Box>
       <Box marginLeft={2}>
         <Text color="gray">{description}</Text>
@@ -206,11 +215,15 @@ const LocalModelItem: React.FC<LocalModelItemProps> = ({
 export const CompactModelList: React.FC = () => {
   return (
     <Box flexDirection="column" gap={1}>
-      <Text bold color="cyan">Available Models:</Text>
-      
+      <Text bold color="cyan">
+        Available Models:
+      </Text>
+
       <Box flexDirection="row" gap={2}>
         <Box flexDirection="column">
-          <Text bold color="blue">Cloud:</Text>
+          <Text bold color="blue">
+            Cloud:
+          </Text>
           <Text color="gray">• gpt-4o</Text>
           <Text color="gray">• gpt-4-turbo</Text>
           <Text color="gray">• claude-3-opus</Text>
@@ -219,9 +232,11 @@ export const CompactModelList: React.FC = () => {
           <Text color="gray">• mixtral-8x7b</Text>
           <Text color="gray">• llama-3-70b</Text>
         </Box>
-        
+
         <Box flexDirection="column">
-          <Text bold color="green">Local:</Text>
+          <Text bold color="green">
+            Local:
+          </Text>
           <Text color="gray">• gpt-oss-120b</Text>
           <Text color="gray">• gpt-oss-20b</Text>
           <Text color="gray">• qwen3-30b</Text>

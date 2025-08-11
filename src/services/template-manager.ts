@@ -88,11 +88,11 @@ export class TemplateManager {
           { command: '/add-dir', args: ['./src'] },
           { command: '/add-dir', args: ['./tests'] },
           { command: '/memory' },
-          { command: '/agents', args: ['list'] }
+          { command: '/agents', args: ['list'] },
         ],
         tags: ['setup', 'project', 'quick-start'],
         author: 'MARIA',
-        version: '1.0.0'
+        version: '1.0.0',
       },
       {
         name: 'PR Review Workflow',
@@ -101,19 +101,19 @@ export class TemplateManager {
           { command: '/review', args: ['{{pr_number}}'] },
           { command: '/pr-comments', args: ['{{pr_number}}'] },
           { command: '/test', args: ['--type', 'unit'] },
-          { command: '/suggest' }
+          { command: '/suggest' },
         ],
         parameters: [
           {
             name: 'pr_number',
             description: 'Pull request number',
             type: 'string',
-            required: true
-          }
+            required: true,
+          },
         ],
         tags: ['review', 'pr', 'testing'],
         author: 'MARIA',
-        version: '1.0.0'
+        version: '1.0.0',
       },
       {
         name: 'Daily Standup',
@@ -122,11 +122,11 @@ export class TemplateManager {
           { command: '/status' },
           { command: '/cost', args: ['--detailed'] },
           { command: '/git', args: ['log', '--oneline', '-10'] },
-          { command: '/export', args: ['--format', 'md'] }
+          { command: '/export', args: ['--format', 'md'] },
         ],
         tags: ['daily', 'standup', 'report'],
         author: 'MARIA',
-        version: '1.0.0'
+        version: '1.0.0',
       },
       {
         name: 'Debug & Fix',
@@ -134,24 +134,24 @@ export class TemplateManager {
         commands: [
           { command: '/doctor' },
           { command: '/status', args: ['--verbose'] },
-          { 
-            command: '/bug', 
+          {
+            command: '/bug',
             args: ['{{description}}'],
-            condition: 'hasErrors'
+            condition: 'hasErrors',
           },
-          { command: '/suggest' }
+          { command: '/suggest' },
         ],
         parameters: [
           {
             name: 'description',
             description: 'Bug description',
             type: 'string',
-            default: 'Found during debugging session'
-          }
+            default: 'Found during debugging session',
+          },
         ],
         tags: ['debug', 'troubleshooting'],
         author: 'MARIA',
-        version: '1.0.0'
+        version: '1.0.0',
       },
       {
         name: 'Deploy Pipeline',
@@ -159,19 +159,19 @@ export class TemplateManager {
         commands: [
           { command: '/test', args: ['--type', 'all'] },
           { command: '/commit', args: ['--message', '{{message}}'] },
-          { 
-            command: '/deploy', 
+          {
+            command: '/deploy',
             args: ['--env', '{{environment}}'],
-            condition: 'testsPass'
+            condition: 'testsPass',
           },
-          { command: '/status', waitFor: 5000 }
+          { command: '/status', waitFor: 5000 },
         ],
         parameters: [
           {
             name: 'message',
             description: 'Commit message',
             type: 'string',
-            required: true
+            required: true,
           },
           {
             name: 'environment',
@@ -179,13 +179,13 @@ export class TemplateManager {
             type: 'choice',
             choices: ['staging', 'production'],
             default: 'staging',
-            required: true
-          }
+            required: true,
+          },
         ],
         tags: ['deploy', 'ci/cd', 'pipeline'],
         author: 'MARIA',
-        version: '1.0.0'
-      }
+        version: '1.0.0',
+      },
     ];
 
     templates.forEach((template, index) => {
@@ -196,7 +196,7 @@ export class TemplateManager {
         id,
         createdAt: now,
         updatedAt: now,
-        usageCount: 0
+        usageCount: 0,
       });
     });
   }
@@ -207,7 +207,7 @@ export class TemplateManager {
   private loadUserTemplates(): void {
     try {
       const files = require('fs').readdirSync(this.templatesDir);
-      
+
       files.forEach((file: string) => {
         if (file.endsWith('.json')) {
           try {
@@ -247,7 +247,7 @@ export class TemplateManager {
       tags?: string[];
       author?: string;
       version?: string;
-    }
+    },
   ): Promise<{ success: boolean; message: string; template?: CommandTemplate }> {
     // Validate commands
     for (const cmd of commands) {
@@ -255,7 +255,7 @@ export class TemplateManager {
       if (!commandInfo) {
         return {
           success: false,
-          message: `Invalid command: ${cmd.command}`
+          message: `Invalid command: ${cmd.command}`,
         };
       }
     }
@@ -274,7 +274,7 @@ export class TemplateManager {
       version: options?.version || '1.0.0',
       createdAt: now,
       updatedAt: now,
-      usageCount: 0
+      usageCount: 0,
     };
 
     this.templates.set(id, template);
@@ -283,7 +283,7 @@ export class TemplateManager {
     return {
       success: true,
       message: `Template "${name}" created successfully`,
-      template
+      template,
     };
   }
 
@@ -292,20 +292,20 @@ export class TemplateManager {
    */
   async updateTemplate(
     id: string,
-    updates: Partial<Omit<CommandTemplate, 'id' | 'createdAt'>>
+    updates: Partial<Omit<CommandTemplate, 'id' | 'createdAt'>>,
   ): Promise<{ success: boolean; message: string }> {
     const template = this.templates.get(id);
     if (!template) {
       return {
         success: false,
-        message: `Template "${id}" not found`
+        message: `Template "${id}" not found`,
       };
     }
 
     if (this.builtInTemplates.has(id)) {
       return {
         success: false,
-        message: 'Cannot modify built-in templates'
+        message: 'Cannot modify built-in templates',
       };
     }
 
@@ -314,7 +314,7 @@ export class TemplateManager {
 
     return {
       success: true,
-      message: `Template "${template.name}" updated successfully`
+      message: `Template "${template.name}" updated successfully`,
     };
   }
 
@@ -325,7 +325,7 @@ export class TemplateManager {
     if (this.builtInTemplates.has(id)) {
       return {
         success: false,
-        message: 'Cannot delete built-in templates'
+        message: 'Cannot delete built-in templates',
       };
     }
 
@@ -333,12 +333,12 @@ export class TemplateManager {
     if (!template) {
       return {
         success: false,
-        message: `Template "${id}" not found`
+        message: `Template "${id}" not found`,
       };
     }
 
     this.templates.delete(id);
-    
+
     try {
       const fs = require('fs');
       fs.unlinkSync(join(this.templatesDir, `${id}.json`));
@@ -348,7 +348,7 @@ export class TemplateManager {
 
     return {
       success: true,
-      message: `Template "${template.name}" deleted successfully`
+      message: `Template "${template.name}" deleted successfully`,
     };
   }
 
@@ -362,11 +362,7 @@ export class TemplateManager {
   /**
    * List all templates
    */
-  listTemplates(options?: {
-    tags?: string[];
-    author?: string;
-    search?: string;
-  }): {
+  listTemplates(options?: { tags?: string[]; author?: string; search?: string }): {
     userTemplates: CommandTemplate[];
     builtInTemplates: CommandTemplate[];
   } {
@@ -376,7 +372,7 @@ export class TemplateManager {
     // Apply filters
     if (options?.tags && options.tags.length > 0) {
       const filterByTags = (template: CommandTemplate) =>
-        options.tags!.some(tag => template.tags?.includes(tag));
+        options.tags!.some((tag) => template.tags?.includes(tag));
       userTemplates = userTemplates.filter(filterByTags);
       builtInTemplates = builtInTemplates.filter(filterByTags);
     }
@@ -393,7 +389,7 @@ export class TemplateManager {
       const filterBySearch = (template: CommandTemplate) =>
         template.name.toLowerCase().includes(search) ||
         template.description.toLowerCase().includes(search) ||
-        template.tags?.some(tag => tag.toLowerCase().includes(search));
+        template.tags?.some((tag) => tag.toLowerCase().includes(search));
       userTemplates = userTemplates.filter(filterBySearch);
       builtInTemplates = builtInTemplates.filter(filterBySearch);
     }
@@ -410,14 +406,18 @@ export class TemplateManager {
    */
   exportTemplates(ids?: string[]): string {
     const templates = ids
-      ? ids.map(id => this.getTemplate(id)).filter(Boolean)
+      ? ids.map((id) => this.getTemplate(id)).filter(Boolean)
       : Array.from(this.templates.values());
 
-    return JSON.stringify({
-      templates,
-      exportedAt: new Date().toISOString(),
-      version: '1.0'
-    }, null, 2);
+    return JSON.stringify(
+      {
+        templates,
+        exportedAt: new Date().toISOString(),
+        version: '1.0',
+      },
+      null,
+      2,
+    );
   }
 
   /**
@@ -426,11 +426,11 @@ export class TemplateManager {
   async importTemplates(jsonData: string): Promise<{ success: boolean; message: string }> {
     try {
       const data = JSON.parse(jsonData);
-      
+
       if (!data.templates || !Array.isArray(data.templates)) {
         return {
           success: false,
-          message: 'Invalid template data format'
+          message: 'Invalid template data format',
         };
       }
 
@@ -439,13 +439,13 @@ export class TemplateManager {
       for (const template of data.templates) {
         // Generate new ID to avoid conflicts
         const newId = `imported-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        
+
         const newTemplate: CommandTemplate = {
           ...template,
           id: newId,
           createdAt: new Date(template.createdAt || new Date()),
           updatedAt: new Date(template.updatedAt || new Date()),
-          usageCount: 0
+          usageCount: 0,
         };
 
         this.templates.set(newId, newTemplate);
@@ -455,12 +455,12 @@ export class TemplateManager {
 
       return {
         success: true,
-        message: `Imported ${imported} templates`
+        message: `Imported ${imported} templates`,
       };
     } catch (error) {
       return {
         success: false,
-        message: `Failed to import templates: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Failed to import templates: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }
@@ -470,27 +470,22 @@ export class TemplateManager {
    */
   async cloneTemplate(
     id: string,
-    newName: string
+    newName: string,
   ): Promise<{ success: boolean; message: string; template?: CommandTemplate }> {
     const original = this.getTemplate(id);
     if (!original) {
       return {
         success: false,
-        message: `Template "${id}" not found`
+        message: `Template "${id}" not found`,
       };
     }
 
-    return this.createTemplate(
-      newName,
-      `Clone of ${original.description}`,
-      original.commands,
-      {
-        parameters: original.parameters,
-        tags: [...(original.tags || []), 'clone'],
-        author: 'User',
-        version: '1.0.0'
-      }
-    );
+    return this.createTemplate(newName, `Clone of ${original.description}`, original.commands, {
+      parameters: original.parameters,
+      tags: [...(original.tags || []), 'clone'],
+      author: 'User',
+      version: '1.0.0',
+    });
   }
 
   /**
@@ -512,11 +507,11 @@ export class TemplateManager {
   getPopularTemplates(limit = 5): CommandTemplate[] {
     const allTemplates = [
       ...Array.from(this.templates.values()),
-      ...Array.from(this.builtInTemplates.values())
+      ...Array.from(this.builtInTemplates.values()),
     ];
 
     return allTemplates
-      .filter(t => t.usageCount > 0)
+      .filter((t) => t.usageCount > 0)
       .sort((a, b) => b.usageCount - a.usageCount)
       .slice(0, limit);
   }
@@ -526,11 +521,11 @@ export class TemplateManager {
    */
   validateParameters(
     template: CommandTemplate,
-    providedParams: Record<string, any>
+    providedParams: Record<string, any>,
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
-    template.parameters?.forEach(param => {
+    template.parameters?.forEach((param) => {
       const value = providedParams[param.name];
 
       if (param.required && value === undefined) {
@@ -552,19 +547,16 @@ export class TemplateManager {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
   /**
    * Substitute parameters in command
    */
-  substituteParameters(
-    command: string,
-    parameters: Record<string, any>
-  ): string {
+  substituteParameters(command: string, parameters: Record<string, any>): string {
     let result = command;
-    
+
     Object.entries(parameters).forEach(([key, value]) => {
       const placeholder = `{{${key}}}`;
       result = result.replace(new RegExp(placeholder, 'g'), String(value));

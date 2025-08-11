@@ -38,7 +38,7 @@ export interface GenerationProgress {
 export class VideoGenerationService {
   private outputDir: string;
   private tempDir: string;
-  
+
   constructor() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
@@ -51,9 +51,9 @@ export class VideoGenerationService {
    * 動画生成（Text-to-Video）
    */
   async generateVideo(
-    prompt: string, 
+    prompt: string,
     options: VideoOptions,
-    onProgress?: (progress: GenerationProgress) => void
+    onProgress?: (progress: GenerationProgress) => void,
   ): Promise<VideoResult> {
     try {
       // 初期化
@@ -62,7 +62,7 @@ export class VideoGenerationService {
         percentage: 0,
         estimatedTimeRemaining: '計算中...',
         currentStep: 'ComfyUI起動確認',
-        totalSteps: 4
+        totalSteps: 4,
       });
 
       // ComfyUI起動確認
@@ -73,9 +73,9 @@ export class VideoGenerationService {
           percentage: 10,
           estimatedTimeRemaining: '30秒',
           currentStep: 'ComfyUI起動中',
-          totalSteps: 4
+          totalSteps: 4,
         });
-        
+
         const started = await modelManager.startComfyUI();
         if (!started) {
           throw new Error('ComfyUIの起動に失敗しました');
@@ -88,7 +88,7 @@ export class VideoGenerationService {
         percentage: 25,
         estimatedTimeRemaining: options.model === 'wan22-14b' ? '10-15分' : '3-7分',
         currentStep: 'モデル読み込み確認',
-        totalSteps: 4
+        totalSteps: 4,
       });
 
       const modelInfo = await modelManager.getModelInfo(options.model);
@@ -98,7 +98,7 @@ export class VideoGenerationService {
 
       // 出力ディレクトリ準備
       await this.ensureDirectories();
-      
+
       // 比較生成の場合は両モデルで生成
       if (options.compare) {
         return await this.generateComparison(prompt, options, onProgress);
@@ -106,7 +106,6 @@ export class VideoGenerationService {
 
       // 単一モデルで生成
       return await this.generateSingle(prompt, options, onProgress);
-
     } catch (error) {
       onProgress?.({
         stage: 'error',
@@ -114,12 +113,12 @@ export class VideoGenerationService {
         estimatedTimeRemaining: '',
         currentStep: 'エラー発生',
         totalSteps: 0,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -130,7 +129,7 @@ export class VideoGenerationService {
   private async generateSingle(
     prompt: string,
     options: VideoOptions,
-    onProgress?: (progress: GenerationProgress) => void
+    onProgress?: (progress: GenerationProgress) => void,
   ): Promise<VideoResult> {
     const startTime = Date.now();
     const outputFilename = this.generateOutputFilename(options.model);
@@ -140,24 +139,22 @@ export class VideoGenerationService {
       // ワークフロー選択
       const modelMap: Record<string, string> = {
         'wan22-5b': 'wan22_5b',
-        'wan22-14b': 'wan22_14b'
+        'wan22-14b': 'wan22_14b',
       };
       const normalizedModel = modelMap[options.model] || options.model;
-      const workflowId = options.inputImage 
-        ? `${normalizedModel}_i2v`
-        : `${normalizedModel}_t2v`;
+      const workflowId = options.inputImage ? `${normalizedModel}_i2v` : `${normalizedModel}_t2v`;
 
       onProgress?.({
         stage: 'processing',
         percentage: 30,
         estimatedTimeRemaining: this.estimateGenerationTime(options.model),
         currentStep: 'ワークフロー準備',
-        totalSteps: 4
+        totalSteps: 4,
       });
 
       // ワークフロー読み込み
       const workflowData = await modelManager.loadWorkflow(workflowId);
-      
+
       // パラメータ設定
       const generationParams: GenerationOptions = {
         model: options.model,
@@ -167,7 +164,7 @@ export class VideoGenerationService {
         steps: options.steps || (options.model === 'wan22-14b' ? 50 : 30),
         seed: options.seed,
         inputImage: options.inputImage,
-        outputPath: outputFilename.replace('.mp4', '')
+        outputPath: outputFilename.replace('.mp4', ''),
       };
 
       // ワークフロー実行
@@ -176,12 +173,12 @@ export class VideoGenerationService {
         percentage: 50,
         estimatedTimeRemaining: this.estimateGenerationTime(options.model),
         currentStep: `${options.model} モデルで生成中`,
-        totalSteps: 4
+        totalSteps: 4,
       });
 
       const processedWorkflow = modelManager.replaceWorkflowParameters(
         workflowData.workflow,
-        generationParams
+        generationParams,
       );
 
       const promptId = await modelManager.executeWorkflow(processedWorkflow);
@@ -195,7 +192,7 @@ export class VideoGenerationService {
         percentage: 90,
         estimatedTimeRemaining: '30秒',
         currentStep: '出力ファイル処理',
-        totalSteps: 4
+        totalSteps: 4,
       });
 
       // ComfyUI出力からファイル移動
@@ -205,7 +202,7 @@ export class VideoGenerationService {
       const metadata = await this.generateMetadata(
         outputPath,
         options.model,
-        Date.now() - startTime
+        Date.now() - startTime,
       );
 
       // 最終使用日時更新
@@ -216,19 +213,18 @@ export class VideoGenerationService {
         percentage: 100,
         estimatedTimeRemaining: '完了',
         currentStep: '動画生成完了',
-        totalSteps: 4
+        totalSteps: 4,
       });
 
       return {
         success: true,
         outputPath,
-        metadata
+        metadata,
       };
-
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -239,7 +235,7 @@ export class VideoGenerationService {
   private async generateComparison(
     prompt: string,
     options: VideoOptions,
-    onProgress?: (progress: GenerationProgress) => void
+    onProgress?: (progress: GenerationProgress) => void,
   ): Promise<VideoResult> {
     try {
       onProgress?.({
@@ -247,7 +243,7 @@ export class VideoGenerationService {
         percentage: 10,
         estimatedTimeRemaining: '15-20分',
         currentStep: '5Bモデルで生成中',
-        totalSteps: 6
+        totalSteps: 6,
       });
 
       // 5Bモデルで生成
@@ -263,7 +259,7 @@ export class VideoGenerationService {
         percentage: 40,
         estimatedTimeRemaining: '10-15分',
         currentStep: '14Bモデルで生成中',
-        totalSteps: 6
+        totalSteps: 6,
       });
 
       // 14Bモデルで生成
@@ -279,13 +275,13 @@ export class VideoGenerationService {
         percentage: 80,
         estimatedTimeRemaining: '2-3分',
         currentStep: '比較動画作成中',
-        totalSteps: 6
+        totalSteps: 6,
       });
 
       // 横並び比較動画作成
       const comparisonPath = await this.createComparisonVideo(
         result5B.outputPath!,
-        result14B.outputPath!
+        result14B.outputPath!,
       );
 
       onProgress?.({
@@ -293,20 +289,19 @@ export class VideoGenerationService {
         percentage: 100,
         estimatedTimeRemaining: '完了',
         currentStep: '比較動画生成完了',
-        totalSteps: 6
+        totalSteps: 6,
       });
 
       return {
         success: true,
         outputPath: result14B.outputPath, // メイン出力は14B
         comparisonPath,
-        metadata: result14B.metadata
+        metadata: result14B.metadata,
       };
-
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -316,7 +311,7 @@ export class VideoGenerationService {
    */
   private async waitForCompletion(
     promptId: string,
-    onProgress?: (progress: GenerationProgress) => void
+    onProgress?: (progress: GenerationProgress) => void,
   ): Promise<void> {
     const maxWaitTime = 20 * 60 * 1000; // 20分タイムアウト
     const checkInterval = 5000; // 5秒間隔
@@ -324,11 +319,11 @@ export class VideoGenerationService {
 
     while (Date.now() - startTime < maxWaitTime) {
       const status = await modelManager.checkProgress(promptId);
-      
+
       if (status.completed) {
         return;
       }
-      
+
       if (status.error) {
         throw new Error(`生成エラー: ${status.error}`);
       }
@@ -336,18 +331,18 @@ export class VideoGenerationService {
       // 進捗更新
       if (onProgress && status.progress !== undefined) {
         const elapsedMinutes = (Date.now() - startTime) / 60000;
-        const progressPercent = Math.min(75, 50 + (status.progress * 25));
-        
+        const progressPercent = Math.min(75, 50 + status.progress * 25);
+
         onProgress({
           stage: 'processing',
           percentage: progressPercent,
           estimatedTimeRemaining: `残り ${Math.max(1, Math.ceil(15 - elapsedMinutes))} 分`,
           currentStep: '動画生成処理中',
-          totalSteps: 4
+          totalSteps: 4,
         });
       }
 
-      await new Promise(resolve => setTimeout(resolve, checkInterval));
+      await new Promise((resolve) => setTimeout(resolve, checkInterval));
     }
 
     throw new Error('動画生成がタイムアウトしました');
@@ -363,15 +358,21 @@ export class VideoGenerationService {
     return new Promise((resolve, reject) => {
       const ffmpeg = spawn('ffmpeg', [
         '-y', // 上書き
-        '-i', leftVideo,  // 左側動画（5B）
-        '-i', rightVideo, // 右側動画（14B）
-        '-filter_complex', 
+        '-i',
+        leftVideo, // 左側動画（5B）
+        '-i',
+        rightVideo, // 右側動画（14B）
+        '-filter_complex',
         '[0:v]scale=640:360[left];[1:v]scale=640:360[right];[left][right]hstack=inputs=2[v]',
-        '-map', '[v]',
-        '-c:v', 'libx264',
-        '-pix_fmt', 'yuv420p',
-        '-crf', '23',
-        outputPath
+        '-map',
+        '[v]',
+        '-c:v',
+        'libx264',
+        '-pix_fmt',
+        'yuv420p',
+        '-crf',
+        '23',
+        outputPath,
       ]);
 
       ffmpeg.on('close', (code) => {
@@ -394,13 +395,13 @@ export class VideoGenerationService {
   private async moveOutputFiles(targetPath: string): Promise<void> {
     // TODO: ComfyUIの出力ディレクトリから targetPath へファイル移動
     // 現在はプレースホルダー実装
-    
+
     // ComfyUIのデフォルト出力ディレクトリ確認 (将来使用予定)
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
     const _comfyUIOutputDir = resolve(__dirname, '../../../../comfyui/output');
     void _comfyUIOutputDir; // Will be used for actual ComfyUI integration
-    
+
     try {
       // 最新の出力ファイルを検索してコピー
       // 実装が必要: ComfyUIの実際の出力パスに応じて調整
@@ -416,7 +417,7 @@ export class VideoGenerationService {
   private async generateMetadata(
     _outputPath: string,
     modelUsed: string,
-    generationTime: number
+    generationTime: number,
   ): Promise<VideoResult['metadata']> {
     // TODO: 実際の動画ファイルからメタデータを取得
     return {
@@ -424,7 +425,7 @@ export class VideoGenerationService {
       fps: 24,
       resolution: '1280x720',
       modelUsed,
-      generationTime: Math.round(generationTime / 1000) // 秒単位
+      generationTime: Math.round(generationTime / 1000), // 秒単位
     };
   }
 
@@ -464,7 +465,7 @@ export class VideoGenerationService {
   async generateFromImage(
     imagePath: string,
     prompt: string,
-    options: Omit<VideoOptions, 'inputImage'>
+    options: Omit<VideoOptions, 'inputImage'>,
   ): Promise<VideoResult> {
     // 画像ファイル存在確認
     try {
@@ -472,7 +473,7 @@ export class VideoGenerationService {
     } catch {
       return {
         success: false,
-        error: `入力画像が見つかりません: ${imagePath}`
+        error: `入力画像が見つかりません: ${imagePath}`,
       };
     }
 
@@ -481,13 +482,13 @@ export class VideoGenerationService {
     if (!['.jpg', '.jpeg', '.png', '.bmp'].includes(ext)) {
       return {
         success: false,
-        error: `対応していない画像フォーマット: ${ext}`
+        error: `対応していない画像フォーマット: ${ext}`,
       };
     }
 
     return await this.generateVideo(prompt, {
       ...options,
-      inputImage: imagePath
+      inputImage: imagePath,
     });
   }
 }

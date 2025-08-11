@@ -69,19 +69,25 @@
     "chalk": "^5.3.0",
     "cli-progress": "^3.12.0",
     "commander": "^12.0.0",
+    "console-table-printer": "^2.14.6",
     "dotenv": "^16.4.1",
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
+    "fuse.js": "^7.1.0",
     "gpt-3-encoder": "^1.1.4",
     "groq-sdk": "^0.3.0",
     "ink": "^4.4.1",
+    "ink-select-input": "^5.0.0",
+    "ink-spinner": "^4.0.3",
     "ink-text-input": "^5.0.1",
     "inquirer": "^12.0.0",
     "jsonwebtoken": "^9.0.2",
+    "natural": "^6.0.0",
     "node-fetch": "^3.3.2",
     "openai": "^4.28.0",
     "ora": "^8.0.1",
     "p-limit": "^5.0.0",
+    "prompts": "^2.4.2",
     "react": "^18.2.0",
     "strip-ansi": "^7.1.0",
     "uuid": "^9.0.1",
@@ -113,5 +119,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  }
+  },
+  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
 }

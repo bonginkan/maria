@@ -9,103 +9,188 @@ import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { readConfig, writeConfig } from '../utils/config';
 
-// Model profiles for quick selection
+// Model profiles for quick selection - August 2025
 const MODEL_PROFILES = {
-  // Cloud models
+  // OpenAI Models - August 2025
+  'gpt-5': {
+    provider: 'openai',
+    name: 'GPT-5',
+    badge: '🔥',
+    description: 'Latest flagship, AGI-level capabilities',
+    context: '256K',
+    type: 'cloud',
+  },
+  'gpt-5-mini': {
+    provider: 'openai',
+    name: 'GPT-5 mini',
+    badge: '⚡',
+    description: 'Smaller GPT-5, still very powerful',
+    context: '128K',
+    type: 'cloud',
+  },
+  'o3': {
+    provider: 'openai',
+    name: 'o3',
+    badge: '🧠',
+    description: 'Latest reasoning model, solves complex problems',
+    context: '512K',
+    type: 'cloud',
+  },
+  'o3-mini': {
+    provider: 'openai',
+    name: 'o3-mini',
+    badge: '💡',
+    description: 'Fast reasoning, coding specialist',
+    context: '256K',
+    type: 'cloud',
+  },
   'gpt-4o': {
     provider: 'openai',
     name: 'GPT-4o',
     badge: '🌟',
-    description: 'High accuracy, multimodal capabilities',
+    description: 'Previous gen, still excellent',
     context: '128K',
-    type: 'cloud'
+    type: 'cloud',
   },
-  'gpt-4-turbo': {
-    provider: 'openai',
-    name: 'GPT-4 Turbo',
+  // Anthropic Models - August 2025
+  'claude-opus-4.1': {
+    provider: 'anthropic',
+    name: 'Claude Opus 4.1',
+    badge: '🎯',
+    description: 'Latest Claude, exceptional reasoning',
+    context: '500K',
+    type: 'cloud',
+  },
+  'claude-4-sonnet': {
+    provider: 'anthropic',
+    name: 'Claude 4 Sonnet',
     badge: '⚡',
-    description: 'Fast reasoning and code generation',
-    context: '128K',
-    type: 'cloud'
+    description: 'Best for coding, ultra-fast',
+    context: '300K',
+    type: 'cloud',
   },
-  'claude-3-opus': {
+  'claude-4-haiku': {
     provider: 'anthropic',
-    name: 'Claude 3 Opus',
-    badge: '🎭',
-    description: 'Long text processing, complex tasks',
-    context: '200K',
-    type: 'cloud'
+    name: 'Claude 4 Haiku',
+    badge: '🚀',
+    description: 'Lightning fast, cost-effective',
+    context: '300K',
+    type: 'cloud',
   },
-  'claude-3-sonnet': {
+  'claude-3.5-sonnet': {
     provider: 'anthropic',
-    name: 'Claude 3 Sonnet',
+    name: 'Claude 3.5 Sonnet',
     badge: '🎵',
-    description: 'Balanced performance and cost',
+    description: 'Previous gen, still great',
     context: '200K',
-    type: 'cloud'
+    type: 'cloud',
   },
+  // Google Models - Official Current Models
   'gemini-2.5-pro': {
     provider: 'google',
     name: 'Gemini 2.5 Pro',
-    badge: '💎',
-    description: 'Research, analysis, vision capabilities',
-    context: '128K',
-    type: 'cloud'
+    badge: '🧠',
+    description: 'Enhanced reasoning, multimodal understanding',
+    context: '2M',
+    type: 'cloud',
   },
-  'mixtral-8x7b': {
-    provider: 'groq',
-    name: 'Mixtral 8x7B',
+  'gemini-2.5-flash': {
+    provider: 'google',
+    name: 'Gemini 2.5 Flash',
     badge: '⚡',
-    description: 'Fast inference, real-time responses',
-    context: '32K',
-    type: 'cloud'
+    description: 'Adaptive thinking, cost-effective',
+    context: '1M',
+    type: 'cloud',
   },
-  'llama-3-70b': {
-    provider: 'groq',
-    name: 'Llama 3 70B',
+  'gemini-2.5-flash-lite': {
+    provider: 'google',
+    name: 'Gemini 2.5 Flash-Lite',
+    badge: '🚀',
+    description: 'Most cost-effective, high throughput',
+    context: '1M',
+    type: 'cloud',
+  },
+  // xAI Models - August 2025
+  'grok-4': {
+    provider: 'xai',
+    name: 'Grok 4',
+    badge: '🤖',
+    description: 'Latest Grok, real-time web access',
+    context: '1M',
+    type: 'cloud',
+  },
+  'grok-3-turbo': {
+    provider: 'xai',
+    name: 'Grok 3 Turbo',
+    badge: '🔗',
+    description: 'Fast, with X.com integration',
+    context: '256K',
+    type: 'cloud',
+  },
+  // Meta Models - August 2025
+  'llama-4-405b': {
+    provider: 'meta',
+    name: 'Llama 4 405B',
     badge: '🦙',
-    description: 'Open source excellence',
-    context: '32K',
-    type: 'cloud'
+    description: 'Latest Llama, GPT-5 competitor',
+    context: '256K',
+    type: 'cloud',
   },
-  
-  // Local models
+  'llama-4-70b': {
+    provider: 'groq',
+    name: 'Llama 4 70B (Groq)',
+    badge: '⚡',
+    description: 'Groq-powered, ultra-fast inference',
+    context: '128K',
+    type: 'cloud',
+  },
+  // Mistral Models - August 2025
+  'mistral-large-3': {
+    provider: 'mistral',
+    name: 'Mistral Large 3',
+    badge: '🇫🇷',
+    description: 'European AI, excellent multilingual',
+    context: '256K',
+    type: 'cloud',
+  },
+
+  // Local Models (LM Studio) - Actual Available Models
+  'qwen3moe-30b': {
+    provider: 'lmstudio',
+    name: 'Qwen 3 MoE 30B',
+    badge: '🏆',
+    description: 'Q4_K_M quantized, excellent performance',
+    context: '32K',
+    type: 'local',
+    vram: '18.56GB',
+  },
   'gpt-oss-120b': {
     provider: 'lmstudio',
     name: 'GPT-OSS 120B',
     badge: '🧠',
-    description: 'Complex reasoning, large documents',
+    description: 'MXFP4, complex reasoning',
     context: '128K',
     type: 'local',
-    vram: '~64GB'
+    vram: '63.39GB',
   },
   'gpt-oss-20b': {
     provider: 'lmstudio',
     name: 'GPT-OSS 20B',
     badge: '🚀',
-    description: 'Balanced performance, quick responses',
+    description: 'MXFP4, balanced performance',
     context: '32K',
     type: 'local',
-    vram: '~12GB'
+    vram: '12.11GB',
   },
-  'qwen3-30b': {
+  'mistral-7b-v0.3': {
     provider: 'lmstudio',
-    name: 'Qwen3 30B',
-    badge: '🌏',
-    description: 'Multilingual support',
+    name: 'Mistral 7B v0.3',
+    badge: '⚡',
+    description: 'Q4_K_M, fast inference',
     context: '32K',
     type: 'local',
-    vram: '~16GB'
+    vram: '4.37GB',
   },
-  'qwen2.5-vl': {
-    provider: 'ollama',
-    name: 'Qwen2.5-VL',
-    badge: '👁️',
-    description: 'Vision capabilities',
-    context: '8K',
-    type: 'local',
-    vram: '~8GB'
-  }
 };
 
 interface ModelSelectorProps {
@@ -114,10 +199,10 @@ interface ModelSelectorProps {
   onCancel?: () => void;
 }
 
-export const ModelSelector: React.FC<ModelSelectorProps> = ({ 
+export const ModelSelector: React.FC<ModelSelectorProps> = ({
   currentModel = 'gemini-2.5-pro',
   onComplete,
-  onCancel
+  onCancel,
 }) => {
   const { exit } = useApp();
   const [selectedModel, setSelectedModel] = useState<string>(currentModel);
@@ -163,9 +248,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       const config = await readConfig();
       config.defaultModel = item.value as any;
       await writeConfig(config);
-      
+
       setSaved(true);
-      
+
       // Notify parent component
       if (onComplete) {
         setTimeout(() => {
@@ -192,7 +277,9 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         </Box>
         <Box marginTop={1}>
           <Text>{profile.badge} </Text>
-          <Text bold color="cyan">{profile.name}</Text>
+          <Text bold color="cyan">
+            {profile.name}
+          </Text>
           <Text color="gray"> - {profile.description}</Text>
         </Box>
         <Box marginTop={1}>
@@ -214,16 +301,18 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
   const models = getFilteredModels();
   const items = models.map(([id, profile]) => ({
     label: `${profile.badge} ${profile.name} (${profile.context}) - ${profile.description}`,
-    value: id
+    value: id,
   }));
 
   // Find initial index for current model
-  const initialIndex = items.findIndex(item => item.value === currentModel);
+  const initialIndex = items.findIndex((item) => item.value === currentModel);
 
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">🤖 Select AI Model</Text>
+        <Text bold color="cyan">
+          🤖 Select AI Model
+        </Text>
       </Box>
 
       <Box marginBottom={1}>
@@ -239,14 +328,10 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           initialIndex={initialIndex >= 0 ? initialIndex : 0}
           onSelect={handleSelect}
           indicatorComponent={({ isSelected }) => (
-            <Box marginRight={1}>
-              {isSelected ? <Text color="cyan">▶</Text> : <Text> </Text>}
-            </Box>
+            <Box marginRight={1}>{isSelected ? <Text color="cyan">▶</Text> : <Text> </Text>}</Box>
           )}
           itemComponent={({ isSelected, label }) => (
-            <Text color={isSelected ? 'cyan' : 'white'}>
-              {label}
-            </Text>
+            <Text color={isSelected ? 'cyan' : 'white'}>{label}</Text>
           )}
         />
       </Box>
@@ -258,9 +343,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       )}
 
       <Box marginTop={1}>
-        <Text color="gray">
-          ↑↓ Navigate • Enter Select • A/C/L Filter • ESC Cancel
-        </Text>
+        <Text color="gray">↑↓ Navigate • Enter Select • A/C/L Filter • ESC Cancel</Text>
       </Box>
     </Box>
   );
