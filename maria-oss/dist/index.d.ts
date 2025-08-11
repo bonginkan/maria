@@ -3,9 +3,9 @@ import 'commander';
 
 /**
  * MARIA - Intelligent CLI Assistant
- * Entry point for the library
+ * Entry point for the OSS package
  */
 
-declare const VERSION = "1.0.0-alpha.1";
+declare const VERSION = "1.0.3";
 
 export { VERSION };

@@ -1,16 +1,14 @@
+#!/usr/bin/env node
 import { Command } from 'commander';
 
 /**
  * MARIA CLI - Command Line Interface
+ * OSS Version with core functionality
  */
 
 interface CLIOptions {
-    config?: string;
-    priority?: 'privacy-first' | 'performance' | 'cost-effective' | 'auto';
-    provider?: string;
     model?: string;
     debug?: boolean;
-    offline?: boolean;
 }
 declare function createCLI(): Command;
 
