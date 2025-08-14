@@ -30,7 +30,7 @@ export async function getAIProviderConfig(): Promise<AIProviderConfig | null> {
     const modelLower = config.defaultModel.toLowerCase();
 
     if (modelLower.includes('gpt') || modelLower.includes('o1')) {
-      const apiKey = process.env.OPENAI_API_KEY;
+      const apiKey = process.env['OPENAI_API_KEY'];
       if (apiKey) {
         return {
           provider: 'openai',
@@ -39,7 +39,7 @@ export async function getAIProviderConfig(): Promise<AIProviderConfig | null> {
         };
       }
     } else if (modelLower.includes('claude')) {
-      const apiKey = process.env.ANTHROPIC_API_KEY;
+      const apiKey = process.env['ANTHROPIC_API_KEY'];
       if (apiKey) {
         return {
           provider: 'anthropic',
@@ -48,7 +48,7 @@ export async function getAIProviderConfig(): Promise<AIProviderConfig | null> {
         };
       }
     } else if (modelLower.includes('gemini')) {
-      const apiKey = process.env.GOOGLE_AI_API_KEY || process.env.GEMINI_API_KEY;
+      const apiKey = process.env['GOOGLE_AI_API_KEY'] || process.env['GEMINI_API_KEY'];
       if (apiKey) {
         return {
           provider: 'googleai',
@@ -61,7 +61,7 @@ export async function getAIProviderConfig(): Promise<AIProviderConfig | null> {
       modelLower.includes('llama') ||
       modelLower.includes('mixtral')
     ) {
-      const apiKey = process.env.GROK_API_KEY;
+      const apiKey = process.env['GROK_API_KEY'];
       if (apiKey) {
         return {
           provider: 'grok',
@@ -82,7 +82,7 @@ export async function saveAIProviderConfig(providerConfig: AIProviderConfig): Pr
   const config = await loadConfig();
 
   // Update AI configuration
-  config.ai = {
+  config['ai'] = {
     ...config.ai,
     provider: providerConfig.provider,
     apiKey: providerConfig.apiKey,
@@ -92,7 +92,7 @@ export async function saveAIProviderConfig(providerConfig: AIProviderConfig): Pr
 
   // Also update defaultModel for backward compatibility
   if (providerConfig.model) {
-    config.defaultModel = providerConfig.model;
+    config['defaultModel'] = providerConfig.model;
   }
 
   await saveConfig(config);

@@ -33,8 +33,8 @@ export default function naturalChatCommand(program: Command) {
       };
 
       // チャットループ
-      let continueChat = true;
-      while (continueChat) {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
         try {
           const response = await prompts({
             type: 'text',
@@ -96,7 +96,7 @@ export default function naturalChatCommand(program: Command) {
 
           console.log(chalk.green('🤖 MARIA:'), aiResponse);
           console.log(''); // 空行
-        } catch (error) {
+        } catch (error: unknown) {
           if (error instanceof Error && error.message.includes('cancelled')) {
             console.log(chalk.yellow('\n👋 Chat session cancelled.'));
             break;
@@ -122,7 +122,7 @@ async function processUserMessage(message: string): Promise<string> {
     // 自然言語処理のシミュレーション
     const response = await generateResponse(message);
     return response;
-  } catch (error) {
+  } catch (error: unknown) {
     spinner.stop();
     return `申し訳ありません。エラーが発生しました: ${error instanceof Error ? error.message : 'Unknown error'}`;
   }

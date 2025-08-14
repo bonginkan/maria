@@ -106,7 +106,7 @@ export class VideoGenerationService {
 
       // 単一モデルで生成
       return await this.generateSingle(prompt, options, onProgress);
-    } catch (error) {
+    } catch (error: unknown) {
       onProgress?.({
         stage: 'error',
         percentage: 0,
@@ -221,7 +221,7 @@ export class VideoGenerationService {
         outputPath,
         metadata,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -298,7 +298,7 @@ export class VideoGenerationService {
         comparisonPath,
         metadata: result14B.metadata,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         error: error instanceof Error ? error.message : String(error),
@@ -406,7 +406,7 @@ export class VideoGenerationService {
       // 最新の出力ファイルを検索してコピー
       // 実装が必要: ComfyUIの実際の出力パスに応じて調整
       console.log(`出力ファイルを ${targetPath} に移動準備中...`);
-    } catch (error) {
+    } catch (error: unknown) {
       console.warn('出力ファイル移動警告:', error);
     }
   }

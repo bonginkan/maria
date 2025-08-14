@@ -9,7 +9,7 @@ import { LocalStorageService } from './local-storage.service';
 export interface GraphNode {
   id: string;
   labels: string[];
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,14 +19,14 @@ export interface GraphEdge {
   type: string;
   fromId: string;
   toId: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   createdAt: string;
 }
 
 export interface GraphQuery {
   nodeLabels?: string[];
   edgeTypes?: string[];
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   limit?: number;
   depth?: number;
 }
@@ -103,7 +103,7 @@ export class LocalGraphService extends EventEmitter {
           this.adjacencyList.get(edge.fromId)!.add(edge.toId);
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.log('No existing graph data found, starting fresh');
     }
   }
@@ -139,7 +139,7 @@ export class LocalGraphService extends EventEmitter {
   }
 
   // Node operations
-  async createNode(labels: string[], properties: Record<string, any> = {}): Promise<GraphNode> {
+  async createNode(labels: string[], properties: Record<string, unknown> = {}): Promise<GraphNode> {
     await this.initialize();
 
     const node: GraphNode = {
@@ -165,7 +165,7 @@ export class LocalGraphService extends EventEmitter {
     return node;
   }
 
-  async updateNode(nodeId: string, properties: Record<string, any>): Promise<GraphNode | null> {
+  async updateNode(nodeId: string, properties: Record<string, unknown>): Promise<GraphNode | null> {
     const node = this.nodes.get(nodeId);
     if (!node) return null;
 
@@ -224,7 +224,7 @@ export class LocalGraphService extends EventEmitter {
     type: string,
     fromId: string,
     toId: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
   ): Promise<GraphEdge | null> {
     await this.initialize();
 

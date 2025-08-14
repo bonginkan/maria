@@ -47,7 +47,7 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({
         setResult(mockResult);
 
         setStatus('done');
-      } catch (error) {
+      } catch (error: unknown) {
         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setStatus('done');
       }

@@ -150,7 +150,7 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
     });
 
     // Neovim Plugin
-    const nvimConfigPath = join(process.env.HOME || '', '.config/nvim/init.lua');
+    const nvimConfigPath = join(process.env['HOME'] || '', '.config/nvim/init.lua');
     const hasNvimConfig = existsSync(nvimConfigPath);
     integrations.push({
       name: 'Neovim Plugin',
@@ -281,7 +281,7 @@ jobs:
       );
 
       setSuccess('✅ GitHub Actions workflow and Playwright MCP configuration created');
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to install GitHub app configuration: ${err}`);
     }
   }, []);
@@ -307,7 +307,7 @@ jobs:
               if (item.value === 'back') {
                 onExit();
               } else {
-                setCurrentView(item.value as any);
+                setCurrentView(item.value as unknown);
               }
             }}
           />

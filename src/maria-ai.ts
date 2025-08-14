@@ -3,7 +3,7 @@
  * Handles provider management and intelligent routing
  */
 
-import { AIProvider, AIRequest, AIResponse, ModelInfo } from './types';
+import { AIRequest, AIResponse, ModelInfo } from './types';
 import { AIProviderManager } from './providers/manager';
 import { IntelligentRouter } from './services/intelligent-router';
 import { HealthMonitor } from './services/health-monitor';
@@ -101,7 +101,7 @@ export class MariaAI {
   /**
    * Get system health status
    */
-  async getHealth(): Promise<any> {
+  async getHealth(): Promise<unknown> {
     return this.healthMonitor.getStatus();
   }
 
@@ -116,7 +116,7 @@ export class MariaAI {
   /**
    * Get current configuration
    */
-  getConfig(): any {
+  getConfig(): unknown {
     return this.config.getAll();
   }
 

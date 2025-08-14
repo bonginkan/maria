@@ -74,8 +74,8 @@ export class InteractiveModelSelector {
         provider: 'OpenAI',
         type: 'cloud' as const,
         context: '256K',
-        available: !!process.env.OPENAI_API_KEY,
-        apiKeySet: !!process.env.OPENAI_API_KEY,
+        available: !!process.env['OPENAI_API_KEY'],
+        apiKeySet: !!process.env['OPENAI_API_KEY'],
         description: '🔥 Latest flagship, AGI-level capabilities',
       },
       {
@@ -84,8 +84,8 @@ export class InteractiveModelSelector {
         provider: 'OpenAI',
         type: 'cloud' as const,
         context: '128K',
-        available: !!process.env.OPENAI_API_KEY,
-        apiKeySet: !!process.env.OPENAI_API_KEY,
+        available: !!process.env['OPENAI_API_KEY'],
+        apiKeySet: !!process.env['OPENAI_API_KEY'],
         description: 'Smaller GPT-5, still very powerful',
       },
       {
@@ -94,8 +94,8 @@ export class InteractiveModelSelector {
         provider: 'OpenAI',
         type: 'cloud' as const,
         context: '512K',
-        available: !!process.env.OPENAI_API_KEY,
-        apiKeySet: !!process.env.OPENAI_API_KEY,
+        available: !!process.env['OPENAI_API_KEY'],
+        apiKeySet: !!process.env['OPENAI_API_KEY'],
         description: '🧠 Latest reasoning model, solves complex problems',
       },
       {
@@ -104,8 +104,8 @@ export class InteractiveModelSelector {
         provider: 'OpenAI',
         type: 'cloud' as const,
         context: '256K',
-        available: !!process.env.OPENAI_API_KEY,
-        apiKeySet: !!process.env.OPENAI_API_KEY,
+        available: !!process.env['OPENAI_API_KEY'],
+        apiKeySet: !!process.env['OPENAI_API_KEY'],
         description: 'Fast reasoning, coding specialist',
       },
       {
@@ -114,8 +114,8 @@ export class InteractiveModelSelector {
         provider: 'OpenAI',
         type: 'cloud' as const,
         context: '128K',
-        available: !!process.env.OPENAI_API_KEY,
-        apiKeySet: !!process.env.OPENAI_API_KEY,
+        available: !!process.env['OPENAI_API_KEY'],
+        apiKeySet: !!process.env['OPENAI_API_KEY'],
         description: 'Previous gen, still excellent',
       },
       // Anthropic Models - August 2025
@@ -125,8 +125,8 @@ export class InteractiveModelSelector {
         provider: 'Anthropic',
         type: 'cloud' as const,
         context: '500K',
-        available: !!process.env.ANTHROPIC_API_KEY,
-        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        available: !!process.env['ANTHROPIC_API_KEY'],
+        apiKeySet: !!process.env['ANTHROPIC_API_KEY'],
         description: '🎯 Latest Claude, exceptional reasoning',
       },
       {
@@ -135,8 +135,8 @@ export class InteractiveModelSelector {
         provider: 'Anthropic',
         type: 'cloud' as const,
         context: '300K',
-        available: !!process.env.ANTHROPIC_API_KEY,
-        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        available: !!process.env['ANTHROPIC_API_KEY'],
+        apiKeySet: !!process.env['ANTHROPIC_API_KEY'],
         description: '⚡ Best for coding, ultra-fast',
       },
       {
@@ -145,8 +145,8 @@ export class InteractiveModelSelector {
         provider: 'Anthropic',
         type: 'cloud' as const,
         context: '300K',
-        available: !!process.env.ANTHROPIC_API_KEY,
-        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        available: !!process.env['ANTHROPIC_API_KEY'],
+        apiKeySet: !!process.env['ANTHROPIC_API_KEY'],
         description: 'Lightning fast, cost-effective',
       },
       {
@@ -155,8 +155,8 @@ export class InteractiveModelSelector {
         provider: 'Anthropic',
         type: 'cloud' as const,
         context: '200K',
-        available: !!process.env.ANTHROPIC_API_KEY,
-        apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+        available: !!process.env['ANTHROPIC_API_KEY'],
+        apiKeySet: !!process.env['ANTHROPIC_API_KEY'],
         description: 'Previous gen, still great',
       },
       // Google Models - Official Current Models
@@ -166,8 +166,8 @@ export class InteractiveModelSelector {
         provider: 'Google',
         type: 'cloud' as const,
         context: '2M',
-        available: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
-        apiKeySet: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        available: !!process.env['GEMINI_API_KEY'] || !!process.env['GOOGLE_AI_API_KEY'],
+        apiKeySet: !!process.env['GEMINI_API_KEY'] || !!process.env['GOOGLE_AI_API_KEY'],
         description: '🧠 Enhanced reasoning, multimodal understanding',
       },
       {
@@ -176,8 +176,8 @@ export class InteractiveModelSelector {
         provider: 'Google',
         type: 'cloud' as const,
         context: '1M',
-        available: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
-        apiKeySet: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        available: !!process.env['GEMINI_API_KEY'] || !!process.env['GOOGLE_AI_API_KEY'],
+        apiKeySet: !!process.env['GEMINI_API_KEY'] || !!process.env['GOOGLE_AI_API_KEY'],
         description: '⚡ Adaptive thinking, cost-effective',
       },
       {
@@ -186,8 +186,8 @@ export class InteractiveModelSelector {
         provider: 'Google',
         type: 'cloud' as const,
         context: '1M',
-        available: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
-        apiKeySet: !!process.env.GEMINI_API_KEY || !!process.env.GOOGLE_AI_API_KEY,
+        available: !!process.env['GEMINI_API_KEY'] || !!process.env['GOOGLE_AI_API_KEY'],
+        apiKeySet: !!process.env['GEMINI_API_KEY'] || !!process.env['GOOGLE_AI_API_KEY'],
         description: '🚀 Most cost-effective, high throughput',
       },
       // Meta Models - August 2025
@@ -197,8 +197,8 @@ export class InteractiveModelSelector {
         provider: 'Meta',
         type: 'cloud' as const,
         context: '256K',
-        available: !!process.env.META_API_KEY || !!process.env.GROQ_API_KEY,
-        apiKeySet: !!process.env.META_API_KEY || !!process.env.GROQ_API_KEY,
+        available: !!process.env['META_API_KEY'] || !!process.env['GROQ_API_KEY'],
+        apiKeySet: !!process.env['META_API_KEY'] || !!process.env['GROQ_API_KEY'],
         description: '🦙 Latest Llama, GPT-5 competitor',
       },
       {
@@ -207,8 +207,8 @@ export class InteractiveModelSelector {
         provider: 'Groq',
         type: 'cloud' as const,
         context: '128K',
-        available: !!process.env.GROQ_API_KEY,
-        apiKeySet: !!process.env.GROQ_API_KEY,
+        available: !!process.env['GROQ_API_KEY'],
+        apiKeySet: !!process.env['GROQ_API_KEY'],
         description: 'Groq-powered, ultra-fast inference',
       },
       // Mistral Models - August 2025
@@ -218,8 +218,8 @@ export class InteractiveModelSelector {
         provider: 'Mistral',
         type: 'cloud' as const,
         context: '256K',
-        available: !!process.env.MISTRAL_API_KEY,
-        apiKeySet: !!process.env.MISTRAL_API_KEY,
+        available: !!process.env['MISTRAL_API_KEY'],
+        apiKeySet: !!process.env['MISTRAL_API_KEY'],
         description: '🇫🇷 European AI, excellent multilingual',
       },
       // xAI Models - August 2025
@@ -229,8 +229,8 @@ export class InteractiveModelSelector {
         provider: 'xAI',
         type: 'cloud' as const,
         context: '1M',
-        available: !!process.env.XAI_API_KEY,
-        apiKeySet: !!process.env.XAI_API_KEY,
+        available: !!process.env['XAI_API_KEY'],
+        apiKeySet: !!process.env['XAI_API_KEY'],
         description: '🤖 Latest Grok, real-time web access',
       },
       {
@@ -239,8 +239,8 @@ export class InteractiveModelSelector {
         provider: 'xAI',
         type: 'cloud' as const,
         context: '256K',
-        available: !!process.env.XAI_API_KEY,
-        apiKeySet: !!process.env.XAI_API_KEY,
+        available: !!process.env['XAI_API_KEY'],
+        apiKeySet: !!process.env['XAI_API_KEY'],
         description: 'Fast, with X.com integration',
       },
       // Local Models (LM Studio) - Actual Available Models
@@ -317,7 +317,7 @@ export class InteractiveModelSelector {
       } catch {
         this.lmStudioStatus = 'not-running';
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(chalk.red('Error checking LM Studio:'), error);
       this.lmStudioStatus = 'not-installed';
     }
@@ -352,7 +352,7 @@ export class InteractiveModelSelector {
       }
 
       return false;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(chalk.red('Failed to start LM Studio:'), error);
       return false;
     }
@@ -475,7 +475,7 @@ export class InteractiveModelSelector {
       console.log(chalk.cyan(`\n⏳ Loading ${modelId}...`));
       await execAsync(`/Users/bongin_max/.lmstudio/bin/lms load ${modelId}`);
       console.log(chalk.green(`✅ Model ${modelId} loaded successfully`));
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(chalk.red(`Failed to load model: ${error}`));
     }
   }
@@ -484,13 +484,13 @@ export class InteractiveModelSelector {
     const envPath = path.join(process.cwd(), '.env.local');
 
     if (model.type === 'local') {
-      process.env.AI_PROVIDER = 'lmstudio';
-      process.env.LMSTUDIO_DEFAULT_MODEL = model.id;
-      process.env.OFFLINE_MODE = 'true';
+      process.env['AI_PROVIDER'] = 'lmstudio';
+      process.env['LMSTUDIO_DEFAULT_MODEL'] = model.id;
+      process.env['OFFLINE_MODE'] = 'true';
     } else {
-      process.env.AI_PROVIDER = model.provider.toLowerCase();
-      process.env.AI_MODEL = model.id;
-      process.env.OFFLINE_MODE = 'false';
+      process.env['AI_PROVIDER'] = model.provider.toLowerCase();
+      process.env['AI_MODEL'] = model.id;
+      process.env['OFFLINE_MODE'] = 'false';
     }
 
     // Update .env.local file

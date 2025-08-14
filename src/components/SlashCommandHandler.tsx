@@ -26,7 +26,7 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
     try {
       const loadedConfig = loadConfig();
       setConfig(loadedConfig);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to load configuration: ${err}`);
     }
   }, []);
@@ -35,7 +35,7 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
     try {
       saveConfig(newConfig);
       setConfig(newConfig);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to save configuration: ${err}`);
     }
   }, []);

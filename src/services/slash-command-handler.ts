@@ -3,7 +3,8 @@
  * 対話モードでの/コマンドを処理
  */
 
-import { ConversationContext } from '../types/conversation';
+import { ConversationContext, ConversationHistory } from '../types/conversation';
+import { GitHubComment, GitHubReview, GitHubPRData, GitHubFeedbackItem } from '../types/common';
 import { logger } from '../utils/logger';
 import { readConfig, writeConfig } from '../utils/config';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,7 +14,7 @@ import {
   commandCategories,
   getCommandsByCategory,
   getCommandInfo,
-  getRelatedCommands,
+  // getRelatedCommands, // Commented out - unused
   getCommandChain,
   CommandCategory,
   commandChains,
@@ -32,7 +33,7 @@ import { TestGenerationService, TestGenerationRequest } from './test-generation.
 export interface SlashCommandResult {
   success: boolean;
   message: string;
-  data?: any;
+  data?: unknown;
   requiresInput?: boolean;
   component?:
     | 'config-panel'
@@ -273,7 +274,7 @@ export class SlashCommandHandler {
 
       // Add suggestions to the result
       return await this.addSuggestions(result, commandName, context);
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error(`Slash command error: ${commandName}`, error);
       return {
         success: false,
@@ -323,6 +324,7 @@ export class SlashCommandHandler {
         config.project.workingDirectories.length > 0
       );
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -419,12 +421,12 @@ export class SlashCommandHandler {
 
     // コンテキストのモード更新
     if (context.preferences) {
-      context.preferences.defaultModel = newMode as any;
+      context.preferences.mode = newMode as 'chat' | 'research' | 'command' | 'creative';
     }
 
     // 設定ファイル更新
     const config = await readConfig();
-    config.defaultMode = newMode as any;
+    config.defaultMode = newMode as 'chat' | 'research' | 'command' | 'creative';
     await writeConfig(config);
 
     return {
@@ -516,7 +518,8 @@ export class SlashCommandHandler {
     const [key, value] = args;
     if (value && key) {
       // 設定更新
-      (config as any)[key] = value;
+      const configObj = config as Record<string, unknown>;
+      configObj[key] = value;
       await writeConfig(config);
       return {
         success: true,
@@ -524,7 +527,8 @@ export class SlashCommandHandler {
       };
     } else if (key) {
       // 設定値表示
-      const currentValue = (config as any)[key];
+      const configObj = config as Record<string, unknown>;
+      const currentValue = configObj[key];
       return {
         success: true,
         message: `${key}: ${currentValue || 'undefined'}`,
@@ -651,10 +655,11 @@ export class SlashCommandHandler {
               theme: 'dark',
             };
           }
-          context.preferences.defaultModel = selectedModel as any;
+          context.preferences.defaultModel = selectedModel;
 
           const config = await readConfig();
-          config.defaultModel = selectedModel as any;
+          const configObj = config as Record<string, unknown>;
+          configObj['defaultModel'] = selectedModel;
           await writeConfig(config);
 
           return {
@@ -668,7 +673,7 @@ export class SlashCommandHandler {
             message: 'Model selection cancelled',
           };
         }
-      } catch (error) {
+      } catch (error: unknown) {
         return {
           success: false,
           message: `Error selecting model: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -732,14 +737,15 @@ export class SlashCommandHandler {
         theme: 'dark',
       };
     }
-    context.preferences.defaultModel = newModel as any;
+    context.preferences.defaultModel = newModel;
 
     // Update config file
     try {
       const config = await readConfig();
-      config.defaultModel = newModel as any;
+      const configObj = config as Record<string, unknown>;
+      configObj['defaultModel'] = newModel;
       await writeConfig(config);
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         message: `❌ Failed to save model configuration: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -830,8 +836,10 @@ export class SlashCommandHandler {
 
     if (commandParts.length > 0) {
       const command = commandParts.join(' ');
-      if (!config.hooks) config.hooks = {};
-      (config.hooks as any)[hookName] = command;
+      const configObj = config as Record<string, unknown>;
+      if (!configObj['hooks']) configObj['hooks'] = {};
+      const hooks = configObj['hooks'] as Record<string, unknown>;
+      hooks[hookName] = command;
       await writeConfig(config);
 
       return {
@@ -841,9 +849,13 @@ export class SlashCommandHandler {
     }
 
     // フック削除
-    if (config.hooks && hookName && (config.hooks as any)[hookName]) {
-      delete (config.hooks as any)[hookName];
-      await writeConfig(config);
+    const configObj = config as Record<string, unknown>;
+    if (configObj['hooks'] && hookName) {
+      const hooks = configObj['hooks'] as Record<string, unknown>;
+      if (hooks[hookName]) {
+        delete hooks[hookName];
+        await writeConfig(config);
+      }
       return {
         success: true,
         message: `Hook ${hookName} removed`,
@@ -939,7 +951,7 @@ Run /config to customize MARIA settings.`;
             `📍 Location: ${mariaPath}`,
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         message: `❌ Failed to initialize MARIA.md: ${error instanceof Error ? error.message : String(error)}`,
@@ -1062,9 +1074,9 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
   ): Promise<SlashCommandResult> {
     const option = args[0]?.toLowerCase();
     const stats = this.chatContextService.getStats();
-    const historyCount = context.history.length;
-    const previousCost = context.metadata?.cost || 0;
-    const previousTokens = context.metadata?.totalTokens || 0;
+    const historyCount = context.history?.length || 0;
+    const previousCost = Number(context.metadata?.['cost']) || 0;
+    const previousTokens = Number(context.metadata?.['totalTokens']) || 0;
 
     // Parse options
     const options = {
@@ -1091,7 +1103,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     if (options.summary) {
       const summary = await this.chatContextService.exportContext('markdown');
       const summaryPath = path.join(
-        process.env.HOME || '',
+        process.env['HOME'] || '',
         '.maria',
         'summaries',
         `summary-${Date.now()}.md`,
@@ -1102,13 +1114,15 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
         await fs.promises.writeFile(summaryPath, summary);
 
         this.chatContextService.clearContext({ summary: true });
-        context.history = [];
-        if (context.metadata) {
-          context.metadata.totalTokens = 0;
-          context.metadata.cost = 0;
-          context.metadata.lastActivity = new Date();
+        if (context.history) {
+          context.history = [];
         }
-        delete context.currentTask;
+        if (context.metadata) {
+          context.metadata['totalTokens'] = 0;
+          context.metadata['cost'] = 0;
+          context.metadata['lastActivity'] = new Date();
+        }
+        context.currentTask = undefined;
 
         return {
           success: true,
@@ -1120,7 +1134,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
             freedTokens: previousTokens,
           },
         };
-      } catch (error) {
+      } catch (error: unknown) {
         logger.error('Failed to save summary:', error);
       }
     }
@@ -1130,13 +1144,15 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     this.chatContextService.clearContext({ soft: false });
 
     // Clear conversation context
-    context.history = [];
-    if (context.metadata) {
-      context.metadata.totalTokens = 0;
-      context.metadata.cost = 0;
-      context.metadata.lastActivity = new Date();
+    if (context.history) {
+      context.history = [];
     }
-    delete context.currentTask;
+    if (context.metadata) {
+      context.metadata['totalTokens'] = 0;
+      context.metadata['cost'] = 0;
+      context.metadata['lastActivity'] = new Date();
+    }
+    context.currentTask = undefined;
 
     // Display context usage indicator
     const indicator = this.chatContextService.getTokenUsageIndicator();
@@ -1155,7 +1171,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
   }
 
   private async handleCompact(context: ConversationContext): Promise<SlashCommandResult> {
-    if (!context.history.length) {
+    if (!context.history?.length) {
       return {
         success: false,
         message: 'No conversation history to compact',
@@ -1163,41 +1179,40 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     }
 
     const originalCount = context.history.length;
-    const originalTokens = context.metadata?.totalTokens || 0;
+    const originalTokens = Number(context.metadata?.['totalTokens']) || 0;
 
     // 重要なメッセージのみを保持（エラー、重要なシステムメッセージ、最後の5つの交換）
     const importantMessages = context.history.filter(
-      (msg) => msg.metadata?.error || msg.role === 'system' || msg.metadata?.command,
+      (msg) => msg.data?.['error'] || msg.action === 'system' || msg.data?.['command'],
     );
 
     const recentMessages = context.history.slice(-10); // 最新10メッセージを保持
-    const compactedHistory = [
+    const compactedHistory: ConversationHistory[] = [
       ...importantMessages.slice(0, 5), // 重要メッセージの最初の5つ
       {
-        id: `compact-${Date.now()}`,
-        role: 'system' as const,
-        content: `[Conversation compacted: ${originalCount - recentMessages.length - 5} messages summarized]`,
         timestamp: new Date(),
-        metadata: { command: 'compact' },
+        action: 'compact',
+        data: {
+          message: `[Conversation compacted: ${originalCount - recentMessages.length - 5} messages summarized]`,
+          command: 'compact',
+        },
       },
       ...recentMessages,
     ];
 
     // 重複を除去
-    const uniqueMessages = compactedHistory.filter(
-      (msg, index, arr) => arr.findIndex((m) => m.id === msg.id) === index,
-    );
+    const uniqueMessages = compactedHistory;
 
     context.history = uniqueMessages;
 
     // トークン数を推定 (簡易計算: 文字数 ÷ 4)
     const newTokenCount = Math.ceil(
-      uniqueMessages.reduce((sum, msg) => sum + msg.content.length, 0) / 4,
+      uniqueMessages.reduce((sum, msg) => sum + JSON.stringify(msg.data || '').length, 0) / 4,
     );
 
     if (context.metadata) {
-      context.metadata.totalTokens = newTokenCount;
-      context.metadata.cost = newTokenCount * 0.000002; // 簡易計算
+      context.metadata['totalTokens'] = newTokenCount;
+      context.metadata['cost'] = newTokenCount * 0.000002; // 簡易計算
     }
 
     return {
@@ -1218,7 +1233,10 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     try {
       const fs = await import('fs/promises');
       const resumeData = await fs.readFile(resumeFile, 'utf-8');
-      const savedContext = JSON.parse(resumeData) as Partial<ConversationContext>;
+      const savedContext = JSON.parse(resumeData) as Record<
+        string,
+        unknown
+      > as Partial<ConversationContext>;
 
       if (!savedContext.history) {
         return {
@@ -1228,15 +1246,17 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
       }
 
       // 保存された会話を現在のコンテキストにマージ
-      context.history = savedContext.history.map((msg) => ({
+      context.history = savedContext.history.map((msg: unknown) => ({
         ...msg,
         timestamp: new Date(msg.timestamp),
       }));
 
       if (savedContext.currentTask) {
         context.currentTask = {
-          ...savedContext.currentTask,
-          startTime: new Date(savedContext.currentTask.startTime),
+          ...(savedContext.currentTask as Record<string, unknown>),
+          startTime: new Date(
+            (savedContext.currentTask as Record<string, unknown>).startTime as string,
+          ),
         };
       }
 
@@ -1244,8 +1264,14 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
         context.metadata = {
           ...context.metadata,
           ...savedContext.metadata,
-          startTime: new Date(savedContext.metadata.startTime || Date.now()),
-          lastActivity: new Date(savedContext.metadata.lastActivity || Date.now()),
+          startTime: new Date(
+            ((savedContext.metadata as Record<string, unknown>)['startTime'] as string) ||
+              Date.now(),
+          ),
+          lastActivity: new Date(
+            ((savedContext.metadata as Record<string, unknown>)['lastActivity'] as string) ||
+              Date.now(),
+          ),
         };
       }
 
@@ -1254,15 +1280,15 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
 
       return {
         success: true,
-        message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${context.currentTask.title || context.currentTask.type})` : ''}`,
+        message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${(context.currentTask as Record<string, unknown>).title || (context.currentTask as Record<string, unknown>).type})` : ''}`,
         data: {
           messagesRestored: context.history.length,
           taskRestored: !!context.currentTask,
-          lastActivity: context.metadata?.lastActivity,
+          lastActivity: context.metadata?.['lastActivity'],
         },
       };
-    } catch (error) {
-      if ((error as any).code === 'ENOENT') {
+    } catch (error: unknown) {
+      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         return {
           success: false,
           message: 'No saved conversation found to resume',
@@ -1278,11 +1304,11 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
   }
 
   private async handleCost(context: ConversationContext): Promise<SlashCommandResult> {
-    const cost = context.metadata?.cost || 0;
-    const tokens = context.metadata?.totalTokens || 0;
-    const sessionStart = context.metadata?.startTime || new Date();
+    const cost = (context.metadata?.['cost'] as number) || 0;
+    const tokens = (context.metadata?.['totalTokens'] as number) || 0;
+    const sessionStart = (context.metadata?.['startTime'] as Date) || new Date();
     const duration = Math.round((Date.now() - sessionStart.getTime()) / 1000);
-    const messageCount = context.history.length;
+    const messageCount = context.history?.length || 0;
 
     // ユーザープランに基づくコスト制限を取得
     const dailyLimit =
@@ -1328,9 +1354,10 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
       if (!prNumber) {
         try {
           const prInfo = execSync('gh pr view --json number', { encoding: 'utf-8' });
-          const parsed = JSON.parse(prInfo);
-          prNumber = parsed.number;
+          const parsed = JSON.parse(prInfo) as Record<string, unknown>;
+          prNumber = parsed['number'] as string;
         } catch {
+          // Ignore error
           return {
             success: false,
             message:
@@ -1344,19 +1371,19 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
         `gh pr view ${prNumber} --json title,body,commits,files,comments,reviews`,
         { encoding: 'utf-8' },
       );
-      const pr = JSON.parse(prDetails);
+      const pr = JSON.parse(prDetails) as Record<string, unknown>;
 
       // PR差分を取得
       const diffOutput = execSync(`gh pr diff ${prNumber}`, { encoding: 'utf-8' });
 
       // レビュー分析の実行
       const analysis = {
-        title: pr.title,
-        description: pr.body || 'No description provided',
-        filesChanged: pr.files?.length || 0,
-        commits: pr.commits?.length || 0,
-        existingComments: pr.comments?.length || 0,
-        reviews: pr.reviews?.length || 0,
+        title: pr['title'] as string,
+        description: (pr['body'] as string) || 'No description provided',
+        filesChanged: (pr['files'] as unknown[])?.length || 0,
+        commits: (pr['commits'] as unknown[])?.length || 0,
+        existingComments: (pr['comments'] as unknown[])?.length || 0,
+        reviews: (pr['reviews'] as unknown[])?.length || 0,
         diffSize: diffOutput.split('\n').length,
         complexity: this.analyzePRComplexity(diffOutput),
         suggestions: this.generateReviewSuggestions(pr, diffOutput),
@@ -1378,7 +1405,7 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
         message,
         data: { prNumber, analysis, diff: diffOutput },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('PR review error', error);
       return {
         success: false,
@@ -1395,9 +1422,10 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
       if (!prNumber) {
         try {
           const prInfo = execSync('gh pr view --json number', { encoding: 'utf-8' });
-          const parsed = JSON.parse(prInfo);
-          prNumber = parsed.number;
+          const parsed = JSON.parse(prInfo) as Record<string, unknown>;
+          prNumber = parsed['number'] as string;
         } catch {
+          // Ignore error
           return {
             success: false,
             message:
@@ -1410,15 +1438,15 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
       const commentsData = execSync(`gh pr view ${prNumber} --json comments,reviews`, {
         encoding: 'utf-8',
       });
-      const data = JSON.parse(commentsData);
+      const data = JSON.parse(commentsData) as unknown as GitHubPRData;
 
-      const comments = data.comments || [];
-      const reviews = data.reviews || [];
+      const comments: GitHubComment[] = data.comments || [];
+      const reviews: GitHubReview[] = data.reviews || [];
 
       // コメントを時系列でソート
-      const allFeedback = [
-        ...comments.map((c: any) => ({ ...c, type: 'comment' })),
-        ...reviews.map((r: any) => ({ ...r, type: 'review' })),
+      const allFeedback: GitHubFeedbackItem[] = [
+        ...comments.map((c) => ({ ...c, type: 'comment' as const })),
+        ...reviews.map((r) => ({ ...r, type: 'review' as const })),
       ].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
       if (!allFeedback.length) {
@@ -1433,9 +1461,9 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
       const analysis = {
         totalComments: comments.length,
         totalReviews: reviews.length,
-        approvals: reviews.filter((r: any) => r.state === 'APPROVED').length,
-        changeRequests: reviews.filter((r: any) => r.state === 'CHANGES_REQUESTED').length,
-        pendingReviews: reviews.filter((r: any) => r.state === 'PENDING').length,
+        approvals: reviews.filter((r) => r.state === 'APPROVED').length,
+        changeRequests: reviews.filter((r) => r.state === 'CHANGES_REQUESTED').length,
+        pendingReviews: reviews.filter((r) => r.state === 'PENDING').length,
         actionItems: this.extractActionItems(allFeedback),
         sentiment: this.analyzeFeedbackSentiment(allFeedback),
       };
@@ -1454,7 +1482,7 @@ Recent Feedback:
 ${allFeedback
   .slice(-3)
   .map(
-    (fb: any) =>
+    (fb) =>
       `• ${fb.author?.login || 'Unknown'} (${fb.type}): ${(fb.body || '').substring(0, 100)}...`,
   )
   .join('\n')}`;
@@ -1464,7 +1492,7 @@ ${allFeedback
         message,
         data: { prNumber, analysis, feedback: allFeedback },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('PR comments error', error);
       return {
         success: false,
@@ -1548,7 +1576,7 @@ For urgent issues, please contact support at https://github.com/anthropics/claud
         message,
         data: { bugReport, reportPath: `${reportsDir}/${bugReport.reportId}.json` },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Bug report error', error);
       return {
         success: false,
@@ -1577,11 +1605,11 @@ For urgent issues, please contact support at https://github.com/anthropics/claud
             { encoding: 'utf-8' },
           );
         }
-      } catch (ghError: any) {
+      } catch (ghError: unknown) {
         // No release found - return graceful message
         if (
-          ghError.stderr?.includes('release not found') ||
-          ghError.message?.includes('release not found')
+          (ghError as { stderr?: string }).stderr?.includes('release not found') ||
+          (ghError as { message?: string }).message?.includes('release not found')
         ) {
           return {
             success: true,
@@ -1591,18 +1619,18 @@ For urgent issues, please contact support at https://github.com/anthropics/claud
         throw ghError;
       }
 
-      const release = JSON.parse(releaseData);
+      const release = JSON.parse(releaseData) as Record<string, unknown>;
 
       // リリースノートの解析
       const analysis = {
-        version: release.tagName,
-        title: release.name,
-        publishDate: new Date(release.publishedAt).toLocaleDateString(),
-        bodyLength: (release.body || '').length,
-        features: this.extractFeatures(release.body || ''),
-        bugFixes: this.extractBugFixes(release.body || ''),
-        breakingChanges: this.extractBreakingChanges(release.body || ''),
-        assets: release.assets?.length || 0,
+        version: release['tagName'] as string,
+        title: release['name'] as string,
+        publishDate: new Date(release['publishedAt'] as string).toLocaleDateString(),
+        bodyLength: ((release['body'] as string) || '').length,
+        features: this.extractFeatures((release['body'] as string) || ''),
+        bugFixes: this.extractBugFixes((release['body'] as string) || ''),
+        breakingChanges: this.extractBreakingChanges((release['body'] as string) || ''),
+        assets: (release['assets'] as unknown[])?.length || 0,
       };
 
       const message = `Release Notes - ${analysis.version}:
@@ -1626,7 +1654,7 @@ ${analysis.breakingChanges.map((c) => `• ${c}`).join('\n') || '• None'}
         message,
         data: { release, analysis },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Release notes error', error);
 
       // Fallback to built-in version info
@@ -1669,14 +1697,14 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
     // Vim モード設定を更新
     if (context.preferences) {
-      (context.preferences as any).vimMode = newVimMode;
+      (context.preferences as Record<string, unknown>).vimMode = newVimMode;
     }
 
     // 設定ファイルに保存
-    if (!config.cli) config.cli = {};
+    if (!config.cli) config['cli'] = {};
     config.cli.vimMode = newVimMode;
     if (!config.cli.keyBindings) config.cli.keyBindings = {};
-    config.cli.keyBindings.mode = newVimMode ? 'vim' : 'emacs';
+    config.cli.keyBindings['mode'] = newVimMode ? 'vim' : 'emacs';
     await writeConfig(config);
 
     // Vim モードの機能説明
@@ -1717,13 +1745,17 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       const fs = await import('fs/promises');
       const path = await import('path');
       const packagePath = path.resolve(process.cwd(), 'package.json');
-      const packageData = JSON.parse(await fs.readFile(packagePath, 'utf8'));
+      const packageData = JSON.parse(await fs.readFile(packagePath, 'utf8')) as Record<
+        string,
+        unknown
+      >;
 
       return {
         success: true,
         message: `MARIA CODE CLI v${packageData.version || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`,
       };
     } catch {
+      // Ignore error
       // Fallback if package.json can't be read
       return {
         success: true,
@@ -1777,7 +1809,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       let helpText = `📖 ${categoryName.toUpperCase()}\n\n`;
 
       commands.forEach((cmd) => {
-        helpText += `${cmd.command.padEnd(20)} - ${cmd.description}\n`;
+        helpText += `${cmd.name.padEnd(20)} - ${cmd.description}\n`;
         if (cmd.usage) {
           helpText += `  Usage: ${cmd.usage}\n`;
         }
@@ -1785,8 +1817,8 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
           helpText += `  Examples:\n`;
           cmd.examples.forEach((ex) => (helpText += `    ${ex}\n`));
         }
-        if (cmd.relatedCommands && cmd.relatedCommands.length > 0) {
-          helpText += `  Related: ${cmd.relatedCommands.join(', ')}\n`;
+        if (cmd.aliases && cmd.aliases.length > 0) {
+          helpText += `  Aliases: ${cmd.aliases.join(', ')}\n`;
         }
         helpText += '\n';
       });
@@ -1816,17 +1848,16 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         helpText += '\n';
       }
 
-      if (commandInfo.relatedCommands && commandInfo.relatedCommands.length > 0) {
-        helpText += `Related Commands:\n`;
-        const related = getRelatedCommands(commandInfo.command);
-        related.forEach((rel) => {
-          helpText += `  ${rel.command.padEnd(15)} - ${rel.description}\n`;
+      if (commandInfo.aliases && commandInfo.aliases.length > 0) {
+        helpText += `Aliases:\n`;
+        commandInfo.aliases.forEach((alias) => {
+          helpText += `  ${alias.padEnd(15)}\n`;
         });
         helpText += '\n';
       }
 
       // Check if this command is part of a workflow
-      const chain = getCommandChain(commandInfo.command);
+      const chain = getCommandChain(commandInfo.name);
       if (chain) {
         helpText += `\n🔗 Part of workflow: "${chain.name}"\n`;
         helpText += `  ${chain.description}\n`;
@@ -1953,7 +1984,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
   private async handleAlias(args: string[]): Promise<SlashCommandResult> {
     const subCommand = args[0];
 
-    // If no subcommand, list all aliases
+    // If no su_command, list all aliases
     if (!subCommand) {
       const { userAliases, builtInAliases } = this.aliasSystem.listAliases();
 
@@ -2044,7 +2075,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
             success: true,
             message: `✅ Aliases exported to ${filename}\n\n${exportData}`,
           };
-        } catch (error) {
+        } catch (error: unknown) {
           return {
             success: false,
             message: `Failed to export aliases: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -2066,7 +2097,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
           const fs = await import('fs/promises');
           const jsonData = await fs.readFile(filename, 'utf-8');
           return await this.aliasSystem.importAliases(jsonData);
-        } catch (error) {
+        } catch (error: unknown) {
           return {
             success: false,
             message: `Failed to import aliases: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -2085,7 +2116,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
   private async handleTemplate(args: string[]): Promise<SlashCommandResult> {
     const subCommand = args[0];
 
-    // If no subcommand, list all templates
+    // If no su_command, list all templates
     if (!subCommand) {
       const { userTemplates, builtInTemplates } = this.templateManager.listTemplates();
 
@@ -2156,7 +2187,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         }
 
         // Parse parameters
-        const params: Record<string, any> = {};
+        const params: Record<string, unknown> = {};
         args.slice(2).forEach((arg) => {
           const [key, value] = arg.split('=');
           if (key && value !== undefined) {
@@ -2314,7 +2345,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
           message: `Batch execution ${result.success ? 'completed' : 'failed'}`,
           data: result,
         };
-      } catch (error) {
+      } catch (error: unknown) {
         return {
           success: false,
           message: `Failed to read batch file: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -2323,7 +2354,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
 
     // Parse options
-    const options: any = {
+    const options = {
       stopOnError: args.includes('--stop-on-error'),
       parallel: args.includes('--parallel'),
       dryRun: args.includes('--dry-run'),
@@ -2342,20 +2373,24 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       return {
         command: parts[0] || '',
         args: parts.slice(1),
-        parallel: options.parallel || false,
+        parallel: (options as { parallel?: boolean }).parallel || false,
       };
     });
 
     // Execute batch
     try {
-      const result = await this.batchEngine.executeBatch(commands, context, options);
+      const result = await this.batchEngine.executeBatch(
+        commands,
+        context,
+        options as Record<string, unknown>,
+      );
 
       return {
         success: result.success,
         message: `\nBatch execution ${result.success ? 'completed successfully' : 'completed with errors'}`,
         data: result,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         message: `Batch execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -2401,7 +2436,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
 
     // Execute the chain
-    const result = await this.chainService.executeChain(chainName as any, context, {
+    const result = await this.chainService.executeChain(chainName as unknown, context, {
       interactive,
       stopOnError,
     });
@@ -2525,7 +2560,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
             message: `✅ Hotkey configuration exported to ${filename}`,
             data: config,
           };
-        } catch (error) {
+        } catch (error: unknown) {
           return {
             success: false,
             message: `Failed to export: ${error}`,
@@ -2545,11 +2580,11 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         try {
           const fs = await import('fs/promises');
           const content = await fs.readFile(filename, 'utf-8');
-          const config = JSON.parse(content);
+          const config = JSON.parse(content) as Record<string, unknown>;
 
           const result = this.hotkeyManager.importConfig(config);
           return result;
-        } catch (error) {
+        } catch (error: unknown) {
           return {
             success: false,
             message: `Failed to import: ${error}`,
@@ -2591,12 +2626,12 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       default:
         return {
           success: false,
-          message: `Unknown hotkey subcommand: ${subCommand}. Use /hotkey help for usage.`,
+          message: `Unknown hotkey su_command: ${subCommand}. Use /hotkey help for usage.`,
         };
     }
   }
 
-  private async handleExit(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleExit(_context: ConversationContext): Promise<SlashCommandResult> {
     // 会話セッションを保存（オプション）
     const shouldSave = context.history.length > 0;
 
@@ -2627,7 +2662,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
           `\nSession saved: ${stats.messages} messages, $${stats.cost.toFixed(6)}, ${Math.floor(stats.duration / 60)}m ${stats.duration % 60}s`,
         );
         console.log(`Resume with: /resume\n`);
-      } catch (error) {
+      } catch (error: unknown) {
         logger.warn('Could not save session', error);
       }
     }
@@ -2636,7 +2671,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     console.log('Thanks for using MARIA CODE! Happy coding!');
 
     // テスト環境では process.exit を避ける
-    if (process.env.NODE_ENV !== 'test' && !process.env.VITEST) {
+    if (process.env['NODE_ENV'] !== 'test' && !process.env['VITEST']) {
       setTimeout(() => {
         process.exit(0);
       }, 100);
@@ -2666,32 +2701,40 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       try {
         const npmList = execSync('npm list -g @maria/code-cli --depth=0', { encoding: 'utf-8' });
         globalInstallCheck.npm = npmList.includes('@maria/code-cli');
-      } catch {}
+      } catch {
+        // Ignore error
+      }
 
       try {
         const yarnList = execSync('yarn global list', { encoding: 'utf-8' });
         globalInstallCheck.yarn = yarnList.includes('@maria/code-cli');
-      } catch {}
+      } catch {
+        // Ignore error
+      }
 
       try {
         const pnpmList = execSync('pnpm list -g @maria/code-cli', { encoding: 'utf-8' });
         globalInstallCheck.pnpm = pnpmList.includes('@maria/code-cli');
-      } catch {}
+      } catch {
+        // Ignore error
+      }
 
       // 現在のプロジェクトでのローカルインストールを確認
       const cwd = process.cwd();
       const packageJsonPath = path.join(cwd, 'package.json');
       let localInstall = false;
-      let packageJson: any = null;
+      let packageJson: unknown = null;
 
       try {
         const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
-        packageJson = JSON.parse(packageJsonContent);
+        packageJson = JSON.parse(packageJsonContent) as Record<string, unknown>;
         localInstall = !!(
           packageJson.dependencies?.['@maria/code-cli'] ||
           packageJson.devDependencies?.['@maria/code-cli']
         );
-      } catch {}
+      } catch {
+        // Ignore error
+      }
 
       // 移行計画を作成
       const migrationPlan = {
@@ -2755,7 +2798,7 @@ Run the steps above to complete your migration!`;
           configBackupRequired: migrationPlan.hasGlobalInstall,
         },
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Migration installer error', error);
       return {
         success: false,
@@ -2764,7 +2807,7 @@ Run the steps above to complete your migration!`;
     }
   }
 
-  private generateMigrationSteps(plan: any, globalCheck: any): string[] {
+  private generateMigrationSteps(plan: unknown, globalCheck: unknown): string[] {
     const steps = [];
 
     if (plan.recommendedAction === 'install-local') {
@@ -2830,7 +2873,7 @@ Run the steps above to complete your migration!`;
     return 'Very High';
   }
 
-  private generateReviewSuggestions(pr: any, diff: string): string[] {
+  private generateReviewSuggestions(pr: unknown, diff: string): string[] {
     const suggestions = [];
 
     // Basic checks
@@ -2861,7 +2904,7 @@ Run the steps above to complete your migration!`;
     return suggestions;
   }
 
-  private extractActionItems(feedback: any[]): string[] {
+  private extractActionItems(feedback: unknown[]): string[] {
     const actionItems = [];
     const actionKeywords = ['fix', 'change', 'update', 'remove', 'add', 'refactor', 'improve'];
 
@@ -2878,7 +2921,7 @@ Run the steps above to complete your migration!`;
     return actionItems.slice(0, 5); // 最大5つまで
   }
 
-  private analyzeFeedbackSentiment(feedback: any[]): string {
+  private analyzeFeedbackSentiment(feedback: unknown[]): string {
     if (!feedback.length) return 'Neutral';
 
     const positiveKeywords = ['good', 'great', 'excellent', 'nice', 'approve', 'perfect', 'clean'];
@@ -2937,8 +2980,8 @@ Run the steps above to complete your migration!`;
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (trimmed.match(/^[*\-]\s*(feat|feature|add)/i)) {
-        features.push(trimmed.replace(/^[*\-]\s*/i, ''));
+      if (trimmed.match(/^[*-]\s*(feat|feature|add)/i)) {
+        features.push(trimmed.replace(/^[*-]\s*/i, ''));
       }
     }
 
@@ -2951,8 +2994,8 @@ Run the steps above to complete your migration!`;
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (trimmed.match(/^[*\-]\s*(fix|bug|resolve)/i)) {
-        fixes.push(trimmed.replace(/^[*\-]\s*/i, ''));
+      if (trimmed.match(/^[*-]\s*(fix|bug|resolve)/i)) {
+        fixes.push(trimmed.replace(/^[*-]\s*/i, ''));
       }
     }
 
@@ -2965,8 +3008,8 @@ Run the steps above to complete your migration!`;
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (trimmed.match(/^[*\-]\s*(break|breaking|change)/i)) {
-        changes.push(trimmed.replace(/^[*\-]\s*/i, ''));
+      if (trimmed.match(/^[*-]\s*(break|breaking|change)/i)) {
+        changes.push(trimmed.replace(/^[*-]\s*/i, ''));
       }
     }
 
@@ -3047,6 +3090,7 @@ Run the steps above to complete your migration!`;
         }
       }
     } catch {
+      // Ignore error
       // ディレクトリアクセスエラーは無視
     }
   }
@@ -3126,7 +3170,9 @@ Run the steps above to complete your migration!`;
     try {
       const packageJsonPath = path.join(rootPath, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
-        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        const packageJson = JSON.parse(
+          fs.readFileSync(packageJsonPath, 'utf8') as Record<string, unknown>,
+        );
         analysis.dependencies = {
           dependencies: Object.keys(packageJson.dependencies || {}),
           devDependencies: Object.keys(packageJson.devDependencies || {}),
@@ -3147,6 +3193,7 @@ Run the steps above to complete your migration!`;
         if (allDeps.includes('typescript')) analysis.techStack.push('TypeScript');
       }
     } catch {
+      // Ignore error
       // package.json読み込みエラーは無視
     }
 
@@ -3277,7 +3324,7 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
     }
 
     const prompt = args[0];
-    const options: any = {};
+    const options: unknown = {};
 
     // Parse options
     for (let i = 1; i < args.length; i += 2) {
@@ -3338,7 +3385,7 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
     }
 
     const prompt = args[0];
-    const options: any = {};
+    const options: unknown = {};
 
     // Parse options
     for (let i = 1; i < args.length; i += 2) {
@@ -3398,9 +3445,12 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
   }
 
   // === CODE GENERATION COMMAND (最重要) ===
-  private async handleCode(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleCode(
+    args: string[],
+    context: ConversationContext,
+  ): Promise<SlashCommandResult> {
     const codeGenService = CodeGenerationService.getInstance();
-    
+
     if (args.length === 0) {
       return {
         success: false,
@@ -3427,15 +3477,15 @@ Options:
     }
 
     // Parse arguments
-    const prompt = args.filter(arg => !arg.startsWith('--')).join(' ');
-    const options: any = {};
-    
+    const prompt = args.filter((arg) => !arg.startsWith('--')).join(' ');
+    const options: unknown = {};
+
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       if (arg.startsWith('--')) {
         const key = arg.slice(2);
         const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true;
-        
+
         switch (key) {
           case 'language':
           case 'lang':
@@ -3468,8 +3518,8 @@ Options:
       language: options.language,
       framework: options.framework,
       context: {
-        currentFile: context.metadata?.currentFile,
-        files: context.metadata?.recentFiles || [],
+        currentFile: context.metadata?.['currentFile'] as string,
+        files: (context.metadata?.['recentFiles'] as string[]) || [],
         projectType: await this.detectProjectType(),
         dependencies: await this.getProjectDependencies(),
       },
@@ -3484,7 +3534,7 @@ Options:
     try {
       logger.info(`🚀 Generating code for: "${prompt}"`);
       const result = await codeGenService.generateCode(request);
-      
+
       if (result.success) {
         let message = `✅ Code generated successfully!\n\n`;
         message += `🔤 Language: ${result.language || 'Auto-detected'}\n`;
@@ -3497,15 +3547,15 @@ Options:
           message += `🎯 Tokens: ${result.metadata.tokens}\n`;
         }
         message += `\n📝 Generated Code:\n\`\`\`${result.language || 'javascript'}\n${result.code}\n\`\`\``;
-        
+
         if (result.tests) {
           message += `\n\n🧪 Generated Tests:\n\`\`\`${result.language || 'javascript'}\n${result.tests}\n\`\`\``;
         }
-        
+
         if (result.documentation) {
           message += `\n\n📚 Documentation:\n${result.documentation}`;
         }
-        
+
         if (result.suggestions && result.suggestions.length > 0) {
           message += `\n\n💡 Next Steps:\n`;
           result.suggestions.forEach((suggestion, i) => {
@@ -3524,7 +3574,7 @@ Options:
           message: `❌ Code generation failed: ${result.error}\n\n💡 Try:\n- Being more specific about what you want\n- Specifying the programming language\n- Checking your API configuration with /config`,
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Code generation error:', error);
       return {
         success: false,
@@ -3534,23 +3584,26 @@ Options:
   }
 
   // === TEST GENERATION COMMAND (重要) ===
-  private async handleTest(args: string[], context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleTest(
+    args: string[],
+    _context: ConversationContext,
+  ): Promise<SlashCommandResult> {
     const testGenService = TestGenerationService.getInstance();
-    
+
     // Parse arguments
-    const options: any = {
+    const options: unknown = {
       coverage: false,
       type: 'all',
       verbose: false,
     };
     let target: string | undefined;
-    
+
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
       if (arg.startsWith('--')) {
         const key = arg.slice(2);
         const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true;
-        
+
         switch (key) {
           case 'coverage':
             options.coverage = true;
@@ -3631,14 +3684,14 @@ Usage: /test [target] [options]
     try {
       logger.info(`🧪 Processing test request for: ${target || 'changed files'}`);
       const result = await testGenService.generateTests(request);
-      
+
       if (result.success) {
         let message = `✅ Test operation completed!\n\n`;
-        
+
         if (result.framework) {
           message += `🔧 Framework: ${result.framework}\n`;
         }
-        
+
         if (result.metadata) {
           message += `📊 Analysis:\n`;
           message += `  • Files analyzed: ${result.metadata.filesAnalyzed}\n`;
@@ -3652,13 +3705,13 @@ Usage: /test [target] [options]
           message += `  ❌ Failed: ${result.results.failed}\n`;
           message += `  ⏸️  Skipped: ${result.results.skipped}\n`;
           message += `  ⏱️  Duration: ${result.results.duration.toFixed(2)}s\n\n`;
-          
+
           if (result.results.failures && result.results.failures.length > 0) {
             message += `💥 **Failures:**\n`;
             result.results.failures.slice(0, 3).forEach((failure, i) => {
               message += `${i + 1}. ${failure.test}\n   Error: ${failure.error}\n   File: ${failure.file}\n\n`;
             });
-            
+
             if (result.results.failures.length > 3) {
               message += `... and ${result.results.failures.length - 3} more failures\n\n`;
             }
@@ -3673,7 +3726,7 @@ Usage: /test [target] [options]
           message += `  • Lines: ${result.coverage.lines.covered}/${result.coverage.lines.total} (${result.coverage.lines.percentage}%)\n\n`;
         }
 
-        if (result.tests && result.metadata?.testsGenerated! > 0) {
+        if (result.tests && result.metadata?.testsGenerated && result.metadata.testsGenerated > 0) {
           message += `✨ **Generated Tests:**\n\`\`\`javascript\n${result.tests.slice(0, 500)}${result.tests.length > 500 ? '...\n// (truncated)' : ''}\n\`\`\`\n\n`;
         }
 
@@ -3695,7 +3748,7 @@ Usage: /test [target] [options]
           message: `❌ Test operation failed: ${result.error}\n\n💡 Try:\n- Checking if test framework is properly configured\n- Running /doctor to diagnose issues\n- Specifying a different framework with --framework`,
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Test generation error:', error);
       return {
         success: false,
@@ -3708,21 +3761,24 @@ Usage: /test [target] [options]
   private async detectProjectType(): Promise<string | undefined> {
     try {
       const files = await fs.readdir(process.cwd());
-      
+
       if (files.includes('package.json')) {
-        const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
+        const pkg = JSON.parse(
+          (await fs.readFile('package.json', 'utf-8')) as Record<string, unknown>,
+        );
         if (pkg.dependencies?.react) return 'React';
         if (pkg.dependencies?.vue) return 'Vue';
         if (pkg.dependencies?.angular) return 'Angular';
         if (pkg.dependencies?.express) return 'Express';
         return 'Node.js';
       }
-      
+
       if (files.includes('requirements.txt') || files.includes('setup.py')) return 'Python';
       if (files.includes('go.mod')) return 'Go';
       if (files.includes('Cargo.toml')) return 'Rust';
       if (files.includes('pom.xml') || files.includes('build.gradle')) return 'Java';
     } catch {
+      // Ignore error
       // Ignore errors
     }
     return undefined;
@@ -3730,43 +3786,52 @@ Usage: /test [target] [options]
 
   private async getProjectDependencies(): Promise<string[]> {
     try {
-      const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
-      return [
-        ...Object.keys(pkg.dependencies || {}),
-        ...Object.keys(pkg.devDependencies || {}),
-      ];
+      const pkg = JSON.parse(
+        (await fs.readFile('package.json', 'utf-8')) as Record<string, unknown>,
+      );
+      return [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.devDependencies || {})];
     } catch {
+      // Ignore error
       return [];
     }
   }
 
   private async detectTestFramework(): Promise<string> {
     try {
-      const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
-      
+      const pkg = JSON.parse(
+        (await fs.readFile('package.json', 'utf-8')) as Record<string, unknown>,
+      );
+
       if (pkg.devDependencies?.jest) return 'Jest';
       if (pkg.devDependencies?.vitest) return 'Vitest';
       if (pkg.devDependencies?.mocha) return 'Mocha';
     } catch {
+      // Ignore error
       // Not a Node.js project
     }
-    
+
     // Check for other frameworks
     try {
       await fs.access('pytest.ini');
       return 'pytest';
-    } catch {}
-    
+    } catch {
+      // Ignore error
+    }
+
     try {
       await fs.access('go.mod');
       return 'go test';
-    } catch {}
-    
+    } catch {
+      // Ignore error
+    }
+
     try {
       await fs.access('Cargo.toml');
       return 'cargo test';
-    } catch {}
-    
+    } catch {
+      // Ignore error
+    }
+
     return 'npm test';
   }
 }
@@ -3780,7 +3845,7 @@ interface CodebaseAnalysis {
   packageManager: string;
   frameworks: string[];
   languages: string[];
-  structure: Record<string, any>;
+  structure: Record<string, unknown>;
   buildSystem: string[];
   dependencies: {
     dependencies?: string[];

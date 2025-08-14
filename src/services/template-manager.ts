@@ -23,7 +23,7 @@ export interface CommandTemplate {
     name: string;
     description: string;
     type: 'string' | 'number' | 'boolean' | 'choice';
-    default?: any;
+    default?: unknown;
     choices?: string[];
     required?: boolean;
   }>;
@@ -36,8 +36,8 @@ export interface CommandTemplate {
 }
 
 export interface TemplateExecutionContext {
-  parameters: Record<string, any>;
-  variables: Record<string, any>;
+  parameters: Record<string, unknown>;
+  variables: Record<string, unknown>;
   results: Array<{
     command: string;
     success: boolean;
@@ -206,17 +206,17 @@ export class TemplateManager {
    */
   private loadUserTemplates(): void {
     try {
-      const files = require('fs').readdirSync(this.templatesDir);
+      const files = await import('fs').readdirSync(this.templatesDir);
 
       files.forEach((file: string) => {
         if (file.endsWith('.json')) {
           try {
             const content = readFileSync(join(this.templatesDir, file), 'utf-8');
-            const template = JSON.parse(content) as CommandTemplate;
+            const template = JSON.parse(content) as Record<string, unknown> as CommandTemplate;
             template.createdAt = new Date(template.createdAt);
             template.updatedAt = new Date(template.updatedAt);
             this.templates.set(template.id, template);
-          } catch (error) {
+          } catch (error: unknown) {
             logger.error(`Failed to load template ${file}:`, error);
           }
         }
@@ -340,9 +340,9 @@ export class TemplateManager {
     this.templates.delete(id);
 
     try {
-      const fs = require('fs');
+      const fs = await import('fs');
       fs.unlinkSync(join(this.templatesDir, `${id}.json`));
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to delete template file:', error);
     }
 
@@ -425,7 +425,7 @@ export class TemplateManager {
    */
   async importTemplates(jsonData: string): Promise<{ success: boolean; message: string }> {
     try {
-      const data = JSON.parse(jsonData);
+      const data = JSON.parse(jsonData) as Record<string, unknown>;
 
       if (!data.templates || !Array.isArray(data.templates)) {
         return {
@@ -457,7 +457,7 @@ export class TemplateManager {
         success: true,
         message: `Imported ${imported} templates`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         message: `Failed to import templates: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -521,7 +521,7 @@ export class TemplateManager {
    */
   validateParameters(
     template: CommandTemplate,
-    providedParams: Record<string, any>,
+    providedParams: Record<string, unknown>,
   ): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
@@ -554,7 +554,7 @@ export class TemplateManager {
   /**
    * Substitute parameters in command
    */
-  substituteParameters(command: string, parameters: Record<string, any>): string {
+  substituteParameters(command: string, parameters: Record<string, unknown>): string {
     let result = command;
 
     Object.entries(parameters).forEach(([key, value]) => {

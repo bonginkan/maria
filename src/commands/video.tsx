@@ -63,7 +63,7 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
         );
 
         setResult(videoResult);
-      } catch (error) {
+      } catch (error: unknown) {
         setResult({
           success: false,
           error: error instanceof Error ? error.message : String(error),

@@ -60,7 +60,7 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
         if (data.status === 'completed' || data.status === 'failed') {
           setTimeout(onComplete, 2000);
         }
-      } catch (err) {
+      } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Failed to fetch status');
       }
     };

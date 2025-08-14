@@ -28,7 +28,7 @@ export interface MariaConfig {
     defaultModel?: string;
     provider?: string;
     apiKey?: string;
-    providerConfig?: Record<string, any>;
+    providerConfig?: Record<string, unknown>;
   };
   datastore?: {
     embeddings_path?: string;
@@ -98,7 +98,7 @@ export interface Agent {
   type: 'built-in' | 'custom';
   status: 'active' | 'inactive';
   capabilities: string[];
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 export interface MCPServer {
@@ -143,7 +143,9 @@ export function loadConfig(): MariaConfig {
     try {
       const content = readFileSync(GLOBAL_CONFIG_PATH, 'utf-8');
       return parse(content) as MariaConfig;
-    } catch {}
+    } catch {
+      // Ignore errors and return default config
+    }
   }
 
   // Return default config with Gemini 2.5 Pro as default model
@@ -169,7 +171,7 @@ export async function readConfig(): Promise<MariaConfig> {
   const config = loadConfig();
   // Set default API URL if not configured
   if (!config.apiUrl) {
-    config.apiUrl = process.env.MARIA_API_URL || 'http://localhost:8080';
+    config['apiUrl'] = process.env['MARIA_API_URL'] || 'http://localhost:8080';
   }
   return config;
 }
@@ -179,7 +181,7 @@ export async function writeConfig(config: MariaConfig, path?: string): Promise<v
     try {
       saveConfig(config, path);
       resolve();
-    } catch (error) {
+    } catch (error: unknown) {
       reject(error);
     }
   });
@@ -432,7 +434,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
 export function initConfig(): void {
   const defaultConfig: MariaConfig = {
     user: {
-      email: process.env.USER ? `${process.env.USER}@example.com` : 'user@example.com',
+      email: process.env['USER'] ? `${process.env['USER']}@example.com` : 'user@example.com',
     },
     neo4j: {
       instanceId: '4234c1a0',

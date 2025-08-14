@@ -141,7 +141,7 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
       await execAsync('pip3 install Pillow requests');
 
       setProgress('Dependencies installed successfully');
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -170,14 +170,14 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
       }
 
       // Login with token from environment
-      const hfToken = process.env.HF_TOKEN;
+      const hfToken = process.env['HF_TOKEN'];
       if (!hfToken) {
         throw new Error('HF_TOKEN not found in environment variables');
       }
 
       await execAsync(`huggingface-cli login --token ${hfToken}`);
       setProgress('Hugging Face CLI setup complete');
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to setup Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -186,7 +186,7 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
 
   const downloadModel = async (modelId: keyof typeof IMAGE_MODELS): Promise<void> => {
     const model = IMAGE_MODELS[modelId];
-    const modelPath = `${process.env.HF_MODEL_DIR || '~/.maria/huggingface/models'}/${modelId}`;
+    const modelPath = `${process.env['HF_MODEL_DIR'] || '~/.maria/huggingface/models'}/${modelId}`;
 
     setProgress(`Downloading ${model.name}... This may take several minutes`);
 
@@ -198,7 +198,7 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
       await execAsync(`huggingface-cli download ${model.huggingface} --local-dir "${modelPath}"`);
 
       setProgress(`Model ${model.name} downloaded successfully`);
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to download model: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -206,7 +206,7 @@ export const ImageCommand: React.FC<ImageCommandProps> = ({
   };
 
   const createImageGenerationScript = async (params: ImageGenerationParams): Promise<string> => {
-    const scriptDir = `${process.env.HOME}/.maria/scripts`;
+    const scriptDir = `${process.env['HOME']}/.maria/scripts`;
     const scriptPath = path.join(scriptDir, 'generate_image.py');
 
     await execAsync(`mkdir -p "${scriptDir}"`);
@@ -297,8 +297,8 @@ if __name__ == "__main__":
 
   const generateImages = async (params: ImageGenerationParams): Promise<string[]> => {
     const timestamp = Date.now();
-    const outputDir = `${process.env.HOME}/.maria/outputs/images/${timestamp}`;
-    const modelPath = `${process.env.HF_MODEL_DIR || '~/.maria/huggingface/models'}/${params.model}`;
+    const outputDir = `${process.env['HOME']}/.maria/outputs/images/${timestamp}`;
+    const modelPath = `${process.env['HF_MODEL_DIR'] || '~/.maria/huggingface/models'}/${params.model}`;
 
     setProgress('Initializing image generation...');
 
@@ -343,7 +343,7 @@ if __name__ == "__main__":
         .filter((f) => f.length > 0);
 
       return files;
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Image generation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -377,7 +377,7 @@ if __name__ == "__main__":
 
       setResults(outputFiles);
       setProgress(`Generated ${outputFiles.length} images successfully!`);
-    } catch (error) {
+    } catch (error: unknown) {
       setError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsGenerating(false);

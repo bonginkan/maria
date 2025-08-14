@@ -16,12 +16,12 @@ export class GrokProvider extends BaseAIProvider {
 
   private client?: Groq; // Using Groq SDK for Grok AI
 
-  async initialize(apiKey: string, config?: Record<string, any>): Promise<void> {
+  async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
     await super.initialize(apiKey, config);
 
     this.client = new Groq({
       apiKey: this.apiKey,
-      baseURL: config?.baseURL,
+      baseURL: config?.['baseURL'] as string | undefined,
     });
   }
 
@@ -131,7 +131,7 @@ export class GrokProvider extends BaseAIProvider {
     const response = await this.chat(messages, model, { temperature: 0.1 });
 
     try {
-      return JSON.parse(response);
+      return JSON.parse(response) as Record<string, unknown>;
     } catch {
       // Fallback if JSON parsing fails
       return {

@@ -34,39 +34,39 @@ export class AIProviderManager {
     const localProviders = this.config.get('localProviders', {} as Record<string, boolean>);
 
     // Cloud providers
-    if (apiKeys.OPENAI_API_KEY) {
-      this.providers.set('openai', new OpenAIProvider(apiKeys.OPENAI_API_KEY));
+    if (apiKeys['OPENAI_API_KEY']) {
+      this.providers.set('openai', new OpenAIProvider(apiKeys['OPENAI_API_KEY']));
     }
 
-    if (apiKeys.ANTHROPIC_API_KEY) {
-      this.providers.set('anthropic', new AnthropicProvider(apiKeys.ANTHROPIC_API_KEY));
+    if (apiKeys['ANTHROPIC_API_KEY']) {
+      this.providers.set('anthropic', new AnthropicProvider(apiKeys['ANTHROPIC_API_KEY']));
     }
 
-    if (apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY) {
+    if (apiKeys['GOOGLE_API_KEY'] || apiKeys['GEMINI_API_KEY']) {
       this.providers.set(
         'google',
-        new GoogleProvider(apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY),
+        new GoogleProvider(apiKeys['GOOGLE_API_KEY'] || apiKeys['GEMINI_API_KEY']),
       );
     }
 
-    if (apiKeys.GROQ_API_KEY) {
-      this.providers.set('groq', new GroqProvider(apiKeys.GROQ_API_KEY));
+    if (apiKeys['GROQ_API_KEY']) {
+      this.providers.set('groq', new GroqProvider(apiKeys['GROQ_API_KEY']));
     }
 
-    if (apiKeys.GROK_API_KEY) {
-      this.providers.set('grok', new GrokProvider(apiKeys.GROK_API_KEY));
+    if (apiKeys['GROK_API_KEY']) {
+      this.providers.set('grok', new GrokProvider(apiKeys['GROK_API_KEY']));
     }
 
     // Local providers
-    if (localProviders.lmstudio !== false) {
+    if (localProviders['lmstudio'] !== false) {
       this.providers.set('lmstudio', new LMStudioProvider());
     }
 
-    if (localProviders.ollama !== false) {
+    if (localProviders['ollama'] !== false) {
       this.providers.set('ollama', new OllamaProvider());
     }
 
-    if (localProviders.vllm !== false) {
+    if (localProviders['vllm'] !== false) {
       this.providers.set('vllm', new VLLMProvider());
     }
   }
@@ -80,7 +80,7 @@ export class AIProviderManager {
         if (isAvailable) {
           this.availableProviders.add(name);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         // Provider not available
       }
     });
@@ -105,7 +105,7 @@ export class AIProviderManager {
         try {
           const models = await provider.getModels();
           allModels.push(...models);
-        } catch (error) {
+        } catch (error: unknown) {
           // Skip provider with model loading issues
         }
       }

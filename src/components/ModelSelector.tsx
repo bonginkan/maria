@@ -28,7 +28,7 @@ const MODEL_PROFILES = {
     context: '128K',
     type: 'cloud',
   },
-  'o3': {
+  o3: {
     provider: 'openai',
     name: 'o3',
     badge: '🧠',
@@ -246,7 +246,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     try {
       // Save to config
       const config = await readConfig();
-      config.defaultModel = item.value as any;
+      config['defaultModel'] = item.value as unknown;
       await writeConfig(config);
 
       setSaved(true);
@@ -261,7 +261,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
           exit();
         }, 1000);
       }
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to save model');
       setSaving(false);
     }

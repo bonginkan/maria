@@ -10,7 +10,7 @@ import { SOWDocument, Task, MissionPhase } from './auto-mode-controller';
 export interface SOWRequest {
   type: 'paper' | 'slides' | 'development' | 'composite';
   description: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   constraints?: {
     maxCost?: number;
     maxTime?: number;
@@ -351,13 +351,13 @@ export class SOWGenerator {
   private validateConstraints(sow: SOWDocument, constraints?: SOWRequest['constraints']): void {
     if (!constraints) return;
 
-    if (constraints.maxCost && sow.estimatedCost > constraints.maxCost) {
-      logger.warn(`Cost exceeds constraint: ${sow.estimatedCost} > ${constraints.maxCost}`);
+    if (constraints.maxCost && sow['estimatedCost'] > constraints.maxCost) {
+      logger.warn(`Cost exceeds constraint: ${sow['estimatedCost']} > ${constraints.maxCost}`);
     }
 
-    if (constraints.maxTime && sow.estimatedDuration > constraints.maxTime * 60) {
+    if (constraints.maxTime && sow['estimatedDuration'] > constraints.maxTime * 60) {
       logger.warn(
-        `Duration exceeds constraint: ${sow.estimatedDuration} > ${constraints.maxTime * 60}`,
+        `Duration exceeds constraint: ${sow['estimatedDuration']} > ${constraints.maxTime * 60}`,
       );
     }
   }

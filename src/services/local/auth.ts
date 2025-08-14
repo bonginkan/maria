@@ -36,7 +36,7 @@ export class LocalAuthService {
   constructor(options: AuthOptions = {}) {
     this.jwtSecret = options.jwtSecret || crypto.randomBytes(32).toString('hex');
     this.sessionTTL = options.sessionTTL || 86400000; // 24 hours
-    this.dataPath = options.dataPath || path.join(process.env.HOME || '', '.maria', 'auth');
+    this.dataPath = options.dataPath || path.join(process.env['HOME'] || '', '.maria', 'auth');
 
     // Ensure data directory exists
     fs.ensureDirSync(this.dataPath);
@@ -137,7 +137,7 @@ export class LocalAuthService {
       }
 
       // Verify JWT
-      const decoded = jwt.verify(token, this.jwtSecret) as any;
+      const decoded = jwt.verify(token, this.jwtSecret) as unknown;
 
       // Get user
       return this.getUserById(decoded.userId);

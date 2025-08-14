@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run lint-staged for automatic formatting and linting
+pnpm exec lint-staged
+
+# Run quick lint check
+echo "🧪 Running lint check..."
+LINT_OUTPUT=$(pnpm run lint 2>&1)
+ERROR_COUNT=$(echo "$LINT_OUTPUT" | grep -c "error" || echo "0")
+
+if [ "$ERROR_COUNT" -gt "100" ]; then
+  echo "❌ Too many lint errors ($ERROR_COUNT). Maximum allowed: 100"
+  echo "Run 'pnpm lint' to see all errors"
+  exit 1
+fi
+
+echo "✅ Pre-commit checks passed"

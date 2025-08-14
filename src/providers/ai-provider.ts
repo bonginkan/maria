@@ -46,7 +46,7 @@ export interface VisionResponse {
     };
   }>;
   text?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ModelInfo {
@@ -73,7 +73,7 @@ export interface IAIProvider {
   /**
    * Initialize the provider with API key and configuration
    */
-  initialize(apiKey: string, config?: Record<string, any>): Promise<void>;
+  initialize(apiKey: string, config?: Record<string, unknown>): Promise<void>;
 
   /**
    * Chat completion
@@ -145,13 +145,13 @@ export interface IAIProvider {
  */
 export abstract class BaseAIProvider implements IAIProvider {
   protected apiKey: string = '';
-  protected config: Record<string, any> = {};
+  protected config: Record<string, unknown> = {};
   protected initialized: boolean = false;
 
   abstract readonly name: string;
   abstract readonly models: string[];
 
-  async initialize(apiKey: string, config?: Record<string, any>): Promise<void> {
+  async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
     this.apiKey = apiKey;
     this.config = config || {};
     this.initialized = true;

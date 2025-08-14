@@ -13,6 +13,7 @@ const fs = require('fs');
 // Get the script directory and project root
 const binDir = __dirname;
 const projectRoot = path.dirname(binDir);
+const mariaFile = path.join(projectRoot, 'dist', 'bin', 'maria.js');
 const cliFile = path.join(projectRoot, 'dist', 'cli.js');
 const interactiveFile = path.join(projectRoot, 'maria-interactive-cli.mjs');
 
@@ -23,15 +24,15 @@ if (hasArgs) {
   // If arguments provided, use the built CLI for commands
   console.log('🚀 MARIA CODE CLI - Command Mode');
   
-  // Check if CLI file exists
-  if (!fs.existsSync(cliFile)) {
-    console.error('❌ CLI file not found:', cliFile);
+  // Check if built maria file exists
+  if (!fs.existsSync(mariaFile)) {
+    console.error('❌ Built file not found:', mariaFile);
     console.error('💡 Please run: pnpm build');
     process.exit(1);
   }
   
-  // Launch the CLI directly with node, suppressing deprecation warnings
-  const child = spawn('node', ['--no-deprecation', cliFile, ...process.argv.slice(2)], {
+  // Launch the maria entry point with version check
+  const child = spawn('node', ['--no-deprecation', mariaFile, ...process.argv.slice(2)], {
     stdio: 'inherit',
     cwd: process.cwd(),
     env: { ...process.env, NODE_NO_WARNINGS: '1' }

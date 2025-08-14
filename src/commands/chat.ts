@@ -57,9 +57,9 @@ export default function chatCommand(program: Command) {
         }
       } else {
         // Interactive mode - use enhanced CLI for natural language chat
-        const { EnhancedCLI } = await import('../enhanced-cli.js');
+        const { EnhancedCli } = await import('../enhanced-cli.js');
         // CLI starts automatically in constructor
-        new EnhancedCLI();
+        new EnhancedCli();
       }
     });
 }
@@ -137,21 +137,24 @@ async function handleSimplePrompt(prompt: string): Promise<void> {
 }
 
 // Helper functions for research mode
-function validateResearchOptions(options: any): void {
+function validateResearchOptions(options: unknown): void {
+  if (!options || typeof options !== 'object') return;
+
+  const opts = options as Record<string, unknown>;
   const validDepths = ['1', '2', '3'];
-  if (!validDepths.includes(options.depth)) {
-    logger.info(`Invalid depth level: ${options.depth}. Using default: 2`);
-    options.depth = '2';
+  if (typeof opts['depth'] === 'string' && !validDepths.includes(opts['depth'])) {
+    logger.info(`Invalid depth level: ${opts['depth']}. Using default: 2`);
+    opts['depth'] = '2';
   }
 
   const validFormats = ['markdown', 'json', 'plain'];
-  if (!validFormats.includes(options.format)) {
-    logger.info(`Invalid format: ${options.format}. Using default: markdown`);
-    options.format = 'markdown';
+  if (typeof opts['format'] === 'string' && !validFormats.includes(opts['format'])) {
+    logger.info(`Invalid format: ${opts['format']}. Using default: markdown`);
+    opts['format'] = 'markdown';
   }
 
-  if (options.source && options.source.length > 0) {
-    logger.info(`Research sources configured: ${options.source.join(', ')}`);
+  if (Array.isArray(opts['source']) && opts['source'].length > 0) {
+    logger.info(`Research sources configured: ${opts['source'].join(', ')}`);
   }
 }
 

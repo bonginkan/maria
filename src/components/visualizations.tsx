@@ -162,11 +162,11 @@ interface TableColumn {
 
 export const Table: React.FC<{
   columns: TableColumn[];
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   showHeader?: boolean;
   compact?: boolean;
 }> = ({ columns, data, showHeader = true, compact = false }) => {
-  const renderCell = (value: any, column: TableColumn) => {
+  const renderCell = (value: unknown, column: TableColumn) => {
     const str = String(value || '');
     const width = column.width || 15;
 
@@ -255,7 +255,7 @@ interface TreeNode {
   expanded?: boolean;
   icon?: string;
   highlighted?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export const TreeView: React.FC<{
@@ -455,7 +455,7 @@ export const DrillDownNav: React.FC<{
  * Generates intelligent summaries based on data patterns
  */
 export const SmartSummary: React.FC<{
-  data: any;
+  data: unknown;
   type: 'status' | 'cost' | 'performance' | 'usage';
 }> = ({ data, type }) => {
   const generateSummary = () => {
@@ -470,7 +470,7 @@ export const SmartSummary: React.FC<{
           ],
           insight: 'System performance is within normal parameters',
         };
-      case 'cost':
+      case 'cost': {
         const trend = data.trend || 'stable';
         return {
           title: 'Cost Analysis Summary',
@@ -481,6 +481,7 @@ export const SmartSummary: React.FC<{
           ],
           insight: `Cost optimization ${trend === 'up' ? 'recommended' : 'not required'}`,
         };
+      }
       case 'performance':
         return {
           title: 'Performance Summary',

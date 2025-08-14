@@ -94,7 +94,7 @@ export interface Tool {
   function: {
     name: string;
     description: string;
-    parameters: Record<string, any>; // JSON Schema
+    parameters: Record<string, unknown>; // JSON Schema
   };
 }
 

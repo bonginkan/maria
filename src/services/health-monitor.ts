@@ -213,7 +213,7 @@ export class HealthMonitor extends EventEmitter {
 
         this.emit('provider-healthy', name, currentHealth);
         break;
-      } catch (error) {
+      } catch (error: unknown) {
         lastError = error instanceof Error ? error : new Error('Unknown error');
 
         if (attempts >= this.config.retryAttempts) {
@@ -438,7 +438,7 @@ export class HealthMonitor extends EventEmitter {
           2,
         ),
       );
-    } catch (error) {
+    } catch (error: unknown) {
       this.emit('error', new Error(`Failed to save health data: ${error}`));
     }
   }
@@ -450,7 +450,7 @@ export class HealthMonitor extends EventEmitter {
     try {
       const healthFile = join(homedir(), '.maria', 'health', 'system-health.json');
       const data = await fs.readFile(healthFile, 'utf8');
-      const parsed = JSON.parse(data);
+      const parsed = JSON.parse(data) as Record<string, unknown>;
 
       return {
         overall: parsed.overall,
@@ -509,7 +509,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Get monitoring statistics
    */
-  getStatistics(): Record<string, any> {
+  getStatistics(): Record<string, unknown> {
     const providers = Array.from(this.healthData.values());
 
     return {

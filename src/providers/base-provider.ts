@@ -19,7 +19,7 @@ export abstract class BaseProvider implements AIProvider {
   abstract chat(request: AIRequest): Promise<AIResponse>;
 
   // Optional methods with default implementations
-  async vision(image: Buffer, prompt: string): Promise<AIResponse> {
+  async vision(_image: Buffer, _prompt: string): Promise<AIResponse> {
     throw new Error(`${this.name} does not support vision tasks`);
   }
 
@@ -34,11 +34,11 @@ export abstract class BaseProvider implements AIProvider {
     });
   }
 
-  estimateCost(tokens: number): number {
+  estimateCost(_tokens: number): number {
     return 0; // Free by default (local providers)
   }
 
-  protected async makeRequest(url: string, options: any): Promise<any> {
+  protected async makeRequest(url: string, options: unknown): Promise<unknown> {
     const fetch = (await import('node-fetch')).default;
 
     const response = await fetch(url, {
@@ -57,7 +57,10 @@ export abstract class BaseProvider implements AIProvider {
     return response.json();
   }
 
-  protected async makeStreamRequest(url: string, options: any): Promise<AsyncGenerator<string>> {
+  protected async makeStreamRequest(
+    url: string,
+    options: unknown,
+  ): Promise<AsyncGenerator<string>> {
     const fetch = (await import('node-fetch')).default;
 
     const response = await fetch(url, {
@@ -76,7 +79,7 @@ export abstract class BaseProvider implements AIProvider {
     return this.parseStreamResponse(response);
   }
 
-  private async *parseStreamResponse(response: any): AsyncGenerator<string> {
+  private async *parseStreamResponse(response: unknown): AsyncGenerator<string> {
     const reader = response.body?.getReader();
     if (!reader) return;
 
@@ -96,10 +99,10 @@ export abstract class BaseProvider implements AIProvider {
             if (data === '[DONE]') return;
 
             try {
-              const parsed = JSON.parse(data);
+              const parsed = JSON.parse(data) as Record<string, unknown>;
               const content = this.extractStreamContent(parsed);
               if (content) yield content;
-            } catch (e) {
+            } catch (e: unknown) {
               // Skip invalid JSON
             }
           }
@@ -110,12 +113,12 @@ export abstract class BaseProvider implements AIProvider {
     }
   }
 
-  protected extractStreamContent(data: any): string | null {
+  protected extractStreamContent(data: unknown): string | null {
     // Override in subclasses for provider-specific parsing
     return data?.choices?.[0]?.delta?.content || null;
   }
 
-  protected createModelInfo(model: any): ModelInfo {
+  protected createModelInfo(model: unknown): ModelInfo {
     return {
       id: model.id,
       name: model.name || model.id,

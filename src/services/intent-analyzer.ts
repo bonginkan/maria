@@ -21,6 +21,10 @@ export interface IntentAnalysis {
   originalInput: string;
 }
 
+// export class IntentClassifier {
+//   // Alias for backward compatibility
+// }
+
 export class IntentAnalyzer {
   private readonly taskPatterns = {
     paper: {

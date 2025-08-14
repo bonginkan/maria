@@ -10,7 +10,7 @@ import { logger } from '../utils/logger';
 interface CommandMapping {
   pattern: RegExp | string;
   command: string;
-  parameters?: (intent: IntentAnalysis) => Record<string, any>;
+  parameters?: (intent: IntentAnalysis) => Record<string, unknown>;
   confidence?: number;
   description?: string;
 }
@@ -130,7 +130,7 @@ export class CommandMapper {
     logger.debug('Mapping intent to commands:', intent);
 
     const suggestions: CommandSuggestion[] = [];
-    const mappings = this.commandMappings[intent.taskType] || this.commandMappings.general || [];
+    const mappings = this.commandMappings[intent.taskType] || this.commandMappings['general'] || [];
 
     for (const mapping of mappings) {
       if (this.matchesPattern(intent, mapping)) {

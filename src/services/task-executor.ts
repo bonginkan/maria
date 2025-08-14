@@ -13,7 +13,7 @@ const execAsync = promisify(exec);
 export interface TaskResult {
   success: boolean;
   deliverable?: string;
-  output?: any;
+  output?: unknown;
   cost?: number;
   duration: number;
   error?: Error;
@@ -57,7 +57,7 @@ export class TaskExecutor {
       logger.task(task.name, 'complete', `Duration: ${duration}ms`);
 
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       const duration = Date.now() - startTime;
       logger.task(task.name, 'error', error instanceof Error ? error.message : 'Unknown error');
 
@@ -501,8 +501,17 @@ export class TaskExecutor {
         },
         cost: 0.8,
       };
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      // Return default test result on error
+      return {
+        success: false,
+        filesCreated: [],
+        testsGenerated: 0,
+        metrics: {
+          coverage: 0,
+        },
+        cost: 0,
+      };
     }
   }
 

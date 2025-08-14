@@ -117,20 +117,34 @@ export function printInfo(message: string): void {
   console.log(chalk.blue('ℹ️'), message);
 }
 
-export function formatTable(data: any[], headers: string[]): void {
+export function formatTable(data: unknown[], headers: string[]): void {
+  const ensureRowStructure = (row: unknown): Record<string, unknown> => {
+    if (typeof row === 'object' && row !== null) {
+      return row as Record<string, unknown>;
+    }
+    return {};
+  };
+
   const maxLengths = headers.map((header) =>
-    Math.max(header.length, ...data.map((row) => String(row[header] || '').length)),
+    Math.max(
+      header.length,
+      ...data.map((row) => {
+        const rowData = ensureRowStructure(row);
+        return String(rowData[header] || '').length;
+      }),
+    ),
   );
 
   // Print header
-  const headerRow = headers.map((header, i) => header.padEnd(maxLengths[i])).join(' | ');
+  const headerRow = headers.map((header, i) => header.padEnd(maxLengths[i] || 0)).join(' | ');
   console.log(chalk.bold(headerRow));
-  console.log(maxLengths.map((len) => '─'.repeat(len)).join('─┼─'));
+  console.log(maxLengths.map((len) => '─'.repeat(len || 0)).join('─┼─'));
 
   // Print data rows
   data.forEach((row) => {
+    const rowData = ensureRowStructure(row);
     const dataRow = headers
-      .map((header, i) => String(row[header] || '').padEnd(maxLengths[i]))
+      .map((header, i) => String(rowData[header] || '').padEnd(maxLengths[i] || 0))
       .join(' | ');
     console.log(dataRow);
   });

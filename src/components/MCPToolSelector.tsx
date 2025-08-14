@@ -12,7 +12,7 @@ import { MCPService, MCPToolExecution } from '../mcp/MCPService.js';
 
 export interface MCPToolSelectorProps {
   mcpService: MCPService;
-  onExecute: (result: any) => void;
+  onExecute: (result: unknown) => void;
   onCancel: () => void;
 }
 
@@ -28,11 +28,11 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
   const [currentView, setCurrentView] = useState<View>('servers');
   const [selectedServer, setSelectedServer] = useState<string>('');
   const [selectedTool, setSelectedTool] = useState<string>('');
-  const [toolParams, setToolParams] = useState<Record<string, any>>({});
+  const [toolParams, setToolParams] = useState<Record<string, unknown>>({});
   const [currentParam, setCurrentParam] = useState<string>('');
   const [paramValue, setParamValue] = useState<string>('');
   const [execution, setExecution] = useState<MCPToolExecution | null>(null);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
   const [error, setError] = useState<string | null>(null);
 
   const [availableTools, setAvailableTools] = useState<ToolOption[]>([]);
@@ -140,7 +140,7 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
   }, [currentParam, paramValue, toolParams, selectedServer, selectedTool, mcpService]);
 
   const executeTool = useCallback(
-    async (params: Record<string, any>) => {
+    async (params: Record<string, unknown>) => {
       setCurrentView('executing');
       setError(null);
 
@@ -156,7 +156,7 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
         const result = await mcpService.executeTool(selectedServer, selectedTool, params);
         setResult(result);
         setCurrentView('result');
-      } catch (err) {
+      } catch (err: unknown) {
         setError(err instanceof Error ? err.message : String(err));
         setCurrentView('result');
       }

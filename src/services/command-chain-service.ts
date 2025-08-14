@@ -135,7 +135,7 @@ export class CommandChainService {
             console.log(chalk.red(result.message));
             errors.push({ command, error: result.message });
           }
-        } catch (error) {
+        } catch (error: unknown) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           console.log(chalk.red(`❌ ${command} threw an error: ${errorMessage}`));
           errors.push({ command, error: errorMessage });

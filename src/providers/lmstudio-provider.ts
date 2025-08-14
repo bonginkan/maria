@@ -30,15 +30,17 @@ export class LMStudioProvider extends BaseAIProvider {
   private isHealthy: boolean = false;
   private availableModels: string[] = [];
 
-  async initialize(apiKey: string = 'lm-studio', config?: Record<string, any>): Promise<void> {
+  async initialize(apiKey: string = 'lm-studio', config?: Record<string, unknown>): Promise<void> {
     await super.initialize(apiKey, config);
 
     const lmConfig = config as LMStudioConfig;
-    this.apiBase = lmConfig?.apiBase || process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1';
-    this.timeout = lmConfig?.timeout || parseInt(process.env.LMSTUDIO_TIMEOUT || '300000');
+    this.apiBase =
+      lmConfig?.apiBase || process.env['LMSTUDIO_API_BASE'] || 'http://localhost:1234/v1';
+    this.timeout = lmConfig?.timeout || parseInt(process.env['LMSTUDIO_TIMEOUT'] || '300000');
     this.retryAttempts =
-      lmConfig?.retryAttempts || parseInt(process.env.LMSTUDIO_RETRY_ATTEMPTS || '3');
-    this.retryDelay = lmConfig?.retryDelay || parseInt(process.env.LMSTUDIO_RETRY_DELAY || '1000');
+      lmConfig?.retryAttempts || parseInt(process.env['LMSTUDIO_RETRY_ATTEMPTS'] || '3');
+    this.retryDelay =
+      lmConfig?.retryDelay || parseInt(process.env['LMSTUDIO_RETRY_DELAY'] || '1000');
 
     // Check health and get available models
     await this.checkHealth();
@@ -76,8 +78,8 @@ export class LMStudioProvider extends BaseAIProvider {
       });
 
       if (response.ok) {
-        const data = (await response.json()) as any;
-        this.availableModels = data.data.map((model: any) => model.id);
+        const data = (await response.json()) as unknown;
+        this.availableModels = data.data.map((model: unknown) => model.id);
       }
     } catch {
       console.warn('Failed to fetch available models');
@@ -96,7 +98,7 @@ export class LMStudioProvider extends BaseAIProvider {
     for (let i = 0; i < attempts; i++) {
       try {
         return await fn();
-      } catch (error) {
+      } catch (error: unknown) {
         if (i === attempts - 1) throw error;
         await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
       }
@@ -141,7 +143,7 @@ export class LMStudioProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const data = (await response.json()) as any;
+    const data = (await response.json()) as unknown;
     return data.choices[0]?.message?.content || '';
   }
 
@@ -186,7 +188,7 @@ export class LMStudioProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const nodeResponse = response as any; // Node.js fetch response
+    const nodeResponse = response as unknown; // Node.js fetch response
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error('No response body');
 
@@ -208,7 +210,7 @@ export class LMStudioProvider extends BaseAIProvider {
             if (data === '[DONE]') return;
 
             try {
-              const parsed = JSON.parse(data);
+              const parsed = JSON.parse(data) as Record<string, unknown>;
               const content = parsed.choices?.[0]?.delta?.content;
               if (content) {
                 yield content;
@@ -282,7 +284,7 @@ export class LMStudioProvider extends BaseAIProvider {
     const response = await this.chat(messages, model, { temperature: 0.1, maxTokens: 4096 });
 
     try {
-      return JSON.parse(response);
+      return JSON.parse(response) as Record<string, unknown>;
     } catch {
       // Fallback if JSON parsing fails
       return {
@@ -305,9 +307,9 @@ export class LMStudioProvider extends BaseAIProvider {
 
   async switchModel(modelType: '120b' | '20b'): Promise<void> {
     if (modelType === '120b') {
-      this.config.model = 'gpt-oss-120b';
+      this.config['model'] = 'gpt-oss-120b';
     } else {
-      this.config.model = 'gpt-oss-20b';
+      this.config['model'] = 'gpt-oss-20b';
     }
   }
 }

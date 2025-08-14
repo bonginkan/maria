@@ -114,12 +114,12 @@ Provide step-by-step instructions and best practices.`;
           }
           setResult(fullContent);
         } else {
-          setResult(response.message.content);
+          setResult(respons((e as Error).message || String(e)).content);
         }
 
         setStatus('done');
         setStreamingContent('');
-      } catch (error) {
+      } catch (error: unknown) {
         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setStatus('done');
       }
@@ -225,7 +225,7 @@ export const slidesCommand = new Command('slides')
             }
             // For interactive mode, we'll use default values
             const interactiveCommand: SlidesCommand = {
-              action: action as any,
+              action: action as unknown,
               topic: 'AI and the Future of Work',
               file: 'presentation.pptx',
               slidesId: 'demo-presentation-id',

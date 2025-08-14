@@ -35,7 +35,7 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
     success: boolean;
     outputPaths?: string[];
     error?: string;
-    metadata?: any;
+    metadata?: unknown;
   } | null>(null);
   const [startTime, setStartTime] = useState<number>(0);
 
@@ -66,7 +66,7 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
         );
 
         setResult(imageResult);
-      } catch (error) {
+      } catch (error: unknown) {
         setResult({
           success: false,
           error: error instanceof Error ? error.message : String(error),
@@ -183,13 +183,13 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
             <Text color="gray"> | 解像度: {size}</Text>
           </Box>
 
-          {result.metadata && (
+          {result.metadata && typeof result.metadata === 'object' ? (
             <Box marginTop={1}>
               <Text color="cyan">📋 メタデータ:</Text>
-              <Text> シード: {result.metadata.seedUsed}</Text>
-              <Text> モデル: {result.metadata.modelUsed}</Text>
+              <Text> シード: {String((result.metadata as { seedUsed?: unknown }).seedUsed || 'N/A')}</Text>
+              <Text> モデル: {String((result.metadata as { modelUsed?: unknown }).modelUsed || 'N/A')}</Text>
             </Box>
-          )}
+          ) : null}
 
           <Box marginTop={1}>
             <Text color="green">💡 ヒント:</Text>

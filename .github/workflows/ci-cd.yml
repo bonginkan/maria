@@ -61,10 +61,26 @@ jobs:
         run: pnpm run build
 
       - name: 🧪 Run linting
-        run: pnpm run lint || true
+        run: |
+          echo "Running lint check..."
+          pnpm run lint 2>&1 | tee lint-output.txt
+          ERROR_COUNT=$(grep -c "error" lint-output.txt || echo "0")
+          WARNING_COUNT=$(grep -c "warning" lint-output.txt || echo "0")
+          echo "Found $ERROR_COUNT errors and $WARNING_COUNT warnings"
+          if [ "$ERROR_COUNT" -gt "100" ]; then
+            echo "❌ Too many lint errors ($ERROR_COUNT). Maximum allowed: 100"
+            echo "Please fix lint errors before merging."
+            exit 1
+          fi
+          echo "✅ Lint check passed with acceptable error count"
 
       - name: 🔍 Type checking
-        run: pnpm run typecheck || true
+        run: |
+          echo "Running type check..."
+          pnpm run typecheck || {
+            echo "⚠️ Type checking has issues but continuing..."
+            echo "Please fix type errors in future commits."
+          }
 
       - name: 📊 Upload build artifacts
         uses: actions/upload-artifact@v4

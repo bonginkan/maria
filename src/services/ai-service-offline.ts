@@ -23,7 +23,7 @@ export class OfflineAIService {
     const lmstudioEnvPath = path.join(process.cwd(), '.env.lmstudio');
     if (fs.existsSync(lmstudioEnvPath)) {
       dotenv.config({ path: lmstudioEnvPath });
-      this.isOfflineMode = process.env.OFFLINE_MODE === 'true';
+      this.isOfflineMode = process.env['OFFLINE_MODE'] === 'true';
     }
 
     // Load regular .env.local as fallback
@@ -38,13 +38,13 @@ export class OfflineAIService {
       console.log('🚀 Initializing Offline AI Service with LM Studio...');
 
       this.provider = new LMStudioProvider();
-      await this.provider.initialize(process.env.LMSTUDIO_API_KEY || 'lm-studio', {
-        apiBase: process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1',
+      await this.provider.initialize(process.env['LMSTUDIO_API_KEY'] || 'lm-studio', {
+        apiBase: process.env['LMSTUDIO_API_BASE'] || 'http://localhost:1234/v1',
         model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
-        maxTokens: parseInt(process.env.LMSTUDIO_MAX_TOKENS || '8192'),
-        temperature: parseFloat(process.env.LMSTUDIO_TEMPERATURE || '0.7'),
-        stream: process.env.LMSTUDIO_STREAM === 'true',
-        timeout: parseInt(process.env.LMSTUDIO_TIMEOUT || '600000'),
+        maxTokens: parseInt(process.env['LMSTUDIO_MAX_TOKENS'] || '8192'),
+        temperature: parseFloat(process.env['LMSTUDIO_TEMPERATURE'] || '0.7'),
+        stream: process.env['LMSTUDIO_STREAM'] === 'true',
+        timeout: parseInt(process.env['LMSTUDIO_TIMEOUT'] || '600000'),
       });
 
       // Verify server is running
@@ -61,7 +61,7 @@ export class OfflineAIService {
 
       console.log(`✅ Offline AI Service initialized with ${this.modelType} model`);
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('❌ Failed to initialize Offline AI Service:', error);
       return false;
     }
@@ -75,7 +75,7 @@ export class OfflineAIService {
     try {
       const response = await this.provider.chat(messages);
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Chat error:', error);
       throw error;
     }
@@ -88,7 +88,7 @@ export class OfflineAIService {
 
     try {
       yield* this.provider.chatStream(messages);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Stream chat error:', error);
       throw error;
     }
@@ -98,13 +98,13 @@ export class OfflineAIService {
     this.modelType = modelType;
     if (this.provider) {
       // Re-initialize with new model
-      await this.provider.initialize(process.env.LMSTUDIO_API_KEY || 'lm-studio', {
-        apiBase: process.env.LMSTUDIO_API_BASE || 'http://localhost:1234/v1',
+      await this.provider.initialize(process.env['LMSTUDIO_API_KEY'] || 'lm-studio', {
+        apiBase: process.env['LMSTUDIO_API_BASE'] || 'http://localhost:1234/v1',
         model: this.modelType === '120b' ? 'gpt-oss-120b' : 'gpt-oss-20b',
-        maxTokens: parseInt(process.env.LMSTUDIO_MAX_TOKENS || '8192'),
-        temperature: parseFloat(process.env.LMSTUDIO_TEMPERATURE || '0.7'),
-        stream: process.env.LMSTUDIO_STREAM === 'true',
-        timeout: parseInt(process.env.LMSTUDIO_TIMEOUT || '600000'),
+        maxTokens: parseInt(process.env['LMSTUDIO_MAX_TOKENS'] || '8192'),
+        temperature: parseFloat(process.env['LMSTUDIO_TEMPERATURE'] || '0.7'),
+        stream: process.env['LMSTUDIO_STREAM'] === 'true',
+        timeout: parseInt(process.env['LMSTUDIO_TIMEOUT'] || '600000'),
       });
       console.log(`✅ Switched to ${modelType} model`);
     }

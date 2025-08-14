@@ -6,7 +6,7 @@ import { execa } from 'execa';
 import chalk from 'chalk';
 import ora from 'ora';
 import { writeFileSync } from 'fs';
-import { generateNeo4jJWT, getNeo4jBloomURL } from '@maria/shared';
+import { generateNeo4jJWT, getNeo4jBloomURL } from '../shared/utils/jwt.js';
 import { loadConfig } from '../utils/config.js';
 
 interface GraphOptions {
@@ -32,10 +32,10 @@ async function generateJWT(): Promise<string> {
   try {
     // Load configuration
     const config = loadConfig();
-    const userEmail = config.user?.email || process.env.MARIA_USER_EMAIL || 'user@example.com';
+    const userEmail = config.user?.email || process.env['MARIA_USER_EMAIL'] || 'user@example.com';
 
     // TODO: In production, retrieve the secret from Secret Manager
-    const secret = process.env.NEO4J_BLOOM_JWT_SECRET || 'temporary-dev-secret';
+    const secret = process.env['NEO4J_BLOOM_JWT_SECRET'] || 'temporary-dev-secret';
 
     const jwt = generateNeo4jJWT(userEmail, {
       secret,
@@ -45,7 +45,7 @@ async function generateJWT(): Promise<string> {
 
     spinner.succeed('JWT generated successfully');
     return jwt;
-  } catch (error) {
+  } catch (error: unknown) {
     spinner.fail('Failed to generate JWT');
     throw error;
   }
@@ -62,7 +62,7 @@ function saveJWT(jwt: string) {
 // Get Neo4j Bloom URL with JWT
 function getBloomURL(jwt: string, query?: string): string {
   const config = loadConfig();
-  const instanceId = config.neo4j?.instanceId || process.env.NEO4J_INSTANCE_ID || '4234c1a0';
+  const instanceId = config.neo4j?.instanceId || process.env['NEO4J_INSTANCE_ID'] || '4234c1a0';
   return getNeo4jBloomURL(instanceId, jwt, query);
 }
 
@@ -103,7 +103,7 @@ To manually export:
 
     writeFileSync(outputPath, placeholderContent);
     spinner.succeed(`Export instructions saved to ${outputPath}`);
-  } catch (error) {
+  } catch (error: unknown) {
     spinner.fail('Failed to export graph as PNG');
     throw error;
   }

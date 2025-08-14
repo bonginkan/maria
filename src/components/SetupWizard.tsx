@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Spinner, Select, Newline } from 'ink';
+import { Box, Text, Spinner, Newline } from 'ink';
 import {
   ZeroConfigSetup,
   SetupWizardConfig,
@@ -16,7 +16,7 @@ type SetupStep = 'language' | 'detection' | 'preferences' | 'testing' | 'complet
 export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }) => {
   const [currentStep, setCurrentStep] = useState<SetupStep>('language');
   const [loading, setLoading] = useState(false);
-  const [config, setConfig] = useState<Partial<SetupWizardConfig>>({});
+  const [_config, setConfig] = useState<Partial<SetupWizardConfig>>({});
   const [providers, setProviders] = useState<ProviderStatus[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ja'>('en');
@@ -43,7 +43,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
       // Start with language detection
       await detectLanguage();
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Setup failed');
     } finally {
       setLoading(false);
@@ -56,7 +56,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
     try {
       // Auto-detect language
-      const locale = process.env.LANG || process.env.LC_ALL || 'en_US';
+      const locale = process.env['LANG'] || process.env['LC_ALL'] || 'en_US';
       const detectedLang: 'en' | 'ja' =
         locale.includes('ja') || locale.includes('JP') ? 'ja' : 'en';
 
@@ -65,7 +65,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
       // Move to provider detection
       setTimeout(() => detectProviders(), 1000);
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Language detection failed');
     } finally {
       setLoading(false);
@@ -82,7 +82,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
       // Move to preferences
       setTimeout(() => setCurrentStep('preferences'), 1500);
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Provider detection failed');
     } finally {
       setLoading(false);
@@ -101,7 +101,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
       // Move to completion
       setCurrentStep('completion');
       setTimeout(() => onComplete(finalConfig), 2000);
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Configuration failed');
     } finally {
       setLoading(false);

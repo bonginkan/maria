@@ -80,7 +80,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
 
     // Neo4j接続チェック
     // Only check Neo4j if enabled
-    if (process.env.NEO4J_ENABLED === 'true') {
+    if (process.env['NEO4J_ENABLED'] === 'true') {
       newResults.push(await checkNeo4jConnection());
     } else {
       newResults.push({
@@ -125,7 +125,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         message: 'Configuration valid',
         details: `API URL: ${config.apiUrl}`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         name: 'Configuration',
         status: 'error',
@@ -200,7 +200,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
           details: `Missing: ${missingDeps.join(', ')}`,
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         name: 'Dependencies',
         status: 'error',
@@ -236,7 +236,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
           details: `Status: ${response.status} (${apiUrl})`,
         };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         name: 'API Connectivity',
         status: 'error',
@@ -274,7 +274,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         message: 'File system permissions OK',
         details: 'Read/write access verified',
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         name: 'Storage',
         status: 'error',
@@ -304,7 +304,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
         message: 'Neo4j configuration found',
         details: `Instance: ${config.neo4j.instanceId}`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         name: 'Neo4j',
         status: 'error',
@@ -318,7 +318,7 @@ const SystemDiagnostics: React.FC<SystemDiagnosticsProps> = ({ onExit }) => {
     const availableModels = [];
 
     // Gemini可用性チェック
-    if (process.env.GROK_API_KEY || process.env.VERTEX_TOKEN) {
+    if (process.env['GROK_API_KEY'] || process.env['VERTEX_TOKEN']) {
       availableModels.push('AI models configured');
     }
 

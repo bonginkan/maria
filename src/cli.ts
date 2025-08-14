@@ -8,6 +8,7 @@ import { MariaAI, MariaAIConfig } from './maria-ai';
 import { createInteractiveSession } from './services/interactive-session';
 import { loadConfig } from './config/loader';
 import { printWelcome, printStatus } from './utils/ui';
+import { HealthStatus } from './types/common';
 
 export interface CLIOptions {
   config?: string;
@@ -125,7 +126,7 @@ async function askSingle(message: string, config: MariaAIConfig): Promise<void> 
     console.log(chalk.blue('🤖 Thinking...'));
     const response = await maria.chat(message);
     console.log('\n' + chalk.green(response.content));
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(chalk.red('❌ Error:'), error);
     process.exit(1);
   } finally {
@@ -144,7 +145,7 @@ async function generateCode(
     console.log(chalk.blue('🔧 Generating code...'));
     const response = await maria.generateCode(prompt, language);
     console.log('\n' + chalk.green(response.content));
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(chalk.red('❌ Error:'), error);
     process.exit(1);
   } finally {
@@ -165,7 +166,7 @@ async function processVision(
     const imageBuffer = await fs.readFile(imagePath);
     const response = await maria.vision(imageBuffer, prompt);
     console.log('\n' + chalk.green(response.content));
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(chalk.red('❌ Error:'), error);
     process.exit(1);
   } finally {
@@ -178,7 +179,7 @@ async function showStatus(): Promise<void> {
   await maria
     .getHealth()
     .then((health) => {
-      printStatus(health);
+      printStatus(health as HealthStatus);
     })
     .catch((error) => {
       console.error(chalk.red('❌ Failed to get status:'), error);
@@ -205,7 +206,7 @@ async function listModels(provider?: string): Promise<void> {
       }
       console.log('');
     });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(chalk.red('❌ Error listing models:'), error);
   } finally {
     await maria.close();

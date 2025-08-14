@@ -17,7 +17,7 @@ interface StepInfo {
 
 export class ChatDisplay {
   private messages: Message[] = [];
-  private currentSpinner: any = null;
+  private currentSpinner: unknown = null;
 
   constructor() {}
 

@@ -127,7 +127,7 @@ export class ImageGenerationService {
         outputPaths: results,
         metadata,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       onProgress?.({
         stage: 'error',
         percentage: 0,

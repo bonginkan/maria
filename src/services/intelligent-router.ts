@@ -6,7 +6,7 @@
 import { AIRequest, AIResponse, TaskType, PriorityMode } from '../types';
 import { AIProviderManager } from '../providers/manager';
 import { ConfigManager } from '../config/config-manager';
-import { getRecommendedModel, TASK_ROUTING } from '../config/models';
+import { getRecommendedModel } from '../config/models';
 
 export class IntelligentRouter {
   private providerManager: AIProviderManager;
@@ -47,7 +47,7 @@ export class IntelligentRouter {
         if (provider?.vision) {
           try {
             return await provider.vision(image, prompt);
-          } catch (error) {
+          } catch (error: unknown) {
             // Try next provider
             continue;
           }

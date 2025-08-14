@@ -11,7 +11,7 @@ import { logger } from '../utils/logger';
 export interface RouteResult {
   success: boolean;
   command?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   confidence: number;
   message?: string;
   clarificationNeeded?: boolean;
@@ -21,7 +21,7 @@ export interface RouteResult {
 export interface CommandSuggestion {
   command: string;
   confidence: number;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   description?: string;
 }
 
@@ -81,7 +81,7 @@ export class InteractiveRouter {
         confidence: bestCommand.confidence,
         suggestions: suggestions.slice(1, 4),
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Routing error:', error);
       return {
         success: false,

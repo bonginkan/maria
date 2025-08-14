@@ -11,7 +11,7 @@ import { EventEmitter } from 'events';
 export interface StorageItem {
   id: string;
   type: 'chat' | 'paper' | 'slide' | 'project' | 'config' | 'memory';
-  content: any;
+  content: unknown;
   metadata: {
     created: string;
     updated: string;
@@ -41,7 +41,7 @@ export class LocalStorageService extends EventEmitter {
 
   private constructor() {
     super();
-    const homeDir = process.env.HOME || process.env.USERPROFILE || '';
+    const homeDir = process.env['HOME'] || process.env['USERPROFILE'] || '';
     this.basePath = path.join(homeDir, '.maria', 'storage');
     this.indexPath = path.join(this.basePath, 'index.json');
   }
@@ -71,7 +71,7 @@ export class LocalStorageService extends EventEmitter {
       await this.loadIndex();
       this.isInitialized = true;
       this.emit('initialized');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to initialize local storage:', error);
       throw error;
     }
@@ -80,9 +80,9 @@ export class LocalStorageService extends EventEmitter {
   private async loadIndex(): Promise<void> {
     try {
       const indexData = await fs.readFile(this.indexPath, 'utf-8');
-      const items = JSON.parse(indexData) as StorageItem[];
+      const items = JSON.parse(indexData) as Record<string, unknown> as StorageItem[];
       this.index = new Map(items.map((item) => [item.id, item]));
-    } catch (error) {
+    } catch (error: unknown) {
       // Index doesn't exist yet, start fresh
       this.index = new Map();
     }
@@ -97,7 +97,7 @@ export class LocalStorageService extends EventEmitter {
     return crypto.randomBytes(16).toString('hex');
   }
 
-  private calculateChecksum(content: any): string {
+  private calculateChecksum(content: unknown): string {
     const hash = crypto.createHash('sha256');
     hash.update(JSON.stringify(content));
     return hash.digest('hex');
@@ -110,7 +110,7 @@ export class LocalStorageService extends EventEmitter {
   // CRUD Operations
   async create(
     type: StorageItem['type'],
-    content: any,
+    content: unknown,
     metadata?: Partial<StorageItem['metadata']>,
   ): Promise<StorageItem> {
     await this.initialize();
@@ -150,8 +150,8 @@ export class LocalStorageService extends EventEmitter {
     try {
       const itemPath = this.getItemPath(item);
       const data = await fs.readFile(itemPath, 'utf-8');
-      return JSON.parse(data);
-    } catch (error) {
+      return JSON.parse(data) as Record<string, unknown>;
+    } catch (error: unknown) {
       console.error(`Failed to read item ${id}:`, error);
       return null;
     }
@@ -159,7 +159,7 @@ export class LocalStorageService extends EventEmitter {
 
   async update(
     id: string,
-    content: any,
+    content: unknown,
     metadata?: Partial<StorageItem['metadata']>,
   ): Promise<StorageItem | null> {
     await this.initialize();
@@ -207,7 +207,7 @@ export class LocalStorageService extends EventEmitter {
     const itemPath = this.getItemPath(item);
     try {
       await fs.unlink(itemPath);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Failed to delete file for ${id}:`, error);
     }
 
@@ -271,7 +271,7 @@ export class LocalStorageService extends EventEmitter {
 
     try {
       const data = await fs.readFile(backupPath, 'utf-8');
-      const item = JSON.parse(data) as StorageItem;
+      const item = JSON.parse(data) as Record<string, unknown> as StorageItem;
 
       // Restore to main storage
       const itemPath = this.getItemPath(item);
@@ -282,7 +282,7 @@ export class LocalStorageService extends EventEmitter {
       await this.saveIndex();
 
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to restore from backup:', error);
       return false;
     }
@@ -292,7 +292,7 @@ export class LocalStorageService extends EventEmitter {
   async batchCreate(
     items: Array<{
       type: StorageItem['type'];
-      content: any;
+      content: unknown;
       metadata?: Partial<StorageItem['metadata']>;
     }>,
   ): Promise<StorageItem[]> {
@@ -325,7 +325,7 @@ export class LocalStorageService extends EventEmitter {
     await this.initialize();
 
     try {
-      const items = JSON.parse(jsonData) as StorageItem[];
+      const items = JSON.parse(jsonData) as Record<string, unknown> as StorageItem[];
       let importedCount = 0;
 
       for (const item of items) {
@@ -337,7 +337,7 @@ export class LocalStorageService extends EventEmitter {
 
       await this.saveIndex();
       return importedCount;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to import data:', error);
       throw error;
     }
