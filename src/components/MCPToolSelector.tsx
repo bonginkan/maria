@@ -90,11 +90,11 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
 
       // Get tool schema to determine required parameters
       const tools = mcpService.getAvailableTools();
-      const serverTools = tools.find((t) => t.server === toolOption.server);
-      const tool = serverTools?.tools.find((t) => t.name === toolOption.tool);
+      const serverTools = tools.find((t: { server: string }) => t.server === toolOption.server);
+      const tool = serverTools?.tools.find((t: { name: string }) => t.name === toolOption.tool);
 
-      if (tool?.inputSchema?.properties) {
-        const params = Object.keys(tool.inputSchema.properties);
+      if (tool?.inputSchema?.['properties']) {
+        const params = Object.keys(tool.inputSchema['properties'] as Record<string, unknown>);
         if (params.length > 0) {
           setCurrentParam(params[0] || '');
           setCurrentView('params');
@@ -122,11 +122,11 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
 
     // Get next parameter
     const tools = mcpService.getAvailableTools();
-    const serverTools = tools.find((t) => t.server === selectedServer);
-    const tool = serverTools?.tools.find((t) => t.name === selectedTool);
+    const serverTools = tools.find((t: { server: string }) => t.server === selectedServer);
+    const tool = serverTools?.tools.find((t: { name: string }) => t.name === selectedTool);
 
-    if (tool?.inputSchema?.properties) {
-      const allParams = Object.keys(tool.inputSchema.properties);
+    if (tool?.inputSchema?.['properties']) {
+      const allParams = Object.keys(tool.inputSchema['properties'] as Record<string, unknown>);
       const currentIndex = allParams.indexOf(currentParam);
 
       if (currentIndex < allParams.length - 1) {
@@ -145,18 +145,22 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
       setError(null);
 
       const exec: MCPToolExecution = {
-        server: selectedServer,
-        tool: selectedTool,
-        args: params,
+        serverId: selectedServer,
+        toolName: selectedTool,
+        arguments: params,
         startTime: new Date(),
       };
       setExecution(exec);
 
       try {
-        const result = await mcpService.executeTool(selectedServer, selectedTool, params);
+        const result = await mcpService.executeTool(exec);
+        exec.endTime = new Date();
+        setExecution(exec);
         setResult(result);
         setCurrentView('result');
       } catch (err: unknown) {
+        exec.endTime = new Date();
+        setExecution(exec);
         setError(err instanceof Error ? err.message : String(err));
         setCurrentView('result');
       }
@@ -166,7 +170,7 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
 
   const renderServerSelection = () => {
     const servers = mcpService.getServerStatus();
-    const runningServers = servers.filter((s) => s.status === 'running');
+    const runningServers = servers.filter((s: { status: string }) => s.status === 'running');
 
     if (runningServers.length === 0) {
       return (
@@ -180,7 +184,7 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
       );
     }
 
-    const items = runningServers.map((server) => ({
+    const items = runningServers.map((server: { id: string; status: string }) => ({
       label: `${server.id} (${server.status})`,
       value: server.id,
     }));
@@ -191,7 +195,10 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
           Select MCP Server
         </Text>
         <Box marginTop={1}>
-          <SelectInput items={items} onSelect={(item) => handleServerSelect(item.value)} />
+          <SelectInput
+            items={items}
+            onSelect={(item) => handleServerSelect(item.value as string)}
+          />
         </Box>
       </Box>
     );
@@ -275,7 +282,7 @@ const MCPToolSelector: React.FC<MCPToolSelectorProps> = ({ mcpService, onExecute
           {execution && (
             <Text color="gray">
               Duration:{' '}
-              {execution.endTime
+              {execution.endTime && execution.startTime
                 ? `${execution.endTime.getTime() - execution.startTime.getTime()}ms`
                 : 'N/A'}
             </Text>

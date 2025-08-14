@@ -403,7 +403,7 @@ export class ErrorPredictionSystem {
         id: 'historical-error',
         type: 'warning',
         title: 'Previous Error Detected',
-        message: `This command failed before: ${lastError.error}`,
+        message: `This command failed before: ${lastError?.error || 'Unknown error'}`,
         severity: 'warning',
         icon: getStatusIcon('warning'),
         color: getMessageColor('warning'),
@@ -411,7 +411,7 @@ export class ErrorPredictionSystem {
         dismissible: true,
         actionable: {
           text: 'View previous solution',
-          action: () => console.log(`Solution: ${lastError.resolution || 'No solution recorded'}`),
+          action: () => console.log(`Solution: ${lastError?.resolution || 'No solution recorded'}`),
         },
       });
     }
@@ -551,18 +551,18 @@ export class ErrorPredictionSystem {
   }
 
   private getSeverityWeight(severity: string): number {
-    const weights = { critical: 4, error: 3, warning: 2, info: 1 };
+    const weights: Record<string, number> = { critical: 4, error: 3, warning: 2, info: 1 };
     return weights[severity] || 0;
   }
 
   private calculateExperienceFactor(level: string): { impact: number; likelihood: number } {
-    const factors = {
+    const factors: Record<string, { impact: number; likelihood: number }> = {
       beginner: { impact: 8, likelihood: 0.7 },
       intermediate: { impact: 5, likelihood: 0.4 },
       advanced: { impact: 3, likelihood: 0.2 },
       expert: { impact: 1, likelihood: 0.1 },
     };
-    return factors[level] || factors.intermediate;
+    return factors[level] || factors['intermediate']!;
   }
 
   private calculateSystemFactor(state: SystemState): { impact: number; likelihood: number } {

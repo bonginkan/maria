@@ -31,8 +31,23 @@ export class IntelligentRouter {
     }
 
     // 4. Execute request
-    const finalRequest = { ...request, model: modelId };
-    return provider.chat(finalRequest);
+    let response: AIResponse | string;
+    try {
+      response = await provider.chat(request.messages);
+    } catch {
+      // Fallback for providers with different signatures
+      response = await (
+        provider as { chat: (messages: unknown, modelId: string) => Promise<string> }
+      ).chat(request.messages, modelId);
+    }
+    if (typeof response === 'string') {
+      return {
+        content: response,
+        model: modelId,
+        provider: providerName,
+      } as AIResponse;
+    }
+    return response;
   }
 
   async routeVision(image: Buffer, prompt: string): Promise<AIResponse> {
@@ -46,7 +61,12 @@ export class IntelligentRouter {
         const provider = this.providerManager.getProvider(providerName);
         if (provider?.vision) {
           try {
-            return await provider.vision(image, prompt);
+            const visionResponse = await provider.vision(image, prompt);
+            return {
+              content: visionResponse.description,
+              model: 'vision-model',
+              provider: providerName,
+            } as AIResponse;
           } catch (error: unknown) {
             // Try next provider
             continue;
@@ -173,7 +193,13 @@ export class IntelligentRouter {
 
     try {
       const models = await provider.getModels();
-      return models.filter((m) => m.available).map((m) => m.id);
+      // Handle both string[] and object[] responses
+      if (typeof models[0] === 'string') {
+        return models as string[];
+      }
+      return (models as unknown as Array<{ available: boolean; id: string }>)
+        .filter((m) => m.available)
+        .map((m) => m.id);
     } catch {
       return [];
     }

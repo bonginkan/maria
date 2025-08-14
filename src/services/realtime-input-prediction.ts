@@ -147,7 +147,7 @@ export class RealtimeInputPredictor {
     };
 
     for (const keyword of keywords) {
-      const commands = commandMappings[keyword];
+      const commands = (commandMappings as Record<string, string[]>)[keyword];
       if (commands) {
         for (const command of commands) {
           predictions.push({
@@ -176,12 +176,12 @@ export class RealtimeInputPredictor {
     const command = parts[0];
     const currentParam = parts[parts.length - 1];
 
-    const pattern = this.commandPatterns.get(command);
+    const pattern = this.commandPatterns.get(command || '');
     if (!pattern) return [];
 
     // パラメータの予測
     for (const param of pattern.parameters) {
-      if (param.name.toLowerCase().includes(currentParam.toLowerCase())) {
+      if (currentParam && param.name.toLowerCase().includes(currentParam.toLowerCase())) {
         predictions.push({
           suggestion: `${param.prefix}${param.name}`,
           confidence: 0.7,
@@ -204,9 +204,12 @@ export class RealtimeInputPredictor {
     const lastWord = words[words.length - 1];
 
     // ファイルパスっぽい文字列を検出
-    if (lastWord.includes('/') || lastWord.includes('.') || lastWord.startsWith('./')) {
-      for (const file of context.projectFiles) {
-        if (file.toLowerCase().includes(lastWord.toLowerCase())) {
+    if (
+      lastWord &&
+      (lastWord.includes('/') || lastWord.includes('.') || lastWord.startsWith('./'))
+    ) {
+      for (const file of _context.projectFiles) {
+        if (lastWord && file.toLowerCase().includes(lastWord.toLowerCase())) {
           predictions.push({
             suggestion: file,
             confidence: 0.6,

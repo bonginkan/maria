@@ -8,6 +8,7 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
 import { MariaConfig } from '../utils/config.js';
+import { isObject } from '../utils/type-guards.js';
 
 interface ConfigPanelProps {
   config: MariaConfig;
@@ -67,13 +68,16 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, onSave, onCancel }) =
       if (parts.length === 2) {
         const [section, key] = parts;
         if (section && !newConfig[section as keyof MariaConfig]) {
-          (newConfig as unknown)[section] = {};
+          (newConfig as Record<string, unknown>)[section] = {};
         }
         if (section && key) {
-          (newConfig as unknown)[section][key] = convertValue(value);
+          const sectionObj = (newConfig as Record<string, unknown>)[section];
+          if (isObject(sectionObj)) {
+            sectionObj[key] = convertValue(value);
+          }
         }
       } else {
-        (newConfig as unknown)[field] = convertValue(value);
+        (newConfig as Record<string, unknown>)[field] = convertValue(value);
       }
 
       setEditedConfig(newConfig);

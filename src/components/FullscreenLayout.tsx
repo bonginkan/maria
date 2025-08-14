@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Text, useStdout } from 'ink';
+import type { BoxProps } from 'ink';
 import { EnhancedStatusBar } from './EnhancedStatusBar';
 
 interface FullscreenLayoutProps {
@@ -181,17 +182,16 @@ export const ResponsiveBox: React.FC<ResponsiveBoxProps> = ({
 
   const width = Math.min(maxWidth, Math.max(minWidth, availableWidth));
 
-  const boxProps: unknown = {
+  const boxProps: Partial<BoxProps> = {
     width,
     paddingX: padding,
     paddingY: padding > 0 ? Math.floor(padding / 2) : 0,
     flexDirection: 'column' as const,
+    ...(border && {
+      borderStyle: borderStyle as BoxProps['borderStyle'],
+      borderColor: borderColor as BoxProps['borderColor'],
+    }),
   };
-
-  if (border) {
-    boxProps.borderStyle = borderStyle;
-    boxProps.borderColor = borderColor;
-  }
 
   return (
     <Box {...boxProps}>

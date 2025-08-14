@@ -333,7 +333,7 @@ module.exports = { testPlaywrightMCP };
               } else if (item.value === 'install') {
                 installPlaywrightMCP();
               } else {
-                setCurrentView(item.value as unknown);
+                setCurrentView(item.value as 'main' | 'servers' | 'install' | 'config');
               }
             }}
           />

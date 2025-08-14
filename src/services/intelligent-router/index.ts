@@ -3,7 +3,7 @@
  * 自然言語からコマンドへの自動変換とリアルタイム処理を提供
  */
 
-export { _IntentClassifier, type InferredCommand, type CommandPattern } from './intent-classifier';
+export { IntentClassifier, type InferredCommand, type CommandPattern } from './intent-classifier';
 export {
   CommandDispatcher,
   type CommandResult,
@@ -20,8 +20,8 @@ export { PriorityQueue, type QueuedTask, type QueueStatistics } from './priority
 export { StreamProcessor, type StreamChunk, type StreamProgress } from './stream-processor';
 
 // 統合されたインテリジェントルーターシステム
-import { _IntentClassifier } from './intent-classifier';
 import { CommandDispatcher } from './command-dispatcher';
+import { type InferredCommand } from './intent-classifier';
 import { ContextManager } from './context-manager';
 import { InterruptHandler } from './interrupt-handler';
 import { PriorityQueue } from './priority-queue';
@@ -70,8 +70,8 @@ export class IntelligentRouter {
     });
 
     // タスク完了イベント
-    this.priorityQueue.on('task:completed', (task) => {
-      this.contextManager.updateLastCommand(task.params as unknown);
+    this.priorityQueue.on('task:completed', (task: { params: unknown }) => {
+      this.contextManager.updateLastCommand(task.params as InferredCommand);
     });
 
     // ストリーミングチャンク
@@ -197,7 +197,8 @@ export class IntelligentRouter {
       params: { event },
       maxRetries: 1,
       execute: async () => {
-        return await this.dispatcher.dispatch(event.input);
+        const typedEvent = event as { input: string };
+        return await this.dispatcher.dispatch(typedEvent.input);
       },
     });
   }

@@ -4,6 +4,7 @@
  */
 
 import * as fs from 'fs/promises';
+import { Stats } from 'fs';
 import * as path from 'path';
 
 export interface FileChange {
@@ -69,7 +70,7 @@ class FileOperations {
     }
   }
 
-  async getFileStats(filePath: string): Promise<fs.Stats> {
+  async getFileStats(filePath: string): Promise<Stats> {
     return await fs.stat(filePath);
   }
 

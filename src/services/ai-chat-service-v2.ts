@@ -444,11 +444,7 @@ export class AIChatServiceV2 {
     return {
       provider: this.provider.name,
       model: this.currentModel || this.provider.getDefaultModel(),
-      available: AIProviderRegistry.getAll().map((p) => ({
-        name: p.name,
-        models: p.getModels(),
-        initialized: p.isInitialized(),
-      })) as unknown,
+      available: AIProviderRegistry.getAll().map((p) => p.name),
     };
   }
 

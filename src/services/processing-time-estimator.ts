@@ -241,7 +241,7 @@ export class ProcessingTimeEstimator {
       '/bug': 10000, // 10 seconds
     };
 
-    return baseEstimates[command] || 5000; // default 5 seconds
+    return (baseEstimates as Record<string, number>)[command] || 5000; // default 5 seconds
   }
 
   private calculateHistoricalFactor(
@@ -275,7 +275,7 @@ export class ProcessingTimeEstimator {
     };
   }
 
-  private calculateComplexityFactor(command: string, parameters: string[]): EstimationFactor {
+  private calculateComplexityFactor(_command: string, parameters: string[]): EstimationFactor {
     let complexityScore = 0;
 
     // パラメータ数による複雑さ
@@ -450,7 +450,7 @@ export class ProcessingTimeEstimator {
   private getNetworkSpeed(): 'fast' | 'medium' | 'slow' {
     // 実際の実装ではネットワークテストを実行
     const speeds = ['fast', 'medium', 'slow'] as const;
-    return speeds[Math.floor(Math.random() * speeds.length)];
+    return speeds[Math.floor(Math.random() * speeds.length)] || 'medium';
   }
 
   private initializeCommandComplexity(): void {

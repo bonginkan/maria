@@ -5,6 +5,11 @@ export interface ProgressOptions {
   color?: string;
 }
 
+export interface ProgressStep {
+  name: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+}
+
 export class ProgressIndicator {
   private type: string;
   private message: string;
@@ -13,6 +18,7 @@ export class ProgressIndicator {
   private interval: NodeJS.Timeout | null = null;
   private frames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
   private frameIndex = 0;
+  private steps: ProgressStep[] = [];
 
   constructor(options: ProgressOptions = {}) {
     this.type = options.type || 'spinner';
@@ -49,6 +55,21 @@ export class ProgressIndicator {
     } else {
       process.stdout.write('\r\x1b[K');
     }
+  }
+
+  addStep(step: ProgressStep): void {
+    this.steps.push(step);
+  }
+
+  updateStep(name: string, status: ProgressStep['status']): void {
+    const step = this.steps.find((s) => s.name === name);
+    if (step) {
+      step.status = status;
+    }
+  }
+
+  getSteps(): ProgressStep[] {
+    return this.steps;
   }
 
   private startSpinner(): void {

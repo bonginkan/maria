@@ -72,12 +72,15 @@ export class ResponseFormatter {
       headers.map((h) => String((item as Record<string, unknown>)[h] ?? '')),
     );
 
-    const columnWidths = headers.map((h, i) => Math.max(h.length, ...rows.map((r) => r[i].length)));
+    const columnWidths = headers.map((h, i) =>
+      Math.max(h.length, ...rows.map((r) => r[i]?.length || 0)),
+    );
 
     const separator = '+' + columnWidths.map((w) => '-'.repeat(w + 2)).join('+') + '+';
-    const headerRow = '|' + headers.map((h, i) => ` ${h.padEnd(columnWidths[i])} `).join('|') + '|';
+    const headerRow =
+      '|' + headers.map((h, i) => ` ${h.padEnd(columnWidths[i] || 0)} `).join('|') + '|';
     const dataRows = rows.map(
-      (row) => '|' + row.map((cell, i) => ` ${cell.padEnd(columnWidths[i])} `).join('|') + '|',
+      (row) => '|' + row.map((cell, i) => ` ${cell.padEnd(columnWidths[i] || 0)} `).join('|') + '|',
     );
 
     return [separator, headerRow, separator, ...dataRows, separator].join('\n');

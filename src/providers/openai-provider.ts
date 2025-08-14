@@ -17,7 +17,7 @@ export class OpenAIProvider extends BaseAIProvider {
 
   private client?: OpenAI;
 
-  async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
+  override async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
     await super.initialize(apiKey, config);
 
     this.client = new OpenAI({
@@ -134,7 +134,7 @@ export class OpenAIProvider extends BaseAIProvider {
     const response = await this.chat(messages, model, { temperature: 0.1 });
 
     try {
-      return JSON.parse(response) as Record<string, unknown>;
+      return JSON.parse(response) as CodeReviewResult;
     } catch {
       // Fallback if JSON parsing fails
       return {

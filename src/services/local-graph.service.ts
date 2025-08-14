@@ -72,10 +72,19 @@ export class LocalGraphService extends EventEmitter {
     try {
       // Load nodes
       const nodeItems = await this.storage.query({ type: 'memory' });
-      const graphData = nodeItems.find((item) => item.content.type === 'graph');
+      const graphData = nodeItems.find((item) => {
+        return (
+          typeof item.content === 'object' &&
+          item.content !== null &&
+          'type' in item.content &&
+          (item.content as Record<string, unknown>)['type'] === 'graph'
+        );
+      });
 
-      if (graphData) {
-        const { nodes, edges } = graphData.content.data;
+      if (graphData && typeof graphData.content === 'object' && graphData.content !== null) {
+        const content = graphData.content as Record<string, unknown>;
+        const data = content['data'] as Record<string, unknown>;
+        const { nodes, edges } = data as { nodes: GraphNode[]; edges: GraphEdge[] };
 
         // Rebuild nodes
         for (const node of nodes) {
@@ -125,7 +134,14 @@ export class LocalGraphService extends EventEmitter {
 
     // Check if graph data exists
     const existing = await this.storage.query({ type: 'memory' });
-    const graphItem = existing.find((item) => item.content.type === 'graph');
+    const graphItem = existing.find((item) => {
+      return (
+        typeof item.content === 'object' &&
+        item.content !== null &&
+        'type' in item.content &&
+        (item.content as Record<string, unknown>)['type'] === 'graph'
+      );
+    });
 
     if (graphItem) {
       await this.storage.update(graphItem.id, graphData);

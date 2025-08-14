@@ -6,6 +6,7 @@
 import { ConversationContext, ConversationHistory } from '../types/conversation';
 import { GitHubComment, GitHubReview, GitHubPRData, GitHubFeedbackItem } from '../types/common';
 import { logger } from '../utils/logger';
+import { isObject, isArray, getStringProperty } from '../utils/type-guards.js';
 import { readConfig, writeConfig } from '../utils/config';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
@@ -1246,18 +1247,30 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
       }
 
       // 保存された会話を現在のコンテキストにマージ
-      context.history = savedContext.history.map((msg: unknown) => ({
-        ...msg,
-        timestamp: new Date(msg.timestamp),
-      }));
+      if (isArray(savedContext.history)) {
+        context.history = savedContext.history.map((msg: unknown): ConversationHistory => {
+          if (isObject(msg)) {
+            return {
+              timestamp: new Date(getStringProperty(msg, 'timestamp', new Date().toISOString())),
+              action: getStringProperty(msg, 'action', 'unknown'),
+              data: isObject(msg['data']) ? (msg['data'] as Record<string, unknown>) : {},
+            };
+          }
+          return {
+            timestamp: new Date(),
+            action: 'unknown',
+            data: {},
+          };
+        });
+      } else {
+        context.history = [];
+      }
 
       if (savedContext.currentTask) {
-        context.currentTask = {
-          ...(savedContext.currentTask as Record<string, unknown>),
-          startTime: new Date(
-            (savedContext.currentTask as Record<string, unknown>).startTime as string,
-          ),
-        };
+        context.currentTask =
+          typeof savedContext.currentTask === 'string'
+            ? savedContext.currentTask
+            : String(savedContext.currentTask);
       }
 
       if (savedContext.metadata) {
@@ -1280,7 +1293,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
 
       return {
         success: true,
-        message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${(context.currentTask as Record<string, unknown>).title || (context.currentTask as Record<string, unknown>).type})` : ''}`,
+        message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${context.currentTask})` : ''}`,
         data: {
           messagesRestored: context.history.length,
           taskRestored: !!context.currentTask,
@@ -1697,7 +1710,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
     // Vim モード設定を更新
     if (context.preferences) {
-      (context.preferences as Record<string, unknown>).vimMode = newVimMode;
+      (context.preferences as Record<string, unknown>)['vimMode'] = newVimMode;
     }
 
     // 設定ファイルに保存
@@ -1752,7 +1765,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
       return {
         success: true,
-        message: `MARIA CODE CLI v${packageData.version || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`,
+        message: `MARIA CODE CLI v${packageData['version'] || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`,
       };
     } catch {
       // Ignore error
@@ -1835,7 +1848,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     const commandInfo = getCommandInfo(commandArg);
 
     if (commandInfo) {
-      let helpText = `📌 Command: ${commandInfo.command}\n\n`;
+      let helpText = `📌 Command: ${commandInfo.name}\n\n`;
       helpText += `Description: ${commandInfo.description}\n\n`;
 
       if (commandInfo.usage) {
@@ -2436,10 +2449,14 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
 
     // Execute the chain
-    const result = await this.chainService.executeChain(chainName as unknown, context, {
-      interactive,
-      stopOnError,
-    });
+    const result = await this.chainService.executeChain(
+      chainName as 'analysis' | 'fullDevelopment' | 'quickFix' | 'deployment',
+      context,
+      {
+        interactive,
+        stopOnError,
+      },
+    );
 
     return {
       success: result.success,
@@ -2582,7 +2599,19 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
           const content = await fs.readFile(filename, 'utf-8');
           const config = JSON.parse(content) as Record<string, unknown>;
 
-          const result = this.hotkeyManager.importConfig(config);
+          const result = this.hotkeyManager.importConfig(
+            config as {
+              bindings: Array<{
+                key: string;
+                modifiers: string[];
+                command: string;
+                args?: string[];
+                description?: string;
+                enabled: boolean;
+              }>;
+              globalEnabled: boolean;
+            },
+          );
           return result;
         } catch (error: unknown) {
           return {
@@ -2631,9 +2660,9 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
   }
 
-  private async handleExit(_context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleExit(context: ConversationContext): Promise<SlashCommandResult> {
     // 会話セッションを保存（オプション）
-    const shouldSave = context.history.length > 0;
+    const shouldSave = context.history && context.history.length > 0;
 
     if (shouldSave) {
       try {
@@ -2651,15 +2680,15 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         await fs.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
 
         const stats = {
-          messages: context.history.length,
-          cost: context.metadata?.cost || 0,
-          duration: context.metadata?.startTime
-            ? Math.round((Date.now() - context.metadata.startTime.getTime()) / 1000)
+          messages: context.history?.length || 0,
+          cost: (context.metadata?.['cost'] as number) || 0,
+          duration: context.metadata?.['startTime']
+            ? Math.round((Date.now() - (context.metadata['startTime'] as Date).getTime()) / 1000)
             : 0,
         };
 
         console.log(
-          `\nSession saved: ${stats.messages} messages, $${stats.cost.toFixed(6)}, ${Math.floor(stats.duration / 60)}m ${stats.duration % 60}s`,
+          `\nSession saved: ${stats.messages} messages, $${(stats.cost as number).toFixed(6)}, ${Math.floor(stats.duration / 60)}m ${stats.duration % 60}s`,
         );
         console.log(`Resume with: /resume\n`);
       } catch (error: unknown) {
@@ -2728,9 +2757,10 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
       try {
         const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
         packageJson = JSON.parse(packageJsonContent) as Record<string, unknown>;
+        const typedPackage = packageJson as Record<string, unknown>;
         localInstall = !!(
-          packageJson.dependencies?.['@maria/code-cli'] ||
-          packageJson.devDependencies?.['@maria/code-cli']
+          (typedPackage['dependencies'] as Record<string, unknown>)?.['@maria/code-cli'] ||
+          (typedPackage['devDependencies'] as Record<string, unknown>)?.['@maria/code-cli']
         );
       } catch {
         // Ignore error
@@ -2809,31 +2839,39 @@ Run the steps above to complete your migration!`;
 
   private generateMigrationSteps(plan: unknown, globalCheck: unknown): string[] {
     const steps = [];
+    const typedPlan = plan as Record<string, unknown>;
+    const typedGlobalCheck = globalCheck as Record<string, unknown>;
 
-    if (plan.recommendedAction === 'install-local') {
+    if (typedPlan['recommendedAction'] === 'install-local') {
       steps.push('Back up global config: cp ~/.maria-code.toml ~/.maria-code.toml.backup');
       steps.push('Install locally: npm install --save-dev @maria/code-cli');
       steps.push('Add script to package.json: "mc": "maria-code"');
       steps.push('Test local installation: npm run mc -- --version');
 
-      if (globalCheck.npm) steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
-      if (globalCheck.yarn) steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
-      if (globalCheck.pnpm) steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
+      if (typedGlobalCheck['npm'])
+        steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
+      if (typedGlobalCheck['yarn'])
+        steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
+      if (typedGlobalCheck['pnpm'])
+        steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
 
       steps.push('Update shell aliases to use: npx @maria/code-cli');
-    } else if (plan.recommendedAction === 'create-project') {
+    } else if (typedPlan['recommendedAction'] === 'create-project') {
       steps.push('Initialize new project: npm init -y');
       steps.push('Install locally: npm install --save-dev @maria/code-cli');
       steps.push('Add scripts to package.json');
       steps.push('Copy global config to project: cp ~/.maria-code.toml ./.maria-code.toml');
       steps.push('Test local setup: npx @maria/code-cli --version');
-    } else if (plan.recommendedAction === 'remove-global') {
+    } else if (typedPlan['recommendedAction'] === 'remove-global') {
       steps.push('Verify local installation works: npx @maria/code-cli --version');
       steps.push('Update shell aliases to use local version');
 
-      if (globalCheck.npm) steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
-      if (globalCheck.yarn) steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
-      if (globalCheck.pnpm) steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
+      if (typedGlobalCheck['npm'])
+        steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
+      if (typedGlobalCheck['yarn'])
+        steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
+      if (typedGlobalCheck['pnpm'])
+        steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
 
       steps.push('Clean up global config if not needed');
     } else {
@@ -2875,9 +2913,10 @@ Run the steps above to complete your migration!`;
 
   private generateReviewSuggestions(pr: unknown, diff: string): string[] {
     const suggestions = [];
+    const typedPr = pr as Record<string, unknown>;
 
     // Basic checks
-    if (!pr.body || pr.body.length < 50) {
+    if (!typedPr['body'] || (typedPr['body'] as string)?.length < 50) {
       suggestions.push('Consider adding a more detailed PR description');
     }
 
@@ -2909,10 +2948,11 @@ Run the steps above to complete your migration!`;
     const actionKeywords = ['fix', 'change', 'update', 'remove', 'add', 'refactor', 'improve'];
 
     for (const item of feedback) {
-      const body = (item.body || '').toLowerCase();
+      const typedItem = item as Record<string, unknown>;
+      const body = ((typedItem['body'] as string) || '').toLowerCase();
       if (actionKeywords.some((keyword) => body.includes(keyword))) {
-        const sentence = (item.body || '').split('.')[0];
-        if (sentence.length > 10 && sentence.length < 150) {
+        const sentence = ((typedItem['body'] as string) || '').split('.')[0];
+        if (sentence && sentence.length > 10 && sentence.length < 150) {
           actionItems.push(sentence.trim());
         }
       }
@@ -2931,7 +2971,8 @@ Run the steps above to complete your migration!`;
     let negativeCount = 0;
 
     for (const item of feedback) {
-      const body = (item.body || '').toLowerCase();
+      const typedItem = item as Record<string, unknown>;
+      const body = ((typedItem['body'] as string) || '').toLowerCase();
       positiveCount += positiveKeywords.filter((kw) => body.includes(kw)).length;
       negativeCount += negativeKeywords.filter((kw) => body.includes(kw)).length;
     }
@@ -3170,12 +3211,13 @@ Run the steps above to complete your migration!`;
     try {
       const packageJsonPath = path.join(rootPath, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
-        const packageJson = JSON.parse(
-          fs.readFileSync(packageJsonPath, 'utf8') as Record<string, unknown>,
-        );
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')) as Record<
+          string,
+          unknown
+        >;
         analysis.dependencies = {
-          dependencies: Object.keys(packageJson.dependencies || {}),
-          devDependencies: Object.keys(packageJson.devDependencies || {}),
+          dependencies: Object.keys(packageJson['dependencies'] || {}),
+          devDependencies: Object.keys(packageJson['devDependencies'] || {}),
         };
 
         // Framework detection from dependencies
@@ -3324,7 +3366,7 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
     }
 
     const prompt = args[0];
-    const options: unknown = {};
+    const options: Record<string, unknown> = {};
 
     // Parse options
     for (let i = 1; i < args.length; i += 2) {
@@ -3334,42 +3376,42 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
       switch (flag) {
         case '--model':
           if (value && ['wan22-5b', 'wan22-14b'].includes(value)) {
-            options.model = value as 'wan22-5b' | 'wan22-14b';
+            options['model'] = value as 'wan22-5b' | 'wan22-14b';
           }
           break;
         case '--resolution':
           if (value && ['720p', '1080p'].includes(value)) {
-            options.resolution = value as '720p' | '1080p';
+            options['resolution'] = value as '720p' | '1080p';
           }
           break;
         case '--fps':
-          if (value) options.fps = parseInt(value);
+          if (value) options['fps'] = parseInt(value);
           break;
         case '--frames':
-          if (value) options.frames = parseInt(value);
+          if (value) options['frames'] = parseInt(value);
           break;
         case '--steps':
-          if (value) options.steps = parseInt(value);
+          if (value) options['steps'] = parseInt(value);
           break;
         case '--input-image':
-          if (value) options.inputImage = value;
+          if (value) options['inputImage'] = value;
           break;
         case '--compare':
-          options.compare = true;
+          options['compare'] = true;
           i--; // No value for this flag
           break;
       }
     }
 
     // Set defaults
-    options.model = options.model || 'wan22-5b';
-    options.resolution = options.resolution || '720p';
-    options.fps = options.fps || 24;
-    options.frames = options.frames || 33;
+    options['model'] = options['model'] || 'wan22-5b';
+    options['resolution'] = options['resolution'] || '720p';
+    options['fps'] = options['fps'] || 24;
+    options['frames'] = options['frames'] || 33;
 
     return {
       success: true,
-      message: `🎬 動画生成を開始します...\nプロンプト: ${prompt}\nモデル: ${options.model}`,
+      message: `🎬 動画生成を開始します...\nプロンプト: ${prompt}\nモデル: ${options['model']}`,
       component: 'video-generator',
       data: { prompt, ...options },
     };
@@ -3385,7 +3427,7 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
     }
 
     const prompt = args[0];
-    const options: unknown = {};
+    const options: Record<string, unknown> = {};
 
     // Parse options
     for (let i = 1; i < args.length; i += 2) {
@@ -3398,7 +3440,7 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
             value &&
             ['photorealistic', 'artistic', 'anime', 'concept', 'technical'].includes(value)
           ) {
-            options.style = value;
+            options['style'] = value;
           }
           break;
         case '--size':
@@ -3406,39 +3448,39 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
             value &&
             ['512x512', '768x768', '1024x1024', '1024x768', '768x1024'].includes(value)
           ) {
-            options.size = value;
+            options['size'] = value;
           }
           break;
         case '--quality':
           if (value && ['low', 'medium', 'high'].includes(value)) {
-            options.quality = value;
+            options['quality'] = value;
           }
           break;
         case '--batch':
-          if (value) options.batch = Math.min(4, Math.max(1, parseInt(value)));
+          if (value) options['batch'] = Math.min(4, Math.max(1, parseInt(value)));
           break;
         case '--variations':
-          if (value) options.variations = Math.min(3, Math.max(1, parseInt(value)));
+          if (value) options['variations'] = Math.min(3, Math.max(1, parseInt(value)));
           break;
         case '--guidance':
-          if (value) options.guidance = parseFloat(value);
+          if (value) options['guidance'] = parseFloat(value);
           break;
         case '--steps':
-          if (value) options.steps = parseInt(value);
+          if (value) options['steps'] = parseInt(value);
           break;
       }
     }
 
     // Set defaults
-    options.style = options.style || 'photorealistic';
-    options.size = options.size || '1024x1024';
-    options.quality = options.quality || 'high';
-    options.batch = options.batch || 1;
-    options.variations = options.variations || 1;
+    options['style'] = options['style'] || 'photorealistic';
+    options['size'] = options['size'] || '1024x1024';
+    options['quality'] = options['quality'] || 'high';
+    options['batch'] = options['batch'] || 1;
+    options['variations'] = options['variations'] || 1;
 
     return {
       success: true,
-      message: `🖼️ 画像生成を開始します...\nプロンプト: ${prompt}\nスタイル: ${options.style}`,
+      message: `🖼️ 画像生成を開始します...\nプロンプト: ${prompt}\nスタイル: ${(options as Record<string, unknown>)['style'] || 'default'}`,
       component: 'image-generator',
       data: { prompt, ...options },
     };
@@ -3478,35 +3520,35 @@ Options:
 
     // Parse arguments
     const prompt = args.filter((arg) => !arg.startsWith('--')).join(' ');
-    const options: unknown = {};
+    const options: Record<string, unknown> = {};
 
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      if (arg.startsWith('--')) {
+      if (arg?.startsWith('--')) {
         const key = arg.slice(2);
-        const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true;
+        const value = args[i + 1] && !args[i + 1]?.startsWith('--') ? args[i + 1] : true;
 
         switch (key) {
           case 'language':
           case 'lang':
-            options.language = value;
+            options['language'] = value;
             break;
           case 'framework':
-            options.framework = value;
+            options['framework'] = value;
             break;
           case 'include-tests':
           case 'tests':
-            options.includeTests = true;
+            options['includeTests'] = true;
             break;
           case 'include-comments':
           case 'comments':
-            options.includeComments = true;
+            options['includeComments'] = true;
             break;
           case 'style':
-            options.style = value;
+            options['style'] = value;
             break;
           case 'pattern':
-            options.pattern = value;
+            options['pattern'] = value;
             break;
         }
       }
@@ -3515,8 +3557,8 @@ Options:
     // Build code generation request
     const request: CodeGenerationRequest = {
       prompt,
-      language: options.language,
-      framework: options.framework,
+      language: options['language'] as string | undefined,
+      framework: options['framework'] as string | undefined,
       context: {
         currentFile: context.metadata?.['currentFile'] as string,
         files: (context.metadata?.['recentFiles'] as string[]) || [],
@@ -3524,10 +3566,10 @@ Options:
         dependencies: await this.getProjectDependencies(),
       },
       options: {
-        includeTests: options.includeTests,
-        includeComments: options.includeComments,
-        style: options.style || 'clean',
-        pattern: options.pattern,
+        includeTests: options['includeTests'] as boolean | undefined,
+        includeComments: options['includeComments'] as boolean | undefined,
+        style: (options['style'] as 'verbose' | 'minimal' | 'clean') || 'clean',
+        pattern: options['pattern'] as 'mvc' | 'functional' | 'oop' | 'reactive' | undefined,
       },
     };
 
@@ -3591,7 +3633,7 @@ Options:
     const testGenService = TestGenerationService.getInstance();
 
     // Parse arguments
-    const options: unknown = {
+    const options: Record<string, unknown> = {
       coverage: false,
       type: 'all',
       verbose: false,
@@ -3600,34 +3642,34 @@ Options:
 
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-      if (arg.startsWith('--')) {
+      if (arg?.startsWith('--')) {
         const key = arg.slice(2);
-        const value = args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true;
+        const value = args[i + 1] && !args[i + 1]?.startsWith('--') ? args[i + 1] : true;
 
         switch (key) {
           case 'coverage':
-            options.coverage = true;
+            options['coverage'] = true;
             break;
           case 'type':
-            options.type = value;
+            options['type'] = value;
             break;
           case 'framework':
-            options.framework = value;
+            options['framework'] = value;
             break;
           case 'watch':
-            options.watch = true;
+            options['watch'] = true;
             break;
           case 'verbose':
-            options.verbose = true;
+            options['verbose'] = true;
             break;
           case 'update-snapshots':
-            options.updateSnapshots = true;
+            options['updateSnapshots'] = true;
             break;
           case 'bail':
-            options.bail = true;
+            options['bail'] = true;
             break;
         }
-      } else if (!target && !arg.startsWith('--')) {
+      } else if (!target && !arg?.startsWith('--')) {
         target = arg;
       }
     }
@@ -3670,14 +3712,17 @@ Usage: /test [target] [options]
     // Build test request
     const request: TestGenerationRequest = {
       target,
-      type: options.type === 'all' ? undefined : options.type,
-      framework: options.framework,
-      coverage: options.coverage,
+      type:
+        options['type'] === 'all'
+          ? undefined
+          : (options['type'] as 'unit' | 'integration' | 'e2e' | undefined),
+      framework: options['framework'] as string,
+      coverage: options['coverage'] as boolean,
       options: {
-        watch: options.watch,
-        updateSnapshots: options.updateSnapshots,
-        bail: options.bail,
-        verbose: options.verbose,
+        watch: options['watch'] as boolean,
+        updateSnapshots: options['updateSnapshots'] as boolean,
+        bail: options['bail'] as boolean,
+        verbose: options['verbose'] as boolean,
       },
     };
 
@@ -3760,16 +3805,20 @@ Usage: /test [target] [options]
   // Helper methods for code/test commands
   private async detectProjectType(): Promise<string | undefined> {
     try {
-      const files = await fs.readdir(process.cwd());
+      const fsPromises = await import('fs/promises');
+      const files = await fsPromises.readdir(process.cwd());
 
       if (files.includes('package.json')) {
-        const pkg = JSON.parse(
-          (await fs.readFile('package.json', 'utf-8')) as Record<string, unknown>,
-        );
-        if (pkg.dependencies?.react) return 'React';
-        if (pkg.dependencies?.vue) return 'Vue';
-        if (pkg.dependencies?.angular) return 'Angular';
-        if (pkg.dependencies?.express) return 'Express';
+        const pkgContent = await fsPromises.readFile('package.json', 'utf-8');
+        const pkg = JSON.parse(pkgContent) as Record<string, unknown>;
+        if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['react'])
+          return 'React';
+        if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['vue'])
+          return 'Vue';
+        if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['angular'])
+          return 'Angular';
+        if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['express'])
+          return 'Express';
         return 'Node.js';
       }
 
@@ -3786,10 +3835,13 @@ Usage: /test [target] [options]
 
   private async getProjectDependencies(): Promise<string[]> {
     try {
-      const pkg = JSON.parse(
-        (await fs.readFile('package.json', 'utf-8')) as Record<string, unknown>,
-      );
-      return [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.devDependencies || {})];
+      const fsPromises = await import('fs/promises');
+      const pkgContent = await fsPromises.readFile('package.json', 'utf-8');
+      const pkg = JSON.parse(pkgContent) as Record<string, unknown>;
+      return [
+        ...Object.keys((pkg['dependencies'] as Record<string, unknown>) || {}),
+        ...Object.keys((pkg['devDependencies'] as Record<string, unknown>) || {}),
+      ];
     } catch {
       // Ignore error
       return [];
@@ -3798,13 +3850,16 @@ Usage: /test [target] [options]
 
   private async detectTestFramework(): Promise<string> {
     try {
-      const pkg = JSON.parse(
-        (await fs.readFile('package.json', 'utf-8')) as Record<string, unknown>,
-      );
+      const fsPromises = await import('fs/promises');
+      const pkgContent = await fsPromises.readFile('package.json', 'utf-8');
+      const pkg = JSON.parse(pkgContent) as Record<string, unknown>;
 
-      if (pkg.devDependencies?.jest) return 'Jest';
-      if (pkg.devDependencies?.vitest) return 'Vitest';
-      if (pkg.devDependencies?.mocha) return 'Mocha';
+      if (pkg['devDependencies'] && (pkg['devDependencies'] as Record<string, unknown>)['jest'])
+        return 'Jest';
+      if (pkg['devDependencies'] && (pkg['devDependencies'] as Record<string, unknown>)['vitest'])
+        return 'Vitest';
+      if (pkg['devDependencies'] && (pkg['devDependencies'] as Record<string, unknown>)['mocha'])
+        return 'Mocha';
     } catch {
       // Ignore error
       // Not a Node.js project
@@ -3812,21 +3867,24 @@ Usage: /test [target] [options]
 
     // Check for other frameworks
     try {
-      await fs.access('pytest.ini');
+      const fsPromises = await import('fs/promises');
+      await fsPromises.access('pytest.ini');
       return 'pytest';
     } catch {
       // Ignore error
     }
 
     try {
-      await fs.access('go.mod');
+      const fsPromises = await import('fs/promises');
+      await fsPromises.access('go.mod');
       return 'go test';
     } catch {
       // Ignore error
     }
 
     try {
-      await fs.access('Cargo.toml');
+      const fsPromises = await import('fs/promises');
+      await fsPromises.access('Cargo.toml');
       return 'cargo test';
     } catch {
       // Ignore error

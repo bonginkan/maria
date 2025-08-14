@@ -249,10 +249,11 @@ export class InterruptHandler extends EventEmitter {
     let prevTopic = -1;
 
     for (let i = 0; i < topics.length; i++) {
-      if (topics[i].some((keyword) => newLower.includes(keyword))) {
+      const topicKeywords = topics[i];
+      if (topicKeywords && topicKeywords.some((keyword) => newLower.includes(keyword))) {
         newTopic = i;
       }
-      if (topics[i].some((keyword) => prevLower.includes(keyword))) {
+      if (topicKeywords && topicKeywords.some((keyword) => prevLower.includes(keyword))) {
         prevTopic = i;
       }
     }

@@ -7,6 +7,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { MariaConfig, Agent } from '../utils/config.js';
+import { isString } from '../utils/type-guards.js';
 import { execSync } from 'child_process';
 import { existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -307,7 +308,12 @@ jobs:
               if (item.value === 'back') {
                 onExit();
               } else {
-                setCurrentView(item.value as unknown);
+                if (
+                  isString(item.value) &&
+                  ['main', 'ide', 'agents', 'github'].includes(item.value)
+                ) {
+                  setCurrentView(item.value as 'main' | 'ide' | 'agents' | 'github');
+                }
               }
             }}
           />

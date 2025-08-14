@@ -131,7 +131,7 @@ export class PriorityQueue extends EventEmitter {
    * 低優先度タスクを一時停止
    */
   private async pauseLowPriorityTask(): Promise<void> {
-    let lowestPriorityTask: QueuedTask | null = null;
+    let lowestPriorityTask: QueuedTask | undefined;
     let lowestPriority = 11;
 
     this.runningTasks.forEach((task) => {
@@ -155,7 +155,8 @@ export class PriorityQueue extends EventEmitter {
    */
   private findInsertIndex(priority: number): number {
     for (let i = 0; i < this.queue.length; i++) {
-      if (this.queue[i].priority < priority) {
+      const item = this.queue[i];
+      if (item && item.priority < priority) {
         return i;
       }
     }
@@ -294,7 +295,9 @@ export class PriorityQueue extends EventEmitter {
       const oldestTask = Array.from(this.completedTasks.values()).sort(
         (a, b) => a.createdAt.getTime() - b.createdAt.getTime(),
       )[0];
-      this.completedTasks.delete(oldestTask.id);
+      if (oldestTask) {
+        this.completedTasks.delete(oldestTask.id);
+      }
     }
   }
 
@@ -362,11 +365,13 @@ export class PriorityQueue extends EventEmitter {
     const queueIndex = this.queue.findIndex((t) => t.id === taskId);
     if (queueIndex > -1) {
       const task = this.queue[queueIndex];
-      task.status = 'cancelled';
-      this.queue.splice(queueIndex, 1);
-      this.statistics.pendingTasks--;
-      this.emit('task:cancelled', task);
-      return true;
+      if (task) {
+        task.status = 'cancelled';
+        this.queue.splice(queueIndex, 1);
+        this.statistics.pendingTasks--;
+        this.emit('task:cancelled', task);
+        return true;
+      }
     }
 
     // 実行中のタスクはキャンセルできない（将来的に実装可能）
@@ -426,12 +431,14 @@ export class PriorityQueue extends EventEmitter {
     const taskIndex = this.queue.findIndex((t) => t.id === taskId);
     if (taskIndex > -1) {
       const task = this.queue[taskIndex];
-      this.queue.splice(taskIndex, 1);
-      task.priority = newPriority;
-      const newIndex = this.findInsertIndex(newPriority);
-      this.queue.splice(newIndex, 0, task);
-      this.emit('task:priority-changed', task);
-      return true;
+      if (task) {
+        this.queue.splice(taskIndex, 1);
+        task.priority = newPriority;
+        const newIndex = this.findInsertIndex(newPriority);
+        this.queue.splice(newIndex, 0, task);
+        this.emit('task:priority-changed', task);
+        return true;
+      }
     }
     return false;
   }

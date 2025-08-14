@@ -135,7 +135,7 @@ export class CommandDispatcher {
 
     // 前のコマンドとの関連性チェック
     if (context.lastCommand) {
-      (adjusted as Record<string, unknown>).relatedTo = this.checkCommandRelation(
+      (adjusted as Record<string, unknown>)['relatedTo'] = this.checkCommandRelation(
         command,
         context.lastCommand,
       );
@@ -149,18 +149,18 @@ export class CommandDispatcher {
    */
   private checkCommandRelation(current: InferredCommand, last: unknown): string | undefined {
     // 画像→動画の連続処理
-    if ((last as Record<string, unknown>).command === '/image' && current.command === '/video') {
+    if ((last as Record<string, unknown>)['command'] === '/image' && current.command === '/video') {
       return 'image-to-video';
     }
 
     // コード→テストの連続処理
-    if ((last as Record<string, unknown>).command === '/code' && current.command === '/test') {
+    if ((last as Record<string, unknown>)['command'] === '/code' && current.command === '/test') {
       return 'code-to-test';
     }
 
     // レビュー→修正の連続処理
     if (
-      (last as Record<string, unknown>).command === '/review' &&
+      (last as Record<string, unknown>)['command'] === '/review' &&
       current.command === '/code' &&
       current.params['task'] === 'fix'
     ) {
@@ -185,9 +185,18 @@ export class CommandDispatcher {
 
     try {
       // スラッシュコマンドハンドラーに内部実行フラグを付けて実行
-      const result = await (this.slashCommandHandler as Record<string, unknown>).execute({
+      const result = await (
+        this.slashCommandHandler as unknown as {
+          execute: (params: {
+            command: string;
+            args: string[];
+            internal: boolean;
+            originalInput: string;
+          }) => Promise<unknown>;
+        }
+      ).execute({
         command: command.command.replace('/', ''),
-        args: command.params,
+        args: (command.params as unknown as string[]) || [],
         internal: true,
         originalInput: command.originalInput,
       });
@@ -196,7 +205,10 @@ export class CommandDispatcher {
       await this.contextManager.updateLastCommand(command);
 
       // ユーザー向けにフォーマット
-      const formattedResult = this.formatUserResponse(result, command);
+      const formattedResult = this.formatUserResponse(
+        typeof result === 'object' && result !== null ? (result as Record<string, unknown>) : {},
+        command,
+      );
 
       return {
         success: true,

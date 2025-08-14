@@ -4,7 +4,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import { _promisify } from 'util';
+// import { promisify } from 'util'; // Not used
 
 interface StorageOptions {
   basePath?: string;
@@ -139,7 +139,7 @@ export class LocalStorageService {
 
     // Clean old versions
     if (versions.length >= this.maxVersions) {
-      const oldestVersion = path.join(versionDir, versions[0]);
+      const oldestVersion = path.join(versionDir, versions[0] || '');
       await fs.remove(oldestVersion);
     }
   }
@@ -180,4 +180,4 @@ export class LocalStorageService {
     return mimeTypes[ext] || 'application/octet-stream';
   }
 }
-EOF < /dev/llnu;
+// File end

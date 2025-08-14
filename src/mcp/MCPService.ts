@@ -36,6 +36,11 @@ export interface MCPToolExecution {
   toolName: string;
   arguments: Record<string, unknown>;
   serverId: string;
+  server?: string; // Alias for serverId for backward compatibility
+  tool?: string; // Alias for toolName for backward compatibility
+  args?: Record<string, unknown>; // Alias for arguments for backward compatibility
+  startTime?: Date;
+  endTime?: Date;
 }
 
 export interface MCPExecutionResult {
@@ -270,5 +275,32 @@ export class MCPService extends EventEmitter {
       ),
     );
     await Promise.all(stopPromises);
+  }
+
+  /**
+   * Get available tools organized by server
+   */
+  getAvailableTools(): Array<{ server: string; tools: MCPTool[] }> {
+    const result: Array<{ server: string; tools: MCPTool[] }> = [];
+    for (const server of this.servers.values()) {
+      if (server.status === 'running' && server.tools.length > 0) {
+        result.push({
+          server: server.id,
+          tools: server.tools,
+        });
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Get server status information
+   */
+  getServerStatus(): Array<{ id: string; name: string; status: string }> {
+    return Array.from(this.servers.values()).map((server) => ({
+      id: server.id,
+      name: server.name,
+      status: server.status,
+    }));
   }
 }

@@ -32,7 +32,7 @@ export class MariaAI {
     this.config = new ConfigManager(config);
     this.providerManager = new AIProviderManager(this.config);
     this.router = new IntelligentRouter(this.providerManager, this.config);
-    this.healthMonitor = new HealthMonitor(this.providerManager);
+    this.healthMonitor = new HealthMonitor();
 
     if (config.autoStart !== false) {
       this.initialize();
@@ -102,7 +102,7 @@ export class MariaAI {
    * Get system health status
    */
   async getHealth(): Promise<unknown> {
-    return this.healthMonitor.getStatus();
+    return this.healthMonitor.getSystemHealth();
   }
 
   /**

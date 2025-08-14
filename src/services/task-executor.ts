@@ -349,7 +349,7 @@ export class TaskExecutor {
       success: true,
       deliverable: 'slide_1_title.json',
       output: {
-        title: mission.parameters?.title || 'Presentation',
+        title: mission.parameters?.['title'] || 'Presentation',
         subtitle: mission.description,
       },
       cost: 0.1,
@@ -505,12 +505,9 @@ export class TaskExecutor {
       // Return default test result on error
       return {
         success: false,
-        filesCreated: [],
-        testsGenerated: 0,
-        metrics: {
-          coverage: 0,
-        },
+        duration: 0,
         cost: 0,
+        error: new Error('Task execution failed'),
       };
     }
   }
@@ -548,7 +545,7 @@ export class TaskExecutor {
       success: true,
       deliverable: 'deployment-manifest.yaml',
       output: {
-        environment: mission.parameters?.environment || 'staging',
+        environment: mission.parameters?.['environment'] || 'staging',
         url: 'https://app.example.com',
       },
       cost: 0.3,

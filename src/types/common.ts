@@ -353,8 +353,8 @@ export function getErrorMessage(error: unknown): string {
   if (isErrorResponse(error)) return error.message;
   if (typeof error === 'string') return error;
   if (error instanceof Error) return error.message;
-  if (isDictionary(error) && typeof error.message === 'string') {
-    return error.message as string;
+  if (isDictionary(error) && typeof error['message'] === 'string') {
+    return error['message'] as string;
   }
   return 'Unknown error occurred';
 }

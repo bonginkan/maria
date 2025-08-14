@@ -205,9 +205,9 @@ export class SOWGenerator {
     if (type === 'composite') {
       // 複合タスクの場合は全てのテンプレートから選択
       return [
-        ...(this.taskTemplates.paper?.slice(0, 3) || []),
-        ...(this.taskTemplates.slides?.slice(0, 3) || []),
-        ...(this.taskTemplates.development?.slice(0, 3) || []),
+        ...(this.taskTemplates['paper']?.slice(0, 3) || []),
+        ...(this.taskTemplates['slides']?.slice(0, 3) || []),
+        ...(this.taskTemplates['development']?.slice(0, 3) || []),
       ];
     }
 
@@ -281,11 +281,11 @@ export class SOWGenerator {
    */
   private shouldIncludeTask(template: TaskTemplate, request: SOWRequest): boolean {
     // パラメータに基づいた判定ロジック
-    if (template.name === 'visuals' && request.parameters?.noVisuals) {
+    if (template.name === 'visuals' && request.parameters?.['noVisuals']) {
       return false;
     }
 
-    if (template.name === 'documentation' && request.parameters?.skipDocs) {
+    if (template.name === 'documentation' && request.parameters?.['skipDocs']) {
       return false;
     }
 
@@ -336,9 +336,9 @@ export class SOWGenerator {
     }
 
     // パラメータに基づいて調整
-    if (request.parameters?.rush) {
+    if (request.parameters?.['rush']) {
       duration *= 0.7; // 30%短縮
-    } else if (request.parameters?.thorough) {
+    } else if (request.parameters?.['thorough']) {
       duration *= 1.5; // 50%延長
     }
 

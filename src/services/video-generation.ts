@@ -177,7 +177,7 @@ export class VideoGenerationService {
       });
 
       const processedWorkflow = modelManager.replaceWorkflowParameters(
-        workflowData.workflow,
+        (workflowData as Record<string, unknown>)['workflow'] as Record<string, unknown>,
         generationParams,
       );
 

@@ -121,13 +121,16 @@ export class GroqProvider extends BaseProvider {
       };
     }
 
-    const response = await this.makeRequest(`${this.apiBase}/chat/completions`, {
+    const response = (await this.makeRequest(`${this.apiBase}/chat/completions`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify(payload),
-    });
+    })) as {
+      choices: Array<{ message?: { content?: string } }>;
+      usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
+    };
 
     return {
       content: response.choices[0]?.message?.content || '',
@@ -142,7 +145,7 @@ export class GroqProvider extends BaseProvider {
     };
   }
 
-  async vision(image: Buffer, prompt: string): Promise<AIResponse> {
+  override async vision(image: Buffer, prompt: string): Promise<AIResponse> {
     if (!(await this.isAvailable())) {
       throw new Error('Groq API not available');
     }
@@ -169,13 +172,16 @@ export class GroqProvider extends BaseProvider {
       max_tokens: 4000,
     };
 
-    const response = await this.makeRequest(`${this.apiBase}/chat/completions`, {
+    const response = (await this.makeRequest(`${this.apiBase}/chat/completions`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${this.apiKey}`,
       },
       body: JSON.stringify(payload),
-    });
+    })) as {
+      choices: Array<{ message?: { content?: string } }>;
+      usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
+    };
 
     return {
       content: response.choices[0]?.message?.content || '',
@@ -190,7 +196,7 @@ export class GroqProvider extends BaseProvider {
     };
   }
 
-  estimateCost(tokens: number, model = 'mixtral-8x7b-32768'): number {
+  override estimateCost(tokens: number, model = 'mixtral-8x7b-32768'): number {
     const pricing = {
       'llama-3.3-70b-versatile': { input: 0.00059, output: 0.00079 },
       'llama-3.2-90b-vision-preview': { input: 0.0009, output: 0.0009 },

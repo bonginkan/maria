@@ -237,7 +237,7 @@ export class HuggingFaceService {
   async searchModels(query: string, limit = 10): Promise<unknown[]> {
     try {
       const { stdout } = await execAsync(`huggingface-cli search ${query} --limit ${limit} --json`);
-      return JSON.parse(stdout) as Record<string, unknown>;
+      return JSON.parse(stdout) as unknown[];
     } catch (error: unknown) {
       throw new Error(
         `Failed to search models: ${error instanceof Error ? error.message : String(error)}`,

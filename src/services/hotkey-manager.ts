@@ -163,12 +163,20 @@ export class HotkeyManager {
 
     // Build key combination string
     const modifiers: string[] = [];
-    if (key.ctrl) modifiers.push('ctrl');
-    if (key.shift) modifiers.push('shift');
-    if (key.meta) modifiers.push('meta');
-    if (key.alt) modifiers.push('alt');
+    const keyObj = key as {
+      ctrl?: boolean;
+      shift?: boolean;
+      meta?: boolean;
+      alt?: boolean;
+      name?: string;
+      sequence?: string;
+    };
+    if (keyObj.ctrl) modifiers.push('ctrl');
+    if (keyObj.shift) modifiers.push('shift');
+    if (keyObj.meta) modifiers.push('meta');
+    if (keyObj.alt) modifiers.push('alt');
 
-    const keyName = key.name || key.sequence;
+    const keyName = keyObj.name || keyObj.sequence;
     if (!keyName) return { handled: false };
 
     const bindingKey = modifiers.length > 0 ? `${modifiers.sort().join('+')}+${keyName}` : keyName;
@@ -410,7 +418,7 @@ export class HotkeyManager {
     try {
       if (existsSync(this.configPath)) {
         const data = readFileSync(this.configPath, 'utf-8');
-        const config: HotkeyConfig = JSON.parse(data) as Record<string, unknown>;
+        const config = JSON.parse(data) as HotkeyConfig;
         this.importConfig(config);
       }
     } catch (error: unknown) {

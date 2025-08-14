@@ -249,12 +249,12 @@ export class PrioritySystem {
     // Apply weights based on preferences and task
     const weights = this.calculateWeights(task);
 
-    score += breakdown['privacy'] * weights['privacy'];
-    score += breakdown.performance * weights.performance;
-    score += breakdown.cost * weights.cost;
-    score += breakdown.quality * weights.quality;
-    score += breakdown.availability * weights.availability;
-    score += breakdown.contextWindow * weights.contextWindow;
+    score += (breakdown['privacy'] || 0) * (weights['privacy'] || 0);
+    score += (breakdown['performance'] || 0) * (weights['performance'] || 0);
+    score += (breakdown['cost'] || 0) * (weights['cost'] || 0);
+    score += (breakdown['quality'] || 0) * (weights['quality'] || 0);
+    score += (breakdown['availability'] || 0) * (weights['availability'] || 0);
+    score += (breakdown['contextWindow'] || 0) * (weights['contextWindow'] || 0);
 
     return score;
   }

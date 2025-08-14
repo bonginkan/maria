@@ -52,12 +52,13 @@ export class ConfigManager {
     }
   }
 
-  get<T>(key: string, defaultValue?: T): T {
-    return (this.config as unknown)[key] ?? defaultValue;
+  get<T>(key: string, defaultValue?: T): T | undefined {
+    const value = (this.config as Record<string, unknown>)[key] as T;
+    return value !== undefined ? value : defaultValue;
   }
 
   set(key: string, value: unknown): void {
-    (this.config as unknown)[key] = value;
+    (this.config as Record<string, unknown>)[key] = value;
   }
 
   getAll(): Partial<Config> {

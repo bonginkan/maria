@@ -410,13 +410,13 @@ export class EmotionalIntelligence {
     ];
 
     const index = Math.min(streak - 3, messages.length - 1);
-    return messages[index];
+    return messages[index] || 'Keep up the great work!';
   }
 
   private getSuccessEmoji(streak: number): string {
     const emojis = ['🎉', '🔥', '✨', '💫', '🚀', '👑'];
     const index = Math.min(streak - 3, emojis.length - 1);
-    return emojis[index];
+    return emojis[index] || '🎉';
   }
 
   private getErrorSupportMessage(errorCount: number): string {
@@ -428,7 +428,7 @@ export class EmotionalIntelligence {
     ];
 
     const index = Math.min(errorCount - 2, messages.length - 1);
-    return messages[index];
+    return messages[index] || 'Take a deep breath, you got this!';
   }
 
   private getBreakSuggestionMessage(hours: number): string {

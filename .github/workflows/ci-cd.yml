@@ -91,9 +91,28 @@ jobs:
             bin/
           retention-days: 7
 
+  # Sync to OSS Repository
+  sync-to-oss:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: 🔄 Trigger OSS Sync
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/bonginkan/maria_code/actions/workflows/sync-to-oss.yml/dispatches \
+            -d '{"ref":"main"}'
+          echo "✅ OSS sync triggered"
+
   # Auto NPM Publish on main branch
   auto-publish:
-    needs: build-and-test
+    needs: [build-and-test, sync-to-oss]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:

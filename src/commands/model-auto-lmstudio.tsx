@@ -133,12 +133,15 @@ export const EnhancedModelCommand: React.FC = () => {
           const availableModels = data.data || [];
           const updatedModels = LM_STUDIO_MODELS.map((model) => ({
             ...model,
-            available: availableModels.some((m: unknown) => 
-              isObject(m) && hasStringProperty(m, 'id') && m.id.includes(model.id)
+            available: availableModels.some(
+              (m: unknown) => isObject(m) && hasStringProperty(m, 'id') && m.id.includes(model.id),
             ),
-            loaded: availableModels.some((m: unknown) => 
-              isObject(m) && hasStringProperty(m, 'id') && m.id === model.id && 
-              getBooleanProperty(m, 'loaded', false)
+            loaded: availableModels.some(
+              (m: unknown) =>
+                isObject(m) &&
+                hasStringProperty(m, 'id') &&
+                m.id === model.id &&
+                getBooleanProperty(m, 'loaded', false),
             ),
           }));
 

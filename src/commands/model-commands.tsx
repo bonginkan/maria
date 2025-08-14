@@ -348,12 +348,13 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
       try {
         // Check if provider is available
         const isAvailable = await checkProviderAvailability();
-        if (newStatus[id]) {
-          newStatus[id].available = isAvailable;
+        if (newStatus[id] && isObject(newStatus[id])) {
+          (newStatus[id] as Record<string, unknown>)['available'] = isAvailable;
         }
       } catch (error: unknown) {
-        if (newStatus[id]) {
-          newStatus[id].error = error instanceof Error ? error.message : String(error);
+        if (newStatus[id] && isObject(newStatus[id])) {
+          (newStatus[id] as Record<string, unknown>)['error'] =
+            error instanceof Error ? error.message : String(error);
         }
       }
     }
@@ -490,16 +491,14 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
             const available = getBooleanProperty(statusInfo, 'available', false);
             const name = getStringProperty(statusInfo, 'name', id);
             const error = getStringProperty(statusInfo, 'error', '');
-            
+
             return (
               <Box key={id} gap={1}>
                 <Text color={available ? 'green' : 'red'}>{available ? '✅' : '❌'}</Text>
                 <Box width={20}>
                   <Text>{name}</Text>
                 </Box>
-                <Text color="gray">
-                  {available ? 'Available' : error || 'Not available'}
-                </Text>
+                <Text color="gray">{available ? 'Available' : error || 'Not available'}</Text>
               </Box>
             );
           })}

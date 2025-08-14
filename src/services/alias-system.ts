@@ -5,7 +5,7 @@
 
 import { readConfig, writeConfig } from '../utils/config';
 import { logger } from '../utils/logger';
-// import.*from.*../lib/command-groups';
+import { getCommandInfo } from '../lib/command-groups';
 
 export interface CommandAlias {
   alias: string;
@@ -336,7 +336,7 @@ export class AliasSystem {
     try {
       const data = JSON.parse(jsonData) as Record<string, unknown>;
 
-      if (!data.userAliases || !Array.isArray(data.userAliases)) {
+      if (!data['userAliases'] || !Array.isArray(data['userAliases'])) {
         return {
           success: false,
           message: 'Invalid alias data format',
@@ -346,7 +346,7 @@ export class AliasSystem {
       let imported = 0;
       let skipped = 0;
 
-      for (const alias of data.userAliases) {
+      for (const alias of data['userAliases']) {
         if (!this.aliases.has(alias.alias) && !this.builtInAliases.has(alias.alias)) {
           this.aliases.set(alias.alias, {
             ...alias,

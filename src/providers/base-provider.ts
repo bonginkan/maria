@@ -40,12 +40,13 @@ export abstract class BaseProvider implements AIProvider {
 
   protected async makeRequest(url: string, options: unknown): Promise<unknown> {
     const fetch = (await import('node-fetch')).default;
+    const typedOptions = options as Record<string, unknown>;
 
     const response = await fetch(url, {
-      ...options,
+      ...typedOptions,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...(typedOptions['headers'] as Record<string, string>),
       },
     });
 
@@ -59,7 +60,7 @@ export abstract class BaseProvider implements AIProvider {
 
   protected async makeStreamRequest(
     url: string,
-    options: unknown,
+    options: Record<string, unknown> & { headers?: Record<string, unknown> },
   ): Promise<AsyncGenerator<string>> {
     const fetch = (await import('node-fetch')).default;
 
@@ -67,7 +68,7 @@ export abstract class BaseProvider implements AIProvider {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
+        ...(options.headers as Record<string, unknown>),
       },
     });
 
@@ -80,7 +81,10 @@ export abstract class BaseProvider implements AIProvider {
   }
 
   private async *parseStreamResponse(response: unknown): AsyncGenerator<string> {
-    const reader = response.body?.getReader();
+    const typedResponse = response as {
+      body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
+    };
+    const reader = typedResponse.body?.getReader();
     if (!reader) return;
 
     const decoder = new TextDecoder();
@@ -115,22 +119,24 @@ export abstract class BaseProvider implements AIProvider {
 
   protected extractStreamContent(data: unknown): string | null {
     // Override in subclasses for provider-specific parsing
-    return data?.choices?.[0]?.delta?.content || null;
+    const typedData = data as { choices?: Array<{ delta?: { content?: string } }> };
+    return typedData?.choices?.[0]?.delta?.content || null;
   }
 
   protected createModelInfo(model: unknown): ModelInfo {
+    const typedModel = model as Record<string, unknown>;
     return {
-      id: model.id,
-      name: model.name || model.id,
+      id: typedModel['id'] as string,
+      name: (typedModel['name'] as string) || (typedModel['id'] as string),
       provider: this.name,
-      description: model.description || '',
-      contextLength: model.context_length || 4096,
-      capabilities: model.capabilities || ['text'],
-      pricing: model.pricing,
-      local: model.local || false,
+      description: (typedModel['description'] as string) || '',
+      contextLength: (typedModel['context_length'] as number) || 4096,
+      capabilities: (typedModel['capabilities'] as string[]) || ['text'],
+      pricing: typedModel['pricing'] as { input: number; output: number } | undefined,
+      local: (typedModel['local'] as boolean) || false,
       available: true,
-      memoryRequired: model.memory_required,
-      recommendedFor: model.recommended_for || ['general_purpose'],
+      memoryRequired: typedModel['memory_required'] as string | undefined,
+      recommendedFor: (typedModel['recommended_for'] as string[]) || ['general_purpose'],
     };
   }
 }

@@ -232,7 +232,7 @@ export class ImageGenerationService {
 
     // ワークフロー実行
     const processedWorkflow = modelManager.replaceWorkflowParameters(
-      workflowData.workflow,
+      (workflowData as { workflow: unknown }).workflow,
       generationParams,
     );
 

@@ -186,8 +186,14 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
           {result.metadata && typeof result.metadata === 'object' ? (
             <Box marginTop={1}>
               <Text color="cyan">📋 メタデータ:</Text>
-              <Text> シード: {String((result.metadata as { seedUsed?: unknown }).seedUsed || 'N/A')}</Text>
-              <Text> モデル: {String((result.metadata as { modelUsed?: unknown }).modelUsed || 'N/A')}</Text>
+              <Text>
+                {' '}
+                シード: {String((result.metadata as { seedUsed?: unknown }).seedUsed || 'N/A')}
+              </Text>
+              <Text>
+                {' '}
+                モデル: {String((result.metadata as { modelUsed?: unknown }).modelUsed || 'N/A')}
+              </Text>
             </Box>
           ) : null}
 

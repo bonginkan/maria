@@ -68,7 +68,11 @@ export class StreamProcessor extends EventEmitter {
         highWaterMark: this.options.highWaterMark,
         encoding: this.options.encoding,
 
-        transform: async function (chunk, encoding, callback) {
+        transform: async (
+          chunk: Buffer | string,
+          _encoding: BufferEncoding,
+          callback: (error?: Error) => void,
+        ) => {
           try {
             const chunkStr = chunk.toString();
             chunks.push(chunkStr);
@@ -95,11 +99,11 @@ export class StreamProcessor extends EventEmitter {
               totalProcessed: this.metrics.bytesProcessed,
             });
 
-            callback(null, chunk);
+            callback();
           } catch (error: unknown) {
             callback(error as Error);
           }
-        }.bind(this),
+        },
       });
 
       // Handle stream events
@@ -184,7 +188,7 @@ export class StreamProcessor extends EventEmitter {
     let lastUpdate = Date.now();
 
     return new Transform({
-      transform(chunk, encoding, callback) {
+      transform(chunk, _encoding, callback) {
         totalBytes += chunk.length;
         const now = Date.now();
 
@@ -347,7 +351,7 @@ export class StreamProcessor extends EventEmitter {
     for (let i = 0; i < numStreams; i++) {
       streams.push(
         new Transform({
-          transform(chunk, encoding, callback) {
+          transform(chunk, _encoding, callback) {
             // Distribute chunks round-robin
             callback(null, chunk);
           },

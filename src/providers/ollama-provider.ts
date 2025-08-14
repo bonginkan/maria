@@ -36,7 +36,10 @@ export class OllamaProvider extends BaseAIProvider {
   private isHealthy: boolean = false;
   private availableModels: string[] = [];
 
-  async initialize(apiKey: string = 'ollama', config?: Record<string, unknown>): Promise<void> {
+  override async initialize(
+    apiKey: string = 'ollama',
+    config?: Record<string, unknown>,
+  ): Promise<void> {
     await super.initialize(apiKey, config);
 
     const ollamaConfig = config as OllamaConfig;
@@ -78,15 +81,15 @@ export class OllamaProvider extends BaseAIProvider {
       });
 
       if (response.ok) {
-        const data = (await response.json()) as unknown;
-        this.availableModels = data.models?.map((model: unknown) => model.name) || [];
+        const data = (await response.json()) as { models?: Array<{ name: string }> };
+        this.availableModels = data.models?.map((model) => model.name) || [];
       }
     } catch {
       console.warn('Failed to fetch available models');
     }
   }
 
-  getModels(): string[] {
+  override getModels(): string[] {
     // Return available models if we have them, otherwise return default list
     return this.availableModels.length > 0 ? this.availableModels : this.models;
   }
@@ -144,7 +147,7 @@ export class OllamaProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const data = (await response.json()) as unknown;
+    const data = (await response.json()) as { response?: string };
     return data.response || '';
   }
 
@@ -190,7 +193,9 @@ export class OllamaProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const nodeResponse = response as unknown; // Node.js fetch response
+    const nodeResponse = response as unknown as {
+      body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
+    }; // Node.js fetch response
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error('No response body');
 
@@ -211,14 +216,14 @@ export class OllamaProvider extends BaseAIProvider {
           if (line.trim()) {
             try {
               const parsed = JSON.parse(line) as Record<string, unknown>;
-              const content = parsed.response;
+              const content = parsed['response'] as string;
               if (content) {
                 yield content;
                 if (options?.streamOptions?.onToken) {
                   options.streamOptions.onToken(content);
                 }
               }
-              if (parsed.done) return;
+              if (parsed['done']) return;
             } catch {
               // Skip invalid JSON
             }
@@ -303,7 +308,7 @@ export class OllamaProvider extends BaseAIProvider {
     const response = await this.chat(messages, model, { temperature: 0.1, maxTokens: 4096 });
 
     try {
-      return JSON.parse(response) as Record<string, unknown>;
+      return JSON.parse(response) as CodeReviewResult;
     } catch {
       // Fallback if JSON parsing fails
       return {
@@ -340,7 +345,9 @@ export class OllamaProvider extends BaseAIProvider {
     }
 
     // Wait for pull completion (streaming response)
-    const nodeResponse = response as unknown;
+    const nodeResponse = response as unknown as {
+      body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
+    };
     const reader = nodeResponse.body?.getReader();
     if (!reader) return;
 
@@ -361,9 +368,9 @@ export class OllamaProvider extends BaseAIProvider {
           if (line.trim()) {
             try {
               const parsed = JSON.parse(line) as Record<string, unknown>;
-              if (parsed.status === 'success') return;
-              if (parsed.error) {
-                throw new Error(`Model pull failed: ${parsed.error}`);
+              if (parsed['status'] === 'success') return;
+              if (parsed['error']) {
+                throw new Error(`Model pull failed: ${parsed['error']}`);
               }
             } catch {
               // Skip invalid JSON

@@ -7,13 +7,24 @@
 
 import { BaseCommand } from '../ui/base-command';
 import { ProgressIndicator } from '../ui/progress-indicator';
-import { readConfig } from '../utils/config';
+import { readConfig, MariaConfig } from '../utils/config';
+import type { CommandCategory } from '../lib/command-groups';
 import * as os from 'os';
 
 // Local type definitions for missing UI system types
 interface CommandContext {
   args: string[];
+  userId?: string;
+  projectPath?: string;
+  projectType?: string;
   options: Record<string, unknown>;
+  recentCommands: string[];
+}
+
+interface ExtendedConfig extends MariaConfig {
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
 }
 
 interface CommandResult {
@@ -61,19 +72,15 @@ interface TreeNode {
   label: string;
   children?: TreeNode[];
   value?: string;
+  expanded?: boolean;
 }
 
-const showSteps = (
-  title: string,
-  steps: string[],
-): { addStep: () => void; succeed: () => void; fail: () => void } => {
+const showSteps = (title: string, steps: string[]): ProgressIndicator => {
   console.log(title);
   steps.forEach((step) => console.log(`• ${step}`));
-  return {
-    addStep: () => {},
-    succeed: () => {},
-    fail: () => {},
-  };
+
+  // Return a mock ProgressIndicator that satisfies the interface
+  return new ProgressIndicator({ message: title, total: steps.length });
 };
 
 // Status data structure
@@ -124,7 +131,7 @@ interface SystemStatus {
  */
 export class StatusEnhancedCommand extends BaseCommand {
   name = '/status';
-  category = CommandCategory.User;
+  category = 'core' as CommandCategory;
   description = 'Display comprehensive system status and session information';
   aliases = ['/s', '/info'];
 
@@ -237,19 +244,19 @@ export class StatusEnhancedCommand extends BaseCommand {
       let formattedOutput: unknown;
       switch (format) {
         case 'compact':
-          formattedOutput = this.formatCompact(filteredStatus);
+          formattedOutput = this.formatCompact(filteredStatus as SystemStatus);
           break;
         case 'json':
           formattedOutput = filteredStatus;
           break;
         case 'tree':
-          formattedOutput = this.formatTree(filteredStatus);
+          formattedOutput = this.formatTree(filteredStatus as SystemStatus);
           break;
         default:
-          formattedOutput = this.formatFull(filteredStatus);
+          formattedOutput = this.formatFull(filteredStatus as SystemStatus);
       }
 
-      progress.succeed('Status collected successfully');
+      progress.stop('✅ Status collected successfully');
 
       // Handle refresh mode
       if (refresh && format !== 'json') {
@@ -267,7 +274,7 @@ export class StatusEnhancedCommand extends BaseCommand {
         relatedCommands: this.getRelatedCommands(),
       };
     } catch (error: unknown) {
-      progress.fail('Failed to collect status');
+      progress.stop('❌ Failed to collect status');
       throw error;
     }
   }
@@ -314,7 +321,7 @@ export class StatusEnhancedCommand extends BaseCommand {
 
     progress.addStep({
       name: 'Project analysis',
-      status: projectStatus ? 'completed' : 'skipped',
+      status: projectStatus ? 'completed' : 'failed',
     });
 
     // Step 4: AI configuration
@@ -363,7 +370,7 @@ export class StatusEnhancedCommand extends BaseCommand {
     };
   }
 
-  private async getSystemStatus(config: unknown): Promise<SystemStatus['system']> {
+  private async getSystemStatus(config: ExtendedConfig): Promise<SystemStatus['system']> {
     const memoryUsage = process.memoryUsage();
     const totalMemory = os.totalmem();
 
@@ -388,14 +395,14 @@ export class StatusEnhancedCommand extends BaseCommand {
 
     return {
       path: context.projectPath,
-      type: context.projectType || 'unknown',
+      type: (context.projectType as 'node' | 'python' | 'rust' | 'go' | 'unknown') || 'unknown',
       initialized: true,
       files: 156, // Mock data
       lastScan: new Date(Date.now() - 300000), // 5 minutes ago
     };
   }
 
-  private async getAIStatus(config: unknown): Promise<SystemStatus['ai']> {
+  private async getAIStatus(config: ExtendedConfig): Promise<SystemStatus['ai']> {
     return {
       model: config.model || 'gemini-2.5-pro',
       temperature: config.temperature || 0.7,
@@ -414,7 +421,7 @@ export class StatusEnhancedCommand extends BaseCommand {
     };
   }
 
-  private formatFull(status: unknown): unknown {
+  private formatFull(status: SystemStatus): unknown {
     // Use ResponseFormatter for rich display
     const tables: unknown[] = [];
 
@@ -458,7 +465,7 @@ export class StatusEnhancedCommand extends BaseCommand {
     return { tables, format: 'full' };
   }
 
-  private formatCompact(status: unknown): string {
+  private formatCompact(status: SystemStatus): string {
     const parts: string[] = [];
 
     if (status.user) {
@@ -490,7 +497,7 @@ export class StatusEnhancedCommand extends BaseCommand {
     return parts.join('\n');
   }
 
-  private formatTree(status: unknown): TreeNode {
+  private formatTree(status: SystemStatus): TreeNode {
     const root: TreeNode = {
       label: 'MARIA System Status',
       expanded: true,
@@ -498,12 +505,12 @@ export class StatusEnhancedCommand extends BaseCommand {
     };
 
     // Add sections as tree nodes
-    Object.entries(status).forEach(([key, value]) => {
+    Object.entries(status as unknown as Record<string, unknown>).forEach(([key, value]) => {
       if (value && typeof value === 'object') {
         const node: TreeNode = {
           label: key.charAt(0).toUpperCase() + key.slice(1),
           expanded: true,
-          children: this.objectToTreeNodes(value as unknown),
+          children: this.objectToTreeNodes(value as Record<string, unknown>),
         };
         root.children!.push(node);
       }
@@ -512,12 +519,12 @@ export class StatusEnhancedCommand extends BaseCommand {
     return root;
   }
 
-  private objectToTreeNodes(obj: unknown): TreeNode[] {
+  private objectToTreeNodes(obj: Record<string, unknown>): TreeNode[] {
     return Object.entries(obj).map(([key, value]) => {
       if (typeof value === 'object' && value !== null && !(value instanceof Date)) {
         return {
           label: key,
-          children: this.objectToTreeNodes(value),
+          children: this.objectToTreeNodes(value as Record<string, unknown>),
           expanded: false,
         };
       }

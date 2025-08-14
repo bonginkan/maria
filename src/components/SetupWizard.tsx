@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Spinner, Newline } from 'ink';
+import { Box, Text, Newline } from 'ink';
+import Spinner from 'ink-spinner';
 import {
   ZeroConfigSetup,
   SetupWizardConfig,
@@ -89,25 +90,6 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
     }
   };
 
-  const configurePreferences = async () => {
-    setCurrentStep('testing');
-    setLoading(true);
-
-    try {
-      // Run full setup
-      const finalConfig = await setup.run();
-      setConfig(finalConfig);
-
-      // Move to completion
-      setCurrentStep('completion');
-      setTimeout(() => onComplete(finalConfig), 2000);
-    } catch (err: unknown) {
-      setError('Configuration failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const renderLanguageStep = () => {
     const isJapanese = selectedLanguage === 'ja';
 
@@ -121,7 +103,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
         <Text>
           {isJapanese
             ? `検出された言語: ${selectedLanguage === 'ja' ? '日本語' : 'English'}`
-            : `Detected language: ${selectedLanguage === 'ja' ? 'Japanese' : 'English'}`}
+            : `Detected language: ${(selectedLanguage as 'en' | 'ja') === 'ja' ? 'Japanese' : 'English'}`}
         </Text>
 
         <Newline />
@@ -209,7 +191,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
         <Newline />
 
         <Box>
-          <Text color="cyan" backgroundColor="blue" onClick={configurePreferences}>
+          <Text color="cyan" backgroundColor="blue">
             {isJapanese ? ' 設定を続行 ' : ' Continue Setup '}
           </Text>
         </Box>
@@ -313,14 +295,14 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
         <Newline />
 
         <Box>
-          <Text color="yellow" backgroundColor="red" onClick={() => setError(null)}>
+          <Text color="yellow" backgroundColor="red">
             {isJapanese ? ' リトライ ' : ' Retry '}
           </Text>
 
           {onCancel && (
             <>
               <Text> </Text>
-              <Text color="gray" backgroundColor="black" onClick={onCancel}>
+              <Text color="gray" backgroundColor="black">
                 {isJapanese ? ' キャンセル ' : ' Cancel '}
               </Text>
             </>

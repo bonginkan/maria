@@ -241,12 +241,15 @@ export class ModelManager {
       const configContent = await fs.readFile(workflowConfigPath, 'utf-8');
       const config = JSON.parse(configContent) as Record<string, unknown>;
 
-      const workflow = config.workflows[workflowId];
+      const workflow = (config['workflows'] as Record<string, unknown>)?.[workflowId];
       if (!workflow) {
         throw new Error(`ワークフロー '${workflowId}' が見つかりません`);
       }
 
-      const workflowPath = join(this.workflowsDir, workflow.file);
+      const workflowPath = join(
+        this.workflowsDir,
+        (workflow as Record<string, unknown>)['file'] as string,
+      );
       const workflowContent = await fs.readFile(workflowPath, 'utf-8');
 
       return {
@@ -305,7 +308,7 @@ export class ModelManager {
         throw new Error(`ComfyUI API エラー: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { prompt_id: string };
       return result.prompt_id;
     } catch (error: unknown) {
       throw new Error(`ワークフロー実行エラー: ${error}`);
@@ -325,7 +328,11 @@ export class ModelManager {
         return { completed: false, error: 'プロンプトIDが見つかりません' };
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as {
+        status: string;
+        message?: string;
+        progress?: number;
+      };
 
       // ComfyUIの実際のレスポンス形式に合わせて調整が必要
       if (result.status === 'completed') {

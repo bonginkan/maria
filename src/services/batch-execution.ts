@@ -250,8 +250,14 @@ export class BatchExecutionEngine {
           });
 
           // Set variable if command sets one
-          if (cmdResult.data?.variable) {
-            this.variables[cmdResult.data.variable] = cmdResult.data.value;
+          if (
+            cmdResult.data &&
+            typeof cmdResult.data === 'object' &&
+            'variable' in cmdResult.data &&
+            'value' in cmdResult.data
+          ) {
+            const resultData = cmdResult.data as { variable: string; value: unknown };
+            this.variables[resultData.variable] = resultData.value;
           }
 
           break;

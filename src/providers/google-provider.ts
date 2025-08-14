@@ -83,13 +83,13 @@ export class GoogleProvider extends BaseProvider {
       },
     };
 
-    const response = await this.makeRequest(
+    const response = (await this.makeRequest(
       `${this.apiBase}/models/${model}:generateContent?key=${this.apiKey}`,
       {
         method: 'POST',
         body: JSON.stringify(payload),
       },
-    );
+    )) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
 
     return {
       content: response.candidates?.[0]?.content?.parts?.[0]?.text || '',
@@ -99,7 +99,7 @@ export class GoogleProvider extends BaseProvider {
     };
   }
 
-  estimateCost(tokens: number, model = 'gemini-2.5-flash'): number {
+  override estimateCost(tokens: number, model = 'gemini-2.5-flash'): number {
     const pricing = {
       'gemini-2.5-pro': { input: 0.0025, output: 0.01 },
       'gemini-2.5-flash': { input: 0.0001, output: 0.0004 },

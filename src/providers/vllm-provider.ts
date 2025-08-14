@@ -36,7 +36,10 @@ export class VLLMProvider extends BaseAIProvider {
   private availableModels: string[] = [];
   private vllmConfig: VLLMConfig = {};
 
-  async initialize(apiKey: string = 'vllm-local', config?: Record<string, unknown>): Promise<void> {
+  override async initialize(
+    apiKey: string = 'vllm-local',
+    config?: Record<string, unknown>,
+  ): Promise<void> {
     await super.initialize(apiKey, config);
 
     this.vllmConfig = (config as VLLMConfig) || {};
@@ -80,15 +83,15 @@ export class VLLMProvider extends BaseAIProvider {
       });
 
       if (response.ok) {
-        const data = (await response.json()) as unknown;
-        this.availableModels = data.data?.map((model: unknown) => model.id) || [];
+        const data = (await response.json()) as { data?: Array<{ id: string }> };
+        this.availableModels = data.data?.map((model) => model.id) || [];
       }
     } catch {
       console.warn('Failed to fetch available models');
     }
   }
 
-  getModels(): string[] {
+  override getModels(): string[] {
     // Return available models if we have them, otherwise return default list
     return this.availableModels.length > 0 ? this.availableModels : this.models;
   }
@@ -148,8 +151,8 @@ export class VLLMProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const data = (await response.json()) as unknown;
-    return data.choices[0]?.message?.content || '';
+    const data = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    return data.choices?.[0]?.message?.content || '';
   }
 
   async *chatStream(
@@ -196,7 +199,9 @@ export class VLLMProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const nodeResponse = response as unknown; // Node.js fetch response
+    const nodeResponse = response as unknown as {
+      body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
+    };
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error('No response body');
 
@@ -218,7 +223,9 @@ export class VLLMProvider extends BaseAIProvider {
             if (data === '[DONE]') return;
 
             try {
-              const parsed = JSON.parse(data) as Record<string, unknown>;
+              const parsed = JSON.parse(data) as {
+                choices?: Array<{ delta?: { content?: string } }>;
+              };
               const content = parsed.choices?.[0]?.delta?.content;
               if (content) {
                 yield content;
@@ -292,7 +299,7 @@ export class VLLMProvider extends BaseAIProvider {
     const response = await this.chat(messages, model, { temperature: 0.1, maxTokens: 4096 });
 
     try {
-      return JSON.parse(response) as Record<string, unknown>;
+      return JSON.parse(response) as CodeReviewResult;
     } catch {
       // Fallback if JSON parsing fails
       return {

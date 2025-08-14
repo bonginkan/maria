@@ -246,7 +246,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     try {
       // Save to config
       const config = await readConfig();
-      config['defaultModel'] = item.value as unknown;
+      config['defaultModel'] = item.value as string;
       await writeConfig(config);
 
       setSaved(true);

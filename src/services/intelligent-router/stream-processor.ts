@@ -76,11 +76,12 @@ export class StreamProcessor extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.currentStream = stream;
       let buffer = '';
-      const chunkSize = options.chunkSize || 100;
+      const typedOptions = options as { chunkSize?: number; encoding?: string };
+      const chunkSize = typedOptions.chunkSize || 100;
 
       // エンコーディング設定
-      if (options.encoding) {
-        stream.setEncoding(options.encoding);
+      if (typedOptions.encoding) {
+        stream.setEncoding(typedOptions.encoding as BufferEncoding);
       }
 
       // データチャンクの処理
@@ -139,7 +140,11 @@ export class StreamProcessor extends EventEmitter {
     generator: AsyncGenerator<string>,
     options: unknown,
   ): Promise<void> {
-    const chunkSize = options.chunkSize || 100;
+    const typedOptions = options as {
+      chunkSize?: number;
+      progressCallback?: (progress: number) => void;
+    };
+    const chunkSize = typedOptions.chunkSize || 100;
     let buffer = '';
     let totalProcessed = 0;
     const estimatedTotal = 0;
@@ -150,14 +155,14 @@ export class StreamProcessor extends EventEmitter {
         totalProcessed += chunk.length;
 
         // プログレス更新
-        if (options.progressCallback) {
+        if (typedOptions.progressCallback) {
           const progress: StreamProgress = {
             current: totalProcessed,
             total: estimatedTotal || totalProcessed * 2, // 推定
             percentage: estimatedTotal ? (totalProcessed / estimatedTotal) * 100 : 50,
             message: `Processing: ${totalProcessed} bytes`,
           };
-          options.progressCallback(progress);
+          typedOptions.progressCallback(progress.percentage);
           this.updateProgress('main', progress);
         }
 
@@ -471,17 +476,17 @@ export class StreamProcessor extends EventEmitter {
    * パイプラインを作成
    */
   createPipeline(...transforms: Transform[]): Writable {
-    let pipeline = this.currentStream as unknown;
+    let pipeline = this.currentStream as Transform | Writable | undefined;
 
     for (const transform of transforms) {
-      if (pipeline) {
+      if (pipeline && pipeline.pipe) {
         pipeline = pipeline.pipe(transform);
       }
     }
 
     // 最終的な書き込みストリーム
     const writeStream = new Writable({
-      write: (chunk, encoding, callback) => {
+      write: (chunk, _encoding, callback) => {
         this.emitChunk({
           type: 'text',
           content: chunk.toString(),
@@ -490,7 +495,7 @@ export class StreamProcessor extends EventEmitter {
       },
     });
 
-    if (pipeline) {
+    if (pipeline && pipeline.pipe) {
       pipeline.pipe(writeStream);
     }
 

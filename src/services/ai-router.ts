@@ -474,19 +474,24 @@ export class AIRouter {
    * Get router statistics
    */
   public getStatistics(): Record<string, unknown> {
-    const stats: Record<string, unknown> = {
-      providers: {},
+    const stats = {
+      providers: {} as Record<string, unknown>,
       totalRequests: 0,
       averageLatency: 0,
     };
 
     for (const [name, metrics] of this.performanceMetrics) {
-      stats['providers'][name] = {
-        requests: metrics['totalRequests'],
-        successRate: `${(metrics.successRate * 100).toFixed(1)}%`,
-        avgLatency: `${metrics.averageLatency.toFixed(0)}ms`,
+      const metricsData = metrics as {
+        totalRequests: number;
+        successRate: number;
+        averageLatency: number;
       };
-      stats['totalRequests'] += metrics['totalRequests'];
+      stats.providers[name] = {
+        requests: metricsData.totalRequests,
+        successRate: `${(metricsData.successRate * 100).toFixed(1)}%`,
+        avgLatency: `${metricsData.averageLatency.toFixed(0)}ms`,
+      };
+      stats.totalRequests += metricsData.totalRequests;
     }
 
     return stats;

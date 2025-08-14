@@ -46,7 +46,8 @@ export interface FeedbackResponse {
 
 export class ContextAwareFeedback {
   private context: UserContext;
-  private patterns: Map<string, number> = new Map();
+  // @ts-ignore - Unused but planned for future pattern matching features
+  private _patterns: Map<string, number> = new Map();
 
   constructor(initialContext?: Partial<UserContext>) {
     this.context = {
@@ -284,7 +285,7 @@ export class ContextAwareFeedback {
 
     return {
       type: 'encouragement',
-      message: celebrations[Math.floor(Math.random() * celebrations.length)],
+      message: celebrations[Math.floor(Math.random() * celebrations.length)] || 'Great job!',
       icon: getStatusIcon('success'),
       color: getMessageColor('success'),
       priority: 'low',

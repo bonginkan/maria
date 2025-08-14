@@ -80,7 +80,7 @@ export class LocalStorageService extends EventEmitter {
   private async loadIndex(): Promise<void> {
     try {
       const indexData = await fs.readFile(this.indexPath, 'utf-8');
-      const items = JSON.parse(indexData) as Record<string, unknown> as StorageItem[];
+      const items = JSON.parse(indexData) as unknown as StorageItem[];
       this.index = new Map(items.map((item) => [item.id, item]));
     } catch (error: unknown) {
       // Index doesn't exist yet, start fresh
@@ -150,7 +150,7 @@ export class LocalStorageService extends EventEmitter {
     try {
       const itemPath = this.getItemPath(item);
       const data = await fs.readFile(itemPath, 'utf-8');
-      return JSON.parse(data) as Record<string, unknown>;
+      return JSON.parse(data) as unknown as StorageItem;
     } catch (error: unknown) {
       console.error(`Failed to read item ${id}:`, error);
       return null;
@@ -271,7 +271,7 @@ export class LocalStorageService extends EventEmitter {
 
     try {
       const data = await fs.readFile(backupPath, 'utf-8');
-      const item = JSON.parse(data) as Record<string, unknown> as StorageItem;
+      const item = JSON.parse(data) as unknown as StorageItem;
 
       // Restore to main storage
       const itemPath = this.getItemPath(item);
@@ -325,7 +325,7 @@ export class LocalStorageService extends EventEmitter {
     await this.initialize();
 
     try {
-      const items = JSON.parse(jsonData) as Record<string, unknown> as StorageItem[];
+      const items = JSON.parse(jsonData) as unknown as StorageItem[];
       let importedCount = 0;
 
       for (const item of items) {

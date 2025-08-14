@@ -197,9 +197,9 @@ export class IntentClassifier {
   private matchByKeywords(input: string): InferredCommand | null {
     const results = this.fuzzySearcher.search(input);
 
-    if (results.length > 0 && results[0].score !== undefined) {
-      const bestMatch = results[0];
-      const confidence = 1 - bestMatch.score; // Fuseのスコアは0が完全一致
+    if (results.length > 0 && results[0]?.score !== undefined) {
+      const bestMatch = results[0]!;
+      const confidence = 1 - bestMatch.score!; // Fuseのスコアは0が完全一致
 
       if (confidence > 0.6) {
         const mapping = bestMatch.item;
@@ -220,7 +220,7 @@ export class IntentClassifier {
   /**
    * パターンマッチの信頼度計算
    */
-  private calculatePatternConfidence(input: string, pattern: RegExp, priority: number): number {
+  private calculatePatternConfidence(input: string, _pattern: RegExp, priority: number): number {
     const baseConfidence = 0.7;
     const priorityBonus = priority * 0.02; // 優先度によるボーナス
     const lengthPenalty = Math.max(0, (50 - input.length) * 0.001); // 長い入力はペナルティ
@@ -250,7 +250,7 @@ export class IntentClassifier {
 
     // 時間検出
     const durationMatch = input.match(/(\d+)\s*(秒|seconds?)/);
-    if (durationMatch) {
+    if (durationMatch && durationMatch[1]) {
       params['duration'] = parseInt(durationMatch[1]);
     }
 
@@ -281,7 +281,7 @@ export class IntentClassifier {
 
     // バッチサイズ検出
     const batchMatch = input.match(/(\d+)\s*(枚|個|つ|images?)/);
-    if (batchMatch) {
+    if (batchMatch && batchMatch[1]) {
       params['batch'] = parseInt(batchMatch[1]);
     }
 
@@ -341,7 +341,7 @@ export class IntentClassifier {
 
     // カバレッジ目標
     const coverageMatch = input.match(/(\d+)\s*%/);
-    if (coverageMatch) {
+    if (coverageMatch && coverageMatch[1]) {
       params['coverage'] = parseInt(coverageMatch[1]);
     }
 

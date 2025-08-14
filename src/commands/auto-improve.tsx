@@ -571,10 +571,10 @@ export const AutoImproveMetricsCommand: React.FC<{
             metricsData = await metricsCollector.collectPerformanceMetrics();
             break;
           case 'quality':
-            metricsData = await metricsCollector.collectQualityMetrics() as PerformanceMetrics;
+            metricsData = (await metricsCollector.collectQualityMetrics()) as PerformanceMetrics;
             break;
           case 'security':
-            metricsData = await safetyEngine.getSafetyMetrics() as PerformanceMetrics;
+            metricsData = (await safetyEngine.getSafetyMetrics()) as PerformanceMetrics;
             break;
           default:
             throw new Error(`Unknown metrics type: ${type}`);

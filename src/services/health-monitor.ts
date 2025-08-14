@@ -453,11 +453,11 @@ export class HealthMonitor extends EventEmitter {
       const parsed = JSON.parse(data) as Record<string, unknown>;
 
       return {
-        overall: parsed.overall,
-        providers: parsed.providers,
-        recommendations: parsed.recommendations,
-        lastUpdate: new Date(parsed.lastUpdate),
-        uptime: parsed.uptime,
+        overall: parsed['overall'] as 'healthy' | 'degraded' | 'critical',
+        providers: parsed['providers'] as ProviderHealth[],
+        recommendations: parsed['recommendations'] as HealthRecommendation[],
+        lastUpdate: new Date(parsed['lastUpdate'] as string),
+        uptime: parsed['uptime'] as number,
       };
     } catch {
       return null;

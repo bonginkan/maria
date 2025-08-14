@@ -30,7 +30,7 @@ export const EnhancedStatusBar: React.FC<StatusBarProps> = ({
       // Simple CPU approximation (in real app, use proper CPU monitoring)
       const loadAvg = os.loadavg()[0];
       const cpuCount = os.cpus().length;
-      const cpuPercent = Math.min(100, Math.round((loadAvg / cpuCount) * 100));
+      const cpuPercent = Math.min(100, Math.round(((loadAvg || 0) / cpuCount) * 100));
       setCpuUsage(cpuPercent);
 
       // Network status simulation (in real app, check actual connection)

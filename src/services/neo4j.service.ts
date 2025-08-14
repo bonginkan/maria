@@ -288,17 +288,17 @@ export class Neo4jService {
 
 // Mock implementation for OSS version
 export class MockNeo4jService extends Neo4jService {
-  async connect() {
+  override async connect() {
     console.warn('Neo4j is not configured. Using mock implementation.');
     // Use the parent's connected property instead of trying to assign to isConnected method
   }
 
-  async analyzeSchema() {
+  override async analyzeSchema() {
     return { nodes: [], relationships: [], constraints: [], indexes: [] };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async runQuery(_query: string, _params?: Record<string, unknown>): Promise<unknown[]> {
+  override async runQuery(_query: string, _params?: Record<string, unknown>): Promise<unknown[]> {
     // Return empty array to match the expected return type
     return [];
   }
