@@ -184,18 +184,27 @@ jobs:
       - name: 🔄 Clone OSS repository
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OSS_SYNC_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
         run: |
           echo "📥 Cloning maria OSS repository..."
-          echo "🔑 Using GITHUB_TOKEN for authentication"
           
-          # Clone with GITHUB_TOKEN (always available in GitHub Actions)
-          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/bonginkan/maria.git /tmp/maria-repo
+          # Try OSS_SYNC_TOKEN first, fallback to GITHUB_TOKEN
+          if [ -n "$OSS_SYNC_TOKEN" ]; then
+            echo "🔑 Using OSS_SYNC_TOKEN for authentication"
+            AUTH_TOKEN="$OSS_SYNC_TOKEN"
+          else
+            echo "🔑 Using GITHUB_TOKEN for authentication (public repos only)"
+            AUTH_TOKEN="$GITHUB_TOKEN"
+          fi
+          
+          # Clone with authentication
+          git clone https://x-access-token:${AUTH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
           
           cd /tmp/maria-repo
           
-          # Setup git config
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # Setup git config with proper bot identity
+          git config user.name "maria-sync-bot"
+          git config user.email "noreply@bonginkan.ai"
 
       - name: 📤 Sync files to OSS repository
         run: |
@@ -262,8 +271,21 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OSS_SYNC_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
         run: |
           cd /tmp/maria-repo
+          
+          # Use same authentication token as clone
+          if [ -n "$OSS_SYNC_TOKEN" ]; then
+            echo "🔑 Using OSS_SYNC_TOKEN for push"
+            AUTH_TOKEN="$OSS_SYNC_TOKEN"
+          else
+            echo "🔑 Using GITHUB_TOKEN for push"
+            AUTH_TOKEN="$GITHUB_TOKEN"
+          fi
+          
+          # Update remote URL with authentication
+          git remote set-url origin https://x-access-token:${AUTH_TOKEN}@github.com/bonginkan/maria.git
           
           # Stage all changes
           git add -A
@@ -281,7 +303,7 @@ jobs:
           Synced from: https://github.com/bonginkan/maria_code/commit/${GITHUB_SHA}
           Automated sync by GitHub Actions" || true
           
-          # Push to main
+          # Push to main with authentication
           git push origin main
           
           echo "✅ Successfully synced to OSS repository"
