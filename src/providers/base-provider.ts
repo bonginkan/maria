@@ -19,34 +19,35 @@ export abstract class BaseProvider implements AIProvider {
   abstract chat(request: AIRequest): Promise<AIResponse>;
 
   // Optional methods with default implementations
-  async vision(image: Buffer, prompt: string): Promise<AIResponse> {
+  async vision(_image: Buffer, _prompt: string): Promise<AIResponse> {
     throw new Error(`${this.name} does not support vision tasks`);
   }
 
   async generateCode(prompt: string, language?: string): Promise<AIResponse> {
-    const codePrompt = language 
+    const codePrompt = language
       ? `Generate ${language} code for: ${prompt}`
       : `Generate code for: ${prompt}`;
-      
+
     return this.chat({
       messages: [{ role: 'user', content: codePrompt }],
-      taskType: 'coding'
+      taskType: 'coding',
     });
   }
 
-  estimateCost(tokens: number): number {
+  estimateCost(_tokens: number): number {
     return 0; // Free by default (local providers)
   }
 
-  protected async makeRequest(url: string, options: any): Promise<any> {
+  protected async makeRequest(url: string, options: unknown): Promise<unknown> {
     const fetch = (await import('node-fetch')).default;
-    
+    const typedOptions = options as Record<string, unknown>;
+
     const response = await fetch(url, {
-      ...options,
+      ...typedOptions,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
-      }
+        ...(typedOptions['headers'] as Record<string, string>),
+      },
     });
 
     if (!response.ok) {
@@ -57,15 +58,18 @@ export abstract class BaseProvider implements AIProvider {
     return response.json();
   }
 
-  protected async makeStreamRequest(url: string, options: any): Promise<AsyncGenerator<string>> {
+  protected async makeStreamRequest(
+    url: string,
+    options: Record<string, unknown> & { headers?: Record<string, unknown> },
+  ): Promise<AsyncGenerator<string>> {
     const fetch = (await import('node-fetch')).default;
-    
+
     const response = await fetch(url, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers
-      }
+        ...(options.headers as Record<string, unknown>),
+      },
     });
 
     if (!response.ok) {
@@ -76,8 +80,11 @@ export abstract class BaseProvider implements AIProvider {
     return this.parseStreamResponse(response);
   }
 
-  private async *parseStreamResponse(response: any): AsyncGenerator<string> {
-    const reader = response.body?.getReader();
+  private async *parseStreamResponse(response: unknown): AsyncGenerator<string> {
+    const typedResponse = response as {
+      body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
+    };
+    const reader = typedResponse.body?.getReader();
     if (!reader) return;
 
     const decoder = new TextDecoder();
@@ -88,7 +95,7 @@ export abstract class BaseProvider implements AIProvider {
         if (done) break;
 
         const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(line => line.trim());
+        const lines = chunk.split('\n').filter((line) => line.trim());
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
@@ -96,10 +103,10 @@ export abstract class BaseProvider implements AIProvider {
             if (data === '[DONE]') return;
 
             try {
-              const parsed = JSON.parse(data);
+              const parsed = JSON.parse(data) as Record<string, unknown>;
               const content = this.extractStreamContent(parsed);
               if (content) yield content;
-            } catch (e) {
+            } catch (e: unknown) {
               // Skip invalid JSON
             }
           }
@@ -110,24 +117,26 @@ export abstract class BaseProvider implements AIProvider {
     }
   }
 
-  protected extractStreamContent(data: any): string | null {
+  protected extractStreamContent(data: unknown): string | null {
     // Override in subclasses for provider-specific parsing
-    return data?.choices?.[0]?.delta?.content || null;
+    const typedData = data as { choices?: Array<{ delta?: { content?: string } }> };
+    return typedData?.choices?.[0]?.delta?.content || null;
   }
 
-  protected createModelInfo(model: any): ModelInfo {
+  protected createModelInfo(model: unknown): ModelInfo {
+    const typedModel = model as Record<string, unknown>;
     return {
-      id: model.id,
-      name: model.name || model.id,
+      id: typedModel['id'] as string,
+      name: (typedModel['name'] as string) || (typedModel['id'] as string),
       provider: this.name,
-      description: model.description || '',
-      contextLength: model.context_length || 4096,
-      capabilities: model.capabilities || ['text'],
-      pricing: model.pricing,
-      local: model.local || false,
+      description: (typedModel['description'] as string) || '',
+      contextLength: (typedModel['context_length'] as number) || 4096,
+      capabilities: (typedModel['capabilities'] as string[]) || ['text'],
+      pricing: typedModel['pricing'] as { input: number; output: number } | undefined,
+      local: (typedModel['local'] as boolean) || false,
       available: true,
-      memoryRequired: model.memory_required,
-      recommendedFor: model.recommended_for || ['general_purpose']
+      memoryRequired: typedModel['memory_required'] as string | undefined,
+      recommendedFor: (typedModel['recommended_for'] as string[]) || ['general_purpose'],
     };
   }
 }

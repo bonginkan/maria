@@ -11,48 +11,52 @@ export class GrokProvider extends BaseAIProvider {
     'llama-3.1-8b-instant',
     'mixtral-8x7b-32768',
     'gemma2-9b-it',
-    'gemma-7b-it'
+    'gemma-7b-it',
   ];
-  
+
   private client?: Groq; // Using Groq SDK for Grok AI
-  
-  async initialize(apiKey: string, config?: Record<string, any>): Promise<void> {
+
+  override async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
     await super.initialize(apiKey, config);
-    
+
     this.client = new Groq({
       apiKey: this.apiKey,
-      baseURL: config?.baseURL,
+      baseURL: config?.['baseURL'] as string | undefined,
     });
   }
-  
+
   async chat(messages: Message[], model?: string, options?: CompletionOptions): Promise<string> {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
-    
+
     const completion = await this.client!.chat.completions.create({
       model: selectedModel,
-      messages: messages.map(m => ({
+      messages: messages.map((m) => ({
         role: m.role,
-        content: m.content
+        content: m.content,
       })),
       temperature: options?.temperature || 0.7,
       max_tokens: options?.maxTokens,
       top_p: options?.topP,
       stop: options?.stopSequences,
     });
-    
+
     return completion.choices[0]?.message?.content || '';
   }
-  
-  async *chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string> {
+
+  async *chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string> {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
-    
+
     const stream = await this.client!.chat.completions.create({
       model: selectedModel,
-      messages: messages.map(m => ({
+      messages: messages.map((m) => ({
         role: m.role,
-        content: m.content
+        content: m.content,
       })),
       temperature: options?.temperature || 0.7,
       max_tokens: options?.maxTokens,
@@ -60,7 +64,7 @@ export class GrokProvider extends BaseAIProvider {
       stop: options?.stopSequences,
       stream: true,
     });
-    
+
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content;
       if (content) {
@@ -69,30 +73,38 @@ export class GrokProvider extends BaseAIProvider {
           options.streamOptions.onToken(content);
         }
       }
-      
+
       // Check for abort signal
       if (options?.streamOptions?.signal?.aborted) {
         break;
       }
     }
   }
-  
-  async generateCode(prompt: string, language: string = 'typescript', model?: string): Promise<string> {
+
+  async generateCode(
+    prompt: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<string> {
     const messages: Message[] = [
       {
         role: 'system',
-        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`
+        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`,
       },
       {
         role: 'user',
-        content: prompt
-      }
+        content: prompt,
+      },
     ];
-    
+
     return this.chat(messages, model, { temperature: 0.2 });
   }
-  
-  async reviewCode(code: string, language: string = 'typescript', model?: string): Promise<CodeReviewResult> {
+
+  async reviewCode(
+    code: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<CodeReviewResult> {
     const messages: Message[] = [
       {
         role: 'system',
@@ -108,24 +120,24 @@ export class GrokProvider extends BaseAIProvider {
   ],
   "summary": "<overall code quality summary>",
   "improvements": ["<improvement suggestion 1>", "<improvement suggestion 2>", ...]
-}`
+}`,
       },
       {
         role: 'user',
-        content: code
-      }
+        content: code,
+      },
     ];
-    
+
     const response = await this.chat(messages, model, { temperature: 0.1 });
-    
+
     try {
-      return JSON.parse(response);
+      return JSON.parse(response) as CodeReviewResult;
     } catch {
       // Fallback if JSON parsing fails
       return {
         issues: [],
         summary: response,
-        improvements: []
+        improvements: [],
       };
     }
   }

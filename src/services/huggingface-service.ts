@@ -36,10 +36,16 @@ export class HuggingFaceService {
 
   constructor(config: HuggingFaceConfig = {}) {
     this.config = {
-      token: config.token || process.env.HF_TOKEN || '',
-      modelDir: config.modelDir || process.env.HF_MODEL_DIR || path.join(os.homedir(), '.maria', 'huggingface', 'models'),
-      cacheDir: config.cacheDir || process.env.HF_CACHE_DIR || path.join(os.homedir(), '.cache', 'huggingface'),
-      timeout: config.timeout || 600000 // 10 minutes
+      token: config.token || process.env['HF_TOKEN'] || '',
+      modelDir:
+        config.modelDir ||
+        process.env['HF_MODEL_DIR'] ||
+        path.join(os.homedir(), '.maria', 'huggingface', 'models'),
+      cacheDir:
+        config.cacheDir ||
+        process.env['HF_CACHE_DIR'] ||
+        path.join(os.homedir(), '.cache', 'huggingface'),
+      timeout: config.timeout || 600000, // 10 minutes
     };
   }
 
@@ -57,21 +63,23 @@ export class HuggingFaceService {
     try {
       // Check if CLI is installed
       await execAsync('which huggingface-cli');
-      
+
       // Get version
       const { stdout: versionOut } = await execAsync('huggingface-cli --version');
       const version = versionOut.trim();
-      
+
       // Check authentication
       try {
         const { stdout: whoamiOut } = await execAsync('huggingface-cli whoami');
         const authenticated = !whoamiOut.includes('Not logged in');
-        
+
         return { installed: true, authenticated, version };
       } catch {
+        // Ignore error
         return { installed: true, authenticated: false, version };
       }
     } catch {
+      // Ignore error
       return { installed: false, authenticated: false };
     }
   }
@@ -81,9 +89,13 @@ export class HuggingFaceService {
    */
   async installCLI(): Promise<void> {
     try {
-      await execAsync('pip3 install --upgrade huggingface_hub[cli]', { timeout: this.config.timeout });
-    } catch (error) {
-      throw new Error(`Failed to install Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`);
+      await execAsync('pip3 install --upgrade huggingface_hub[cli]', {
+        timeout: this.config.timeout,
+      });
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to install Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -92,15 +104,17 @@ export class HuggingFaceService {
    */
   async authenticate(token?: string): Promise<void> {
     const authToken = token || this.config.token;
-    
+
     if (!authToken) {
       throw new Error('No Hugging Face token provided');
     }
 
     try {
       await execAsync(`huggingface-cli login --token ${authToken}`, { timeout: 30000 });
-    } catch (error) {
-      throw new Error(`Failed to authenticate with Hugging Face: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to authenticate with Hugging Face: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -109,11 +123,11 @@ export class HuggingFaceService {
    */
   async setup(token?: string): Promise<void> {
     const status = await this.checkSetup();
-    
+
     if (!status.installed) {
       await this.installCLI();
     }
-    
+
     if (!status.authenticated) {
       await this.authenticate(token);
     }
@@ -124,13 +138,14 @@ export class HuggingFaceService {
    */
   async isModelDownloaded(modelId: string): Promise<boolean> {
     const modelPath = path.join(this.config.modelDir, modelId);
-    
+
     try {
       await fs.access(modelPath);
       // Check if directory has content
       const files = await fs.readdir(modelPath);
       return files.length > 0;
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -148,10 +163,10 @@ export class HuggingFaceService {
   async downloadModel(
     huggingfaceId: string,
     localModelId: string,
-    onProgress?: (message: string) => void
+    onProgress?: (message: string) => void,
   ): Promise<string> {
     const modelPath = this.getModelPath(localModelId);
-    
+
     // Check if already downloaded
     if (await this.isModelDownloaded(localModelId)) {
       onProgress?.('Model already downloaded');
@@ -159,29 +174,32 @@ export class HuggingFaceService {
     }
 
     onProgress?.(`Downloading ${huggingfaceId}...`);
-    
+
     try {
       // Ensure setup
       await this.setup();
-      
+
       // Create model directory
       await fs.mkdir(modelPath, { recursive: true });
-      
+
       // Download model
-      await execAsync(
-        `huggingface-cli download ${huggingfaceId} --local-dir "${modelPath}"`,
-        { timeout: this.config.timeout }
-      );
-      
+      await execAsync(`huggingface-cli download ${huggingfaceId} --local-dir "${modelPath}"`, {
+        timeout: this.config.timeout,
+      });
+
       onProgress?.(`Model downloaded to ${modelPath}`);
       return modelPath;
-    } catch (error) {
+    } catch (error: unknown) {
       // Clean up partial download
       try {
         await fs.rm(modelPath, { recursive: true, force: true });
-      } catch {}
-      
-      throw new Error(`Failed to download model ${huggingfaceId}: ${error instanceof Error ? error.message : String(error)}`);
+      } catch {
+        // Ignore error
+      }
+
+      throw new Error(
+        `Failed to download model ${huggingfaceId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -192,10 +210,9 @@ export class HuggingFaceService {
     try {
       await fs.access(this.config.modelDir);
       const entries = await fs.readdir(this.config.modelDir, { withFileTypes: true });
-      return entries
-        .filter(entry => entry.isDirectory())
-        .map(entry => entry.name);
+      return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
     } catch {
+      // Ignore error
       return [];
     }
   }
@@ -203,26 +220,28 @@ export class HuggingFaceService {
   /**
    * Get model information from Hugging Face
    */
-  async getModelInfo(huggingfaceId: string): Promise<any> {
+  async getModelInfo(huggingfaceId: string): Promise<unknown> {
     try {
       const { stdout } = await execAsync(`huggingface-cli repo info ${huggingfaceId} --json`);
-      return JSON.parse(stdout);
-    } catch (error) {
-      throw new Error(`Failed to get model info for ${huggingfaceId}: ${error instanceof Error ? error.message : String(error)}`);
+      return JSON.parse(stdout) as Record<string, unknown>;
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to get model info for ${huggingfaceId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
   /**
    * Search models on Hugging Face
    */
-  async searchModels(query: string, limit = 10): Promise<any[]> {
+  async searchModels(query: string, limit = 10): Promise<unknown[]> {
     try {
-      const { stdout } = await execAsync(
-        `huggingface-cli search ${query} --limit ${limit} --json`
+      const { stdout } = await execAsync(`huggingface-cli search ${query} --limit ${limit} --json`);
+      return JSON.parse(stdout) as unknown[];
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to search models: ${error instanceof Error ? error.message : String(error)}`,
       );
-      return JSON.parse(stdout);
-    } catch (error) {
-      throw new Error(`Failed to search models: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -231,11 +250,13 @@ export class HuggingFaceService {
    */
   async deleteModel(localModelId: string): Promise<void> {
     const modelPath = this.getModelPath(localModelId);
-    
+
     try {
       await fs.rm(modelPath, { recursive: true, force: true });
-    } catch (error) {
-      throw new Error(`Failed to delete model ${localModelId}: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to delete model ${localModelId}: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -245,7 +266,7 @@ export class HuggingFaceService {
   async getModelsSize(): Promise<{ [modelId: string]: number }> {
     const models = await this.listDownloadedModels();
     const sizes: { [modelId: string]: number } = {};
-    
+
     for (const modelId of models) {
       try {
         const modelPath = this.getModelPath(modelId);
@@ -254,10 +275,11 @@ export class HuggingFaceService {
         const size = sizeString ? parseInt(sizeString) : 0;
         sizes[modelId] = size;
       } catch {
+        // Ignore error
         sizes[modelId] = 0;
       }
     }
-    
+
     return sizes;
   }
 
@@ -268,8 +290,10 @@ export class HuggingFaceService {
     try {
       await fs.rm(this.config.cacheDir, { recursive: true, force: true });
       await fs.mkdir(this.config.cacheDir, { recursive: true });
-    } catch (error) {
-      throw new Error(`Failed to clear cache: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to clear cache: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -295,6 +319,7 @@ export class HuggingFaceService {
       await execAsync('huggingface-cli whoami', { timeout: 10000 });
       return true;
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -302,12 +327,14 @@ export class HuggingFaceService {
   /**
    * Get current user information
    */
-  async getUserInfo(): Promise<any> {
+  async getUserInfo(): Promise<unknown> {
     try {
       const { stdout } = await execAsync('huggingface-cli whoami --json');
-      return JSON.parse(stdout);
-    } catch (error) {
-      throw new Error(`Failed to get user info: ${error instanceof Error ? error.message : String(error)}`);
+      return JSON.parse(stdout) as Record<string, unknown>;
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to get user info: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 }
@@ -322,7 +349,7 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'Wan-AI/Wan2.2-T2V-A14B-Diffusers',
     type: 'video',
     size: '~28GB',
-    vram: '~16GB'
+    vram: '~16GB',
   },
   'wan-2.2-ti2v-5b': {
     id: 'wan-2.2-ti2v-5b',
@@ -331,7 +358,7 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'Wan-AI/Wan2.2-TI2V-5B',
     type: 'video',
     size: '~10GB',
-    vram: '~8GB'
+    vram: '~8GB',
   },
   'wan-2.2-i2v-a14b': {
     id: 'wan-2.2-i2v-a14b',
@@ -340,9 +367,9 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'Wan-AI/Wan2.2-I2V-A14B',
     type: 'video',
     size: '~28GB',
-    vram: '~16GB'
+    vram: '~16GB',
   },
-  
+
   // Image models
   'qwen-image': {
     id: 'qwen-image',
@@ -351,7 +378,7 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'Qwen/Qwen-Image',
     type: 'image',
     size: '~16GB',
-    vram: '~8GB'
+    vram: '~8GB',
   },
   'stable-diffusion-xl': {
     id: 'stable-diffusion-xl',
@@ -360,7 +387,7 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'stabilityai/stable-diffusion-xl-base-1.0',
     type: 'image',
     size: '~12GB',
-    vram: '~10GB'
+    vram: '~10GB',
   },
   'flux-dev': {
     id: 'flux-dev',
@@ -369,7 +396,7 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'black-forest-labs/FLUX.1-dev',
     type: 'image',
     size: '~24GB',
-    vram: '~12GB'
+    vram: '~12GB',
   },
   'dall-e-3-xl': {
     id: 'dall-e-3-xl',
@@ -378,8 +405,8 @@ export const PREDEFINED_MODELS: { [key: string]: ModelInfo } = {
     huggingfaceId: 'openskyml/dalle-3-xl',
     type: 'image',
     size: '~32GB',
-    vram: '~16GB'
-  }
+    vram: '~16GB',
+  },
 };
 
 // Export singleton instance

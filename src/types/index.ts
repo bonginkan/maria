@@ -66,9 +66,9 @@ export interface AIProvider {
   estimateCost?(tokens: number): number;
 }
 
-export type TaskType = 
+export type TaskType =
   | 'chat'
-  | 'coding' 
+  | 'coding'
   | 'reasoning'
   | 'vision'
   | 'quick_tasks'
@@ -77,11 +77,7 @@ export type TaskType =
   | 'multilingual'
   | 'current_events';
 
-export type PriorityMode = 
-  | 'privacy-first' 
-  | 'performance' 
-  | 'cost-effective' 
-  | 'auto';
+export type PriorityMode = 'privacy-first' | 'performance' | 'cost-effective' | 'auto';
 
 export interface HealthStatus {
   overall: 'healthy' | 'degraded' | 'critical';
@@ -110,7 +106,7 @@ export interface ServiceStatus {
   status: 'running' | 'stopped' | 'error' | 'available' | 'unavailable';
   responseTime?: number;
   lastCheck: string;
-  details?: any;
+  details?: unknown;
 }
 
 export interface Config {

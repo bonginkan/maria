@@ -22,7 +22,7 @@ export const BarChart: React.FC<{
   width?: number;
   showValues?: boolean;
 }> = ({ data, width = 40, showValues = true }) => {
-  const maxValue = Math.max(...data.map(d => d.value));
+  const maxValue = Math.max(...data.map((d) => d.value));
 
   return (
     <Box flexDirection="column">
@@ -30,7 +30,7 @@ export const BarChart: React.FC<{
         const barWidth = Math.round((item.value / maxValue) * width);
         const bar = '█'.repeat(barWidth);
         const emptyBar = '░'.repeat(width - barWidth);
-        
+
         return (
           <Box key={index} marginBottom={index < data.length - 1 ? 0 : 0}>
             <Text color={item.color || 'cyan'}>
@@ -63,9 +63,7 @@ export const ProgressRing: React.FC<{
 
   return (
     <Box flexDirection="column" alignItems="center">
-      <Text color={percentage > 80 ? 'red' : percentage > 50 ? 'yellow' : 'green'}>
-        {ringChar}
-      </Text>
+      <Text color={percentage > 80 ? 'red' : percentage > 50 ? 'yellow' : 'green'}>{ringChar}</Text>
       <Text color="gray">{percentage}%</Text>
       {label && <Text color="gray">{label}</Text>}
     </Box>
@@ -88,10 +86,10 @@ export const TrendLine: React.FC<{
   const range = max - min || 1;
 
   // Normalize data to 0-4 range for display
-  const normalized = data.map(v => Math.round(((v - min) / range) * 4));
-  
+  const normalized = data.map((v) => Math.round(((v - min) / range) * 4));
+
   const sparklineChars = [' ', '▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'];
-  const sparkline = normalized.map(v => sparklineChars[v]).join('');
+  const sparkline = normalized.map((v) => sparklineChars[v]).join('');
 
   const lastValue = data[data.length - 1] || 0;
   const secondLastValue = data[data.length - 2] || 0;
@@ -103,7 +101,10 @@ export const TrendLine: React.FC<{
     <Box>
       <Text>{label.padEnd(15)}</Text>
       <Text color="cyan">{sparkline}</Text>
-      <Text color={trendColor}> {trendIcon} {Math.abs(trend).toFixed(1)}</Text>
+      <Text color={trendColor}>
+        {' '}
+        {trendIcon} {Math.abs(trend).toFixed(1)}
+      </Text>
     </Box>
   );
 };
@@ -123,7 +124,7 @@ export const MetricCard: React.FC<{
   const trendIcons = {
     up: { icon: figures.arrowUp, color: 'green' },
     down: { icon: figures.arrowDown, color: 'red' },
-    stable: { icon: '→', color: 'yellow' }
+    stable: { icon: '→', color: 'yellow' },
   };
 
   return (
@@ -133,10 +134,10 @@ export const MetricCard: React.FC<{
         <Text bold>{title}</Text>
       </Box>
       <Box>
-        <Text bold color={color}>{value}</Text>
-        {trend && (
-          <Text color={trendIcons[trend].color}> {trendIcons[trend].icon}</Text>
-        )}
+        <Text bold color={color}>
+          {value}
+        </Text>
+        {trend && <Text color={trendIcons[trend].color}> {trendIcons[trend].icon}</Text>}
       </Box>
       {subtitle && (
         <Box marginTop={1}>
@@ -161,14 +162,14 @@ interface TableColumn {
 
 export const Table: React.FC<{
   columns: TableColumn[];
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   showHeader?: boolean;
   compact?: boolean;
 }> = ({ columns, data, showHeader = true, compact = false }) => {
-  const renderCell = (value: any, column: TableColumn) => {
+  const renderCell = (value: unknown, column: TableColumn) => {
     const str = String(value || '');
     const width = column.width || 15;
-    
+
     if (column.align === 'right') {
       return str.padStart(width);
     } else if (column.align === 'center') {
@@ -229,7 +230,7 @@ export const StatusIndicator: React.FC<{
     inactive: { icon: '○', color: 'gray' },
     warning: { icon: '⚠', color: 'yellow' },
     error: { icon: '✗', color: 'red' },
-    pending: { icon: '◐', color: 'cyan' }
+    pending: { icon: '◐', color: 'cyan' },
   };
 
   const { icon, color } = indicators[status];
@@ -254,7 +255,7 @@ interface TreeNode {
   expanded?: boolean;
   icon?: string;
   highlighted?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export const TreeView: React.FC<{
@@ -272,24 +273,19 @@ export const TreeView: React.FC<{
           <Box>
             <Text>{indent}</Text>
             {node.children && node.children.length > 0 && (
-              <Text color="cyan">
-                {node.expanded ? figures.arrowDown : figures.arrowRight} 
-              </Text>
+              <Text color="cyan">{node.expanded ? figures.arrowDown : figures.arrowRight}</Text>
             )}
             {node.icon && <Text> {node.icon} </Text>}
-            <Text
-              color={node.highlighted ? 'yellow' : 'white'}
-              bold={node.highlighted || false}
-            >
+            <Text color={node.highlighted ? 'yellow' : 'white'} bold={node.highlighted || false}>
               {node.label}
             </Text>
             {node.value && <Text color="gray"> ({node.value})</Text>}
           </Box>
           {node.expanded && node.children && (
-            <TreeView 
-              data={node.children} 
-              level={level + 1} 
-              onToggle={onToggle} 
+            <TreeView
+              data={node.children}
+              level={level + 1}
+              onToggle={onToggle}
               onSelect={onSelect}
             />
           )}
@@ -317,25 +313,28 @@ export const HeatMap: React.FC<{
       {labels?.x && (
         <Box marginLeft={labels.y ? 10 : 0}>
           {labels.x.map((label, i) => (
-            <Text key={i} color="gray">{(label || '').substring(0, 3).padEnd(3)} </Text>
+            <Text key={i} color="gray">
+              {(label || '').substring(0, 3).padEnd(3)}{' '}
+            </Text>
           ))}
         </Box>
       )}
       {data.map((row, y) => (
         <Box key={y}>
-          {labels?.y && (
-            <Text color="gray">{(labels.y[y] || '').padEnd(10)}</Text>
-          )}
+          {labels?.y && <Text color="gray">{(labels.y[y] || '').padEnd(10)}</Text>}
           {row.map((value, x) => {
             const normalized = (value - minValue) / range;
             const colorIndex = Math.min(
               Math.floor(normalized * colorScale.length),
-              colorScale.length - 1
+              colorScale.length - 1,
             );
             const colorChar = colorScale[colorIndex] || '░';
             return (
-              <Text key={x} color={normalized > 0.7 ? 'red' : normalized > 0.4 ? 'yellow' : 'green'}>
-                {colorChar.repeat(3)} 
+              <Text
+                key={x}
+                color={normalized > 0.7 ? 'red' : normalized > 0.4 ? 'yellow' : 'green'}
+              >
+                {colorChar.repeat(3)}
               </Text>
             );
           })}
@@ -363,7 +362,7 @@ export const Timeline: React.FC<{
     success: 'green',
     warning: 'yellow',
     error: 'red',
-    info: 'cyan'
+    info: 'cyan',
   };
 
   if (orientation === 'horizontal') {
@@ -388,9 +387,7 @@ export const Timeline: React.FC<{
             <Text color="gray"> {event.time}</Text>
             <Text> {event.event}</Text>
           </Box>
-          {i < events.length - 1 && (
-            <Text color="gray">│</Text>
-          )}
+          {i < events.length - 1 && <Text color="gray">│</Text>}
         </Box>
       ))}
     </Box>
@@ -411,28 +408,16 @@ export const ExpandableSection: React.FC<{
 }> = ({ title, expanded, children, icon, summary }) => {
   return (
     <Box flexDirection="column" marginBottom={1}>
-      <Box 
-        borderStyle="single" 
-        borderColor={expanded ? 'cyan' : 'gray'}
-        paddingX={1}
-      >
+      <Box borderStyle="single" borderColor={expanded ? 'cyan' : 'gray'} paddingX={1}>
         <Box>
           <Text color="cyan">{expanded ? '▼' : '▶'}</Text>
           {icon && <Text> {icon}</Text>}
           <Text bold> {title}</Text>
-          {!expanded && summary && (
-            <Text color="gray"> - {summary}</Text>
-          )}
+          {!expanded && summary && <Text color="gray"> - {summary}</Text>}
         </Box>
       </Box>
       {expanded && (
-        <Box 
-          borderStyle="single" 
-          borderColor="gray" 
-          borderTop={false}
-          paddingX={1}
-          paddingY={1}
-        >
+        <Box borderStyle="single" borderColor="gray" borderTop={false} paddingX={1} paddingY={1}>
           {children}
         </Box>
       )}
@@ -470,9 +455,11 @@ export const DrillDownNav: React.FC<{
  * Generates intelligent summaries based on data patterns
  */
 export const SmartSummary: React.FC<{
-  data: any;
+  data: unknown;
   type: 'status' | 'cost' | 'performance' | 'usage';
 }> = ({ data, type }) => {
+  const dataRecord = data as Record<string, unknown>;
+
   const generateSummary = () => {
     switch (type) {
       case 'status':
@@ -480,41 +467,42 @@ export const SmartSummary: React.FC<{
           title: 'System Status Summary',
           points: [
             `${figures.tick} All systems operational`,
-            `${figures.info} ${data.services?.length || 0} services running`,
-            `${figures.warning} ${data.warnings || 0} warnings to review`
+            `${figures.info} ${(dataRecord['services'] as unknown[] | undefined)?.length || 0} services running`,
+            `${figures.warning} ${dataRecord['warnings'] || 0} warnings to review`,
           ],
-          insight: 'System performance is within normal parameters'
+          insight: 'System performance is within normal parameters',
         };
-      case 'cost':
-        const trend = data.trend || 'stable';
+      case 'cost': {
+        const trend = dataRecord['trend'] || 'stable';
         return {
           title: 'Cost Analysis Summary',
           points: [
-            `${figures.pointer} Current session: $${data.cost || '0.00'}`,
+            `${figures.pointer} Current session: $${dataRecord['cost'] || '0.00'}`,
             `${trend === 'up' ? figures.arrowUp : figures.arrowDown} ${trend} trend`,
-            `${figures.star} Most expensive: ${data.mostExpensive || 'API calls'}`
+            `${figures.star} Most expensive: ${dataRecord['mostExpensive'] || 'API calls'}`,
           ],
-          insight: `Cost optimization ${trend === 'up' ? 'recommended' : 'not required'}`
+          insight: `Cost optimization ${trend === 'up' ? 'recommended' : 'not required'}`,
         };
+      }
       case 'performance':
         return {
           title: 'Performance Summary',
           points: [
-            `${figures.circleFilled} Avg response: ${data.avgResponse || 'N/A'}`,
-            `${figures.tick} Success rate: ${data.successRate || 'N/A'}%`,
-            `${figures.warning} Bottleneck: ${data.bottleneck || 'None detected'}`
+            `${figures.circleFilled} Avg response: ${dataRecord['avgResponse'] || 'N/A'}`,
+            `${figures.tick} Success rate: ${dataRecord['successRate'] || 'N/A'}%`,
+            `${figures.warning} Bottleneck: ${dataRecord['bottleneck'] || 'None detected'}`,
           ],
-          insight: 'Performance metrics are healthy'
+          insight: 'Performance metrics are healthy',
         };
       case 'usage':
         return {
           title: 'Usage Summary',
           points: [
-            `${figures.circleFilled} Total calls: ${data.totalCalls || 0}`,
-            `${figures.star} Most active: ${data.mostActive || 'N/A'}`,
-            `${figures.arrowUp} Peak time: ${data.peakTime || 'N/A'}`
+            `${figures.circleFilled} Total calls: ${dataRecord['totalCalls'] || 0}`,
+            `${figures.star} Most active: ${dataRecord['mostActive'] || 'N/A'}`,
+            `${figures.arrowUp} Peak time: ${dataRecord['peakTime'] || 'N/A'}`,
           ],
-          insight: 'Usage patterns are consistent with expectations'
+          insight: 'Usage patterns are consistent with expectations',
         };
       default:
         return { title: 'Summary', points: [], insight: '' };
@@ -524,9 +512,9 @@ export const SmartSummary: React.FC<{
   const summary = generateSummary();
 
   return (
-    <Box 
-      flexDirection="column" 
-      borderStyle="round" 
+    <Box
+      flexDirection="column"
+      borderStyle="round"
       borderColor="yellow"
       padding={1}
       marginBottom={2}
@@ -538,7 +526,9 @@ export const SmartSummary: React.FC<{
       </Box>
       <Box flexDirection="column" marginBottom={1}>
         {summary.points.map((point, i) => (
-          <Text key={i} color="gray">{point}</Text>
+          <Text key={i} color="gray">
+            {point}
+          </Text>
         ))}
       </Box>
       {summary.insight && (
@@ -563,9 +553,7 @@ export const CrossReference: React.FC<{
   return (
     <Text>
       {icon && `${icon} `}
-      <Text color="cyan">
-        {label}
-      </Text>
+      <Text color="cyan">{label}</Text>
     </Text>
   );
 };

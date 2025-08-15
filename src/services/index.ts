@@ -3,13 +3,13 @@ export * from './ai-chat-service';
 export * from './ai-router';
 export * from './chat-context.service';
 export * from './model-manager';
-export * from './interactive-router';
+// export * from './interactive-router'; // Commenting out due to CommandSuggestion conflict
 export * from './intent-analyzer';
-export * from './intelligent-router';
+// export * from './intelligent-router'; // Commenting out due to ProgressUpdate conflict
 export * from './template-manager';
 export * from './command-mapper';
 export * from './batch-execution';
-export * from './auto-mode-controller';
+// export * from './auto-mode-controller'; // Commenting out due to ProgressUpdate conflict
 export * from './task-executor';
 export * from './priority-system';
 export * from './suggestion-service';

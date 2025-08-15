@@ -8,6 +8,7 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { AIRouter } from '../services/ai-router';
+import { isObject, getBooleanProperty, getStringProperty } from '../utils/type-guards.js';
 
 // Model profile types
 interface ModelProfile {
@@ -20,66 +21,151 @@ interface ModelProfile {
   vram?: string;
 }
 
-// Model profiles for quick selection
+// Model profiles for quick selection - August 2025
 const MODEL_PROFILES: Record<string, ModelProfile> = {
-  // Cloud models
+  // OpenAI Models - August 2025
+  'gpt-5': {
+    provider: 'openai',
+    name: 'GPT-5',
+    badge: '🔥',
+    description: 'Latest flagship, AGI-level capabilities',
+    context: '256K',
+    type: 'cloud',
+  },
+  'gpt-5-mini': {
+    provider: 'openai',
+    name: 'GPT-5 mini',
+    badge: '⚡',
+    description: 'Smaller GPT-5, still very powerful',
+    context: '128K',
+    type: 'cloud',
+  },
+  o3: {
+    provider: 'openai',
+    name: 'o3',
+    badge: '🧠',
+    description: 'Latest reasoning model, solves complex problems',
+    context: '512K',
+    type: 'cloud',
+  },
+  'o3-mini': {
+    provider: 'openai',
+    name: 'o3-mini',
+    badge: '💡',
+    description: 'Fast reasoning, coding specialist',
+    context: '256K',
+    type: 'cloud',
+  },
   'gpt-4o': {
     provider: 'openai',
     name: 'GPT-4o',
     badge: '🌟',
-    description: 'High accuracy, multimodal capabilities',
+    description: 'Previous gen, still excellent',
     context: '128K',
-    type: 'cloud'
+    type: 'cloud',
   },
-  'gpt-4-turbo': {
-    provider: 'openai',
-    name: 'GPT-4 Turbo',
+  // Anthropic Models - August 2025
+  'claude-opus-4.1': {
+    provider: 'anthropic',
+    name: 'Claude Opus 4.1',
+    badge: '🎯',
+    description: 'Latest Claude, exceptional reasoning',
+    context: '500K',
+    type: 'cloud',
+  },
+  'claude-4-sonnet': {
+    provider: 'anthropic',
+    name: 'Claude 4 Sonnet',
     badge: '⚡',
-    description: 'Fast reasoning and code generation',
-    context: '128K',
-    type: 'cloud'
+    description: 'Best for coding, ultra-fast',
+    context: '300K',
+    type: 'cloud',
   },
-  'claude-3-opus': {
+  'claude-4-haiku': {
     provider: 'anthropic',
-    name: 'Claude 3 Opus',
-    badge: '🎭',
-    description: 'Long text processing, complex tasks',
-    context: '200K',
-    type: 'cloud'
+    name: 'Claude 4 Haiku',
+    badge: '🚀',
+    description: 'Lightning fast, cost-effective',
+    context: '300K',
+    type: 'cloud',
   },
-  'claude-3-sonnet': {
+  'claude-3.5-sonnet': {
     provider: 'anthropic',
-    name: 'Claude 3 Sonnet',
+    name: 'Claude 3.5 Sonnet',
     badge: '🎵',
-    description: 'Balanced performance and cost',
+    description: 'Previous gen, still great',
     context: '200K',
-    type: 'cloud'
+    type: 'cloud',
   },
+  // Google Models - Official Current Models
   'gemini-2.5-pro': {
     provider: 'google',
     name: 'Gemini 2.5 Pro',
-    badge: '💎',
-    description: 'Research, analysis, vision capabilities',
-    context: '128K',
-    type: 'cloud'
+    badge: '🧠',
+    description: 'Enhanced reasoning, multimodal understanding',
+    context: '2M',
+    type: 'cloud',
   },
-  'mixtral-8x7b': {
-    provider: 'groq',
-    name: 'Mixtral 8x7B',
+  'gemini-2.5-flash': {
+    provider: 'google',
+    name: 'Gemini 2.5 Flash',
     badge: '⚡',
-    description: 'Fast inference, real-time responses',
-    context: '32K',
-    type: 'cloud'
+    description: 'Adaptive thinking, cost-effective',
+    context: '1M',
+    type: 'cloud',
   },
-  'llama-3-70b': {
-    provider: 'groq',
-    name: 'Llama 3 70B',
+  'gemini-2.5-flash-lite': {
+    provider: 'google',
+    name: 'Gemini 2.5 Flash-Lite',
+    badge: '🚀',
+    description: 'Most cost-effective, high throughput',
+    context: '1M',
+    type: 'cloud',
+  },
+  // xAI Models - August 2025
+  'grok-4': {
+    provider: 'xai',
+    name: 'Grok 4',
+    badge: '🤖',
+    description: 'Latest Grok, real-time web access',
+    context: '1M',
+    type: 'cloud',
+  },
+  'grok-3-turbo': {
+    provider: 'xai',
+    name: 'Grok 3 Turbo',
+    badge: '🔗',
+    description: 'Fast, with X.com integration',
+    context: '256K',
+    type: 'cloud',
+  },
+  // Meta Models - August 2025
+  'llama-4-405b': {
+    provider: 'meta',
+    name: 'Llama 4 405B',
     badge: '🦙',
-    description: 'Open source excellence',
-    context: '32K',
-    type: 'cloud'
+    description: 'Latest Llama, GPT-5 competitor',
+    context: '256K',
+    type: 'cloud',
   },
-  
+  'llama-4-70b': {
+    provider: 'groq',
+    name: 'Llama 4 70B (Groq)',
+    badge: '⚡',
+    description: 'Groq-powered, ultra-fast inference',
+    context: '128K',
+    type: 'cloud',
+  },
+  // Mistral Models - August 2025
+  'mistral-large-3': {
+    provider: 'mistral',
+    name: 'Mistral Large 3',
+    badge: '🇫🇷',
+    description: 'European AI, excellent multilingual',
+    context: '256K',
+    type: 'cloud',
+  },
+
   // Local models
   'gpt-oss-120b': {
     provider: 'local',
@@ -88,7 +174,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Complex reasoning, large documents',
     context: '128K',
     type: 'local',
-    vram: '~64GB'
+    vram: '~64GB',
   },
   'gpt-oss-20b': {
     provider: 'local',
@@ -97,7 +183,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Balanced performance, quick responses',
     context: '32K',
     type: 'local',
-    vram: '~12GB'
+    vram: '~12GB',
   },
   'qwen3-30b': {
     provider: 'local',
@@ -106,7 +192,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Multilingual support',
     context: '32K',
     type: 'local',
-    vram: '~16GB'
+    vram: '~16GB',
   },
   'qwen2.5-vl': {
     provider: 'ollama',
@@ -115,9 +201,9 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Vision capabilities',
     context: '8K',
     type: 'local',
-    vram: '~8GB'
+    vram: '~8GB',
   },
-  
+
   // Video generation models
   'wan-2.2-t2v-a14b': {
     provider: 'huggingface',
@@ -126,7 +212,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'High-quality text to video, 14B parameters',
     context: 'N/A',
     type: 'video',
-    vram: '~16GB'
+    vram: '~16GB',
   },
   'wan-2.2-ti2v-5b': {
     provider: 'huggingface',
@@ -135,7 +221,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Fast text/image to video, 5B parameters',
     context: 'N/A',
     type: 'video',
-    vram: '~8GB'
+    vram: '~8GB',
   },
   'wan-2.2-i2v-a14b': {
     provider: 'huggingface',
@@ -144,9 +230,9 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Image to video transformation, 14B parameters',
     context: 'N/A',
     type: 'video',
-    vram: '~16GB'
+    vram: '~16GB',
   },
-  
+
   // Image generation models
   'qwen-image': {
     provider: 'huggingface',
@@ -155,7 +241,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Advanced text-to-image generation',
     context: 'N/A',
     type: 'image',
-    vram: '~8GB'
+    vram: '~8GB',
   },
   'stable-diffusion-xl': {
     provider: 'huggingface',
@@ -164,7 +250,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'High-quality artistic image generation',
     context: 'N/A',
     type: 'image',
-    vram: '~10GB'
+    vram: '~10GB',
   },
   'flux-dev': {
     provider: 'huggingface',
@@ -173,7 +259,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Fast, high-quality text-to-image',
     context: 'N/A',
     type: 'image',
-    vram: '~12GB'
+    vram: '~12GB',
   },
   'dall-e-3-xl': {
     provider: 'huggingface',
@@ -182,8 +268,8 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     description: 'Creative and detailed image generation',
     context: 'N/A',
     type: 'image',
-    vram: '~16GB'
-  }
+    vram: '~16GB',
+  },
 };
 
 // Task-based model recommendations
@@ -197,7 +283,7 @@ const TASK_RECOMMENDATIONS: Record<string, string[]> = {
   fast: ['gpt-oss-20b', 'mixtral-8x7b'],
   private: ['gpt-oss-120b', 'gpt-oss-20b', 'qwen3-30b', 'qwen2.5-vl'],
   video: ['wan-2.2-ti2v-5b', 'wan-2.2-t2v-a14b', 'wan-2.2-i2v-a14b'],
-  image: ['qwen-image', 'stable-diffusion-xl', 'flux-dev', 'dall-e-3-xl']
+  image: ['qwen-image', 'stable-diffusion-xl', 'flux-dev', 'dall-e-3-xl'],
 };
 
 interface ModelManagerProps {
@@ -209,13 +295,13 @@ interface ModelManagerProps {
 /**
  * /model - Interactive model selector
  */
-export const ModelCommand: React.FC<ModelManagerProps> = ({ 
+export const ModelCommand: React.FC<ModelManagerProps> = ({
   onModelSelect,
-  initialMode = 'select' 
+  initialMode = 'select',
 }) => {
   const [mode] = useState(initialMode);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<Record<string, any>>({});
+  const [status, setStatus] = useState<Record<string, unknown>>({});
   const [filter, setFilter] = useState<'all' | 'local' | 'cloud' | 'image' | 'video'>('all');
   const [, setSelectedModel] = useState<string>('auto');
 
@@ -248,26 +334,31 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
 
   const checkModelStatus = async () => {
     setLoading(true);
-    const newStatus: Record<string, any> = {};
-    
+    const newStatus: Record<string, unknown> = {};
+
     // Check each model availability
     for (const [id, profile] of Object.entries(MODEL_PROFILES)) {
       newStatus[id] = {
         ...profile,
         available: false,
-        loading: false
+        loading: false,
       };
-      
+
       // Simulate checking (replace with actual provider checks)
       try {
         // Check if provider is available
         const isAvailable = await checkProviderAvailability();
-        newStatus[id].available = isAvailable;
-      } catch (error) {
-        newStatus[id].error = error instanceof Error ? error.message : String(error);
+        if (newStatus[id] && isObject(newStatus[id])) {
+          (newStatus[id] as Record<string, unknown>)['available'] = isAvailable;
+        }
+      } catch (error: unknown) {
+        if (newStatus[id] && isObject(newStatus[id])) {
+          (newStatus[id] as Record<string, unknown>)['error'] =
+            error instanceof Error ? error.message : String(error);
+        }
       }
     }
-    
+
     setStatus(newStatus);
     setLoading(false);
   };
@@ -295,7 +386,7 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
 
   const renderModelList = () => {
     const models = getFilteredModels();
-    
+
     return (
       <Box flexDirection="column">
         <Box marginBottom={1}>
@@ -308,12 +399,19 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
         <Box flexDirection="column" gap={1}>
           {models.map(([id, profile]) => (
             <Box key={id} gap={1}>
-              <Text color={
-                profile.type === 'local' ? 'green' : 
-                profile.type === 'cloud' ? 'blue' : 
-                profile.type === 'image' ? 'magenta' : 
-                profile.type === 'video' ? 'cyan' : 'white'
-              }>
+              <Text
+                color={
+                  profile.type === 'local'
+                    ? 'green'
+                    : profile.type === 'cloud'
+                      ? 'blue'
+                      : profile.type === 'image'
+                        ? 'magenta'
+                        : profile.type === 'video'
+                          ? 'cyan'
+                          : 'white'
+                }
+              >
                 {profile.badge}
               </Text>
               <Box width={20}>
@@ -323,9 +421,7 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
                 <Text color="gray">{profile.description}</Text>
               </Box>
               <Text color="yellow">{profile.context}</Text>
-              {profile.vram && (
-                <Text color="red"> VRAM: {profile.vram}</Text>
-              )}
+              {profile.vram && <Text color="red"> VRAM: {profile.vram}</Text>}
             </Box>
           ))}
         </Box>
@@ -337,12 +433,12 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
     const items = [
       {
         label: '🤖 Auto (Let AI choose)',
-        value: 'auto'
+        value: 'auto',
       },
       ...getFilteredModels().map(([id, profile]) => ({
         label: `${profile.badge} ${profile.name} - ${profile.description}`,
-        value: id
-      }))
+        value: id,
+      })),
     ];
 
     return (
@@ -352,7 +448,7 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
             🎯 Select AI Model
           </Text>
         </Box>
-        
+
         <SelectInput
           items={items}
           onSelect={(item) => {
@@ -363,11 +459,9 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
             }
           }}
         />
-        
+
         <Box marginTop={1}>
-          <Text color="gray">
-            Tip: Press ↑↓ to navigate, Enter to select, ESC to exit
-          </Text>
+          <Text color="gray">Tip: Press ↑↓ to navigate, Enter to select, ESC to exit</Text>
         </Box>
       </Box>
     );
@@ -392,19 +486,22 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
         </Box>
 
         <Box flexDirection="column" gap={1}>
-          {Object.entries(status).map(([id, info]) => (
-            <Box key={id} gap={1}>
-              <Text color={info.available ? 'green' : 'red'}>
-                {info.available ? '✅' : '❌'}
-              </Text>
-              <Box width={20}>
-                <Text>{info.name}</Text>
+          {Object.entries(status).map(([id, info]) => {
+            const statusInfo = isObject(info) ? info : {};
+            const available = getBooleanProperty(statusInfo, 'available', false);
+            const name = getStringProperty(statusInfo, 'name', id);
+            const error = getStringProperty(statusInfo, 'error', '');
+
+            return (
+              <Box key={id} gap={1}>
+                <Text color={available ? 'green' : 'red'}>{available ? '✅' : '❌'}</Text>
+                <Box width={20}>
+                  <Text>{name}</Text>
+                </Box>
+                <Text color="gray">{available ? 'Available' : error || 'Not available'}</Text>
               </Box>
-              <Text color="gray">
-                {info.available ? 'Available' : info.error || 'Not available'}
-              </Text>
-            </Box>
-          ))}
+            );
+          })}
         </Box>
       </Box>
     );
@@ -432,7 +529,7 @@ export const SwitchCommand: React.FC<{ model: string }> = ({ model }) => {
   useEffect(() => {
     const switchModel = async () => {
       // Simulate model switching
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       setSwitching(false);
       setSuccess(true);
     };
@@ -454,7 +551,9 @@ export const SwitchCommand: React.FC<{ model: string }> = ({ model }) => {
     return (
       <Box>
         <Text color="green">✅ Successfully switched to </Text>
-        <Text bold color="cyan">{profile?.name || model}</Text>
+        <Text bold color="cyan">
+          {profile?.name || model}
+        </Text>
         <Text color="gray"> ({profile?.context} context)</Text>
       </Box>
     );
@@ -467,8 +566,8 @@ export const SwitchCommand: React.FC<{ model: string }> = ({ model }) => {
  * /recommend - Task-based model recommendations
  */
 export const RecommendCommand: React.FC<{ task?: string }> = ({ task = 'chat' }) => {
-  const recommendations = TASK_RECOMMENDATIONS[task] || TASK_RECOMMENDATIONS.chat;
-  
+  const recommendations = TASK_RECOMMENDATIONS[task] || TASK_RECOMMENDATIONS['chat'];
+
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
@@ -485,9 +584,7 @@ export const RecommendCommand: React.FC<{ task?: string }> = ({ task = 'chat' })
           return (
             <Box key={modelId} gap={1}>
               <Text color="yellow">{index + 1}.</Text>
-              <Text color={profile.type === 'local' ? 'green' : 'blue'}>
-                {profile.badge}
-              </Text>
+              <Text color={profile.type === 'local' ? 'green' : 'blue'}>{profile.badge}</Text>
               <Box width={20}>
                 <Text bold>{profile.name}</Text>
               </Box>
@@ -498,9 +595,7 @@ export const RecommendCommand: React.FC<{ task?: string }> = ({ task = 'chat' })
       </Box>
 
       <Box marginTop={1}>
-        <Text color="gray">
-          💡 Use `/switch [model-id]` to switch models
-        </Text>
+        <Text color="gray">💡 Use `/switch [model-id]` to switch models</Text>
       </Box>
     </Box>
   );
@@ -510,9 +605,7 @@ export const RecommendCommand: React.FC<{ task?: string }> = ({ task = 'chat' })
  * /compare - Compare models side by side
  */
 export const CompareCommand: React.FC<{ models?: string[] }> = ({ models = [] }) => {
-  const modelsToCompare = models.length > 0 
-    ? models 
-    : ['gpt-4o', 'gpt-oss-120b', 'qwen3-30b'];
+  const modelsToCompare = models.length > 0 ? models : ['gpt-4o', 'gpt-oss-120b', 'qwen3-30b'];
 
   return (
     <Box flexDirection="column">
@@ -530,7 +623,9 @@ export const CompareCommand: React.FC<{ models?: string[] }> = ({ models = [] })
           return (
             <Box key={modelId} flexDirection="column" width={25}>
               <Box>
-                <Text bold color="yellow">{profile.badge} {profile.name}</Text>
+                <Text bold color="yellow">
+                  {profile.badge} {profile.name}
+                </Text>
               </Box>
               <Text color="gray">Type: {profile.type}</Text>
               <Text color="gray">Context: {profile.context}</Text>
@@ -549,9 +644,11 @@ export const CompareCommand: React.FC<{ models?: string[] }> = ({ models = [] })
 /**
  * Natural language model selector
  */
-export const parseNaturalLanguageModelRequest = (input: string): { 
-  action: string; 
-  model?: string; 
+export const parseNaturalLanguageModelRequest = (
+  input: string,
+): {
+  action: string;
+  model?: string;
   task?: string;
 } => {
   const lowerInput = input.toLowerCase();
@@ -594,5 +691,5 @@ export default {
   SwitchCommand,
   RecommendCommand,
   CompareCommand,
-  parseNaturalLanguageModelRequest
+  parseNaturalLanguageModelRequest,
 };

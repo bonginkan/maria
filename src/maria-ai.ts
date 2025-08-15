@@ -3,7 +3,7 @@
  * Handles provider management and intelligent routing
  */
 
-import { AIProvider, AIRequest, AIResponse, ModelInfo } from './types';
+import { AIRequest, AIResponse, ModelInfo } from './types';
 import { AIProviderManager } from './providers/manager';
 import { IntelligentRouter } from './services/intelligent-router';
 import { HealthMonitor } from './services/health-monitor';
@@ -32,7 +32,7 @@ export class MariaAI {
     this.config = new ConfigManager(config);
     this.providerManager = new AIProviderManager(this.config);
     this.router = new IntelligentRouter(this.providerManager, this.config);
-    this.healthMonitor = new HealthMonitor(this.providerManager);
+    this.healthMonitor = new HealthMonitor();
 
     if (config.autoStart !== false) {
       this.initialize();
@@ -41,7 +41,7 @@ export class MariaAI {
 
   private async initialize(): Promise<void> {
     await this.providerManager.initialize();
-    
+
     if (this.config.get('healthMonitoring', true)) {
       this.healthMonitor.start();
     }
@@ -53,7 +53,7 @@ export class MariaAI {
   async chat(message: string, options: Partial<AIRequest> = {}): Promise<AIResponse> {
     const request: AIRequest = {
       messages: [{ role: 'user', content: message }],
-      ...options
+      ...options,
     };
 
     return this.router.route(request);
@@ -66,7 +66,7 @@ export class MariaAI {
     const request: AIRequest = {
       messages: [{ role: 'user', content: message }],
       stream: true,
-      ...options
+      ...options,
     };
 
     const response = await this.router.route(request);
@@ -101,8 +101,8 @@ export class MariaAI {
   /**
    * Get system health status
    */
-  async getHealth(): Promise<any> {
-    return this.healthMonitor.getStatus();
+  async getHealth(): Promise<unknown> {
+    return this.healthMonitor.getSystemHealth();
   }
 
   /**
@@ -116,7 +116,7 @@ export class MariaAI {
   /**
    * Get current configuration
    */
-  getConfig(): any {
+  getConfig(): unknown {
     return this.config.getAll();
   }
 

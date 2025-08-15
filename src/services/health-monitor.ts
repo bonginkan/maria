@@ -71,7 +71,7 @@ export class HealthMonitor extends EventEmitter {
 
   constructor(config?: Partial<HealthCheckConfig>) {
     super();
-    
+
     this.config = {
       interval: 60000, // 1 minute
       timeout: 10000, // 10 seconds
@@ -80,9 +80,9 @@ export class HealthMonitor extends EventEmitter {
         responseTimeWarning: 2000, // 2 seconds
         responseTimeCritical: 5000, // 5 seconds
         errorRateWarning: 0.1, // 10%
-        errorRateCritical: 0.25 // 25%
+        errorRateCritical: 0.25, // 25%
       },
-      ...config
+      ...config,
     };
   }
 
@@ -91,7 +91,7 @@ export class HealthMonitor extends EventEmitter {
    */
   registerProvider(name: string, provider: IAIProvider): void {
     this.providers.set(name, provider);
-    
+
     // Initialize health data
     this.healthData.set(name, {
       name,
@@ -100,14 +100,14 @@ export class HealthMonitor extends EventEmitter {
         status: 'offline',
         uptime: 0,
         lastCheck: new Date(),
-        responseTime: 0
+        responseTime: 0,
       },
       metadata: {
         models: provider.getModels(),
         totalRequests: 0,
         errorRate: 0,
-        averageResponseTime: 0
-      }
+        averageResponseTime: 0,
+      },
     });
   }
 
@@ -119,7 +119,7 @@ export class HealthMonitor extends EventEmitter {
 
     this.isRunning = true;
     this.startTime = Date.now();
-    
+
     // Initial health check
     this.performHealthCheck();
 
@@ -151,11 +151,11 @@ export class HealthMonitor extends EventEmitter {
    */
   private async performHealthCheck(): Promise<void> {
     const promises = Array.from(this.providers.entries()).map(([name, provider]) =>
-      this.checkProviderHealth(name, provider)
+      this.checkProviderHealth(name, provider),
     );
 
     await Promise.allSettled(promises);
-    
+
     // Update overall system health
     const systemHealth = this.getSystemHealth();
     this.emit('health-updated', systemHealth);
@@ -178,45 +178,44 @@ export class HealthMonitor extends EventEmitter {
     while (attempts < this.config.retryAttempts) {
       try {
         attempts++;
-        
+
         // Test basic connectivity
         if (provider.validateConnection) {
           await Promise.race([
             provider.validateConnection(),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Timeout')), this.config.timeout)
-            )
+            new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('Timeout')), this.config.timeout),
+            ),
           ]);
         } else {
           // Fallback: simple chat test
           await Promise.race([
             provider.chat([{ role: 'user', content: 'ping' }]),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Timeout')), this.config.timeout)
-            )
+            new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('Timeout')), this.config.timeout),
+            ),
           ]);
         }
 
         // Success
         const responseTime = Date.now() - startTime;
         const now = new Date();
-        
+
         currentHealth.health = {
           status: this.determineStatus(responseTime, currentHealth.metadata.errorRate),
           uptime: now.getTime() - startTime,
           lastCheck: now,
-          responseTime
+          responseTime,
         };
 
         // Update metadata
         this.updateMetrics(name, responseTime, true);
-        
+
         this.emit('provider-healthy', name, currentHealth);
         break;
-
-      } catch (error) {
+      } catch (error: unknown) {
         lastError = error instanceof Error ? error : new Error('Unknown error');
-        
+
         if (attempts >= this.config.retryAttempts) {
           // All attempts failed
           const now = new Date();
@@ -225,14 +224,14 @@ export class HealthMonitor extends EventEmitter {
             uptime: 0,
             lastCheck: now,
             responseTime: Date.now() - startTime,
-            error: lastError.message
+            error: lastError.message,
           };
 
           this.updateMetrics(name, Date.now() - startTime, false);
           this.emit('provider-unhealthy', name, currentHealth, lastError);
         } else {
           // Retry
-          await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+          await new Promise((resolve) => setTimeout(resolve, 1000 * attempts));
         }
       }
     }
@@ -244,13 +243,17 @@ export class HealthMonitor extends EventEmitter {
    * Determine status based on response time and error rate
    */
   private determineStatus(responseTime: number, errorRate: number): HealthStatus['status'] {
-    if (responseTime > this.config.thresholds.responseTimeCritical || 
-        errorRate > this.config.thresholds.errorRateCritical) {
+    if (
+      responseTime > this.config.thresholds.responseTimeCritical ||
+      errorRate > this.config.thresholds.errorRateCritical
+    ) {
       return 'critical';
     }
-    
-    if (responseTime > this.config.thresholds.responseTimeWarning ||
-        errorRate > this.config.thresholds.errorRateWarning) {
+
+    if (
+      responseTime > this.config.thresholds.responseTimeWarning ||
+      errorRate > this.config.thresholds.errorRateWarning
+    ) {
       return 'degraded';
     }
 
@@ -268,10 +271,9 @@ export class HealthMonitor extends EventEmitter {
     metadata.totalRequests++;
 
     // Update average response time
-    metadata.averageResponseTime = (
-      (metadata.averageResponseTime * (metadata.totalRequests - 1) + responseTime) / 
-      metadata.totalRequests
-    );
+    metadata.averageResponseTime =
+      (metadata.averageResponseTime * (metadata.totalRequests - 1) + responseTime) /
+      metadata.totalRequests;
 
     // Update error rate
     const errorCount = Math.round(metadata.errorRate * (metadata.totalRequests - 1));
@@ -290,17 +292,17 @@ export class HealthMonitor extends EventEmitter {
 
     // Determine overall status
     let overall: SystemHealth['overall'] = 'healthy';
-    
-    const offlineProviders = providers.filter(p => p.health.status === 'offline');
-    const criticalProviders = providers.filter(p => p.health.status === 'critical');
-    const degradedProviders = providers.filter(p => p.health.status === 'degraded');
+
+    const offlineProviders = providers.filter((p) => p.health.status === 'offline');
+    const criticalProviders = providers.filter((p) => p.health.status === 'critical');
+    const degradedProviders = providers.filter((p) => p.health.status === 'degraded');
 
     if (offlineProviders.length === providers.length) {
       overall = 'critical';
       recommendations.push({
         type: 'error',
         message: 'All providers are offline. Check your internet connection and API keys.',
-        action: { type: 'reconfigure' }
+        action: { type: 'reconfigure' },
       });
     } else if (criticalProviders.length > 0 || offlineProviders.length > providers.length / 2) {
       overall = 'critical';
@@ -316,7 +318,7 @@ export class HealthMonitor extends EventEmitter {
       providers,
       recommendations,
       lastUpdate: new Date(),
-      uptime: Date.now() - this.startTime
+      uptime: Date.now() - this.startTime,
     };
   }
 
@@ -336,16 +338,16 @@ export class HealthMonitor extends EventEmitter {
             type: 'action',
             provider: name,
             message: `${name} is offline. Try restarting the local server.`,
-            action: { 
+            action: {
               type: 'restart',
-              command: this.getRestartCommand(name)
-            }
+              command: this.getRestartCommand(name),
+            },
           });
         } else {
           recommendations.push({
             type: 'warning',
             provider: name,
-            message: `${name} is offline. Check API key and network connectivity.`
+            message: `${name} is offline. Check API key and network connectivity.`,
           });
         }
       }
@@ -355,7 +357,7 @@ export class HealthMonitor extends EventEmitter {
         recommendations.push({
           type: 'warning',
           provider: name,
-          message: `${name} has very high response time (${health.responseTime}ms). Consider switching to a faster provider.`
+          message: `${name} has very high response time (${health.responseTime}ms). Consider switching to a faster provider.`,
         });
       }
 
@@ -364,7 +366,7 @@ export class HealthMonitor extends EventEmitter {
         recommendations.push({
           type: 'warning',
           provider: name,
-          message: `${name} has high error rate (${(metadata.errorRate * 100).toFixed(1)}%). Check configuration and quotas.`
+          message: `${name} has high error rate (${(metadata.errorRate * 100).toFixed(1)}%). Check configuration and quotas.`,
         });
       }
 
@@ -374,23 +376,24 @@ export class HealthMonitor extends EventEmitter {
           type: 'info',
           provider: name,
           message: `${name} has no models configured. Add models to enable functionality.`,
-          action: { type: 'reconfigure' }
+          action: { type: 'reconfigure' },
         });
       }
     }
 
     // General recommendations
-    const healthyProviders = providers.filter(p => p.health.status === 'healthy');
+    const healthyProviders = providers.filter((p) => p.health.status === 'healthy');
     if (healthyProviders.length === 0) {
       recommendations.push({
         type: 'error',
         message: 'No healthy providers available. System functionality is severely limited.',
-        action: { type: 'contact-support' }
+        action: { type: 'contact-support' },
       });
     } else if (healthyProviders.length === 1) {
       recommendations.push({
         type: 'info',
-        message: 'Only one healthy provider available. Consider setting up additional providers for redundancy.'
+        message:
+          'Only one healthy provider available. Consider setting up additional providers for redundancy.',
       });
     }
 
@@ -423,13 +426,19 @@ export class HealthMonitor extends EventEmitter {
 
       const systemHealth = this.getSystemHealth();
       const healthFile = join(healthDir, 'system-health.json');
-      
-      await fs.writeFile(healthFile, JSON.stringify({
-        ...systemHealth,
-        config: this.config
-      }, null, 2));
 
-    } catch (error) {
+      await fs.writeFile(
+        healthFile,
+        JSON.stringify(
+          {
+            ...systemHealth,
+            config: this.config,
+          },
+          null,
+          2,
+        ),
+      );
+    } catch (error: unknown) {
       this.emit('error', new Error(`Failed to save health data: ${error}`));
     }
   }
@@ -441,14 +450,14 @@ export class HealthMonitor extends EventEmitter {
     try {
       const healthFile = join(homedir(), '.maria', 'health', 'system-health.json');
       const data = await fs.readFile(healthFile, 'utf8');
-      const parsed = JSON.parse(data);
-      
+      const parsed = JSON.parse(data) as Record<string, unknown>;
+
       return {
-        overall: parsed.overall,
-        providers: parsed.providers,
-        recommendations: parsed.recommendations,
-        lastUpdate: new Date(parsed.lastUpdate),
-        uptime: parsed.uptime
+        overall: parsed['overall'] as 'healthy' | 'degraded' | 'critical',
+        providers: parsed['providers'] as ProviderHealth[],
+        recommendations: parsed['recommendations'] as HealthRecommendation[],
+        lastUpdate: new Date(parsed['lastUpdate'] as string),
+        uptime: parsed['uptime'] as number,
       };
     } catch {
       return null;
@@ -500,20 +509,23 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Get monitoring statistics
    */
-  getStatistics(): Record<string, any> {
+  getStatistics(): Record<string, unknown> {
     const providers = Array.from(this.healthData.values());
-    
+
     return {
       totalProviders: providers.length,
-      healthyProviders: providers.filter(p => p.health.status === 'healthy').length,
-      degradedProviders: providers.filter(p => p.health.status === 'degraded').length,
-      criticalProviders: providers.filter(p => p.health.status === 'critical').length,
-      offlineProviders: providers.filter(p => p.health.status === 'offline').length,
+      healthyProviders: providers.filter((p) => p.health.status === 'healthy').length,
+      degradedProviders: providers.filter((p) => p.health.status === 'degraded').length,
+      criticalProviders: providers.filter((p) => p.health.status === 'critical').length,
+      offlineProviders: providers.filter((p) => p.health.status === 'offline').length,
       totalRequests: providers.reduce((sum, p) => sum + p.metadata.totalRequests, 0),
-      averageResponseTime: providers.reduce((sum, p) => sum + p.metadata.averageResponseTime, 0) / providers.length || 0,
-      averageErrorRate: providers.reduce((sum, p) => sum + p.metadata.errorRate, 0) / providers.length || 0,
+      averageResponseTime:
+        providers.reduce((sum, p) => sum + p.metadata.averageResponseTime, 0) / providers.length ||
+        0,
+      averageErrorRate:
+        providers.reduce((sum, p) => sum + p.metadata.errorRate, 0) / providers.length || 0,
       uptime: Date.now() - this.startTime,
-      isRunning: this.isRunning
+      isRunning: this.isRunning,
     };
   }
 }

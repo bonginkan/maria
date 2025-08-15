@@ -4,7 +4,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as crypto from 'crypto';
-import { promisify } from 'util';
+// import { promisify } from 'util'; // Not used
 
 interface StorageOptions {
   basePath?: string;
@@ -30,10 +30,10 @@ export class LocalStorageService {
   private enableBackup: boolean;
 
   constructor(options: StorageOptions = {}) {
-    this.basePath = options.basePath || path.join(process.env.HOME || '', '.maria', 'storage');
+    this.basePath = options.basePath || path.join(process.env['HOME'] || '', '.maria', 'storage');
     this.maxVersions = options.maxVersions || 10;
     this.enableBackup = options.enableBackup !== false;
-    
+
     // Ensure base directory exists
     fs.ensureDirSync(this.basePath);
     fs.ensureDirSync(path.join(this.basePath, 'versions'));
@@ -43,7 +43,7 @@ export class LocalStorageService {
   async upload(filePath: string, content: Buffer | string): Promise<FileMetadata> {
     const id = crypto.randomBytes(16).toString('hex');
     const fullPath = path.join(this.basePath, filePath);
-    
+
     // Create version if file exists
     if (await fs.pathExists(fullPath)) {
       await this.createVersion(filePath);
@@ -70,7 +70,7 @@ export class LocalStorageService {
       created: stats.birthtime,
       modified: stats.mtime,
       version: 1,
-      checksum
+      checksum,
     };
 
     // Save metadata
@@ -81,8 +81,8 @@ export class LocalStorageService {
 
   async download(filePath: string): Promise<Buffer> {
     const fullPath = path.join(this.basePath, filePath);
-    
-    if (!await fs.pathExists(fullPath)) {
+
+    if (!(await fs.pathExists(fullPath))) {
       throw new Error(`File not found: ${filePath}`);
     }
 
@@ -91,7 +91,7 @@ export class LocalStorageService {
 
   async delete(filePath: string): Promise<void> {
     const fullPath = path.join(this.basePath, filePath);
-    
+
     if (this.enableBackup) {
       await this.createVersion(filePath);
     }
@@ -102,8 +102,8 @@ export class LocalStorageService {
 
   async list(directory: string = ''): Promise<FileMetadata[]> {
     const fullPath = path.join(this.basePath, directory);
-    
-    if (!await fs.pathExists(fullPath)) {
+
+    if (!(await fs.pathExists(fullPath))) {
       return [];
     }
 
@@ -123,8 +123,8 @@ export class LocalStorageService {
 
   private async createVersion(filePath: string): Promise<void> {
     const fullPath = path.join(this.basePath, filePath);
-    
-    if (!await fs.pathExists(fullPath)) {
+
+    if (!(await fs.pathExists(fullPath))) {
       return;
     }
 
@@ -139,7 +139,7 @@ export class LocalStorageService {
 
     // Clean old versions
     if (versions.length >= this.maxVersions) {
-      const oldestVersion = path.join(versionDir, versions[0]);
+      const oldestVersion = path.join(versionDir, versions[0] || '');
       await fs.remove(oldestVersion);
     }
   }
@@ -152,8 +152,8 @@ export class LocalStorageService {
 
   private async getMetadata(filePath: string): Promise<FileMetadata | null> {
     const metaPath = path.join(this.basePath, 'metadata', `${filePath}.json`);
-    
-    if (!await fs.pathExists(metaPath)) {
+
+    if (!(await fs.pathExists(metaPath))) {
       return null;
     }
 
@@ -175,9 +175,9 @@ export class LocalStorageService {
       '.js': 'text/javascript',
       '.png': 'image/png',
       '.jpg': 'image/jpeg',
-      '.pdf': 'application/pdf'
+      '.pdf': 'application/pdf',
     };
     return mimeTypes[ext] || 'application/octet-stream';
   }
 }
-EOF < /dev/null
+// File end

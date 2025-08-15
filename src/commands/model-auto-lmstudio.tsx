@@ -11,6 +11,7 @@ import { promisify } from 'util';
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import * as path from 'path';
+import { isObject, hasStringProperty, getBooleanProperty } from '../utils/type-guards.js';
 
 const execAsync = promisify(exec);
 
@@ -45,7 +46,7 @@ const LM_STUDIO_MODELS: LMStudioModel[] = [
     vram: '~64GB',
     context: '128K',
     loaded: false,
-    available: false
+    available: false,
   },
   {
     id: 'gpt-oss-20b',
@@ -54,7 +55,7 @@ const LM_STUDIO_MODELS: LMStudioModel[] = [
     vram: '~12GB',
     context: '32K',
     loaded: false,
-    available: false
+    available: false,
   },
   {
     id: 'qwen3-30b',
@@ -63,21 +64,41 @@ const LM_STUDIO_MODELS: LMStudioModel[] = [
     vram: '~16GB',
     context: '32K',
     loaded: false,
-    available: false
-  }
+    available: false,
+  },
 ];
 
 const CLOUD_MODELS: CloudModel[] = [
   { id: 'gpt-4o', provider: 'OpenAI', name: 'GPT-4o', available: false, apiKeySet: false },
-  { id: 'claude-3-opus', provider: 'Anthropic', name: 'Claude 3 Opus', available: false, apiKeySet: false },
-  { id: 'gemini-2.5-pro', provider: 'Google', name: 'Gemini 2.5 Pro', available: false, apiKeySet: false },
-  { id: 'groq-mixtral', provider: 'Groq', name: 'Mixtral 8x7B', available: false, apiKeySet: false }
+  {
+    id: 'claude-3-opus',
+    provider: 'Anthropic',
+    name: 'Claude 3 Opus',
+    available: false,
+    apiKeySet: false,
+  },
+  {
+    id: 'gemini-2.5-pro',
+    provider: 'Google',
+    name: 'Gemini 2.5 Pro',
+    available: false,
+    apiKeySet: false,
+  },
+  {
+    id: 'groq-mixtral',
+    provider: 'Groq',
+    name: 'Mixtral 8x7B',
+    available: false,
+    apiKeySet: false,
+  },
 ];
 
 export const EnhancedModelCommand: React.FC = () => {
   const { exit } = useApp();
   const [step, setStep] = useState<'checking' | 'selecting' | 'loading' | 'ready'>('checking');
-  const [lmStudioStatus, setLmStudioStatus] = useState<'checking' | 'not-installed' | 'not-running' | 'running'>('checking');
+  const [lmStudioStatus, setLmStudioStatus] = useState<
+    'checking' | 'not-installed' | 'not-running' | 'running'
+  >('checking');
   const [models, setModels] = useState<(LMStudioModel | CloudModel)[]>([]);
   const [selectedModel, setSelectedModel] = useState<string | null>(null);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -98,25 +119,35 @@ export const EnhancedModelCommand: React.FC = () => {
       // Check if server is running
       try {
         const response = await fetch('http://localhost:1234/v1/models', {
-          headers: { 'Authorization': 'Bearer lm-studio' },
-          signal: AbortSignal.timeout(2000)
+          headers: { Authorization: 'Bearer lm-studio' },
+          signal: AbortSignal.timeout(2000),
         });
-        
+
         if (response.ok) {
           setLmStudioStatus('running');
-          const data = await response.json() as { data?: Array<{ id: string; loaded?: boolean }> };
-          
+          const data = (await response.json()) as {
+            data?: Array<{ id: string; loaded?: boolean }>;
+          };
+
           // Update model availability
           const availableModels = data.data || [];
-          const updatedModels = LM_STUDIO_MODELS.map(model => ({
+          const updatedModels = LM_STUDIO_MODELS.map((model) => ({
             ...model,
-            available: availableModels.some((m: any) => m.id.includes(model.id)),
-            loaded: availableModels.some((m: any) => m.id === model.id && m.loaded)
+            available: availableModels.some(
+              (m: unknown) => isObject(m) && hasStringProperty(m, 'id') && m.id.includes(model.id),
+            ),
+            loaded: availableModels.some(
+              (m: unknown) =>
+                isObject(m) &&
+                hasStringProperty(m, 'id') &&
+                m.id === model.id &&
+                getBooleanProperty(m, 'loaded', false),
+            ),
           }));
-          
+
           return updatedModels;
         }
-        
+
         // Server running but no models response
         setLmStudioStatus('running');
         return false;
@@ -125,8 +156,10 @@ export const EnhancedModelCommand: React.FC = () => {
         setLmStudioStatus('not-running');
         return false;
       }
-    } catch (error) {
-      setError(`Error checking LM Studio: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      setError(
+        `Error checking LM Studio: ${error instanceof Error ? error.message : String(error)}`,
+      );
       return false;
     }
   }, []);
@@ -135,20 +168,22 @@ export const EnhancedModelCommand: React.FC = () => {
   const startLMStudioServer = useCallback(async () => {
     try {
       setStatusMessage('Starting LM Studio server...');
-      
+
       // Stop any existing server
       await execAsync('/Users/bongin_max/.lmstudio/bin/lms server stop 2>/dev/null || true');
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Start server
       await execAsync('/Users/bongin_max/.lmstudio/bin/lms server start');
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
       setLmStudioStatus('running');
       setStatusMessage('LM Studio server started successfully');
       return true;
-    } catch (error) {
-      setError(`Failed to start LM Studio: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      setError(
+        `Failed to start LM Studio: ${error instanceof Error ? error.message : String(error)}`,
+      );
       return false;
     }
   }, []);
@@ -158,42 +193,42 @@ export const EnhancedModelCommand: React.FC = () => {
     try {
       setStep('loading');
       setLoadingProgress(0);
-      
+
       // Simulate loading progress
       const progressInterval = setInterval(() => {
-        setLoadingProgress(prev => Math.min(prev + 10, 90));
+        setLoadingProgress((prev) => Math.min(prev + 10, 90));
       }, 500);
 
       // Load the model
       await execAsync(`/Users/bongin_max/.lmstudio/bin/lms load ${modelId}`);
-      
+
       clearInterval(progressInterval);
       setLoadingProgress(100);
-      
+
       // Update environment variables
       const envPath = path.join(process.cwd(), '.env.local');
       let envContent = '';
-      
+
       if (fs.existsSync(envPath)) {
         envContent = fs.readFileSync(envPath, 'utf-8');
       }
-      
+
       // Update or add model configuration
       const updatedEnv = envContent
         .replace(/LMSTUDIO_DEFAULT_MODEL=.*/, `LMSTUDIO_DEFAULT_MODEL=${modelId}`)
         .replace(/AI_PROVIDER=.*/, 'AI_PROVIDER=lmstudio')
         .replace(/OFFLINE_MODE=.*/, 'OFFLINE_MODE=true');
-      
+
       fs.writeFileSync(envPath, updatedEnv);
-      
+
       // Set environment variables for current session
-      process.env.LMSTUDIO_DEFAULT_MODEL = modelId;
-      process.env.AI_PROVIDER = 'lmstudio';
-      process.env.OFFLINE_MODE = 'true';
-      
+      process.env['LMSTUDIO_DEFAULT_MODEL'] = modelId;
+      process.env['AI_PROVIDER'] = 'lmstudio';
+      process.env['OFFLINE_MODE'] = 'true';
+
       setStep('ready');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       setError(`Failed to load model: ${error instanceof Error ? error.message : String(error)}`);
       return false;
     }
@@ -201,31 +236,31 @@ export const EnhancedModelCommand: React.FC = () => {
 
   // Check cloud providers
   const checkCloudProviders = useCallback(async () => {
-    const updatedCloudModels = CLOUD_MODELS.map(model => {
+    const updatedCloudModels = CLOUD_MODELS.map((model) => {
       let apiKeySet = false;
-      
+
       switch (model.provider) {
         case 'OpenAI':
-          apiKeySet = !!process.env.OPENAI_API_KEY;
+          apiKeySet = !!process.env['OPENAI_API_KEY'];
           break;
         case 'Anthropic':
-          apiKeySet = !!process.env.ANTHROPIC_API_KEY;
+          apiKeySet = !!process.env['ANTHROPIC_API_KEY'];
           break;
         case 'Google':
-          apiKeySet = !!process.env.GEMINI_API_KEY;
+          apiKeySet = !!process.env['GEMINI_API_KEY'];
           break;
         case 'Groq':
-          apiKeySet = !!process.env.GROQ_API_KEY;
+          apiKeySet = !!process.env['GROQ_API_KEY'];
           break;
       }
-      
+
       return {
         ...model,
         apiKeySet,
-        available: apiKeySet
+        available: apiKeySet,
       };
     });
-    
+
     return updatedCloudModels;
   }, []);
 
@@ -233,10 +268,10 @@ export const EnhancedModelCommand: React.FC = () => {
   useEffect(() => {
     const initialize = async () => {
       setStep('checking');
-      
+
       // Check LM Studio
       const lmModels = await checkLMStudio();
-      
+
       // If not running, start it
       if (lmStudioStatus === 'not-running') {
         const started = await startLMStudioServer();
@@ -249,19 +284,16 @@ export const EnhancedModelCommand: React.FC = () => {
       } else if (Array.isArray(lmModels)) {
         setModels(lmModels);
       }
-      
+
       // Check cloud providers
       const cloudModels = await checkCloudProviders();
-      
+
       // Combine all models
-      setModels([
-        ...(Array.isArray(lmModels) ? lmModels : LM_STUDIO_MODELS),
-        ...cloudModels
-      ]);
-      
+      setModels([...(Array.isArray(lmModels) ? lmModels : LM_STUDIO_MODELS), ...cloudModels]);
+
       setStep('selecting');
     };
-    
+
     initialize();
   }, []);
 
@@ -269,10 +301,10 @@ export const EnhancedModelCommand: React.FC = () => {
   useInput((_input, key) => {
     if (step === 'selecting') {
       if (key.upArrow) {
-        setSelectedIndex(prev => Math.max(0, prev - 1));
+        setSelectedIndex((prev) => Math.max(0, prev - 1));
       }
       if (key.downArrow) {
-        setSelectedIndex(prev => Math.min(models.length - 1, prev + 1));
+        setSelectedIndex((prev) => Math.min(models.length - 1, prev + 1));
       }
       if (key.return) {
         const selected = models[selectedIndex];
@@ -283,14 +315,14 @@ export const EnhancedModelCommand: React.FC = () => {
             loadModel(selected.id);
           } else {
             // Cloud model - just set it
-            process.env.AI_PROVIDER = selected.provider.toLowerCase();
-            process.env.CURRENT_MODEL = selected.id;
+            process.env['AI_PROVIDER'] = selected.provider.toLowerCase();
+            process.env['CURRENT_MODEL'] = selected.id;
             setStep('ready');
           }
         }
       }
     }
-    
+
     if (key.escape) {
       exit();
     }
@@ -304,9 +336,7 @@ export const EnhancedModelCommand: React.FC = () => {
           <Spinner type="dots" />
           <Text color="yellow"> Checking AI models and LM Studio status...</Text>
         </Box>
-        {statusMessage && (
-          <Text color="gray">{statusMessage}</Text>
-        )}
+        {statusMessage && <Text color="gray">{statusMessage}</Text>}
       </Box>
     );
   }
@@ -315,7 +345,9 @@ export const EnhancedModelCommand: React.FC = () => {
     return (
       <Box flexDirection="column" padding={1}>
         <Box marginBottom={1}>
-          <Text bold color="cyan">🤖 Select AI Model</Text>
+          <Text bold color="cyan">
+            🤖 Select AI Model
+          </Text>
           <Text color="gray"> (Use ↑↓ arrows, Enter to select, ESC to exit)</Text>
         </Box>
 
@@ -324,23 +356,20 @@ export const EnhancedModelCommand: React.FC = () => {
             const isSelected = index === selectedIndex;
             const isLocal = 'vram' in model;
             const isAvailable = model.available || (isLocal && lmStudioStatus === 'running');
-            
+
             return (
               <Box key={model.id} paddingLeft={1}>
-                <Text color={isSelected ? 'cyan' : 'white'}>
-                  {isSelected ? '▶ ' : '  '}
-                </Text>
+                <Text color={isSelected ? 'cyan' : 'white'}>{isSelected ? '▶ ' : '  '}</Text>
                 <Box width={25}>
-                  <Text 
-                    bold={isSelected}
-                    color={isLocal ? 'green' : 'blue'}
-                  >
+                  <Text bold={isSelected} color={isLocal ? 'green' : 'blue'}>
                     {isLocal ? '💻' : '☁️'} {model.name}
                   </Text>
                 </Box>
                 <Box width={15}>
                   <Text color="gray">
-                    {isLocal ? `VRAM: ${(model as LMStudioModel).vram}` : `${(model as CloudModel).provider}`}
+                    {isLocal
+                      ? `VRAM: ${(model as LMStudioModel).vram}`
+                      : `${(model as CloudModel).provider}`}
                   </Text>
                 </Box>
                 <Box width={10}>
@@ -348,11 +377,7 @@ export const EnhancedModelCommand: React.FC = () => {
                     {isAvailable ? '✅ Ready' : '❌ Not available'}
                   </Text>
                 </Box>
-                {isLocal && (
-                  <Text color="yellow">
-                    {(model as LMStudioModel).context} context
-                  </Text>
-                )}
+                {isLocal && <Text color="yellow">{(model as LMStudioModel).context} context</Text>}
               </Box>
             );
           })}
@@ -361,7 +386,7 @@ export const EnhancedModelCommand: React.FC = () => {
         <Box marginTop={1}>
           <Text color="cyan">💡 Active Model: </Text>
           <Text bold color="yellow">
-            {process.env.LMSTUDIO_DEFAULT_MODEL || process.env.CURRENT_MODEL || 'None'}
+            {process.env['LMSTUDIO_DEFAULT_MODEL'] || process.env['CURRENT_MODEL'] || 'None'}
           </Text>
         </Box>
 
@@ -398,16 +423,20 @@ export const EnhancedModelCommand: React.FC = () => {
       <Box flexDirection="column" padding={1}>
         <Box>
           <Text color="green">✅ </Text>
-          <Text bold color="cyan">AI Model Updated</Text>
+          <Text bold color="cyan">
+            AI Model Updated
+          </Text>
         </Box>
-        
+
         <Box marginTop={1} flexDirection="column">
           <Box>
             <Text color="gray">Active Model: </Text>
-            <Text bold color="yellow">{selectedModel}</Text>
+            <Text bold color="yellow">
+              {selectedModel}
+            </Text>
           </Box>
-          
-          {'vram' in models.find(m => m.id === selectedModel)! && (
+
+          {'vram' in models.find((m) => m.id === selectedModel)! && (
             <>
               <Box>
                 <Text color="gray">Type: </Text>
@@ -417,7 +446,7 @@ export const EnhancedModelCommand: React.FC = () => {
                 <Text color="gray">Context: </Text>
                 <Text color="yellow">
                   {(() => {
-                    const model = models.find(m => m.id === selectedModel);
+                    const model = models.find((m) => m.id === selectedModel);
                     return model && isLMStudioModel(model) ? model.context : '128K';
                   })()}
                 </Text>
@@ -431,7 +460,9 @@ export const EnhancedModelCommand: React.FC = () => {
         </Box>
 
         <Box marginTop={1}>
-          <Text color="gray">💡 Your next messages will use this model. Type something to test it!</Text>
+          <Text color="gray">
+            💡 Your next messages will use this model. Type something to test it!
+          </Text>
         </Box>
       </Box>
     );

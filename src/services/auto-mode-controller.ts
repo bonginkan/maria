@@ -11,7 +11,7 @@ export interface Mission {
   id: string;
   type: 'paper' | 'slides' | 'development' | 'composite';
   description: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   sow: SOWDocument;
   deadline?: Date;
   priority: 'low' | 'medium' | 'high';
@@ -45,9 +45,9 @@ export interface Task {
   name: string;
   description: string;
   command?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   status: 'pending' | 'in_progress' | 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
   estimatedDuration: number;
 }
 
@@ -56,7 +56,7 @@ export interface MissionResult {
   success: boolean;
   completedPhases: string[];
   totalDuration: number;
-  outputs: any[];
+  outputs: unknown[];
   errors?: Error[];
 }
 
@@ -91,7 +91,7 @@ export class AutoModeController extends EventEmitter {
     overall: 0,
     phase: '',
     currentTask: '',
-    status: 'running'
+    status: 'running',
   };
 
   constructor() {
@@ -103,48 +103,51 @@ export class AutoModeController extends EventEmitter {
    */
   async startMission(mission: Mission, context?: ConversationContext): Promise<MissionResult> {
     logger.info('Starting Auto Mode mission:', mission.id);
-    
+
     this.currentMission = mission;
     this.isRunning = true;
     this.isPaused = false;
-    
+
     const result: MissionResult = {
       missionId: mission.id,
       success: false,
       completedPhases: [],
       totalDuration: 0,
-      outputs: []
+      outputs: [],
     };
-    
+
     const startTime = Date.now();
-    
+
     try {
       // フェーズごとに実行
       for (const phase of mission.sow.phases) {
         if (this.isPaused) {
           await this.waitForResume();
         }
-        
+
         if (!this.isRunning) {
           break;
         }
-        
+
         logger.debug(`Executing phase: ${phase.name}`);
         this.updateProgress({
           phase: phase.name,
-          overall: this.calculateOverallProgress(result.completedPhases.length, mission.sow.phases.length)
+          overall: this.calculateOverallProgress(
+            result.completedPhases.length,
+            mission.sow.phases.length,
+          ),
         });
-        
+
         // フェーズ内のタスクを実行
         const phaseResult = await this.executePhase(phase, context);
-        
+
         if (phaseResult.success) {
           result.completedPhases.push(phase.id);
           result.outputs.push(...phaseResult.outputs);
         } else {
           // エラーハンドリング
           const recovery = await this.handleError(phaseResult.error!);
-          
+
           if (recovery.action === 'abort') {
             break;
           } else if (recovery.action === 'skip') {
@@ -153,11 +156,10 @@ export class AutoModeController extends EventEmitter {
           // retry の場合はループ継続
         }
       }
-      
+
       result.success = result.completedPhases.length === mission.sow.phases.length;
       result.totalDuration = Date.now() - startTime;
-      
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Mission execution error:', error);
       result.errors = [error as Error];
     } finally {
@@ -165,7 +167,7 @@ export class AutoModeController extends EventEmitter {
       this.currentMission = null;
       this.emit('missionComplete', result);
     }
-    
+
     return result;
   }
 
@@ -200,27 +202,27 @@ export class AutoModeController extends EventEmitter {
    */
   async handleError(error: Error): Promise<RecoveryAction> {
     logger.error('Handling error:', error);
-    
+
     // エラーの種類に応じて回復アクションを決定
     if (error.message.includes('rate limit')) {
       return {
         action: 'retry',
         reason: 'Rate limit exceeded',
-        suggestedFix: 'Waiting 60 seconds before retry'
+        suggestedFix: 'Waiting 60 seconds before retry',
       };
     } else if (error.message.includes('permission')) {
       return {
         action: 'manual',
         reason: 'Permission denied',
-        suggestedFix: 'Please check file permissions'
+        suggestedFix: 'Please check file permissions',
       };
     }
-    
+
     // デフォルトはスキップ
     return {
       action: 'skip',
       reason: 'Unknown error',
-      suggestedFix: 'Skipping this task'
+      suggestedFix: 'Skipping this task',
     };
   }
 
@@ -229,19 +231,19 @@ export class AutoModeController extends EventEmitter {
    */
   private async executePhase(
     phase: MissionPhase,
-    context?: ConversationContext
-  ): Promise<{ success: boolean; outputs: any[]; error?: Error }> {
-    const outputs: any[] = [];
-    
+    context?: ConversationContext,
+  ): Promise<{ success: boolean; outputs: unknown[]; error?: Error }> {
+    const outputs: unknown[] = [];
+
     try {
       for (const task of phase.tasks) {
         if (!this.isRunning) break;
-        
+
         this.updateProgress({ currentTask: task.description });
-        
+
         // タスクを実行（実際の実装では適切なサービスを呼び出す）
         const taskResult = await this.executeTask(task, context);
-        
+
         if (taskResult.success) {
           task.status = 'completed';
           task.result = taskResult.output;
@@ -251,9 +253,9 @@ export class AutoModeController extends EventEmitter {
           throw new Error(`Task failed: ${task.description}`);
         }
       }
-      
+
       return { success: true, outputs };
-    } catch (error) {
+    } catch (error: unknown) {
       return { success: false, outputs, error: error as Error };
     }
   }
@@ -264,20 +266,20 @@ export class AutoModeController extends EventEmitter {
   private async executeTask(
     task: Task,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _context?: ConversationContext
-  ): Promise<{ success: boolean; output?: any }> {
+    _context?: ConversationContext,
+  ): Promise<{ success: boolean; output?: unknown }> {
     logger.debug(`Executing task: ${task.description}`);
-    
+
     // TODO: 実際のタスク実行ロジックを実装
     // ここでは仮実装
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     return {
       success: true,
       output: {
         taskId: task.id,
-        result: 'Task completed successfully'
-      }
+        result: 'Task completed successfully',
+      },
     };
   }
 
@@ -300,7 +302,7 @@ export class AutoModeController extends EventEmitter {
    * 再開を待機
    */
   private async waitForResume(): Promise<void> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.once('resumed', resolve);
     });
   }

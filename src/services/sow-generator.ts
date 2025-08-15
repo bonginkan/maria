@@ -10,7 +10,7 @@ import { SOWDocument, Task, MissionPhase } from './auto-mode-controller';
 export interface SOWRequest {
   type: 'paper' | 'slides' | 'development' | 'composite';
   description: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   constraints?: {
     maxCost?: number;
     maxTime?: number;
@@ -33,142 +33,142 @@ export class SOWGenerator {
         name: 'research',
         description: '関連研究の調査と文献収集',
         estimatedDuration: 120,
-        required: true
+        required: true,
       },
       {
         name: 'outline',
         description: '論文構成の作成',
         estimatedDuration: 60,
-        required: true
+        required: true,
       },
       {
         name: 'introduction',
         description: 'イントロダクションの執筆',
         estimatedDuration: 90,
         dependencies: ['outline'],
-        required: true
+        required: true,
       },
       {
         name: 'methodology',
         description: '手法・方法論の執筆',
         estimatedDuration: 120,
         dependencies: ['outline'],
-        required: true
+        required: true,
       },
       {
         name: 'results',
         description: '実験結果・分析の執筆',
         estimatedDuration: 120,
         dependencies: ['methodology'],
-        required: true
+        required: true,
       },
       {
         name: 'conclusion',
         description: '結論の執筆',
         estimatedDuration: 60,
         dependencies: ['results'],
-        required: true
+        required: true,
       },
       {
         name: 'references',
         description: '参考文献の整理',
         estimatedDuration: 45,
-        required: true
+        required: true,
       },
       {
         name: 'review',
         description: '全体のレビューと推敲',
         estimatedDuration: 90,
         dependencies: ['introduction', 'methodology', 'results', 'conclusion'],
-        required: true
-      }
+        required: true,
+      },
     ],
     slides: [
       {
         name: 'structure',
         description: 'スライド構成の設計',
         estimatedDuration: 30,
-        required: true
+        required: true,
       },
       {
         name: 'title_slide',
         description: 'タイトルスライドの作成',
         estimatedDuration: 15,
         dependencies: ['structure'],
-        required: true
+        required: true,
       },
       {
         name: 'content_slides',
         description: 'コンテンツスライドの作成',
         estimatedDuration: 90,
         dependencies: ['structure'],
-        required: true
+        required: true,
       },
       {
         name: 'visuals',
         description: 'ビジュアル要素の追加',
         estimatedDuration: 60,
         dependencies: ['content_slides'],
-        required: false
+        required: false,
       },
       {
         name: 'transitions',
         description: 'トランジションとアニメーションの設定',
         estimatedDuration: 30,
         dependencies: ['content_slides'],
-        required: false
+        required: false,
       },
       {
         name: 'review',
         description: '全体のレビューと調整',
         estimatedDuration: 30,
         dependencies: ['content_slides', 'visuals'],
-        required: true
-      }
+        required: true,
+      },
     ],
     development: [
       {
         name: 'requirements',
         description: '要件定義と分析',
         estimatedDuration: 60,
-        required: true
+        required: true,
       },
       {
         name: 'design',
         description: 'アーキテクチャ設計',
         estimatedDuration: 90,
         dependencies: ['requirements'],
-        required: true
+        required: true,
       },
       {
         name: 'implementation',
         description: 'コード実装',
         estimatedDuration: 240,
         dependencies: ['design'],
-        required: true
+        required: true,
       },
       {
         name: 'testing',
         description: 'テスト実装と実行',
         estimatedDuration: 120,
         dependencies: ['implementation'],
-        required: true
+        required: true,
       },
       {
         name: 'documentation',
         description: 'ドキュメント作成',
         estimatedDuration: 60,
         dependencies: ['implementation'],
-        required: false
+        required: false,
       },
       {
         name: 'deployment',
         description: 'デプロイメント',
         estimatedDuration: 30,
         dependencies: ['testing'],
-        required: true
-      }
-    ]
+        required: true,
+      },
+    ],
   };
 
   /**
@@ -189,7 +189,7 @@ export class SOWGenerator {
       phases: this.createPhases(tasks),
       estimatedDuration: duration,
       estimatedCost: cost,
-      requiredResources: this.defineRequiredResources(request)
+      requiredResources: this.defineRequiredResources(request),
     };
 
     // 制約チェック
@@ -205,9 +205,9 @@ export class SOWGenerator {
     if (type === 'composite') {
       // 複合タスクの場合は全てのテンプレートから選択
       return [
-        ...(this.taskTemplates.paper?.slice(0, 3) || []),
-        ...(this.taskTemplates.slides?.slice(0, 3) || []),
-        ...(this.taskTemplates.development?.slice(0, 3) || [])
+        ...(this.taskTemplates['paper']?.slice(0, 3) || []),
+        ...(this.taskTemplates['slides']?.slice(0, 3) || []),
+        ...(this.taskTemplates['development']?.slice(0, 3) || []),
       ];
     }
 
@@ -217,10 +217,7 @@ export class SOWGenerator {
   /**
    * テンプレートからタスクを作成
    */
-  private createTasksFromTemplates(
-    templates: TaskTemplate[],
-    request: SOWRequest
-  ): Task[] {
+  private createTasksFromTemplates(templates: TaskTemplate[], request: SOWRequest): Task[] {
     const tasks: Task[] = [];
 
     for (const template of templates) {
@@ -234,7 +231,7 @@ export class SOWGenerator {
         name: this.localizeTaskName(template.name),
         description: template.description,
         status: 'pending',
-        estimatedDuration: this.adjustDuration(template.estimatedDuration, request)
+        estimatedDuration: this.adjustDuration(template.estimatedDuration, request),
       };
 
       tasks.push(task);
@@ -243,26 +240,24 @@ export class SOWGenerator {
     return tasks;
   }
 
-
   /**
    * 合計見積もりを計算
    */
   private estimateTotals(
     tasks: Task[],
-    constraints?: SOWRequest['constraints']
+    constraints?: SOWRequest['constraints'],
   ): { duration: number; cost: number } {
     const totalMinutes = tasks.reduce((sum, task) => sum + task.estimatedDuration, 0);
-    
+
     // コスト計算（仮: 1時間あたり$50）
     const hourlyRate = 50;
     const cost = (totalMinutes / 60) * hourlyRate;
 
     return {
       duration: totalMinutes,
-      cost: constraints?.maxCost ? Math.min(cost, constraints.maxCost) : cost
+      cost: constraints?.maxCost ? Math.min(cost, constraints.maxCost) : cost,
     };
   }
-
 
   /**
    * タイトルを生成
@@ -272,12 +267,12 @@ export class SOWGenerator {
       paper: '論文作成',
       slides: 'スライド作成',
       development: '開発',
-      composite: '統合プロジェクト'
+      composite: '統合プロジェクト',
     };
 
     const typeName = typeNames[request.type] || 'プロジェクト';
     const shortDesc = request.description.substring(0, 30);
-    
+
     return `${typeName} - ${shortDesc}${request.description.length > 30 ? '...' : ''}`;
   }
 
@@ -286,11 +281,11 @@ export class SOWGenerator {
    */
   private shouldIncludeTask(template: TaskTemplate, request: SOWRequest): boolean {
     // パラメータに基づいた判定ロジック
-    if (template.name === 'visuals' && request.parameters?.noVisuals) {
+    if (template.name === 'visuals' && request.parameters?.['noVisuals']) {
       return false;
     }
-    
-    if (template.name === 'documentation' && request.parameters?.skipDocs) {
+
+    if (template.name === 'documentation' && request.parameters?.['skipDocs']) {
       return false;
     }
 
@@ -320,7 +315,7 @@ export class SOWGenerator {
       testing: 'テスト',
       documentation: 'ドキュメント',
       deployment: 'デプロイ',
-      review: 'レビュー'
+      review: 'レビュー',
     };
 
     return nameMap[name] || name;
@@ -341,9 +336,9 @@ export class SOWGenerator {
     }
 
     // パラメータに基づいて調整
-    if (request.parameters?.rush) {
+    if (request.parameters?.['rush']) {
       duration *= 0.7; // 30%短縮
-    } else if (request.parameters?.thorough) {
+    } else if (request.parameters?.['thorough']) {
       duration *= 1.5; // 50%延長
     }
 
@@ -356,12 +351,14 @@ export class SOWGenerator {
   private validateConstraints(sow: SOWDocument, constraints?: SOWRequest['constraints']): void {
     if (!constraints) return;
 
-    if (constraints.maxCost && sow.estimatedCost > constraints.maxCost) {
-      logger.warn(`Cost exceeds constraint: ${sow.estimatedCost} > ${constraints.maxCost}`);
+    if (constraints.maxCost && sow['estimatedCost'] > constraints.maxCost) {
+      logger.warn(`Cost exceeds constraint: ${sow['estimatedCost']} > ${constraints.maxCost}`);
     }
 
-    if (constraints.maxTime && sow.estimatedDuration > constraints.maxTime * 60) {
-      logger.warn(`Duration exceeds constraint: ${sow.estimatedDuration} > ${constraints.maxTime * 60}`);
+    if (constraints.maxTime && sow['estimatedDuration'] > constraints.maxTime * 60) {
+      logger.warn(
+        `Duration exceeds constraint: ${sow['estimatedDuration']} > ${constraints.maxTime * 60}`,
+      );
     }
   }
 
@@ -370,7 +367,7 @@ export class SOWGenerator {
    */
   private generateObjectives(request: SOWRequest): string[] {
     const objectives: string[] = [];
-    
+
     switch (request.type) {
       case 'paper':
         objectives.push('研究論文の作成と公開');
@@ -393,7 +390,7 @@ export class SOWGenerator {
         objectives.push('全体的な品質の確保');
         break;
     }
-    
+
     return objectives;
   }
 
@@ -403,20 +400,20 @@ export class SOWGenerator {
   private createPhases(tasks: Task[]): MissionPhase[] {
     const phases: MissionPhase[] = [];
     const tasksPerPhase = Math.ceil(tasks.length / 3);
-    
+
     for (let i = 0; i < tasks.length; i += tasksPerPhase) {
       const phaseTasks = tasks.slice(i, i + tasksPerPhase);
       const phaseNumber = Math.floor(i / tasksPerPhase) + 1;
-      
+
       phases.push({
         id: `phase-${phaseNumber}`,
         name: `Phase ${phaseNumber}: ${this.getPhaseTitle(phaseNumber)}`,
         tasks: phaseTasks,
         dependencies: phaseNumber > 1 ? [`phase-${phaseNumber - 1}`] : [],
-        estimatedDuration: phaseTasks.reduce((sum, task) => sum + task.estimatedDuration, 0)
+        estimatedDuration: phaseTasks.reduce((sum, task) => sum + task.estimatedDuration, 0),
       });
     }
-    
+
     return phases;
   }
 
@@ -433,7 +430,7 @@ export class SOWGenerator {
    */
   private defineRequiredResources(request: SOWRequest): string[] {
     const resources: string[] = [];
-    
+
     switch (request.type) {
       case 'paper':
         resources.push('LaTeX環境');
@@ -456,10 +453,10 @@ export class SOWGenerator {
         resources.push('コラボレーションツール');
         break;
     }
-    
+
     resources.push('AI計算リソース');
     resources.push('ストレージ容量');
-    
+
     return resources;
   }
 }

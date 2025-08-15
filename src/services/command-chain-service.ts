@@ -5,7 +5,38 @@
 
 import { SlashCommandHandler, SlashCommandResult } from './slash-command-handler';
 import { ConversationContext } from '../types/conversation';
-// import.*from.*../lib/command-groups';
+// import { commandChains } from '../lib/command-groups';
+
+// Define command chains here temporarily
+export interface CommandChain {
+  name: string;
+  description: string;
+  commands: readonly string[];
+  nextSuggestions?: readonly string[];
+}
+
+const commandChains: Record<string, CommandChain> = {
+  fullDevelopment: {
+    name: 'Full Development',
+    description: 'Complete development workflow',
+    commands: ['init', 'code', 'test', 'review', 'commit'],
+  },
+  quickFix: {
+    name: 'Quick Fix',
+    description: 'Bug fix workflow',
+    commands: ['bug', 'test', 'commit'],
+  },
+  deployment: {
+    name: 'Deployment',
+    description: 'Build and deploy workflow',
+    commands: ['test', 'build', 'deploy'],
+  },
+  analysis: {
+    name: 'Analysis',
+    description: 'Code analysis workflow',
+    commands: ['graph', 'analyze'],
+  },
+};
 // import { logger } from '../utils/logger';
 import chalk from 'chalk';
 
@@ -46,9 +77,9 @@ export class CommandChainService {
    * Execute a predefined command chain
    */
   async executeChain(
-    chainName: keyof typeof commandChains,
+    chainName: string,
     context: ConversationContext,
-    options: ChainExecutionOptions = {}
+    options: ChainExecutionOptions = {},
   ): Promise<ChainExecutionResult> {
     const chain = commandChains[chainName];
     if (!chain) {
@@ -57,15 +88,15 @@ export class CommandChainService {
         executedCommands: [],
         results: [],
         errors: [{ command: chainName, error: 'Chain not found' }],
-        summary: `Command chain "${chainName}" not found`
+        summary: `Command chain "${chainName}" not found`,
       };
     }
 
-    return this.executeCommandSequence(
-      chain.commands,
-      context,
-      { ...options, chainName: chain.name, chainDescription: chain.description }
-    );
+    return this.executeCommandSequence([...chain.commands], context, {
+      ...options,
+      chainName: chain.name,
+      chainDescription: chain.description,
+    });
   }
 
   /**
@@ -74,7 +105,7 @@ export class CommandChainService {
   async executeCommandSequence(
     commands: string[],
     context: ConversationContext,
-    options: ChainExecutionOptions & { chainName?: string; chainDescription?: string } = {}
+    options: ChainExecutionOptions & { chainName?: string; chainDescription?: string } = {},
   ): Promise<ChainExecutionResult> {
     if (this.isExecutingChain) {
       return {
@@ -82,7 +113,7 @@ export class CommandChainService {
         executedCommands: [],
         results: [],
         errors: [{ command: 'chain', error: 'Another chain is already executing' }],
-        summary: 'Cannot execute multiple chains simultaneously'
+        summary: 'Cannot execute multiple chains simultaneously',
       };
     }
 
@@ -91,7 +122,9 @@ export class CommandChainService {
     const results: SlashCommandResult[] = [];
     const errors: Array<{ command: string; error: string }> = [];
 
-    console.log(chalk.blue(`\n🔗 Starting command chain${options.chainName ? `: ${options.chainName}` : ''}`));
+    console.log(
+      chalk.blue(`\n🔗 Starting command chain${options.chainName ? `: ${options.chainName}` : ''}`),
+    );
     if (options.chainDescription) {
       console.log(chalk.gray(`   ${options.chainDescription}`));
     }
@@ -133,7 +166,7 @@ export class CommandChainService {
             console.log(chalk.red(result.message));
             errors.push({ command, error: result.message });
           }
-        } catch (error) {
+        } catch (error: unknown) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           console.log(chalk.red(`❌ ${command} threw an error: ${errorMessage}`));
           errors.push({ command, error: errorMessage });
@@ -154,7 +187,7 @@ export class CommandChainService {
         executedCommands,
         results,
         errors,
-        summary
+        summary,
       };
     } finally {
       this.isExecutingChain = false;
@@ -195,10 +228,10 @@ export class CommandChainService {
     executed: string[],
     planned: string[],
     errors: Array<{ command: string; error: string }>,
-    success: boolean
+    success: boolean,
   ): string {
     let summary = '\n';
-    
+
     if (success) {
       summary += chalk.green(`✨ All commands executed successfully!\n`);
     } else {
@@ -206,7 +239,7 @@ export class CommandChainService {
     }
 
     summary += chalk.gray(`   Executed: ${executed.length}/${planned.length} commands\n`);
-    
+
     if (executed.length < planned.length) {
       const skipped = planned.slice(executed.length);
       summary += chalk.gray(`   Skipped: ${skipped.join(', ')}\n`);
@@ -214,7 +247,7 @@ export class CommandChainService {
 
     if (errors.length > 0) {
       summary += chalk.red(`   Errors: ${errors.length}\n`);
-      errors.forEach(err => {
+      errors.forEach((err) => {
         summary += chalk.red(`     - ${err.command}: ${err.error}\n`);
       });
     }
@@ -226,7 +259,7 @@ export class CommandChainService {
    * Helper to add delay
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -236,7 +269,7 @@ export class CommandChainService {
     return Object.entries(commandChains).map(([key, chain]) => ({
       name: key,
       description: chain.description,
-      commands: chain.commands
+      commands: [...chain.commands],
     }));
   }
 }

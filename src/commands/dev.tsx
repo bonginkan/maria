@@ -21,8 +21,8 @@ const DevAgent: React.FC<{ command: DevCommand; onExit: () => void }> = ({ comma
     const executeAgent = async () => {
       try {
         // Simulate development agent execution
-        await new Promise(resolve => setTimeout(resolve, 2500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 2500));
+
         let mockResult = '';
         switch (command.action) {
           case 'architecture':
@@ -40,10 +40,10 @@ const DevAgent: React.FC<{ command: DevCommand; onExit: () => void }> = ({ comma
           default:
             mockResult = 'Development task completed successfully.';
         }
-        
+
         setResult(mockResult);
         setStatus('done');
-      } catch (error) {
+      } catch (error: unknown) {
         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setStatus('done');
       }
@@ -61,10 +61,12 @@ const DevAgent: React.FC<{ command: DevCommand; onExit: () => void }> = ({ comma
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="yellow">Development Agent</Text>
+        <Text bold color="yellow">
+          Development Agent
+        </Text>
         <Text> - {command.action} action</Text>
       </Box>
-      
+
       {status === 'processing' ? (
         <Box>
           <Spinner type="dots" />
@@ -98,7 +100,9 @@ const InteractiveDevMenu: React.FC<{ onSelect: (action: string) => void }> = ({ 
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="yellow">Development Agent - Software Development</Text>
+        <Text bold color="yellow">
+          Development Agent - Software Development
+        </Text>
       </Box>
       <Box marginBottom={1}>
         <Text>Select an action:</Text>
@@ -145,25 +149,25 @@ export default function devCommand(program: Command) {
       if (options.architecture) {
         const command: DevCommand = { action: 'architecture', project: options.architecture };
         const { waitUntilExit } = render(
-          <DevAgent command={command} onExit={() => process.exit(0)} />
+          <DevAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.generate) {
         const command: DevCommand = { action: 'generate', component: options.generate };
         const { waitUntilExit } = render(
-          <DevAgent command={command} onExit={() => process.exit(0)} />
+          <DevAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.test) {
         const command: DevCommand = { action: 'test', type: options.test };
         const { waitUntilExit } = render(
-          <DevAgent command={command} onExit={() => process.exit(0)} />
+          <DevAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else if (options.deploy) {
         const command: DevCommand = { action: 'deploy', environment: options.deploy };
         const { waitUntilExit } = render(
-          <DevAgent command={command} onExit={() => process.exit(0)} />
+          <DevAgent command={command} onExit={() => process.exit(0)} />,
         );
         await waitUntilExit();
       } else {

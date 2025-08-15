@@ -28,7 +28,7 @@ export interface MariaConfig {
     defaultModel?: string;
     provider?: string;
     apiKey?: string;
-    providerConfig?: Record<string, any>;
+    providerConfig?: Record<string, unknown>;
   };
   datastore?: {
     embeddings_path?: string;
@@ -79,7 +79,7 @@ export interface MariaConfig {
   defaultMode?: 'chat' | 'command' | 'research' | 'creative';
   defaultModel?: string;
   apiUrl?: string;
-  
+
   // Command aliases
   aliases?: Array<{
     alias: string;
@@ -98,7 +98,7 @@ export interface Agent {
   type: 'built-in' | 'custom';
   status: 'active' | 'inactive';
   capabilities: string[];
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 export interface MCPServer {
@@ -130,29 +130,31 @@ export function loadConfig(): MariaConfig {
         const content = readFileSync(configPath, 'utf-8');
         return parse(content) as MariaConfig;
       } catch {
+        // Intentionally empty - continue if parsing fails
       }
     }
     const parentDir = join(currentDir, '..');
     if (parentDir === currentDir) break;
     currentDir = parentDir;
   }
-  
+
   // Check global config
   if (existsSync(GLOBAL_CONFIG_PATH)) {
     try {
       const content = readFileSync(GLOBAL_CONFIG_PATH, 'utf-8');
       return parse(content) as MariaConfig;
     } catch {
+      // Ignore errors and return default config
     }
   }
-  
+
   // Return default config with Gemini 2.5 Pro as default model
   return {
     defaultModel: 'gemini-2.5-pro',
     defaultMode: 'chat',
     ai: {
       defaultModel: 'gemini-2.5-pro',
-      preferredModel: 'gemini-2.5-pro'
+      preferredModel: 'gemini-2.5-pro',
     },
     cli: {
       defaultMode: 'chat',
@@ -160,8 +162,8 @@ export function loadConfig(): MariaConfig {
       verbosity: 'normal',
       autoSave: true,
       historySize: 100,
-      vimMode: false
-    }
+      vimMode: false,
+    },
   };
 }
 
@@ -169,7 +171,7 @@ export async function readConfig(): Promise<MariaConfig> {
   const config = loadConfig();
   // Set default API URL if not configured
   if (!config.apiUrl) {
-    config.apiUrl = process.env.MARIA_API_URL || 'http://localhost:8080';
+    config['apiUrl'] = process.env['MARIA_API_URL'] || 'http://localhost:8080';
   }
   return config;
 }
@@ -179,7 +181,7 @@ export async function writeConfig(config: MariaConfig, path?: string): Promise<v
     try {
       saveConfig(config, path);
       resolve();
-    } catch (error) {
+    } catch (error: unknown) {
       reject(error);
     }
   });
@@ -192,7 +194,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
   const configPath = path || join(process.cwd(), CONFIG_FILE);
   // Create TOML format manually
   const lines: string[] = [];
-  
+
   if (config.user) {
     lines.push('[user]');
     if (config.user.email) {
@@ -206,7 +208,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.project) {
     lines.push('[project]');
     if (config.project.name) {
@@ -225,14 +227,16 @@ export function saveConfig(config: MariaConfig, path?: string): void {
       lines.push(`id = "${config.project.id}"`);
     }
     if (config.project.workingDirectories && config.project.workingDirectories.length > 0) {
-      lines.push(`workingDirectories = [${config.project.workingDirectories.map(d => `"${d}"`).join(', ')}]`);
+      lines.push(
+        `workingDirectories = [${config.project.workingDirectories.map((d) => `"${d}"`).join(', ')}]`,
+      );
     }
     if (config.project.memoryFiles && config.project.memoryFiles.length > 0) {
-      lines.push(`memoryFiles = [${config.project.memoryFiles.map(f => `"${f}"`).join(', ')}]`);
+      lines.push(`memoryFiles = [${config.project.memoryFiles.map((f) => `"${f}"`).join(', ')}]`);
     }
     lines.push('');
   }
-  
+
   if (config.neo4j) {
     lines.push('[neo4j]');
     if (config.neo4j.instanceId) {
@@ -243,7 +247,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.ai) {
     lines.push('[ai]');
     if (config.ai.preferredModel) {
@@ -260,7 +264,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.cli) {
     lines.push('[cli]');
     if (config.cli.defaultMode) {
@@ -280,7 +284,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.sandbox) {
     lines.push('[sandbox]');
     if (config.sandbox.enabled !== undefined) {
@@ -294,7 +298,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.permissions) {
     lines.push('[permissions]');
     if (config.permissions.fileAccess !== undefined) {
@@ -308,7 +312,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.hooks) {
     lines.push('[hooks]');
     if (config.hooks.onStart) {
@@ -322,14 +326,14 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.agents) {
     lines.push('[agents]');
     if (config.agents.enabled && config.agents.enabled.length > 0) {
-      lines.push(`enabled = [${config.agents.enabled.map(id => `"${id}"`).join(', ')}]`);
+      lines.push(`enabled = [${config.agents.enabled.map((id) => `"${id}"`).join(', ')}]`);
     }
     lines.push('');
-    
+
     // Custom agents as separate sections
     if (config.agents.custom && config.agents.custom.length > 0) {
       config.agents.custom.forEach((agent) => {
@@ -339,12 +343,12 @@ export function saveConfig(config: MariaConfig, path?: string): void {
         lines.push(`description = "${agent.description}"`);
         lines.push(`type = "${agent.type}"`);
         lines.push(`status = "${agent.status}"`);
-        lines.push(`capabilities = [${agent.capabilities.map(c => `"${c}"`).join(', ')}]`);
+        lines.push(`capabilities = [${agent.capabilities.map((c) => `"${c}"`).join(', ')}]`);
         lines.push('');
       });
     }
   }
-  
+
   if (config.mcp) {
     lines.push('[mcp]');
     if (config.mcp.enabled !== undefined) {
@@ -360,7 +364,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
       lines.push(`logLevel = "${config.mcp.logLevel}"`);
     }
     lines.push('');
-    
+
     // MCP servers as separate sections
     if (config.mcp.servers && config.mcp.servers.length > 0) {
       config.mcp.servers.forEach((server) => {
@@ -369,9 +373,9 @@ export function saveConfig(config: MariaConfig, path?: string): void {
         lines.push(`name = "${server.name}"`);
         lines.push(`description = "${server.description}"`);
         lines.push(`command = "${server.command}"`);
-        lines.push(`args = [${server.args.map(arg => `"${arg}"`).join(', ')}]`);
+        lines.push(`args = [${server.args.map((arg) => `"${arg}"`).join(', ')}]`);
         lines.push(`status = "${server.status}"`);
-        lines.push(`capabilities = [${server.capabilities.map(c => `"${c}"`).join(', ')}]`);
+        lines.push(`capabilities = [${server.capabilities.map((c) => `"${c}"`).join(', ')}]`);
         if (server.configPath) {
           lines.push(`configPath = "${server.configPath}"`);
         }
@@ -380,7 +384,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
       });
     }
   }
-  
+
   if (config.logging) {
     lines.push('[logging]');
     if (config.logging.level) {
@@ -388,7 +392,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.datastore) {
     lines.push('[datastore]');
     if (config.datastore.embeddings_path) {
@@ -396,7 +400,7 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.gcp) {
     lines.push('[gcp]');
     if (config.gcp.project) {
@@ -407,19 +411,19 @@ export function saveConfig(config: MariaConfig, path?: string): void {
     }
     lines.push('');
   }
-  
+
   if (config.apiUrl) {
     lines.push(`apiUrl = "${config.apiUrl}"`);
   }
-  
+
   if (config.defaultMode) {
     lines.push(`defaultMode = "${config.defaultMode}"`);
   }
-  
+
   if (config.defaultModel) {
     lines.push(`defaultModel = "${config.defaultModel}"`);
   }
-  
+
   const content = lines.join('\n');
   writeFileSync(configPath, content, 'utf-8');
 }
@@ -430,21 +434,21 @@ export function saveConfig(config: MariaConfig, path?: string): void {
 export function initConfig(): void {
   const defaultConfig: MariaConfig = {
     user: {
-      email: process.env.USER ? `${process.env.USER}@example.com` : 'user@example.com'
+      email: process.env['USER'] ? `${process.env['USER']}@example.com` : 'user@example.com',
     },
     neo4j: {
       instanceId: '4234c1a0',
-      database: 'neo4j'
+      database: 'neo4j',
     },
     ai: {
-      preferredModel: 'gemini-2.5-pro'
-    }
+      preferredModel: 'gemini-2.5-pro',
+    },
   };
-  
+
   const configPath = join(process.cwd(), CONFIG_FILE);
   if (existsSync(configPath)) {
     throw new Error(`Configuration file ${CONFIG_FILE} already exists`);
   }
-  
+
   saveConfig(defaultConfig, configPath);
 }

@@ -11,7 +11,7 @@ import { EventEmitter } from 'events';
 export interface StorageItem {
   id: string;
   type: 'chat' | 'paper' | 'slide' | 'project' | 'config' | 'memory';
-  content: any;
+  content: unknown;
   metadata: {
     created: string;
     updated: string;
@@ -41,7 +41,7 @@ export class LocalStorageService extends EventEmitter {
 
   private constructor() {
     super();
-    const homeDir = process.env.HOME || process.env.USERPROFILE || '';
+    const homeDir = process.env['HOME'] || process.env['USERPROFILE'] || '';
     this.basePath = path.join(homeDir, '.maria', 'storage');
     this.indexPath = path.join(this.basePath, 'index.json');
   }
@@ -71,7 +71,7 @@ export class LocalStorageService extends EventEmitter {
       await this.loadIndex();
       this.isInitialized = true;
       this.emit('initialized');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to initialize local storage:', error);
       throw error;
     }
@@ -80,9 +80,9 @@ export class LocalStorageService extends EventEmitter {
   private async loadIndex(): Promise<void> {
     try {
       const indexData = await fs.readFile(this.indexPath, 'utf-8');
-      const items = JSON.parse(indexData) as StorageItem[];
-      this.index = new Map(items.map(item => [item.id, item]));
-    } catch (error) {
+      const items = JSON.parse(indexData) as unknown as StorageItem[];
+      this.index = new Map(items.map((item) => [item.id, item]));
+    } catch (error: unknown) {
       // Index doesn't exist yet, start fresh
       this.index = new Map();
     }
@@ -90,18 +90,14 @@ export class LocalStorageService extends EventEmitter {
 
   private async saveIndex(): Promise<void> {
     const items = Array.from(this.index.values());
-    await fs.writeFile(
-      this.indexPath,
-      JSON.stringify(items, null, 2),
-      'utf-8'
-    );
+    await fs.writeFile(this.indexPath, JSON.stringify(items, null, 2), 'utf-8');
   }
 
   private generateId(): string {
     return crypto.randomBytes(16).toString('hex');
   }
 
-  private calculateChecksum(content: any): string {
+  private calculateChecksum(content: unknown): string {
     const hash = crypto.createHash('sha256');
     hash.update(JSON.stringify(content));
     return hash.digest('hex');
@@ -112,7 +108,11 @@ export class LocalStorageService extends EventEmitter {
   }
 
   // CRUD Operations
-  async create(type: StorageItem['type'], content: any, metadata?: Partial<StorageItem['metadata']>): Promise<StorageItem> {
+  async create(
+    type: StorageItem['type'],
+    content: unknown,
+    metadata?: Partial<StorageItem['metadata']>,
+  ): Promise<StorageItem> {
     await this.initialize();
 
     const item: StorageItem = {
@@ -123,9 +123,9 @@ export class LocalStorageService extends EventEmitter {
         created: new Date().toISOString(),
         updated: new Date().toISOString(),
         version: 1,
-        ...metadata
+        ...metadata,
       },
-      checksum: this.calculateChecksum(content)
+      checksum: this.calculateChecksum(content),
     };
 
     // Save to disk
@@ -150,14 +150,18 @@ export class LocalStorageService extends EventEmitter {
     try {
       const itemPath = this.getItemPath(item);
       const data = await fs.readFile(itemPath, 'utf-8');
-      return JSON.parse(data);
-    } catch (error) {
+      return JSON.parse(data) as unknown as StorageItem;
+    } catch (error: unknown) {
       console.error(`Failed to read item ${id}:`, error);
       return null;
     }
   }
 
-  async update(id: string, content: any, metadata?: Partial<StorageItem['metadata']>): Promise<StorageItem | null> {
+  async update(
+    id: string,
+    content: unknown,
+    metadata?: Partial<StorageItem['metadata']>,
+  ): Promise<StorageItem | null> {
     await this.initialize();
 
     const existing = await this.read(id);
@@ -173,9 +177,9 @@ export class LocalStorageService extends EventEmitter {
         ...existing.metadata,
         ...metadata,
         updated: new Date().toISOString(),
-        version: existing.metadata.version + 1
+        version: existing.metadata.version + 1,
       },
-      checksum: this.calculateChecksum(content)
+      checksum: this.calculateChecksum(content),
     };
 
     // Save to disk
@@ -203,7 +207,7 @@ export class LocalStorageService extends EventEmitter {
     const itemPath = this.getItemPath(item);
     try {
       await fs.unlink(itemPath);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Failed to delete file for ${id}:`, error);
     }
 
@@ -223,19 +227,19 @@ export class LocalStorageService extends EventEmitter {
 
     // Filter by type
     if (query.type) {
-      results = results.filter(item => item.type === query.type);
+      results = results.filter((item) => item.type === query.type);
     }
 
     // Filter by tags
     if (query.tags && query.tags.length > 0) {
-      results = results.filter(item => 
-        query.tags!.some(tag => item.metadata.tags?.includes(tag))
+      results = results.filter((item) =>
+        query.tags!.some((tag) => item.metadata.tags?.includes(tag)),
       );
     }
 
     // Filter by userId
     if (query.userId) {
-      results = results.filter(item => item.metadata.userId === query.userId);
+      results = results.filter((item) => item.metadata.userId === query.userId);
     }
 
     // Sort
@@ -258,42 +262,40 @@ export class LocalStorageService extends EventEmitter {
 
   // Backup operations
   private async createBackup(item: StorageItem): Promise<void> {
-    const backupPath = path.join(
-      this.basePath,
-      'backups',
-      `${item.id}_${Date.now()}.json`
-    );
+    const backupPath = path.join(this.basePath, 'backups', `${item.id}_${Date.now()}.json`);
     await fs.writeFile(backupPath, JSON.stringify(item, null, 2), 'utf-8');
   }
 
   async restoreFromBackup(itemId: string, timestamp: number): Promise<boolean> {
-    const backupPath = path.join(
-      this.basePath,
-      'backups',
-      `${itemId}_${timestamp}.json`
-    );
+    const backupPath = path.join(this.basePath, 'backups', `${itemId}_${timestamp}.json`);
 
     try {
       const data = await fs.readFile(backupPath, 'utf-8');
-      const item = JSON.parse(data) as StorageItem;
-      
+      const item = JSON.parse(data) as unknown as StorageItem;
+
       // Restore to main storage
       const itemPath = this.getItemPath(item);
       await fs.writeFile(itemPath, JSON.stringify(item, null, 2), 'utf-8');
-      
+
       // Update index
       this.index.set(item.id, item);
       await this.saveIndex();
-      
+
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to restore from backup:', error);
       return false;
     }
   }
 
   // Batch operations
-  async batchCreate(items: Array<{ type: StorageItem['type']; content: any; metadata?: Partial<StorageItem['metadata']> }>): Promise<StorageItem[]> {
+  async batchCreate(
+    items: Array<{
+      type: StorageItem['type'];
+      content: unknown;
+      metadata?: Partial<StorageItem['metadata']>;
+    }>,
+  ): Promise<StorageItem[]> {
     const results: StorageItem[] = [];
     for (const item of items) {
       const created = await this.create(item.type, item.content, item.metadata);
@@ -321,21 +323,21 @@ export class LocalStorageService extends EventEmitter {
 
   async importData(jsonData: string): Promise<number> {
     await this.initialize();
-    
+
     try {
-      const items = JSON.parse(jsonData) as StorageItem[];
+      const items = JSON.parse(jsonData) as unknown as StorageItem[];
       let importedCount = 0;
-      
+
       for (const item of items) {
         const itemPath = this.getItemPath(item);
         await fs.writeFile(itemPath, JSON.stringify(item, null, 2), 'utf-8');
         this.index.set(item.id, item);
         importedCount++;
       }
-      
+
       await this.saveIndex();
       return importedCount;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to import data:', error);
       throw error;
     }
@@ -369,7 +371,7 @@ export class LocalStorageService extends EventEmitter {
     return {
       totalItems: this.index.size,
       byType,
-      storageSize: totalSize
+      storageSize: totalSize,
     };
   }
 
@@ -377,13 +379,13 @@ export class LocalStorageService extends EventEmitter {
   async cleanupBackups(daysToKeep: number = 30): Promise<number> {
     const backupDir = path.join(this.basePath, 'backups');
     const files = await fs.readdir(backupDir);
-    const cutoffTime = Date.now() - (daysToKeep * 24 * 60 * 60 * 1000);
+    const cutoffTime = Date.now() - daysToKeep * 24 * 60 * 60 * 1000;
     let deletedCount = 0;
 
     for (const file of files) {
       const filePath = path.join(backupDir, file);
       const stats = await fs.stat(filePath);
-      
+
       if (stats.mtimeMs < cutoffTime) {
         await fs.unlink(filePath);
         deletedCount++;

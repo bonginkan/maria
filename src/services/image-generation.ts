@@ -38,7 +38,7 @@ export interface ImageProgress {
 export class ImageGenerationService {
   private outputDir: string;
   private tempDir: string;
-  
+
   constructor() {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = dirname(__filename);
@@ -51,13 +51,13 @@ export class ImageGenerationService {
    * 画像生成（Text-to-Image）
    */
   async generateImage(
-    prompt: string, 
+    prompt: string,
     options: Partial<ImageOptions> = {},
-    onProgress?: (progress: ImageProgress) => void
+    onProgress?: (progress: ImageProgress) => void,
   ): Promise<ImageResult> {
     try {
       const startTime = Date.now();
-      
+
       // 初期化
       onProgress?.({
         stage: 'initializing',
@@ -65,7 +65,7 @@ export class ImageGenerationService {
         estimatedTimeRemaining: '計算中...',
         currentStep: 'Qwen-Imageモデル確認',
         currentImage: 1,
-        totalImages: options.batch || 1
+        totalImages: options.batch || 1,
       });
 
       // ComfyUI起動確認
@@ -77,9 +77,9 @@ export class ImageGenerationService {
           estimatedTimeRemaining: '30秒',
           currentStep: 'ComfyUI起動中',
           currentImage: 1,
-          totalImages: options.batch || 1
+          totalImages: options.batch || 1,
         });
-        
+
         const started = await modelManager.startComfyUI();
         if (!started) {
           throw new Error('ComfyUIの起動に失敗しました');
@@ -93,7 +93,7 @@ export class ImageGenerationService {
         estimatedTimeRemaining: this.estimateGenerationTime(options.batch || 1),
         currentStep: 'Qwen-Imageモデル読み込み',
         currentImage: 1,
-        totalImages: options.batch || 1
+        totalImages: options.batch || 1,
       });
 
       const modelInfo = await modelManager.getModelInfo('qwen-image');
@@ -106,7 +106,7 @@ export class ImageGenerationService {
 
       // バッチ生成またはバリエーション生成
       const results = await this.generateBatch(prompt, options, onProgress);
-      
+
       // 最終使用日時更新
       await modelManager.updateLastUsed('qwen-image');
 
@@ -116,34 +116,29 @@ export class ImageGenerationService {
         estimatedTimeRemaining: '完了',
         currentStep: '画像生成完了',
         currentImage: results.length,
-        totalImages: results.length
+        totalImages: results.length,
       });
 
       // メタデータ生成
-      const metadata = this.generateMetadata(
-        options,
-        Date.now() - startTime,
-        results.length
-      );
+      const metadata = this.generateMetadata(options, Date.now() - startTime, results.length);
 
       return {
         success: true,
         outputPaths: results,
-        metadata
+        metadata,
       };
-
-    } catch (error) {
+    } catch (error: unknown) {
       onProgress?.({
         stage: 'error',
         percentage: 0,
         estimatedTimeRemaining: '',
         currentStep: 'エラー発生',
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       });
 
       return {
         success: false,
-        error: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error),
       };
     }
   }
@@ -154,7 +149,7 @@ export class ImageGenerationService {
   private async generateBatch(
     prompt: string,
     options: Partial<ImageOptions>,
-    onProgress?: (progress: ImageProgress) => void
+    onProgress?: (progress: ImageProgress) => void,
   ): Promise<string[]> {
     const batchSize = options.batch || 1;
     const variations = options.variations || 1;
@@ -170,18 +165,18 @@ export class ImageGenerationService {
       for (let variationIndex = 0; variationIndex < variations; variationIndex++) {
         currentImageIndex++;
         const currentPrompt = prompts[variationIndex] || prompt;
-        
+
         onProgress?.({
           stage: 'processing',
           percentage: Math.min(90, 30 + (currentImageIndex / totalImages) * 60),
           estimatedTimeRemaining: this.estimateRemainingTime(
-            currentImageIndex, 
-            totalImages, 
-            Date.now()
+            currentImageIndex,
+            totalImages,
+            Date.now(),
           ),
           currentStep: `画像生成中 (${currentImageIndex}/${totalImages})`,
           currentImage: currentImageIndex,
-          totalImages
+          totalImages,
         });
 
         // 単一画像生成
@@ -189,14 +184,14 @@ export class ImageGenerationService {
           currentPrompt,
           options,
           batchIndex,
-          variationIndex
+          variationIndex,
         );
-        
+
         results.push(imagePath);
 
         // 短い待機（API制限回避）
         if (currentImageIndex < totalImages) {
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 1000));
         }
       }
     }
@@ -211,7 +206,7 @@ export class ImageGenerationService {
     prompt: string,
     options: Partial<ImageOptions>,
     batchIndex: number,
-    variationIndex: number
+    variationIndex: number,
   ): Promise<string> {
     // 出力ファイル名生成
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -220,7 +215,7 @@ export class ImageGenerationService {
 
     // ワークフロー読み込み
     const workflowData = await modelManager.loadWorkflow('qwen_image');
-    
+
     // パラメータ設定
     const size = this.parseImageSize(options.size);
     const generationParams: GenerationOptions = {
@@ -232,13 +227,13 @@ export class ImageGenerationService {
       guidance: options.guidance || 7.5,
       seed: options.seed || Math.floor(Math.random() * 1000000),
       style: options.style || 'photorealistic',
-      outputPath: filename.replace('.png', '')
+      outputPath: filename.replace('.png', ''),
     };
 
     // ワークフロー実行
     const processedWorkflow = modelManager.replaceWorkflowParameters(
-      workflowData.workflow,
-      generationParams
+      (workflowData as { workflow: unknown }).workflow,
+      generationParams,
     );
 
     const promptId = await modelManager.executeWorkflow(processedWorkflow);
@@ -261,7 +256,7 @@ export class ImageGenerationService {
     }
 
     const variations: string[] = [basePrompt];
-    
+
     // 基本的なバリエーション生成ロジック
     const modifiers = [
       'highly detailed',
@@ -271,7 +266,7 @@ export class ImageGenerationService {
       'sharp focus',
       'cinematic composition',
       'award winning',
-      'trending on artstation'
+      'trending on artstation',
     ];
 
     for (let i = 1; i < count; i++) {
@@ -288,14 +283,14 @@ export class ImageGenerationService {
   async applyStyle(
     prompt: string,
     style: ImageOptions['style'],
-    options: Partial<Omit<ImageOptions, 'style'>> = {}
+    options: Partial<Omit<ImageOptions, 'style'>> = {},
   ): Promise<ImageResult> {
     const stylePrompts = this.getStylePrompt(style || 'photorealistic');
     const enhancedPrompt = `${prompt}, ${stylePrompts}`;
-    
+
     return await this.generateImage(enhancedPrompt, {
       ...options,
-      style
+      style,
     });
   }
 
@@ -305,17 +300,17 @@ export class ImageGenerationService {
   async generateStyleComparison(
     prompt: string,
     styles: ImageOptions['style'][],
-    options: Partial<Omit<ImageOptions, 'style'>> = {}
+    options: Partial<Omit<ImageOptions, 'style'>> = {},
   ): Promise<{ [style: string]: ImageResult }> {
     const results: { [style: string]: ImageResult } = {};
-    
+
     for (const style of styles) {
       if (style) {
         console.log(`🎨 ${style} スタイルで生成中...`);
         results[style] = await this.applyStyle(prompt, style, options);
       }
     }
-    
+
     return results;
   }
 
@@ -325,12 +320,12 @@ export class ImageGenerationService {
   async upscaleImage(
     _imagePath: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _scaleFactor: number = 2
+    _scaleFactor: number = 2,
   ): Promise<ImageResult> {
     // TODO: Real-ESRGANやWAIFU2X統合
     return {
       success: false,
-      error: 'アップスケール機能は未実装です'
+      error: 'アップスケール機能は未実装です',
     };
   }
 
@@ -341,12 +336,12 @@ export class ImageGenerationService {
     _imagePath: string,
     _prompt: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _count: number = 4
+    _count: number = 4,
   ): Promise<ImageResult> {
     // TODO: Image-to-Image variationの実装
     return {
       success: false,
-      error: 'バリエーション生成機能は未実装です'
+      error: 'バリエーション生成機能は未実装です',
     };
   }
 
@@ -360,16 +355,16 @@ export class ImageGenerationService {
 
     while (Date.now() - startTime < maxWaitTime) {
       const status = await modelManager.checkProgress(promptId);
-      
+
       if (status.completed) {
         return;
       }
-      
+
       if (status.error) {
         throw new Error(`画像生成エラー: ${status.error}`);
       }
 
-      await new Promise(resolve => setTimeout(resolve, checkInterval));
+      await new Promise((resolve) => setTimeout(resolve, checkInterval));
     }
 
     throw new Error('画像生成がタイムアウトしました');
@@ -418,7 +413,7 @@ export class ImageGenerationService {
   private estimateGenerationTime(batchSize: number): string {
     const timePerImage = 45; // 秒
     const totalSeconds = batchSize * timePerImage;
-    
+
     if (totalSeconds < 60) {
       return `${totalSeconds}秒`;
     } else {
@@ -429,7 +424,7 @@ export class ImageGenerationService {
   private estimateRemainingTime(
     currentImage: number,
     totalImages: number,
-    startTime: number
+    startTime: number,
   ): string {
     const elapsed = Date.now() - startTime;
     const avgTimePerImage = elapsed / currentImage;
@@ -446,17 +441,17 @@ export class ImageGenerationService {
   private generateMetadata(
     options: Partial<ImageOptions>,
     generationTime: number,
-    imageCount: number
+    imageCount: number,
   ): ImageResult['metadata'] {
     const size = this.parseImageSize(options.size);
-    
+
     return {
       resolution: `${size.width}x${size.height}`,
       style: options.style || 'photorealistic',
       modelUsed: 'qwen-image',
       generationTime: Math.round(generationTime / 1000),
       seedUsed: options.seed || -1,
-      batchSize: imageCount
+      batchSize: imageCount,
     };
   }
 
@@ -466,5 +461,5 @@ export class ImageGenerationService {
   }
 }
 
-// シングルトンインスタンス  
+// シングルトンインスタンス
 export const imageGenerationService = new ImageGenerationService();

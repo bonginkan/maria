@@ -1,9 +1,9 @@
-import { 
-  IAIProvider, 
-  Message as AIMessage, 
+import {
+  IAIProvider,
+  Message as AIMessage,
   AIProviderRegistry,
   registerAllProviders,
-  initializeProvider
+  initializeProvider,
 } from '../providers/index.js';
 import { getAIProviderConfig, getProviderForModel } from '../providers/config.js';
 
@@ -11,7 +11,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatContext {
@@ -40,16 +40,18 @@ export class AIChatServiceV2 {
     // Get configuration
     const config = await getAIProviderConfig();
     if (!config) {
-      throw new Error('No AI provider configuration found. Please set API keys in environment variables or config file.');
+      throw new Error(
+        'No AI provider configuration found. Please set API keys in environment variables or config file.',
+      );
     }
 
     // Initialize the provider
     await initializeProvider(config);
-    
+
     // Set as default provider
     this.provider = AIProviderRegistry.get(config.provider) || null;
     this.currentModel = config.model || this.provider?.getDefaultModel() || null;
-    
+
     if (!this.provider) {
       throw new Error('Failed to initialize AI provider');
     }
@@ -93,9 +95,9 @@ export class AIChatServiceV2 {
   }
 
   async processMessage(
-    message: string, 
+    message: string,
     context: ChatContext,
-    stream: boolean = false
+    stream: boolean = false,
   ): Promise<ChatResponse> {
     await this.initialize();
 
@@ -118,41 +120,68 @@ export class AIChatServiceV2 {
       } else {
         return await this.generateChatResponse(message, context, stream);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error processing message:', error);
       return {
         message: {
           role: 'assistant',
-          content: 'I apologize, but I encountered an error processing your request. Please try again or rephrase your question.',
+          content:
+            'I apologize, but I encountered an error processing your request. Please try again or rephrase your question.',
           timestamp: new Date(),
-          metadata: { error: error instanceof Error ? error.message : 'Unknown error' }
-        }
+          metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
+        },
       };
     }
   }
 
   private isSOWRequest(message: string): boolean {
-    const sowKeywords = ['sow', 'statement of work', 'project plan', 'proposal', 'estimate', 'timeline', 'deliverables'];
+    const sowKeywords = [
+      'sow',
+      'statement of work',
+      'project plan',
+      'proposal',
+      'estimate',
+      'timeline',
+      'deliverables',
+    ];
     const lowerMessage = message.toLowerCase();
-    return sowKeywords.some(keyword => lowerMessage.includes(keyword));
+    return sowKeywords.some((keyword) => lowerMessage.includes(keyword));
   }
 
   private isArchitectureRequest(message: string): boolean {
-    const archKeywords = ['architecture', 'design', 'system design', 'technical design', 'implementation', 'structure', 'component', 'diagram'];
+    const archKeywords = [
+      'architecture',
+      'design',
+      'system design',
+      'technical design',
+      'implementation',
+      'structure',
+      'component',
+      'diagram',
+    ];
     const lowerMessage = message.toLowerCase();
-    return archKeywords.some(keyword => lowerMessage.includes(keyword));
+    return archKeywords.some((keyword) => lowerMessage.includes(keyword));
   }
 
   private isCodeRequest(message: string): boolean {
-    const codeKeywords = ['code', 'implement', 'function', 'class', 'method', 'algorithm', 'script', 'program'];
+    const codeKeywords = [
+      'code',
+      'implement',
+      'function',
+      'class',
+      'method',
+      'algorithm',
+      'script',
+      'program',
+    ];
     const lowerMessage = message.toLowerCase();
-    return codeKeywords.some(keyword => lowerMessage.includes(keyword));
+    return codeKeywords.some((keyword) => lowerMessage.includes(keyword));
   }
 
   private async generateSOWResponse(
-    message: string, 
+    message: string,
     context: ChatContext,
-    stream: boolean
+    stream: boolean,
   ): Promise<ChatResponse> {
     const messages: AIMessage[] = [
       {
@@ -160,19 +189,19 @@ export class AIChatServiceV2 {
         content: `You are an expert project manager and technical writer. 
         Generate detailed Statements of Work (SOW) with clear structure, realistic timelines, 
         resource requirements, deliverables, and success criteria.
-        Format your response as a professional SOW document.`
+        Format your response as a professional SOW document.`,
       },
-      ...context.history.slice(-5).map(msg => ({
+      ...context.history.slice(-5).map((msg) => ({
         role: msg.role as 'user' | 'assistant',
-        content: msg.content
+        content: msg.content,
       })),
-      { role: 'user', content: message }
+      { role: 'user', content: message },
     ];
 
     if (stream) {
       const streamGenerator = this.provider!.chatStream(messages, this.currentModel || undefined, {
         temperature: 0.7,
-        maxTokens: 4000
+        maxTokens: 4000,
       });
 
       return {
@@ -180,19 +209,19 @@ export class AIChatServiceV2 {
           role: 'assistant',
           content: '', // Will be filled by stream
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             type: 'sow',
             provider: this.provider!.name,
             model: this.currentModel,
-            streaming: true
-          }
+            streaming: true,
+          },
         },
-        stream: streamGenerator
+        stream: streamGenerator,
       };
     } else {
       const response = await this.provider!.chat(messages, this.currentModel || undefined, {
         temperature: 0.7,
-        maxTokens: 4000
+        maxTokens: 4000,
       });
 
       return {
@@ -200,20 +229,20 @@ export class AIChatServiceV2 {
           role: 'assistant',
           content: response,
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             type: 'sow',
             provider: this.provider!.name,
-            model: this.currentModel
-          }
-        }
+            model: this.currentModel,
+          },
+        },
       };
     }
   }
 
   private async generateArchitectureResponse(
-    message: string, 
+    message: string,
     context: ChatContext,
-    stream: boolean
+    stream: boolean,
   ): Promise<ChatResponse> {
     const messages: AIMessage[] = [
       {
@@ -221,37 +250,41 @@ export class AIChatServiceV2 {
         content: `You are an expert software architect and system designer. 
         Provide detailed technical designs, architecture diagrams (in text/ASCII art), 
         component breakdowns, technology recommendations, and implementation guidelines.
-        Be specific about technologies, frameworks, and best practices.`
+        Be specific about technologies, frameworks, and best practices.`,
       },
-      ...context.history.slice(-5).map(msg => ({
+      ...context.history.slice(-5).map((msg) => ({
         role: msg.role as 'user' | 'assistant',
-        content: msg.content
+        content: msg.content,
       })),
-      { role: 'user', content: message }
+      { role: 'user', content: message },
     ];
 
     // Use lower temperature for technical accuracy
     const options = {
       temperature: 0.5,
-      maxTokens: 4000
+      maxTokens: 4000,
     };
 
     if (stream) {
-      const streamGenerator = this.provider!.chatStream(messages, this.currentModel || undefined, options);
+      const streamGenerator = this.provider!.chatStream(
+        messages,
+        this.currentModel || undefined,
+        options,
+      );
 
       return {
         message: {
           role: 'assistant',
           content: '',
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             type: 'architecture',
             provider: this.provider!.name,
             model: this.currentModel,
-            streaming: true
-          }
+            streaming: true,
+          },
         },
-        stream: streamGenerator
+        stream: streamGenerator,
       };
     } else {
       const response = await this.provider!.chat(messages, this.currentModel || undefined, options);
@@ -261,23 +294,25 @@ export class AIChatServiceV2 {
           role: 'assistant',
           content: response,
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             type: 'architecture',
             provider: this.provider!.name,
-            model: this.currentModel
-          }
-        }
+            model: this.currentModel,
+          },
+        },
       };
     }
   }
 
   private async generateCodeResponse(
-    message: string, 
+    message: string,
     context: ChatContext,
-    stream: boolean
+    stream: boolean,
   ): Promise<ChatResponse> {
     // Extract language hint from message
-    const languageMatch = message.match(/\b(javascript|typescript|python|java|go|rust|c\+\+|c#|ruby|php)\b/i);
+    const languageMatch = message.match(
+      /\b(javascript|typescript|python|java|go|rust|c\+\+|c#|ruby|php)\b/i,
+    );
     const language = languageMatch?.[1]?.toLowerCase() || 'typescript';
 
     if (stream) {
@@ -285,18 +320,18 @@ export class AIChatServiceV2 {
       const messages: AIMessage[] = [
         {
           role: 'system',
-          content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Include error handling and best practices.`
+          content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Include error handling and best practices.`,
         },
-        ...context.history.slice(-3).map(msg => ({
+        ...context.history.slice(-3).map((msg) => ({
           role: msg.role as 'user' | 'assistant',
-          content: msg.content
+          content: msg.content,
         })),
-        { role: 'user', content: message }
+        { role: 'user', content: message },
       ];
 
       const streamGenerator = this.provider!.chatStream(messages, this.currentModel || undefined, {
         temperature: 0.2,
-        maxTokens: 2000
+        maxTokens: 2000,
       });
 
       return {
@@ -304,39 +339,43 @@ export class AIChatServiceV2 {
           role: 'assistant',
           content: '',
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             type: 'code',
             language,
             provider: this.provider!.name,
             model: this.currentModel,
-            streaming: true
-          }
+            streaming: true,
+          },
         },
-        stream: streamGenerator
+        stream: streamGenerator,
       };
     } else {
-      const code = await this.provider!.generateCode(message, language, this.currentModel || undefined);
+      const code = await this.provider!.generateCode(
+        message,
+        language,
+        this.currentModel || undefined,
+      );
 
       return {
         message: {
           role: 'assistant',
           content: code,
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             type: 'code',
             language,
             provider: this.provider!.name,
-            model: this.currentModel
-          }
-        }
+            model: this.currentModel,
+          },
+        },
       };
     }
   }
 
   private async generateChatResponse(
-    message: string, 
+    message: string,
     context: ChatContext,
-    stream: boolean
+    stream: boolean,
   ): Promise<ChatResponse> {
     const messages: AIMessage[] = [
       {
@@ -344,39 +383,42 @@ export class AIChatServiceV2 {
         content: `You are MARIA CODE, an advanced AI development assistant. 
         You help with coding, debugging, architecture design, and software development tasks.
         Provide helpful, accurate, and detailed responses.
-        When appropriate, include code examples, best practices, and step-by-step guidance.`
+        When appropriate, include code examples, best practices, and step-by-step guidance.`,
       },
-      ...context.history.slice(-10).map(msg => ({
+      ...context.history.slice(-10).map((msg) => ({
         role: msg.role as 'user' | 'assistant',
-        content: msg.content
+        content: msg.content,
       })),
-      { role: 'user', content: message }
+      { role: 'user', content: message },
     ];
 
-    const temperature = context.mode === 'creative' ? 0.9 : 
-                       context.mode === 'research' ? 0.5 : 0.7;
+    const temperature = context.mode === 'creative' ? 0.9 : context.mode === 'research' ? 0.5 : 0.7;
 
     const options = {
       temperature,
-      maxTokens: 2000
+      maxTokens: 2000,
     };
 
     if (stream) {
-      const streamGenerator = this.provider!.chatStream(messages, this.currentModel || undefined, options);
+      const streamGenerator = this.provider!.chatStream(
+        messages,
+        this.currentModel || undefined,
+        options,
+      );
 
       return {
         message: {
           role: 'assistant',
           content: '',
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             provider: this.provider!.name,
             model: this.currentModel,
             mode: context.mode,
-            streaming: true
-          }
+            streaming: true,
+          },
         },
-        stream: streamGenerator
+        stream: streamGenerator,
       };
     } else {
       const response = await this.provider!.chat(messages, this.currentModel || undefined, options);
@@ -386,12 +428,12 @@ export class AIChatServiceV2 {
           role: 'assistant',
           content: response,
           timestamp: new Date(),
-          metadata: { 
+          metadata: {
             provider: this.provider!.name,
             model: this.currentModel,
-            mode: context.mode
-          }
-        }
+            mode: context.mode,
+          },
+        },
       };
     }
   }
@@ -402,15 +444,11 @@ export class AIChatServiceV2 {
     return {
       provider: this.provider.name,
       model: this.currentModel || this.provider.getDefaultModel(),
-      available: AIProviderRegistry.getAll().map(p => ({
-        name: p.name,
-        models: p.getModels(),
-        initialized: p.isInitialized()
-      })) as any
+      available: AIProviderRegistry.getAll().map((p) => p.name),
     };
   }
 
-  async reviewCode(code: string, language?: string): Promise<any> {
+  async reviewCode(code: string, language?: string): Promise<unknown> {
     await this.initialize();
 
     if (!this.provider) {

@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { Box, Text } from 'ink';
+import { Box, Text, useInput } from 'ink';
 import { CommandInput } from './CommandInput.js';
 import { CommandHistory } from './CommandHistory.js';
 import { FallbackInput } from './FallbackInput.js';
@@ -16,6 +16,7 @@ export const App: React.FC = () => {
   const [commands, setCommands] = useState<Command[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [rawModeSupported, setRawModeSupported] = useState(true);
+  const [showFullCommands, setShowFullCommands] = useState(false);
 
   useEffect(() => {
     // Check if raw mode is supported
@@ -27,9 +28,16 @@ export const App: React.FC = () => {
         return false;
       }
     };
-    
+
     setRawModeSupported(checkRawModeSupport());
   }, []);
+
+  // Handle Ctrl+R for toggling command list
+  useInput((input, key) => {
+    if (key.ctrl && input === 'r') {
+      setShowFullCommands(!showFullCommands);
+    }
+  });
 
   const handleCommand = useCallback(async (input: string) => {
     const commandId = Date.now().toString();
@@ -38,16 +46,16 @@ export const App: React.FC = () => {
       input,
       output: '',
       timestamp: new Date(),
-      status: 'pending'
+      status: 'pending',
     };
 
-    setCommands(prev => [...prev, newCommand]);
+    setCommands((prev) => [...prev, newCommand]);
     setIsProcessing(true);
 
     try {
       // Process the command
       let output = '';
-      
+
       if (input.startsWith('/')) {
         // Handle slash commands
         output = await handleSlashCommand(input);
@@ -59,20 +67,18 @@ export const App: React.FC = () => {
         output = `💬 Chat: "${input}"\n\n🔄 Processing your request...`;
       }
 
-      setCommands(prev => 
-        prev.map(cmd => 
-          cmd.id === commandId 
-            ? { ...cmd, output, status: 'success' as const }
-            : cmd
-        )
+      setCommands((prev) =>
+        prev.map((cmd) =>
+          cmd.id === commandId ? { ...cmd, output, status: 'success' as const } : cmd,
+        ),
       );
-    } catch (error) {
-      setCommands(prev => 
-        prev.map(cmd => 
-          cmd.id === commandId 
+    } catch (error: unknown) {
+      setCommands((prev) =>
+        prev.map((cmd) =>
+          cmd.id === commandId
             ? { ...cmd, output: `❌ Error: ${error}`, status: 'error' as const }
-            : cmd
-        )
+            : cmd,
+        ),
       );
     } finally {
       setIsProcessing(false);
@@ -81,24 +87,84 @@ export const App: React.FC = () => {
 
   const handleSlashCommand = async (input: string): Promise<string> => {
     const command = input.slice(1); // Remove the '/'
-    
+
     switch (command.toLowerCase()) {
       case 'help':
-        return `📚 Available Commands:
-        
-🔹 Chat Commands:
-  /help            - Show this help message
-  /clear           - Clear command history
-  /status          - Show system status
-  
-🔹 MC Commands:
-  mc chat          - Interactive AI chat mode
-  mc paper         - Academic paper development
-  mc slides        - Presentation creation
-  mc graph         - Neo4j knowledge graph
-  mc init          - Initialize project configuration
-  
-💡 You can also type any natural language and I'll help you!`;
+        if (!showFullCommands) {
+          return `MARIA CODE - Available Commands
+────────────────────────────────────────
+/help           Show all 40 available commands
+/code           AI code generation
+/test           AI-powered test generation
+/review         Code review
+/init           Generate MARIA.md design document
+/status         Display system status
+/model          Select AI model
+/config         Configuration panel
+/video          AI video generation
+/image          AI image generation
+/build          Build project
+/deploy         Deploy application
+/clear          Clear conversation context
+/exit           Exit MARIA CLI
+
++ 26 more slash commands available
+
+You can also type natural language requests
+
+Interrupt Feature:
+• Type anytime during processing to interrupt
+• New requests override previous ones
+• Additional info is automatically detected`;
+        } else {
+          return `🤖 MARIA CODE - All 40 Commands
+────────────────────────────────────────
+/help           Show all available commands
+/code           AI code generation
+/test           AI-powered test generation
+/review         Code review
+/init           Generate MARIA.md design document
+/status         Display system status
+/model          Select AI model
+/config         Configuration panel
+/video          AI video generation
+/image          AI image generation
+/build          Build project
+/deploy         Deploy application
+/clear          Clear conversation context
+/exit           Exit MARIA CLI
+/login          Sign in to account
+/logout         Sign out from account
+/mode           Switch operation mode
+/upgrade        Upgrade plan
+/permissions    Manage permissions
+/hooks          Hook configuration
+/doctor         System diagnostics
+/terminal-setup Terminal setup
+/add-dir        Add working directory
+/memory         Edit memory settings
+/export         Export conversation
+/agents         Manage AI agents
+/mcp            MCP server management
+/compact        Compact conversation
+/resume         Resume previous session
+/cost           Show usage costs
+/pr-comments    Get PR comments
+/bug            Report a bug
+/release-notes  Generate release notes
+/vim            Toggle Vim mode
+/migrate-installer Migrate installation
+/version        Show version info
+/hotkey         Manage hotkeys
+/alias          Configure aliases
+/template       Template management
+/workflow       Execute workflow
+/batch          Batch processing
+/debug          Debug mode
+
+💡 You can also type natural language requests!
+  Example: "Create a React component for user profile"`;
+        }
 
       case 'clear':
         setCommands([]);
@@ -194,13 +260,62 @@ Type /help to see available commands.`;
 
   return (
     <Box flexDirection="column" minHeight={24}>
-      {/* Header */}
+      {/* ASCII Art Logo in Pink */}
       <Box borderStyle="double" borderColor="magenta" padding={1} marginBottom={1}>
-        <Box flexDirection="column" alignItems="center" width="100%">
-          <Text bold color="magenta">
-            ███ MARIA CODE ███
+        <Box flexDirection="column">
+          <Text color="magenta" bold>
+            {'███╗   ███╗ █████╗ ██████╗ ██╗ █████╗ '}
           </Text>
-          <Text color="magenta">AI-Powered Development Platform v1.0.0</Text>
+          <Text color="magenta" bold>
+            {'████╗ ████║██╔══██╗██╔══██╗██║██╔══██╗'}
+          </Text>
+          <Text color="magenta" bold>
+            {'██╔████╔██║███████║██████╔╝██║███████║'}
+          </Text>
+          <Text color="magenta" bold>
+            {'██║╚██╔╝██║██╔══██║██╔══██╗██║██╔══██║'}
+          </Text>
+          <Text color="magenta" bold>
+            {'██║ ╚═╝ ██║██║  ██║██║  ██║██║██║  ██║'}
+          </Text>
+          <Text color="magenta" bold>
+            {'╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝'}
+          </Text>
+          <Box marginTop={1}>
+            <Text color="magenta" bold>
+              {'█████╗ █████╗ ██████╗ ███████╗'}
+            </Text>
+          </Box>
+          <Text color="magenta" bold>
+            {'██╔══██╗██╔══██╗██╔══██╗██╔════╝'}
+          </Text>
+          <Text color="magenta" bold>
+            {'██║  ╚═╝██║  ██║██║  ██║█████╗  '}
+          </Text>
+          <Text color="magenta" bold>
+            {'██║  ██╗██║  ██║██║  ██║██╔══╝  '}
+          </Text>
+          <Text color="magenta" bold>
+            {'╚█████╔╝╚█████╔╝██████╔╝███████╗'}
+          </Text>
+          <Text color="magenta" bold>
+            {' ╚════╝  ╚════╝ ╚═════╝ ╚══════╝'}
+          </Text>
+          <Box marginTop={1} justifyContent="center">
+            <Text color="magenta" dimColor>
+              AI-Powered Development Platform
+            </Text>
+          </Box>
+          <Box justifyContent="center">
+            <Text color="magenta" dimColor>
+              v1.0.0 | TypeScript Monorepo
+            </Text>
+          </Box>
+          <Box marginTop={1} justifyContent="center">
+            <Text color="magenta" dimColor>
+              (c) 2025 Bonginkan Inc.
+            </Text>
+          </Box>
         </Box>
       </Box>
 
@@ -211,14 +326,14 @@ Type /help to see available commands.`;
 
       {/* Input Area */}
       {rawModeSupported ? (
-        <CommandInput 
-          onSubmit={handleCommand} 
+        <CommandInput
+          onSubmit={handleCommand}
           disabled={isProcessing}
           placeholder="Type a command or chat message... (e.g., 'mc chat', '/help', or any question)"
         />
       ) : (
-        <FallbackInput 
-          onSubmit={handleCommand} 
+        <FallbackInput
+          onSubmit={handleCommand}
           disabled={isProcessing}
           placeholder="Type a command or chat message... (e.g., 'mc chat', '/help', or any question)"
         />
@@ -227,7 +342,8 @@ Type /help to see available commands.`;
       {/* Footer */}
       <Box justifyContent="center" marginTop={1}>
         <Text color="gray">
-          💡 Press Tab for autocomplete • Ctrl+C to exit • /help for commands
+          💡 Press Ctrl+R to {showFullCommands ? 'hide' : 'show'} all commands • Ctrl+C to exit •
+          /help for commands
         </Text>
       </Box>
     </Box>

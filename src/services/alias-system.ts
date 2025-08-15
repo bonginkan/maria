@@ -5,7 +5,7 @@
 
 import { readConfig, writeConfig } from '../utils/config';
 import { logger } from '../utils/logger';
-// import.*from.*../lib/command-groups';
+import { getCommandInfo } from '../lib/command-groups';
 
 export interface CommandAlias {
   alias: string;
@@ -26,8 +26,15 @@ export class AliasSystem {
   private aliases: Map<string, CommandAlias> = new Map();
   private builtInAliases: Map<string, CommandAlias> = new Map();
   private reservedWords = new Set([
-    'exit', 'quit', 'help', 'clear', 'status',
-    'login', 'logout', 'init', 'config'
+    'exit',
+    'quit',
+    'help',
+    'clear',
+    'status',
+    'login',
+    'logout',
+    'init',
+    'config',
   ]);
 
   private constructor() {
@@ -53,22 +60,22 @@ export class AliasSystem {
       { alias: '/h', command: '/help', description: 'Quick help' },
       { alias: '/i', command: '/init', description: 'Quick project init' },
       { alias: '/x', command: '/exit', description: 'Quick exit' },
-      
+
       // Power user shortcuts
       { alias: '/sg', command: '/suggest', description: 'Get suggestions' },
       { alias: '/ch', command: '/chain', description: 'Run command chain' },
       { alias: '/cls', command: '/clear', description: 'Clear screen' },
       { alias: '/cmp', command: '/compact', description: 'Compact memory' },
-      
+
       // Development shortcuts
       { alias: '/r', command: '/review', description: 'PR review' },
       { alias: '/t', command: '/test', description: 'Run tests' },
       { alias: '/d', command: '/dev', description: 'Development mode' },
       { alias: '/b', command: '/bug', description: 'Report bug' },
-      
+
       // Git shortcuts
       { alias: '/cm', command: '/commit', description: 'Git commit' },
-      { alias: '/pr', command: '/pr-comments', description: 'PR comments' }
+      { alias: '/pr', command: '/pr-comments', description: 'PR comments' },
     ];
 
     builtIn.forEach(({ alias, command, description }) => {
@@ -77,7 +84,7 @@ export class AliasSystem {
         command,
         description,
         createdAt: new Date(),
-        usageCount: 0
+        usageCount: 0,
       });
     });
   }
@@ -89,10 +96,10 @@ export class AliasSystem {
     try {
       const config = await readConfig();
       if (config.aliases) {
-        config.aliases.forEach(alias => {
+        config.aliases.forEach((alias) => {
           this.aliases.set(alias.alias, {
             ...alias,
-            createdAt: new Date(alias.createdAt)
+            createdAt: new Date(alias.createdAt),
           });
         });
       }
@@ -107,12 +114,12 @@ export class AliasSystem {
   private async saveAliases(): Promise<void> {
     try {
       const config = await readConfig();
-      config.aliases = Array.from(this.aliases.values()).map(alias => ({
+      config['aliases'] = Array.from(this.aliases.values()).map((alias) => ({
         ...alias,
-        createdAt: alias.createdAt.toISOString()
+        createdAt: alias.createdAt.toISOString(),
       }));
       await writeConfig(config);
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to save aliases:', error);
     }
   }
@@ -124,27 +131,27 @@ export class AliasSystem {
     alias: string,
     command: string,
     description?: string,
-    args?: string[]
+    args?: string[],
   ): Promise<{ success: boolean; message: string }> {
     // Validate alias
     if (!alias.startsWith('/')) {
       return {
         success: false,
-        message: 'Alias must start with /'
+        message: 'Alias must start with /',
       };
     }
 
     if (alias.length < 2) {
       return {
         success: false,
-        message: 'Alias must be at least 2 characters long'
+        message: 'Alias must be at least 2 characters long',
       };
     }
 
     if (this.reservedWords.has(alias.substring(1))) {
       return {
         success: false,
-        message: `"${alias}" is a reserved word and cannot be used as an alias`
+        message: `"${alias}" is a reserved word and cannot be used as an alias`,
       };
     }
 
@@ -152,7 +159,7 @@ export class AliasSystem {
     if (this.aliases.has(alias) || this.builtInAliases.has(alias)) {
       return {
         success: false,
-        message: `Alias "${alias}" already exists`
+        message: `Alias "${alias}" already exists`,
       };
     }
 
@@ -161,7 +168,7 @@ export class AliasSystem {
     if (!commandInfo) {
       return {
         success: false,
-        message: `Command "${command}" does not exist`
+        message: `Command "${command}" does not exist`,
       };
     }
 
@@ -172,7 +179,7 @@ export class AliasSystem {
       description: description || `Alias for ${command}`,
       args,
       createdAt: new Date(),
-      usageCount: 0
+      usageCount: 0,
     };
 
     this.aliases.set(alias, newAlias);
@@ -180,7 +187,7 @@ export class AliasSystem {
 
     return {
       success: true,
-      message: `Alias "${alias}" → "${command}" created successfully`
+      message: `Alias "${alias}" → "${command}" created successfully`,
     };
   }
 
@@ -191,14 +198,14 @@ export class AliasSystem {
     if (this.builtInAliases.has(alias)) {
       return {
         success: false,
-        message: `Cannot remove built-in alias "${alias}"`
+        message: `Cannot remove built-in alias "${alias}"`,
       };
     }
 
     if (!this.aliases.has(alias)) {
       return {
         success: false,
-        message: `Alias "${alias}" not found`
+        message: `Alias "${alias}" not found`,
       };
     }
 
@@ -207,7 +214,7 @@ export class AliasSystem {
 
     return {
       success: true,
-      message: `Alias "${alias}" removed successfully`
+      message: `Alias "${alias}" removed successfully`,
     };
   }
 
@@ -218,7 +225,7 @@ export class AliasSystem {
     const parts = input.split(' ');
     const aliasName = parts[0];
     if (!aliasName) return null;
-    
+
     const additionalArgs = parts.slice(1);
 
     // Check user aliases first
@@ -226,10 +233,10 @@ export class AliasSystem {
     if (userAlias) {
       userAlias.usageCount++;
       this.saveAliases(); // Update usage count
-      
+
       return {
         command: userAlias.command,
-        args: [...(userAlias.args || []), ...additionalArgs]
+        args: [...(userAlias.args || []), ...additionalArgs],
       };
     }
 
@@ -237,10 +244,10 @@ export class AliasSystem {
     const builtInAlias = this.builtInAliases.get(aliasName);
     if (builtInAlias) {
       builtInAlias.usageCount++;
-      
+
       return {
         command: builtInAlias.command,
-        args: [...(builtInAlias.args || []), ...additionalArgs]
+        args: [...(builtInAlias.args || []), ...additionalArgs],
       };
     }
 
@@ -255,12 +262,10 @@ export class AliasSystem {
     builtInAliases: CommandAlias[];
   } {
     return {
-      userAliases: Array.from(this.aliases.values()).sort((a, b) => 
-        b.usageCount - a.usageCount
-      ),
+      userAliases: Array.from(this.aliases.values()).sort((a, b) => b.usageCount - a.usageCount),
       builtInAliases: Array.from(this.builtInAliases.values()).sort((a, b) =>
-        a.alias.localeCompare(b.alias)
-      )
+        a.alias.localeCompare(b.alias),
+      ),
     };
   }
 
@@ -272,17 +277,21 @@ export class AliasSystem {
     const search = partialInput.toLowerCase();
 
     // Search in user aliases
-    this.aliases.forEach(alias => {
-      if (alias.alias.toLowerCase().startsWith(search) ||
-          alias.command.toLowerCase().includes(search)) {
+    this.aliases.forEach((alias) => {
+      if (
+        alias.alias.toLowerCase().startsWith(search) ||
+        alias.command.toLowerCase().includes(search)
+      ) {
         suggestions.push(alias);
       }
     });
 
     // Search in built-in aliases
-    this.builtInAliases.forEach(alias => {
-      if (alias.alias.toLowerCase().startsWith(search) ||
-          alias.command.toLowerCase().includes(search)) {
+    this.builtInAliases.forEach((alias) => {
+      if (
+        alias.alias.toLowerCase().startsWith(search) ||
+        alias.command.toLowerCase().includes(search)
+      ) {
         suggestions.push(alias);
       }
     });
@@ -296,11 +305,11 @@ export class AliasSystem {
   getMostUsedAliases(limit = 5): CommandAlias[] {
     const allAliases = [
       ...Array.from(this.aliases.values()),
-      ...Array.from(this.builtInAliases.values())
+      ...Array.from(this.builtInAliases.values()),
     ];
 
     return allAliases
-      .filter(alias => alias.usageCount > 0)
+      .filter((alias) => alias.usageCount > 0)
       .sort((a, b) => b.usageCount - a.usageCount)
       .slice(0, limit);
   }
@@ -309,11 +318,15 @@ export class AliasSystem {
    * Export aliases to JSON
    */
   exportAliases(): string {
-    return JSON.stringify({
-      userAliases: Array.from(this.aliases.values()),
-      createdAt: new Date().toISOString(),
-      version: '1.0'
-    }, null, 2);
+    return JSON.stringify(
+      {
+        userAliases: Array.from(this.aliases.values()),
+        createdAt: new Date().toISOString(),
+        version: '1.0',
+      },
+      null,
+      2,
+    );
   }
 
   /**
@@ -321,24 +334,24 @@ export class AliasSystem {
    */
   async importAliases(jsonData: string): Promise<{ success: boolean; message: string }> {
     try {
-      const data = JSON.parse(jsonData);
-      
-      if (!data.userAliases || !Array.isArray(data.userAliases)) {
+      const data = JSON.parse(jsonData) as Record<string, unknown>;
+
+      if (!data['userAliases'] || !Array.isArray(data['userAliases'])) {
         return {
           success: false,
-          message: 'Invalid alias data format'
+          message: 'Invalid alias data format',
         };
       }
 
       let imported = 0;
       let skipped = 0;
 
-      for (const alias of data.userAliases) {
+      for (const alias of data['userAliases']) {
         if (!this.aliases.has(alias.alias) && !this.builtInAliases.has(alias.alias)) {
           this.aliases.set(alias.alias, {
             ...alias,
             createdAt: new Date(alias.createdAt || new Date()),
-            usageCount: alias.usageCount || 0
+            usageCount: alias.usageCount || 0,
           });
           imported++;
         } else {
@@ -350,12 +363,12 @@ export class AliasSystem {
 
       return {
         success: true,
-        message: `Imported ${imported} aliases (${skipped} skipped due to conflicts)`
+        message: `Imported ${imported} aliases (${skipped} skipped due to conflicts)`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
-        message: `Failed to import aliases: ${error instanceof Error ? error.message : 'Unknown error'}`
+        message: `Failed to import aliases: ${error instanceof Error ? error.message : 'Unknown error'}`,
       };
     }
   }

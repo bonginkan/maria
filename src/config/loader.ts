@@ -16,39 +16,39 @@ export async function loadConfig(options: CLIOptions = {}): Promise<MariaAIConfi
   const config: MariaAIConfig = {
     priority: options.priority || baseConfig.priority,
     autoStart: !options.offline, // Disable auto-start in offline mode
-    healthMonitoring: baseConfig.healthMonitoring
+    healthMonitoring: baseConfig.healthMonitoring,
   };
 
   // Load API keys from environment
-  config.apiKeys = {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
-    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
-    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '',
-    GROQ_API_KEY: process.env.GROQ_API_KEY || '',
-    GROK_API_KEY: process.env.GROK_API_KEY || ''
+  config['apiKeys'] = {
+    OPENAI_API_KEY: process.env['OPENAI_API_KEY'] || '',
+    ANTHROPIC_API_KEY: process.env['ANTHROPIC_API_KEY'] || '',
+    GOOGLE_API_KEY: process.env['GOOGLE_API_KEY'] || process.env['GEMINI_API_KEY'] || '',
+    GROQ_API_KEY: process.env['GROQ_API_KEY'] || '',
+    GROK_API_KEY: process.env['GROK_API_KEY'] || '',
   };
 
   // Local provider settings
-  config.localProviders = {
-    lmstudio: process.env.LMSTUDIO_ENABLED !== 'false' && !options.offline,
-    ollama: process.env.OLLAMA_ENABLED !== 'false' && !options.offline,
-    vllm: process.env.VLLM_ENABLED !== 'false' && !options.offline
+  config['localProviders'] = {
+    lmstudio: process.env['LMSTUDIO_ENABLED'] !== 'false' && !options.offline,
+    ollama: process.env['OLLAMA_ENABLED'] !== 'false' && !options.offline,
+    vllm: process.env['VLLM_ENABLED'] !== 'false' && !options.offline,
   };
 
   // Handle offline mode
   if (options.offline) {
     // Only enable local providers in offline mode
-    config.apiKeys = {};
-    config.localProviders = {
+    config['apiKeys'] = {};
+    config['localProviders'] = {
       lmstudio: true,
       ollama: true,
-      vllm: true
+      vllm: true,
     };
   }
 
   // Handle provider/model overrides
   if (options.provider) {
-    config.enabledProviders = [options.provider];
+    config['enabledProviders'] = [options.provider];
   }
 
   return config;
@@ -59,11 +59,11 @@ export async function loadEnvironmentConfig(): Promise<void> {
   try {
     const fs = await import('fs-extra');
     const path = await import('path');
-    
+
     const envPath = path.join(process.cwd(), '.env.local');
     if (await fs.pathExists(envPath)) {
       const envContent = await fs.readFile(envPath, 'utf-8');
-      
+
       // Simple env parsing (no external dependency)
       const lines = envContent.split('\n');
       for (const line of lines) {
@@ -77,7 +77,7 @@ export async function loadEnvironmentConfig(): Promise<void> {
         }
       }
     }
-  } catch (error) {
+  } catch (error: unknown) {
     // Ignore errors, environment loading is optional
   }
 }

@@ -25,18 +25,23 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
   frames = 33,
   steps,
   compare = false,
-  outputPath
+  outputPath,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState<GenerationProgress | null>(null);
-  const [result, setResult] = useState<{ success: boolean; outputPath?: string; comparisonPath?: string; error?: string } | null>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    outputPath?: string;
+    comparisonPath?: string;
+    error?: string;
+  } | null>(null);
   const [startTime, setStartTime] = useState<number>(0);
 
   useEffect(() => {
     const generateVideo = async () => {
       setIsGenerating(true);
       setStartTime(Date.now());
-      
+
       const options: VideoOptions = {
         model,
         prompt,
@@ -47,21 +52,21 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
         steps: steps || (model === 'wan22-14b' ? 50 : 30),
         compare,
         outputPath,
-        seed: Math.floor(Math.random() * 1000000)
+        seed: Math.floor(Math.random() * 1000000),
       };
 
       try {
         const videoResult = await videoGenerationService.generateVideo(
           prompt,
           options,
-          (progressUpdate) => setProgress(progressUpdate)
+          (progressUpdate) => setProgress(progressUpdate),
         );
-        
+
         setResult(videoResult);
-      } catch (error) {
+      } catch (error: unknown) {
         setResult({
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       } finally {
         setIsGenerating(false);
@@ -74,17 +79,22 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
   const renderHeader = () => (
     <Box flexDirection="column">
       <Box>
-        <Text color="magenta" bold>🎬 AI動画生成</Text>
+        <Text color="magenta" bold>
+          🎬 AI動画生成
+        </Text>
       </Box>
       <Text color="gray">プロンプト: {prompt}</Text>
       {inputImage && <Text color="gray">入力画像: {inputImage}</Text>}
       <Box marginY={1}>
         <Text color="cyan">📊 設定:</Text>
-        <Text> モデル={model} 解像度={resolution} fps={fps} フレーム={frames}</Text>
+        <Text>
+          {' '}
+          モデル={model} 解像度={resolution} fps={fps} フレーム={frames}
+        </Text>
       </Box>
       {compare && (
         <Box>
-          <Text color="yellow">⚖️  比較モード: 5B/14B両モデルで生成し横並び比較動画を作成</Text>
+          <Text color="yellow">⚖️ 比較モード: 5B/14B両モデルで生成し横並び比較動画を作成</Text>
         </Box>
       )}
     </Box>
@@ -97,20 +107,23 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
       <Box flexDirection="column" marginY={1}>
         <Box>
           <Spinner type="dots" />
-          <Text> {progress.stage} ({progress.percentage}%)</Text>
+          <Text>
+            {' '}
+            {progress.stage} ({progress.percentage}%)
+          </Text>
         </Box>
         <Text color="gray">Step: {progress.currentStep}</Text>
         {progress.estimatedTimeRemaining && (
           <Text color="gray">ETA: {progress.estimatedTimeRemaining}s</Text>
         )}
-        
+
         {progress.stage === 'processing' && (
           <Box marginTop={1}>
             <Text color="blue">🔄 </Text>
             <Text>{progress.currentStep}</Text>
           </Box>
         )}
-        
+
         {progress.error && (
           <Box marginTop={1}>
             <Text color="red">❌ エラー: {progress.error}</Text>
@@ -125,27 +138,29 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
 
     if (result.success) {
       const duration = Math.round((Date.now() - startTime) / 1000);
-      
+
       return (
         <Box flexDirection="column" marginTop={1}>
           <Box>
-            <Text color="green" bold>✨ 動画生成完了！</Text>
+            <Text color="green" bold>
+              ✨ 動画生成完了！
+            </Text>
           </Box>
-          
+
           <Box marginTop={1}>
             <Text color="cyan">📁 メイン出力: </Text>
             <Text>{result.outputPath}</Text>
           </Box>
-          
+
           {result.comparisonPath && (
             <Box>
-              <Text color="cyan">🎞️  比較動画: </Text>
+              <Text color="cyan">🎞️ 比較動画: </Text>
               <Text>{result.comparisonPath}</Text>
             </Box>
           )}
-          
+
           <Box marginTop={1}>
-            <Text color="gray">⏱️  生成時間: {duration}秒</Text>
+            <Text color="gray">⏱️ 生成時間: {duration}秒</Text>
             <Text color="gray"> | モデル: {model}</Text>
             <Text color="gray"> | 解像度: {resolution}</Text>
           </Box>
@@ -159,9 +174,11 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
     } else {
       return (
         <Box flexDirection="column" marginTop={1}>
-          <Text color="red" bold>❌ 動画生成エラー</Text>
+          <Text color="red" bold>
+            ❌ 動画生成エラー
+          </Text>
           <Text color="red">{result.error}</Text>
-          
+
           <Box marginTop={1}>
             <Text color="yellow">💡 解決策:</Text>
           </Box>
@@ -177,10 +194,10 @@ const VideoCommand: React.FC<VideoCommandProps> = ({
     <Box flexDirection="column" paddingX={2}>
       {renderHeader()}
       <Newline />
-      
+
       {isGenerating && renderProgress()}
       {result && renderResult()}
-      
+
       {!isGenerating && !result && (
         <Box>
           <Text color="blue">🚀 動画生成を開始しています...</Text>

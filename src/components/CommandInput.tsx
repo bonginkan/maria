@@ -8,10 +8,10 @@ interface CommandInputProps {
   placeholder?: string;
 }
 
-export const CommandInput: React.FC<CommandInputProps> = ({ 
-  onSubmit, 
+export const CommandInput: React.FC<CommandInputProps> = ({
+  onSubmit,
   disabled = false,
-  placeholder = "Enter command..."
+  placeholder = 'Enter command...',
 }) => {
   const [value, setValue] = useState('');
 
@@ -30,7 +30,7 @@ export const CommandInput: React.FC<CommandInputProps> = ({
             💻 MARIA Shell
           </Text>
         </Box>
-        
+
         <Box>
           <Text color="cyan">➤ </Text>
           {disabled ? (
@@ -47,13 +47,12 @@ export const CommandInput: React.FC<CommandInputProps> = ({
             />
           )}
         </Box>
-        
+
         <Box marginTop={1}>
           <Text color="gray" dimColor>
-            {disabled 
-              ? '⏳ Processing command...' 
-              : '💡 Type /help for commands, mc <command> for tools, or chat naturally'
-            }
+            {disabled
+              ? '⏳ Processing command...'
+              : '💡 Type /help for commands, mc <command> for tools, or chat naturally'}
           </Text>
         </Box>
       </Box>

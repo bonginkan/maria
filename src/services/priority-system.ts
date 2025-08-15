@@ -5,13 +5,18 @@
 
 import { IAIProvider } from '../providers/ai-provider.js';
 
-export type PriorityMode = 'privacy-first' | 'performance' | 'cost-effective' | 'quality' | 'balanced';
+export type PriorityMode =
+  | 'privacy-first'
+  | 'performance'
+  | 'cost-effective'
+  | 'quality'
+  | 'balanced';
 
 export interface PriorityConfig {
   mode: PriorityMode;
   preferences: {
     localPreference: number; // 0-100, higher means prefer local
-    costSensitivity: number; // 0-100, higher means more cost-sensitive  
+    costSensitivity: number; // 0-100, higher means more cost-sensitive
     speedRequirement: number; // 0-100, higher means speed is critical
     qualityRequirement: number; // 0-100, higher means quality is critical
     privacyRequirement: number; // 0-100, higher means privacy is critical
@@ -56,9 +61,9 @@ export class PrioritySystem {
 
   private buildDefaultConfig(override?: Partial<PriorityConfig>): PriorityConfig {
     const mode = override?.mode || 'balanced';
-    
+
     const defaultPreferences = this.getDefaultPreferences(mode);
-    const preferences = override?.preferences 
+    const preferences = override?.preferences
       ? { ...defaultPreferences, ...override.preferences }
       : defaultPreferences;
 
@@ -67,7 +72,7 @@ export class PrioritySystem {
       preferences,
       customOrder: override?.customOrder,
       blacklist: override?.blacklist || [],
-      whitelist: override?.whitelist
+      whitelist: override?.whitelist,
     };
   }
 
@@ -79,36 +84,36 @@ export class PrioritySystem {
           costSensitivity: 30,
           speedRequirement: 50,
           qualityRequirement: 70,
-          privacyRequirement: 95
+          privacyRequirement: 95,
         };
-        
+
       case 'performance':
         return {
           localPreference: 70,
           costSensitivity: 20,
           speedRequirement: 95,
           qualityRequirement: 80,
-          privacyRequirement: 60
+          privacyRequirement: 60,
         };
-        
+
       case 'cost-effective':
         return {
           localPreference: 80,
           costSensitivity: 95,
           speedRequirement: 60,
           qualityRequirement: 60,
-          privacyRequirement: 70
+          privacyRequirement: 70,
         };
-        
+
       case 'quality':
         return {
           localPreference: 40,
           costSensitivity: 30,
           speedRequirement: 50,
           qualityRequirement: 95,
-          privacyRequirement: 60
+          privacyRequirement: 60,
         };
-        
+
       case 'balanced':
       default:
         return {
@@ -116,7 +121,7 @@ export class PrioritySystem {
           costSensitivity: 50,
           speedRequirement: 60,
           qualityRequirement: 70,
-          privacyRequirement: 70
+          privacyRequirement: 70,
         };
     }
   }
@@ -124,10 +129,7 @@ export class PrioritySystem {
   /**
    * Calculate priority scores for all providers
    */
-  calculateProviderScores(
-    providers: Map<string, IAIProvider>,
-    task: TaskContext
-  ): ProviderScore[] {
+  calculateProviderScores(providers: Map<string, IAIProvider>, task: TaskContext): ProviderScore[] {
     const scores: ProviderScore[] = [];
 
     for (const [name, provider] of providers) {
@@ -151,11 +153,7 @@ export class PrioritySystem {
     return scores;
   }
 
-  private scoreProvider(
-    name: string,
-    provider: IAIProvider,
-    task: TaskContext
-  ): ProviderScore {
+  private scoreProvider(name: string, provider: IAIProvider, task: TaskContext): ProviderScore {
     const breakdown = {
       base: 50, // Base score
       privacy: 0,
@@ -163,7 +161,7 @@ export class PrioritySystem {
       cost: 0,
       quality: 0,
       availability: 0,
-      contextWindow: 0
+      contextWindow: 0,
     };
 
     const reasoning: string[] = [];
@@ -174,20 +172,20 @@ export class PrioritySystem {
 
     // Privacy scoring
     if (isLocal) {
-      const privacyBonus = (this.config.preferences.privacyRequirement / 100) * 30;
-      breakdown.privacy = privacyBonus;
+      const privacyBonus = (this.config.preferences['privacyRequirement'] / 100) * 30;
+      breakdown['privacy'] = privacyBonus;
       if (privacyBonus > 10) reasoning.push('Local provider (privacy)');
     } else {
       // Cloud providers get penalty for high privacy requirements
-      if (this.config.preferences.privacyRequirement > 80) {
-        breakdown.privacy = -15;
+      if (this.config.preferences['privacyRequirement'] > 80) {
+        breakdown['privacy'] = -15;
         reasoning.push('Cloud provider (privacy concern)');
       }
     }
 
     // Confidentiality level adjustment
     if (task.confidentialityLevel === 'highly-confidential' && !isLocal) {
-      breakdown.privacy -= 25;
+      breakdown['privacy'] -= 25;
       reasoning.push('High confidentiality requires local');
     }
 
@@ -202,7 +200,7 @@ export class PrioritySystem {
         reasoning.push('Slow response time');
       }
 
-      // Reliability scoring  
+      // Reliability scoring
       if (metrics.successRate > 0.95) {
         breakdown.availability += 15;
         reasoning.push('High reliability');
@@ -241,7 +239,7 @@ export class PrioritySystem {
       provider: name,
       score: Math.max(0, Math.min(100, weightedScore)),
       breakdown,
-      reasoning
+      reasoning,
     };
   }
 
@@ -251,24 +249,24 @@ export class PrioritySystem {
     // Apply weights based on preferences and task
     const weights = this.calculateWeights(task);
 
-    score += breakdown.privacy * weights.privacy;
-    score += breakdown.performance * weights.performance; 
-    score += breakdown.cost * weights.cost;
-    score += breakdown.quality * weights.quality;
-    score += breakdown.availability * weights.availability;
-    score += breakdown.contextWindow * weights.contextWindow;
+    score += (breakdown['privacy'] || 0) * (weights['privacy'] || 0);
+    score += (breakdown['performance'] || 0) * (weights['performance'] || 0);
+    score += (breakdown['cost'] || 0) * (weights['cost'] || 0);
+    score += (breakdown['quality'] || 0) * (weights['quality'] || 0);
+    score += (breakdown['availability'] || 0) * (weights['availability'] || 0);
+    score += (breakdown['contextWindow'] || 0) * (weights['contextWindow'] || 0);
 
     return score;
   }
 
   private calculateWeights(task: TaskContext): Record<string, number> {
     const base = {
-      privacy: this.config.preferences.privacyRequirement / 100,
+      privacy: this.config.preferences['privacyRequirement'] / 100,
       performance: this.config.preferences.speedRequirement / 100,
       cost: this.config.preferences.costSensitivity / 100,
       quality: this.config.preferences.qualityRequirement / 100,
       availability: 0.8, // Always important
-      contextWindow: 0.6 // Important for most tasks
+      contextWindow: 0.6, // Important for most tasks
     };
 
     // Task-specific adjustments
@@ -277,16 +275,16 @@ export class PrioritySystem {
         base.quality *= 1.2; // Vision needs quality
         base.performance *= 0.8; // Speed less critical
         break;
-        
+
       case 'code':
         base.quality *= 1.1; // Code needs accuracy
         base.contextWindow *= 1.3; // Large context important
         break;
-        
+
       case 'chat':
         base.performance *= 1.2; // Speed important for chat
         break;
-        
+
       case 'creative':
         base.quality *= 1.3; // Creativity needs good models
         break;
@@ -320,7 +318,7 @@ export class PrioritySystem {
           score += 15; // LM Studio good for complex code with large context
         }
         break;
-        
+
       case 'vision':
         if (['openai', 'googleai'].includes(providerName)) {
           score += 15; // Excellent vision capabilities
@@ -329,7 +327,7 @@ export class PrioritySystem {
           score += 10; // Good local vision option
         }
         break;
-        
+
       case 'translation':
         if (providerName === 'lmstudio') {
           score += 10; // Often has multilingual models
@@ -338,7 +336,7 @@ export class PrioritySystem {
           score += 8; // Good at translation
         }
         break;
-        
+
       case 'creative':
         if (['anthropic', 'openai'].includes(providerName)) {
           score += 12; // Good at creative tasks
@@ -358,17 +356,17 @@ export class PrioritySystem {
 
   private getContextWindowScore(provider: IAIProvider, task: TaskContext): number {
     const models = provider.getModels();
-    
+
     // Estimate required context (simplified)
     const requiredContext = Math.max(task.estimatedTokens * 1.5, 4000);
-    
+
     // This would need model-specific context window data
     // For now, use heuristics based on provider
     let contextWindow = 4000; // Default
-    
-    if (models.some(m => m.includes('gpt-4') || m.includes('claude'))) {
+
+    if (models.some((m) => m.includes('gpt-4') || m.includes('claude'))) {
       contextWindow = 128000; // Large context models
-    } else if (models.some(m => m.includes('32k') || m.includes('16k'))) {
+    } else if (models.some((m) => m.includes('32k') || m.includes('16k'))) {
       contextWindow = 32000;
     }
 
@@ -383,7 +381,7 @@ export class PrioritySystem {
 
   private getCostScore(providerName: string, isLocal: boolean, task: TaskContext): number {
     const costSensitivity = this.config.preferences.costSensitivity / 100;
-    
+
     if (isLocal) {
       // Local is essentially free
       return costSensitivity * 25;
@@ -405,10 +403,10 @@ export class PrioritySystem {
   private getCostPerThousandTokens(providerName: string): number {
     // Simplified cost estimates (would be updated regularly)
     const costs: Record<string, number> = {
-      'openai': 0.02,
-      'anthropic': 0.025,
-      'googleai': 0.01,
-      'grok': 0.015
+      openai: 0.02,
+      anthropic: 0.025,
+      googleai: 0.01,
+      grok: 0.015,
     };
 
     return costs[providerName] || 0.02;
@@ -426,7 +424,7 @@ export class PrioritySystem {
       averageLatency: 0,
       successRate: 0,
       totalRequests: 0,
-      lastUsed: new Date()
+      lastUsed: new Date(),
     };
 
     const updated = { ...existing, ...metrics };
@@ -436,12 +434,9 @@ export class PrioritySystem {
   /**
    * Get recommended provider for task
    */
-  getRecommendedProvider(
-    providers: Map<string, IAIProvider>,
-    task: TaskContext
-  ): string | null {
+  getRecommendedProvider(providers: Map<string, IAIProvider>, task: TaskContext): string | null {
     const scores = this.calculateProviderScores(providers, task);
-    
+
     if (scores.length === 0) {
       return null;
     }
@@ -452,12 +447,9 @@ export class PrioritySystem {
   /**
    * Get provider priority order for task
    */
-  getProviderPriorityOrder(
-    providers: Map<string, IAIProvider>,
-    task: TaskContext
-  ): string[] {
+  getProviderPriorityOrder(providers: Map<string, IAIProvider>, task: TaskContext): string[] {
     const scores = this.calculateProviderScores(providers, task);
-    return scores.map(s => s.provider);
+    return scores.map((s) => s.provider);
   }
 
   /**
@@ -465,10 +457,10 @@ export class PrioritySystem {
    */
   updateConfig(config: Partial<PriorityConfig>) {
     this.config = { ...this.config, ...config };
-    
+
     // Recalculate preferences if mode changed
     if (config.mode && config.mode !== this.config.mode) {
-      this.config.preferences = this.getDefaultPreferences(config.mode);
+      this.config['preferences'] = this.getDefaultPreferences(config.mode);
     }
   }
 
@@ -485,7 +477,7 @@ export class PrioritySystem {
   exportData(): PrioritySystemData {
     return {
       config: this.config,
-      metrics: Object.fromEntries(this.providerMetrics.entries())
+      metrics: Object.fromEntries(this.providerMetrics.entries()),
     };
   }
 
@@ -519,23 +511,23 @@ export const PRIORITY_PRESETS: Record<string, PriorityConfig> = {
       costSensitivity: 30,
       speedRequirement: 50,
       qualityRequirement: 70,
-      privacyRequirement: 95
+      privacyRequirement: 95,
     },
-    customOrder: ['lmstudio', 'ollama', 'vllm']
+    customOrder: ['lmstudio', 'ollama', 'vllm'],
   },
-  
-  'performance': {
+
+  performance: {
     mode: 'performance',
     preferences: {
       localPreference: 70,
       costSensitivity: 20,
       speedRequirement: 95,
       qualityRequirement: 80,
-      privacyRequirement: 60
+      privacyRequirement: 60,
     },
-    customOrder: ['grok', 'openai', 'lmstudio', 'anthropic']
+    customOrder: ['grok', 'openai', 'lmstudio', 'anthropic'],
   },
-  
+
   'cost-effective': {
     mode: 'cost-effective',
     preferences: {
@@ -543,20 +535,20 @@ export const PRIORITY_PRESETS: Record<string, PriorityConfig> = {
       costSensitivity: 95,
       speedRequirement: 60,
       qualityRequirement: 60,
-      privacyRequirement: 70
+      privacyRequirement: 70,
     },
-    customOrder: ['lmstudio', 'ollama', 'vllm', 'googleai']
+    customOrder: ['lmstudio', 'ollama', 'vllm', 'googleai'],
   },
-  
-  'quality': {
+
+  quality: {
     mode: 'quality',
     preferences: {
       localPreference: 40,
       costSensitivity: 30,
       speedRequirement: 50,
       qualityRequirement: 95,
-      privacyRequirement: 60
+      privacyRequirement: 60,
     },
-    customOrder: ['anthropic', 'openai', 'lmstudio', 'googleai']
-  }
+    customOrder: ['anthropic', 'openai', 'lmstudio', 'googleai'],
+  },
 };

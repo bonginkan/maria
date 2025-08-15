@@ -94,7 +94,7 @@ export interface Tool {
   function: {
     name: string;
     description: string;
-    parameters: Record<string, any>; // JSON Schema
+    parameters: Record<string, unknown>; // JSON Schema
   };
 }
 
@@ -176,30 +176,33 @@ export interface AIProvider {
   readonly type: 'cloud' | 'local';
   readonly version: string;
   readonly capabilities: AICapabilities;
-  
+
   // Initialization
   initialize(config?: ProviderConfig): Promise<void>;
   validateConnection(): Promise<boolean>;
-  
+
   // Core chat functionality
   chat(messages: Message[], options?: ChatOptions): Promise<AIResponse>;
   stream(messages: Message[], options?: StreamOptions): AsyncGenerator<string, void, void>;
-  
+
   // Specialized features (optional)
   vision?(image: Buffer | string, prompt: string, options?: VisionOptions): Promise<VisionResponse>;
   generateCode?(prompt: string, options?: CodeOptions): Promise<CodeResponse>;
-  embeddings?(text: string | string[], options?: EmbeddingOptions): Promise<EmbeddingResponse | EmbeddingResponse[]>;
-  
+  embeddings?(
+    text: string | string[],
+    options?: EmbeddingOptions,
+  ): Promise<EmbeddingResponse | EmbeddingResponse[]>;
+
   // Model management
   listModels(): Promise<ModelInfo[]>;
   getModelInfo(modelId?: string): Promise<ModelInfo>;
   loadModel?(modelId: string): Promise<void>;
   unloadModel?(modelId: string): Promise<void>;
-  
+
   // Cost and usage
   estimateCost?(tokens: number, operation?: 'input' | 'output'): number;
   getUsage?(): Promise<UsageStats>;
-  
+
   // Cleanup
   dispose(): Promise<void>;
 }
@@ -262,7 +265,7 @@ export enum TaskType {
   QUESTION_ANSWERING = 'question_answering',
   CREATIVE_WRITING = 'creative_writing',
   DATA_EXTRACTION = 'data_extraction',
-  EMBEDDING = 'embedding'
+  EMBEDDING = 'embedding',
 }
 
 // Error types
@@ -271,7 +274,7 @@ export class AIProviderError extends Error {
     message: string,
     public code: string,
     public provider?: string,
-    public retryable: boolean = false
+    public retryable: boolean = false,
   ) {
     super(message);
     this.name = 'AIProviderError';
@@ -290,7 +293,7 @@ export class RateLimitError extends AIProviderError {
       `Rate limit exceeded${retryAfter ? `, retry after ${retryAfter}s` : ''}`,
       'RATE_LIMIT',
       provider,
-      true
+      true,
     );
   }
 }
@@ -302,15 +305,21 @@ export class AuthenticationError extends AIProviderError {
 }
 
 // Helper type guards
-export function hasVisionCapability(provider: AIProvider): provider is AIProvider & Required<Pick<AIProvider, 'vision'>> {
+export function hasVisionCapability(
+  provider: AIProvider,
+): provider is AIProvider & Required<Pick<AIProvider, 'vision'>> {
   return provider.capabilities.vision && typeof provider.vision === 'function';
 }
 
-export function hasCodeCapability(provider: AIProvider): provider is AIProvider & Required<Pick<AIProvider, 'generateCode'>> {
+export function hasCodeCapability(
+  provider: AIProvider,
+): provider is AIProvider & Required<Pick<AIProvider, 'generateCode'>> {
   return provider.capabilities.code && typeof provider.generateCode === 'function';
 }
 
-export function hasEmbeddingCapability(provider: AIProvider): provider is AIProvider & Required<Pick<AIProvider, 'embeddings'>> {
+export function hasEmbeddingCapability(
+  provider: AIProvider,
+): provider is AIProvider & Required<Pick<AIProvider, 'embeddings'>> {
   return provider.capabilities.embeddings && typeof provider.embeddings === 'function';
 }
 
@@ -320,31 +329,31 @@ export abstract class BaseAIProvider implements AIProvider {
   abstract readonly type: 'cloud' | 'local';
   abstract readonly version: string;
   abstract readonly capabilities: AICapabilities;
-  
+
   protected config: ProviderConfig;
   protected initialized: boolean = false;
-  
+
   constructor(config?: ProviderConfig) {
     this.config = config || {};
   }
-  
+
   async initialize(config?: ProviderConfig): Promise<void> {
     if (config) {
       this.config = { ...this.config, ...config };
     }
     this.initialized = true;
   }
-  
+
   abstract validateConnection(): Promise<boolean>;
   abstract chat(messages: Message[], options?: ChatOptions): Promise<AIResponse>;
   abstract stream(messages: Message[], options?: StreamOptions): AsyncGenerator<string, void, void>;
   abstract listModels(): Promise<ModelInfo[]>;
   abstract getModelInfo(modelId?: string): Promise<ModelInfo>;
-  
+
   async dispose(): Promise<void> {
     this.initialized = false;
   }
-  
+
   protected ensureInitialized(): void {
     if (!this.initialized) {
       throw new AIProviderError('Provider not initialized', 'NOT_INITIALIZED', this.name);

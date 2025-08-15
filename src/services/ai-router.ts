@@ -13,7 +13,7 @@ import {
   AIProviderError,
   hasVisionCapability,
   hasCodeCapability,
-  ModelInfo
+  ModelInfo,
 } from '../interfaces/ai-provider';
 
 // Request types
@@ -68,7 +68,7 @@ export class AIRouter {
         await provider.initialize();
         const models = await provider.listModels();
         this.modelCache.set(name, models);
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Failed to initialize provider ${name}:`, error);
       }
     }
@@ -93,7 +93,7 @@ export class AIRouter {
 
     // Select optimal provider based on task
     const selectedProvider = await this.selectOptimalProvider(request, taskType);
-    
+
     // Execute with fallback support
     return this.executeWithFallback(selectedProvider, request);
   }
@@ -103,13 +103,13 @@ export class AIRouter {
    */
   private async routeToVisionProvider(request: AIRequest): Promise<VisionResponse> {
     // Priority order for vision tasks
-    const visionPriority = this.config.privacyFirst 
-      ? ['ollama', 'vllm', 'openai', 'google', 'anthropic']  // Local first
-      : ['openai', 'google', 'anthropic', 'ollama', 'vllm'];  // Cloud first
+    const visionPriority = this.config.privacyFirst
+      ? ['ollama', 'vllm', 'openai', 'google', 'anthropic'] // Local first
+      : ['openai', 'google', 'anthropic', 'ollama', 'vllm']; // Cloud first
 
     for (const providerName of visionPriority) {
       const provider = this.providers.get(providerName);
-      
+
       if (!provider || !hasVisionCapability(provider)) {
         continue;
       }
@@ -117,7 +117,7 @@ export class AIRouter {
       try {
         if (await provider.validateConnection()) {
           console.log(`Routing vision task to ${providerName}`);
-          
+
           if (!request.imageData) {
             throw new Error('Image data required for vision task');
           }
@@ -125,10 +125,10 @@ export class AIRouter {
           return await provider.vision(
             request.imageData,
             request.messages[request.messages.length - 1]?.content as string,
-            { outputFormat: 'json' }
+            { outputFormat: 'json' },
           );
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Vision provider ${providerName} failed:`, error);
         continue;
       }
@@ -146,20 +146,20 @@ export class AIRouter {
     // Evaluate each provider
     for (const [name, provider] of this.providers) {
       try {
-        if (!await provider.validateConnection()) {
+        if (!(await provider.validateConnection())) {
           continue;
         }
 
         const score = await this.scoreProvider(name, provider, request, taskType);
         scores.push(score);
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Failed to score provider ${name}:`, error);
       }
     }
 
     // Sort by score and select best
     scores.sort((a, b) => b.score - a.score);
-    
+
     if (scores.length === 0) {
       throw new AIProviderError('No available providers', 'NO_PROVIDERS');
     }
@@ -181,7 +181,7 @@ export class AIRouter {
     name: string,
     provider: AIProvider,
     request: AIRequest,
-    taskType: TaskType
+    taskType: TaskType,
   ): Promise<ModelScore> {
     let score = 50; // Base score
     const reasons: string[] = [];
@@ -191,7 +191,7 @@ export class AIRouter {
     switch (taskType) {
       case TaskType.CODE_GENERATION:
       case TaskType.CODE_REVIEW:
-        if (name === 'lmstudio' && models.some(m => m.contextLength >= 32000)) {
+        if (name === 'lmstudio' && models.some((m) => m.contextLength >= 32000)) {
           score += 30;
           reasons.push('Optimal for code tasks');
         }
@@ -213,7 +213,7 @@ export class AIRouter {
         break;
 
       case TaskType.TRANSLATION:
-        if (name === 'lmstudio' && models.some(m => m.id.includes('qwen'))) {
+        if (name === 'lmstudio' && models.some((m) => m.id.includes('qwen'))) {
           score += 40;
           reasons.push('Multilingual optimized');
         }
@@ -269,7 +269,7 @@ export class AIRouter {
 
     // Context window requirements
     const totalTokens = this.estimateTokenCount(request.messages);
-    const hasAdequateContext = models.some(m => m.contextLength >= totalTokens);
+    const hasAdequateContext = models.some((m) => m.contextLength >= totalTokens);
     if (!hasAdequateContext) {
       score -= 30;
       reasons.push('Insufficient context window');
@@ -279,7 +279,7 @@ export class AIRouter {
       provider: name,
       model: models[0]?.id || 'unknown',
       score,
-      reasons
+      reasons,
     };
   }
 
@@ -287,8 +287,8 @@ export class AIRouter {
    * Execute with fallback support
    */
   private async executeWithFallback(providerName: string, request: AIRequest): Promise<AIResponse> {
-    const primaryProvider = this.providers.get(providerName);
-    
+    const primaryProvider = this['providers'].get(providerName);
+
     if (!primaryProvider) {
       throw new AIProviderError(`Provider ${providerName} not found`, 'PROVIDER_NOT_FOUND');
     }
@@ -296,24 +296,24 @@ export class AIRouter {
     try {
       // Track performance
       const startTime = Date.now();
-      
+
       const response = await primaryProvider.chat(request.messages, request.options);
-      
+
       // Update metrics
       this.updateMetrics(providerName, Date.now() - startTime, true);
-      
+
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Primary provider ${providerName} failed:`, error);
-      
+
       // Update metrics
       this.updateMetrics(providerName, 0, false);
-      
+
       // Try fallback if enabled
       if (this.config.fallbackEnabled) {
         return this.fallbackToNextProvider(providerName, request);
       }
-      
+
       throw error;
     }
   }
@@ -321,28 +321,31 @@ export class AIRouter {
   /**
    * Fallback to next available provider
    */
-  private async fallbackToNextProvider(failedProvider: string, request: AIRequest): Promise<AIResponse> {
+  private async fallbackToNextProvider(
+    failedProvider: string,
+    request: AIRequest,
+  ): Promise<AIResponse> {
     const priorityOrder = this.config.priorityOrder || Array.from(this.providers.keys());
     const currentIndex = priorityOrder.indexOf(failedProvider);
-    
+
     for (let i = currentIndex + 1; i < priorityOrder.length; i++) {
       const nextProvider = priorityOrder[i];
       if (!nextProvider) continue;
       const provider = this.providers.get(nextProvider);
-      
+
       if (!provider) continue;
-      
+
       try {
         if (await provider.validateConnection()) {
           console.log(`Falling back to ${nextProvider}`);
           return await provider.chat(request.messages, request.options);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Fallback provider ${nextProvider} failed:`, error);
         continue;
       }
     }
-    
+
     throw new AIProviderError('All providers failed', 'ALL_PROVIDERS_FAILED', undefined, true);
   }
 
@@ -351,15 +354,15 @@ export class AIRouter {
    */
   private async routeToProvider(providerName: string, request: AIRequest): Promise<AIResponse> {
     const provider = this.providers.get(providerName);
-    
+
     if (!provider) {
       throw new AIProviderError(`Provider ${providerName} not found`, 'PROVIDER_NOT_FOUND');
     }
-    
-    if (!await provider.validateConnection()) {
+
+    if (!(await provider.validateConnection())) {
       throw new AIProviderError(`Provider ${providerName} not available`, 'PROVIDER_UNAVAILABLE');
     }
-    
+
     return provider.chat(request.messages, request.options);
   }
 
@@ -368,48 +371,52 @@ export class AIRouter {
    */
   private inferTaskType(request: AIRequest): TaskType {
     const lastMessage = request.messages[request.messages.length - 1]?.content;
-    
+
     if (typeof lastMessage !== 'string') {
       return TaskType.CHAT;
     }
-    
+
     const lowerContent = lastMessage.toLowerCase();
-    
+
     // Code-related keywords
-    if (lowerContent.includes('code') || 
-        lowerContent.includes('function') || 
-        lowerContent.includes('implement') ||
-        lowerContent.includes('debug') ||
-        lowerContent.includes('fix')) {
+    if (
+      lowerContent.includes('code') ||
+      lowerContent.includes('function') ||
+      lowerContent.includes('implement') ||
+      lowerContent.includes('debug') ||
+      lowerContent.includes('fix')
+    ) {
       return TaskType.CODE_GENERATION;
     }
-    
+
     // Review keywords
-    if (lowerContent.includes('review') || 
-        lowerContent.includes('check') || 
-        lowerContent.includes('analyze')) {
+    if (
+      lowerContent.includes('review') ||
+      lowerContent.includes('check') ||
+      lowerContent.includes('analyze')
+    ) {
       return TaskType.CODE_REVIEW;
     }
-    
+
     // Translation keywords
-    if (lowerContent.includes('translate') || 
-        lowerContent.includes('translation')) {
+    if (lowerContent.includes('translate') || lowerContent.includes('translation')) {
       return TaskType.TRANSLATION;
     }
-    
+
     // Summary keywords
-    if (lowerContent.includes('summarize') || 
-        lowerContent.includes('summary')) {
+    if (lowerContent.includes('summarize') || lowerContent.includes('summary')) {
       return TaskType.SUMMARIZATION;
     }
-    
+
     // Creative writing keywords
-    if (lowerContent.includes('write') || 
-        lowerContent.includes('story') || 
-        lowerContent.includes('creative')) {
+    if (
+      lowerContent.includes('write') ||
+      lowerContent.includes('story') ||
+      lowerContent.includes('creative')
+    ) {
       return TaskType.CREATIVE_WRITING;
     }
-    
+
     return TaskType.CHAT;
   }
 
@@ -418,7 +425,7 @@ export class AIRouter {
    */
   private estimateTokenCount(messages: Message[]): number {
     let totalChars = 0;
-    
+
     for (const message of messages) {
       if (typeof message.content === 'string') {
         totalChars += message.content.length;
@@ -430,7 +437,7 @@ export class AIRouter {
         }
       }
     }
-    
+
     // Rough estimation: 1 token ≈ 4 characters
     return Math.ceil(totalChars / 4);
   }
@@ -440,48 +447,53 @@ export class AIRouter {
    */
   private updateMetrics(provider: string, latency: number, success: boolean): void {
     let metrics = this.performanceMetrics.get(provider);
-    
+
     if (!metrics) {
       metrics = {
         totalRequests: 0,
         successfulRequests: 0,
         totalLatency: 0,
         averageLatency: 0,
-        successRate: 0
+        successRate: 0,
       };
     }
-    
-    metrics.totalRequests++;
+
+    metrics['totalRequests']++;
     if (success) {
       metrics.successfulRequests++;
       metrics.totalLatency += latency;
     }
-    
+
     metrics.averageLatency = metrics.totalLatency / Math.max(1, metrics.successfulRequests);
-    metrics.successRate = metrics.successfulRequests / metrics.totalRequests;
-    
+    metrics.successRate = metrics.successfulRequests / metrics['totalRequests'];
+
     this.performanceMetrics.set(provider, metrics);
   }
 
   /**
    * Get router statistics
    */
-  public getStatistics(): Record<string, any> {
-    const stats: Record<string, any> = {
-      providers: {},
+  public getStatistics(): Record<string, unknown> {
+    const stats = {
+      providers: {} as Record<string, unknown>,
       totalRequests: 0,
-      averageLatency: 0
+      averageLatency: 0,
     };
-    
+
     for (const [name, metrics] of this.performanceMetrics) {
-      stats.providers[name] = {
-        requests: metrics.totalRequests,
-        successRate: `${(metrics.successRate * 100).toFixed(1)}%`,
-        avgLatency: `${metrics.averageLatency.toFixed(0)}ms`
+      const metricsData = metrics as {
+        totalRequests: number;
+        successRate: number;
+        averageLatency: number;
       };
-      stats.totalRequests += metrics.totalRequests;
+      stats.providers[name] = {
+        requests: metricsData.totalRequests,
+        successRate: `${(metricsData.successRate * 100).toFixed(1)}%`,
+        avgLatency: `${metricsData.averageLatency.toFixed(0)}ms`,
+      };
+      stats.totalRequests += metricsData.totalRequests;
     }
-    
+
     return stats;
   }
 

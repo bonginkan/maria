@@ -25,14 +25,14 @@ export interface ComfyUIConfig {
 export interface WorkflowNode {
   id: number;
   class: string;
-  inputs: Record<string, any>;
-  outputs?: Record<string, any>;
-  _meta?: Record<string, any>;
+  inputs: Record<string, unknown>;
+  outputs?: Record<string, unknown>;
+  _meta?: Record<string, unknown>;
 }
 
 export interface ComfyUIWorkflow {
   nodes: WorkflowNode[];
-  extra_data?: Record<string, any>;
+  extra_data?: Record<string, unknown>;
   version?: string;
 }
 
@@ -63,7 +63,7 @@ export class ComfyUIService {
       timeout: config.timeout || 600000, // 10 minutes
       pythonPath: config.pythonPath || 'python3',
       cudaSupport: config.cudaSupport ?? true,
-      mpsSupport: config.mpsSupport ?? true
+      mpsSupport: config.mpsSupport ?? true,
     };
   }
 
@@ -82,6 +82,7 @@ export class ComfyUIService {
       await fs.access(path.join(this.config.installPath, 'main.py'));
       return true;
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -91,22 +92,23 @@ export class ComfyUIService {
    */
   async install(): Promise<void> {
     const installDir = this.config.installPath;
-    
+
     try {
       // Create installation directory
       await fs.mkdir(installDir, { recursive: true });
-      
+
       // Clone ComfyUI
       await execAsync(
         `git clone https://github.com/comfyanonymous/ComfyUI.git "${installDir}"`,
-        { timeout: 300000 } // 5 minutes
+        { timeout: 300000 }, // 5 minutes
       );
-      
+
       // Install dependencies
       await this.installDependencies();
-      
-    } catch (error) {
-      throw new Error(`Failed to install ComfyUI: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to install ComfyUI: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -115,34 +117,34 @@ export class ComfyUIService {
    */
   async installDependencies(): Promise<void> {
     const installDir = this.config.installPath;
-    
+
     try {
       // Install base requirements
       await execAsync(
         `cd "${installDir}" && ${this.config.pythonPath} -m pip install -r requirements.txt`,
-        { timeout: 600000 } // 10 minutes
+        { timeout: 600000 }, // 10 minutes
       );
-      
+
       // Install PyTorch with appropriate backend
       if (this.config.cudaSupport) {
         await execAsync(
           `${this.config.pythonPath} -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`,
-          { timeout: 600000 }
+          { timeout: 600000 },
         );
       } else if (this.config.mpsSupport && process.platform === 'darwin') {
-        await execAsync(
-          `${this.config.pythonPath} -m pip install torch torchvision torchaudio`,
-          { timeout: 600000 }
-        );
+        await execAsync(`${this.config.pythonPath} -m pip install torch torchvision torchaudio`, {
+          timeout: 600000,
+        });
       } else {
         await execAsync(
           `${this.config.pythonPath} -m pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`,
-          { timeout: 600000 }
+          { timeout: 600000 },
         );
       }
-      
-    } catch (error) {
-      throw new Error(`Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (error: unknown) {
+      throw new Error(
+        `Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -150,7 +152,7 @@ export class ComfyUIService {
    * Setup ComfyUI (install if needed)
    */
   async setup(): Promise<void> {
-    if (!await this.isInstalled()) {
+    if (!(await this.isInstalled())) {
       await this.install();
     }
   }
@@ -164,17 +166,19 @@ export class ComfyUIService {
     }
 
     await this.setup();
-    
+
     const args = [
       path.join(this.config.installPath, 'main.py'),
-      '--listen', this.config.host,
-      '--port', this.config.port.toString(),
-      '--disable-safe-unpickle'
+      '--listen',
+      this.config.host,
+      '--port',
+      this.config.port.toString(),
+      '--disable-safe-unpickle',
     ];
 
     this.serverProcess = spawn(this.config.pythonPath, args, {
       cwd: this.config.installPath,
-      stdio: ['ignore', 'pipe', 'pipe']
+      stdio: ['ignore', 'pipe', 'pipe'],
     });
 
     // Wait for server to start
@@ -196,16 +200,17 @@ export class ComfyUIService {
    */
   private async waitForServer(maxAttempts = 30): Promise<void> {
     const baseUrl = `http://${this.config.host}:${this.config.port}`;
-    
+
     for (let i = 0; i < maxAttempts; i++) {
       try {
         await axios.get(`${baseUrl}/system_stats`, { timeout: 5000 });
         return; // Server is ready
       } catch {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Ignore error
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
-    
+
     throw new Error('ComfyUI server failed to start');
   }
 
@@ -218,6 +223,7 @@ export class ComfyUIService {
       await axios.get(`${baseUrl}/system_stats`, { timeout: 5000 });
       return true;
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -232,24 +238,24 @@ export class ComfyUIService {
           id: 1,
           class: 'CheckpointLoaderSimple',
           inputs: {
-            ckpt_name: params.model
-          }
+            ckpt_name: params.model,
+          },
         },
         {
           id: 2,
           class: 'CLIPTextEncode',
           inputs: {
             text: params.prompt,
-            clip: [1, 1]
-          }
+            clip: [1, 1],
+          },
         },
         {
           id: 3,
           class: 'CLIPTextEncode',
           inputs: {
             text: 'low quality, blurry, distorted',
-            clip: [1, 1]
-          }
+            clip: [1, 1],
+          },
         },
         {
           id: 4,
@@ -264,18 +270,18 @@ export class ComfyUIService {
             height: params.height || 720,
             steps: params.steps || 20,
             cfg: params.cfg || 7.5,
-            seed: params.seed || Math.floor(Math.random() * 1000000)
-          }
+            seed: params.seed || Math.floor(Math.random() * 1000000),
+          },
         },
         {
           id: 5,
           class: 'SaveVideo',
           inputs: {
             video: [4, 0],
-            filename_prefix: path.basename(params.outputPath, path.extname(params.outputPath))
-          }
-        }
-      ]
+            filename_prefix: path.basename(params.outputPath, path.extname(params.outputPath)),
+          },
+        },
+      ],
     };
   }
 
@@ -289,24 +295,24 @@ export class ComfyUIService {
           id: 1,
           class: 'CheckpointLoaderSimple',
           inputs: {
-            ckpt_name: params.model
-          }
+            ckpt_name: params.model,
+          },
         },
         {
           id: 2,
           class: 'CLIPTextEncode',
           inputs: {
             text: params.prompt,
-            clip: [1, 1]
-          }
+            clip: [1, 1],
+          },
         },
         {
           id: 3,
           class: 'CLIPTextEncode',
           inputs: {
             text: 'low quality, blurry, distorted',
-            clip: [1, 1]
-          }
+            clip: [1, 1],
+          },
         },
         {
           id: 4,
@@ -321,16 +327,16 @@ export class ComfyUIService {
             cfg: params.cfg || 7.5,
             sampler_name: 'euler',
             scheduler: 'normal',
-            denoise: 1.0
-          }
+            denoise: 1.0,
+          },
         },
         {
           id: 5,
           class: 'VAEDecode',
           inputs: {
             samples: [4, 0],
-            vae: [1, 2]
-          }
+            vae: [1, 2],
+          },
         },
         {
           id: 6,
@@ -338,18 +344,18 @@ export class ComfyUIService {
           inputs: {
             width: params.width || 1024,
             height: params.height || 1024,
-            batch_size: 1
-          }
+            batch_size: 1,
+          },
         },
         {
           id: 7,
           class: 'SaveImage',
           inputs: {
             images: [5, 0],
-            filename_prefix: path.basename(params.outputPath, path.extname(params.outputPath))
-          }
-        }
-      ]
+            filename_prefix: path.basename(params.outputPath, path.extname(params.outputPath)),
+          },
+        },
+      ],
     };
   }
 
@@ -358,38 +364,37 @@ export class ComfyUIService {
    */
   async executeWorkflow(
     workflow: ComfyUIWorkflow,
-    onProgress?: (message: string) => void
+    onProgress?: (message: string) => void,
   ): Promise<{ success: boolean; outputs?: string[]; error?: string }> {
     try {
       // Start server if not running
-      if (!await this.isServerRunning()) {
+      if (!(await this.isServerRunning())) {
         onProgress?.('Starting ComfyUI server...');
         await this.startServer();
       }
 
       const baseUrl = `http://${this.config.host}:${this.config.port}`;
-      
+
       onProgress?.('Submitting workflow...');
-      
+
       // Submit workflow
       const response = await axios.post(`${baseUrl}/prompt`, {
         prompt: workflow,
-        client_id: 'maria-cli'
+        client_id: 'maria-cli',
       });
 
       const promptId = response.data.prompt_id;
-      
+
       onProgress?.('Executing workflow...');
-      
+
       // Poll for completion
       const result = await this.pollForCompletion(promptId, onProgress);
-      
+
       return result;
-      
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
-        error: `Workflow execution failed: ${error instanceof Error ? error.message : String(error)}`
+        error: `Workflow execution failed: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -399,50 +404,49 @@ export class ComfyUIService {
    */
   private async pollForCompletion(
     promptId: string,
-    onProgress?: (message: string) => void
+    onProgress?: (message: string) => void,
   ): Promise<{ success: boolean; outputs?: string[]; error?: string }> {
     const baseUrl = `http://${this.config.host}:${this.config.port}`;
     const maxAttempts = Math.floor(this.config.timeout / 5000); // Check every 5 seconds
-    
+
     for (let i = 0; i < maxAttempts; i++) {
       try {
         const response = await axios.get(`${baseUrl}/history/${promptId}`);
         const history = response.data[promptId];
-        
+
         if (history && history.status) {
           if (history.status.completed) {
             onProgress?.('Workflow completed successfully');
-            
+
             // Get output files
             const outputs = await this.getOutputFiles();
-            
+
             return {
               success: true,
-              outputs
+              outputs,
             };
           } else if (history.status.status_str === 'error') {
             return {
               success: false,
-              error: `Workflow failed: ${history.status.messages?.[0] || 'Unknown error'}`
+              error: `Workflow failed: ${history.status.messages?.[0] || 'Unknown error'}`,
             };
           }
         }
-        
+
         // Still running
         onProgress?.(`Workflow running... (${i * 5}s)`);
-        await new Promise(resolve => setTimeout(resolve, 5000));
-        
-      } catch (error) {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+      } catch (error: unknown) {
         return {
           success: false,
-          error: `Polling failed: ${error instanceof Error ? error.message : String(error)}`
+          error: `Polling failed: ${error instanceof Error ? error.message : String(error)}`,
         };
       }
     }
-    
+
     return {
       success: false,
-      error: 'Workflow execution timeout'
+      error: 'Workflow execution timeout',
     };
   }
 
@@ -452,30 +456,32 @@ export class ComfyUIService {
   private async getOutputFiles(): Promise<string[]> {
     const outputDir = path.join(this.config.installPath, 'output');
     const outputs: string[] = [];
-    
+
     try {
       // Look for generated files in the output directory
       const files = await fs.readdir(outputDir);
-      
+
       // Filter files by recent modification time
       const recentFiles = [];
       const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
-      
+
       for (const file of files) {
         const filePath = path.join(outputDir, file);
         const stats = await fs.stat(filePath);
-        
+
         if (stats.mtime.getTime() > fiveMinutesAgo) {
           recentFiles.push(filePath);
         }
       }
-      
+
       outputs.push(...recentFiles);
-      
-    } catch (error) {
-      console.warn('Failed to get output files:', error instanceof Error ? error.message : String(error));
+    } catch (error: unknown) {
+      console.warn(
+        'Failed to get output files:',
+        error instanceof Error ? error.message : String(error),
+      );
     }
-    
+
     return outputs;
   }
 
@@ -484,7 +490,7 @@ export class ComfyUIService {
    */
   async generateVideo(
     params: GenerationParams,
-    onProgress?: (message: string) => void
+    onProgress?: (message: string) => void,
   ): Promise<{ success: boolean; outputs?: string[]; error?: string }> {
     const workflow = this.createVideoWorkflow(params);
     return this.executeWorkflow(workflow, onProgress);
@@ -495,7 +501,7 @@ export class ComfyUIService {
    */
   async generateImage(
     params: GenerationParams,
-    onProgress?: (message: string) => void
+    onProgress?: (message: string) => void,
   ): Promise<{ success: boolean; outputs?: string[]; error?: string }> {
     const workflow = this.createImageWorkflow(params);
     return this.executeWorkflow(workflow, onProgress);
@@ -506,34 +512,40 @@ export class ComfyUIService {
    */
   async installCustomNodes(nodeRepos: string[]): Promise<void> {
     const customNodesDir = path.join(this.config.installPath, 'custom_nodes');
-    
+
     await fs.mkdir(customNodesDir, { recursive: true });
-    
+
     for (const repo of nodeRepos) {
       try {
         const repoName = path.basename(repo, '.git');
         const targetDir = path.join(customNodesDir, repoName);
-        
+
         // Check if already installed
         try {
           await fs.access(targetDir);
           continue; // Skip if already exists
-        } catch {}
-        
+        } catch {
+          // Ignore error
+        }
+
         // Clone repository
         await execAsync(`git clone ${repo} "${targetDir}"`);
-        
+
         // Install requirements if present
         const requirementsFile = path.join(targetDir, 'requirements.txt');
         try {
           await fs.access(requirementsFile);
           await execAsync(
-            `cd "${targetDir}" && ${this.config.pythonPath} -m pip install -r requirements.txt`
+            `cd "${targetDir}" && ${this.config.pythonPath} -m pip install -r requirements.txt`,
           );
-        } catch {}
-        
-      } catch (error) {
-        console.warn(`Failed to install custom node ${repo}:`, error instanceof Error ? error.message : String(error));
+        } catch {
+          // Ignore error
+        }
+      } catch (error: unknown) {
+        console.warn(
+          `Failed to install custom node ${repo}:`,
+          error instanceof Error ? error.message : String(error),
+        );
       }
     }
   }
@@ -541,16 +553,17 @@ export class ComfyUIService {
   /**
    * Get system information
    */
-  async getSystemInfo(): Promise<any> {
-    if (!await this.isServerRunning()) {
+  async getSystemInfo(): Promise<unknown> {
+    if (!(await this.isServerRunning())) {
       return null;
     }
-    
+
     try {
       const baseUrl = `http://${this.config.host}:${this.config.port}`;
       const response = await axios.get(`${baseUrl}/system_stats`);
       return response.data;
     } catch {
+      // Ignore error
       return null;
     }
   }

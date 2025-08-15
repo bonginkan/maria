@@ -7,7 +7,7 @@ import { SlashCommandHandler } from './slash-command-handler';
 import { ConversationContext } from '../types/conversation';
 import { logger } from '../utils/logger';
 import chalk from 'chalk';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -64,21 +64,21 @@ export class HotkeyManager {
         modifiers: ['ctrl'],
         command: '/status',
         description: 'Show system status',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'h',
         modifiers: ['ctrl'],
         command: '/help',
         description: 'Show help',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'l',
         modifiers: ['ctrl'],
         command: '/clear',
         description: 'Clear screen',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'e',
@@ -86,42 +86,42 @@ export class HotkeyManager {
         command: '/export',
         args: ['--clipboard'],
         description: 'Export to clipboard',
-        enabled: true
+        enabled: true,
       },
       {
         key: 't',
         modifiers: ['ctrl'],
         command: '/test',
         description: 'Run tests',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'd',
         modifiers: ['ctrl'],
         command: '/doctor',
         description: 'System diagnostics',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'p',
         modifiers: ['ctrl', 'shift'],
         command: '/pr-comments',
         description: 'Show PR comments',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'r',
         modifiers: ['ctrl', 'shift'],
         command: '/review',
         description: 'Run PR review',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'a',
         modifiers: ['ctrl'],
         command: '/agents',
         description: 'Manage agents',
-        enabled: true
+        enabled: true,
       },
       {
         key: 'm',
@@ -129,12 +129,12 @@ export class HotkeyManager {
         command: '/mode',
         args: ['research'],
         description: 'Switch to research mode',
-        enabled: true
-      }
+        enabled: true,
+      },
     ];
 
     // Add defaults if not already bound
-    defaults.forEach(binding => {
+    defaults.forEach((binding) => {
       const key = this.getBindingKey(binding);
       if (!this.bindings.has(key)) {
         this.bindings.set(key, binding);
@@ -154,26 +154,32 @@ export class HotkeyManager {
    * Process keypress event
    */
   async processKeypress(
-    key: any,
-    context: ConversationContext
-  ): Promise<{ handled: boolean; result?: any }> {
+    key: unknown,
+    context: ConversationContext,
+  ): Promise<{ handled: boolean; result?: unknown }> {
     if (!this.isEnabled || !key) {
       return { handled: false };
     }
 
     // Build key combination string
     const modifiers: string[] = [];
-    if (key.ctrl) modifiers.push('ctrl');
-    if (key.shift) modifiers.push('shift');
-    if (key.meta) modifiers.push('meta');
-    if (key.alt) modifiers.push('alt');
+    const keyObj = key as {
+      ctrl?: boolean;
+      shift?: boolean;
+      meta?: boolean;
+      alt?: boolean;
+      name?: string;
+      sequence?: string;
+    };
+    if (keyObj.ctrl) modifiers.push('ctrl');
+    if (keyObj.shift) modifiers.push('shift');
+    if (keyObj.meta) modifiers.push('meta');
+    if (keyObj.alt) modifiers.push('alt');
 
-    const keyName = key.name || key.sequence;
+    const keyName = keyObj.name || keyObj.sequence;
     if (!keyName) return { handled: false };
 
-    const bindingKey = modifiers.length > 0 
-      ? `${modifiers.sort().join('+')}+${keyName}`
-      : keyName;
+    const bindingKey = modifiers.length > 0 ? `${modifiers.sort().join('+')}+${keyName}` : keyName;
 
     // Check if we have a binding for this key
     const binding = this.bindings.get(bindingKey);
@@ -184,22 +190,22 @@ export class HotkeyManager {
     // Execute the command
     try {
       logger.info(`Hotkey triggered: ${bindingKey} -> ${binding.command}`);
-      
+
       const result = await this.getCommandHandler().handleCommand(
         binding.command,
         binding.args || [],
-        context
+        context,
       );
 
       return { handled: true, result };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Error executing hotkey command:', error);
-      return { 
-        handled: true, 
-        result: { 
-          success: false, 
-          message: `Error executing hotkey: ${error}` 
-        }
+      return {
+        handled: true,
+        result: {
+          success: false,
+          message: `Error executing hotkey: ${error}`,
+        },
       };
     }
   }
@@ -209,13 +215,13 @@ export class HotkeyManager {
    */
   addBinding(binding: HotkeyBinding): { success: boolean; message: string } {
     const key = this.getBindingKey(binding);
-    
+
     // Check for conflicts
     const existing = this.bindings.get(key);
     if (existing && existing.command !== binding.command) {
       return {
         success: false,
-        message: `Key combination already bound to ${existing.command}`
+        message: `Key combination already bound to ${existing.command}`,
       };
     }
 
@@ -224,7 +230,7 @@ export class HotkeyManager {
 
     return {
       success: true,
-      message: `Hotkey ${key} bound to ${binding.command}`
+      message: `Hotkey ${key} bound to ${binding.command}`,
     };
   }
 
@@ -235,7 +241,7 @@ export class HotkeyManager {
     if (!this.bindings.has(key)) {
       return {
         success: false,
-        message: `No binding found for ${key}`
+        message: `No binding found for ${key}`,
       };
     }
 
@@ -245,7 +251,7 @@ export class HotkeyManager {
 
     return {
       success: true,
-      message: `Removed hotkey ${key} (was bound to ${binding.command})`
+      message: `Removed hotkey ${key} (was bound to ${binding.command})`,
     };
   }
 
@@ -257,7 +263,7 @@ export class HotkeyManager {
     if (!binding) {
       return {
         success: false,
-        message: `No binding found for ${key}`
+        message: `No binding found for ${key}`,
       };
     }
 
@@ -266,7 +272,7 @@ export class HotkeyManager {
 
     return {
       success: true,
-      message: `Hotkey ${key} ${binding.enabled ? 'enabled' : 'disabled'}`
+      message: `Hotkey ${key} ${binding.enabled ? 'enabled' : 'disabled'}`,
     };
   }
 
@@ -274,14 +280,13 @@ export class HotkeyManager {
    * List all hotkey bindings
    */
   listBindings(): HotkeyBinding[] {
-    return Array.from(this.bindings.values())
-      .sort((a, b) => {
-        // Sort by modifiers count, then by key
-        const aModCount = a.modifiers.length;
-        const bModCount = b.modifiers.length;
-        if (aModCount !== bModCount) return aModCount - bModCount;
-        return a.key.localeCompare(b.key);
-      });
+    return Array.from(this.bindings.values()).sort((a, b) => {
+      // Sort by modifiers count, then by key
+      const aModCount = a.modifiers.length;
+      const bModCount = b.modifiers.length;
+      if (aModCount !== bModCount) return aModCount - bModCount;
+      return a.key.localeCompare(b.key);
+    });
   }
 
   /**
@@ -289,16 +294,16 @@ export class HotkeyManager {
    */
   formatHotkey(binding: HotkeyBinding): string {
     const parts = [];
-    
+
     // Add modifiers in consistent order
     if (binding.modifiers.includes('ctrl')) parts.push('Ctrl');
     if (binding.modifiers.includes('alt')) parts.push('Alt');
     if (binding.modifiers.includes('shift')) parts.push('Shift');
     if (binding.modifiers.includes('meta')) parts.push('Cmd/Win');
-    
+
     // Add key
     parts.push(binding.key.toUpperCase());
-    
+
     return parts.join('+');
   }
 
@@ -306,19 +311,23 @@ export class HotkeyManager {
    * Parse hotkey string
    */
   parseHotkeyString(hotkeyStr: string): { key: string; modifiers: string[] } | null {
-    const parts = hotkeyStr.toLowerCase().split('+').map(p => p.trim());
+    const parts = hotkeyStr
+      .toLowerCase()
+      .split('+')
+      .map((p) => p.trim());
     if (parts.length === 0) return null;
 
     const key = parts[parts.length - 1];
     if (!key) return null;
-    
-    const modifiers = parts.slice(0, -1).filter(m => 
-      ['ctrl', 'alt', 'shift', 'meta', 'cmd', 'win'].includes(m)
-    ).map(m => {
-      // Normalize cmd/win to meta
-      if (m === 'cmd' || m === 'win') return 'meta';
-      return m;
-    });
+
+    const modifiers = parts
+      .slice(0, -1)
+      .filter((m) => ['ctrl', 'alt', 'shift', 'meta', 'cmd', 'win'].includes(m))
+      .map((m) => {
+        // Normalize cmd/win to meta
+        if (m === 'cmd' || m === 'win') return 'meta';
+        return m;
+      });
 
     return { key, modifiers };
   }
@@ -342,20 +351,20 @@ export class HotkeyManager {
    * Get help text for hotkeys
    */
   getHelpText(): string {
-    const bindings = this.listBindings().filter(b => b.enabled);
+    const bindings = this.listBindings().filter((b) => b.enabled);
     if (bindings.length === 0) {
       return 'No hotkeys configured.';
     }
 
     let help = chalk.bold('\nAvailable Hotkeys:\n\n');
-    
-    bindings.forEach(binding => {
+
+    bindings.forEach((binding) => {
       const hotkey = chalk.cyan(this.formatHotkey(binding));
       const command = chalk.yellow(binding.command);
       const args = binding.args ? chalk.gray(` ${binding.args.join(' ')}`) : '';
       const desc = binding.description ? chalk.gray(` - ${binding.description}`) : '';
       const status = !binding.enabled ? chalk.red(' [disabled]') : '';
-      
+
       help += `  ${hotkey.padEnd(20)} → ${command}${args}${desc}${status}\n`;
     });
 
@@ -369,7 +378,7 @@ export class HotkeyManager {
   exportConfig(): HotkeyConfig {
     return {
       bindings: this.listBindings(),
-      globalEnabled: this.isEnabled
+      globalEnabled: this.isEnabled,
     };
   }
 
@@ -382,7 +391,7 @@ export class HotkeyManager {
       this.bindings.clear();
 
       // Import new bindings
-      config.bindings.forEach(binding => {
+      config.bindings.forEach((binding) => {
         const key = this.getBindingKey(binding);
         this.bindings.set(key, binding);
       });
@@ -392,12 +401,12 @@ export class HotkeyManager {
 
       return {
         success: true,
-        message: `Imported ${config.bindings.length} hotkey bindings`
+        message: `Imported ${config.bindings.length} hotkey bindings`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
-        message: `Failed to import config: ${error}`
+        message: `Failed to import config: ${error}`,
       };
     }
   }
@@ -409,10 +418,10 @@ export class HotkeyManager {
     try {
       if (existsSync(this.configPath)) {
         const data = readFileSync(this.configPath, 'utf-8');
-        const config: HotkeyConfig = JSON.parse(data);
+        const config = JSON.parse(data) as HotkeyConfig;
         this.importConfig(config);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Failed to load hotkey bindings:', error);
     }
   }
@@ -424,14 +433,14 @@ export class HotkeyManager {
     try {
       const config = this.exportConfig();
       const dir = join(homedir(), '.maria');
-      
+
       // Ensure directory exists
       if (!existsSync(dir)) {
-        require('fs').mkdirSync(dir, { recursive: true });
+        mkdirSync(dir, { recursive: true });
       }
 
       writeFileSync(this.configPath, JSON.stringify(config, null, 2));
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to save hotkey bindings:', error);
     }
   }

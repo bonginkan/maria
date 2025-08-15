@@ -8,6 +8,7 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
 import { MariaConfig } from '../utils/config.js';
+import { isObject } from '../utils/type-guards.js';
 
 interface ConfigPanelProps {
   config: MariaConfig;
@@ -45,66 +46,77 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, onSave, onCancel }) =
     }
   });
 
-  const handleSectionSelect = useCallback((item: { value: string }) => {
-    if (item.value === 'save') {
-      onSave(editedConfig);
-    } else if (item.value === 'cancel') {
-      onCancel();
-    } else {
-      setCurrentSection(item.value as ConfigSection);
-    }
-  }, [editedConfig, onSave, onCancel]);
-
-  const handleFieldUpdate = useCallback((field: string, value: string) => {
-    const newConfig = { ...editedConfig };
-    
-    // ネストされたプロパティを処理
-    const parts = field.split('.');
-    if (parts.length === 2) {
-      const [section, key] = parts;
-      if (section && !newConfig[section as keyof MariaConfig]) {
-        (newConfig as any)[section] = {};
+  const handleSectionSelect = useCallback(
+    (item: { value: string }) => {
+      if (item.value === 'save') {
+        onSave(editedConfig);
+      } else if (item.value === 'cancel') {
+        onCancel();
+      } else {
+        setCurrentSection(item.value as ConfigSection);
       }
-      if (section && key) {
-        (newConfig as any)[section][key] = convertValue(value);
-      }
-    } else {
-      (newConfig as any)[field] = convertValue(value);
-    }
-    
-    setEditedConfig(newConfig);
-  }, [editedConfig]);
+    },
+    [editedConfig, onSave, onCancel],
+  );
 
-  const convertValue = (value: string): any => {
+  const handleFieldUpdate = useCallback(
+    (field: string, value: string) => {
+      const newConfig = { ...editedConfig };
+
+      // ネストされたプロパティを処理
+      const parts = field.split('.');
+      if (parts.length === 2) {
+        const [section, key] = parts;
+        if (section && !newConfig[section as keyof MariaConfig]) {
+          (newConfig as Record<string, unknown>)[section] = {};
+        }
+        if (section && key) {
+          const sectionObj = (newConfig as Record<string, unknown>)[section];
+          if (isObject(sectionObj)) {
+            sectionObj[key] = convertValue(value);
+          }
+        }
+      } else {
+        (newConfig as Record<string, unknown>)[field] = convertValue(value);
+      }
+
+      setEditedConfig(newConfig);
+    },
+    [editedConfig],
+  );
+
+  const convertValue = (value: string): unknown => {
     // ブール値の変換
     if (value === 'true') return true;
     if (value === 'false') return false;
-    
+
     // 数値の変換
     if (/^\d+$/.test(value)) return parseInt(value, 10);
-    
+
     // そのまま文字列として返す
     return value;
   };
 
   const renderMainMenu = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>📝 MARIA CODE Configuration</Text>
+      <Text color="cyan" bold>
+        📝 MARIA CODE Configuration
+      </Text>
       <Text color="gray">Select a section to configure:</Text>
       <Box marginTop={1}>
         <SelectInput items={sections} onSelect={handleSectionSelect} />
       </Box>
       <Box marginTop={1}>
-        <Text color="gray">
-          Use arrow keys to navigate, Enter to select, Esc to cancel
-        </Text>
+        <Text color="gray">Use arrow keys to navigate, Enter to select, Esc to cancel</Text>
       </Box>
     </Box>
   );
 
   const renderUserSettings = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>👤 User Settings</Text>
+      <Text color="cyan" bold>
+        👤 User Settings
+      </Text>
       <Box marginTop={1} flexDirection="column">
         <ConfigField
           label="Email"
@@ -134,7 +146,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, onSave, onCancel }) =
 
   const renderAISettings = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>🤖 AI Configuration</Text>
+      <Text color="cyan" bold>
+        🤖 AI Configuration
+      </Text>
       <Box marginTop={1} flexDirection="column">
         <ConfigField
           label="Default Model"
@@ -164,7 +178,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, onSave, onCancel }) =
 
   const renderCLISettings = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>⚡ CLI Settings</Text>
+      <Text color="cyan" bold>
+        ⚡ CLI Settings
+      </Text>
       <Box marginTop={1} flexDirection="column">
         <ConfigField
           label="Default Mode"
@@ -215,7 +231,9 @@ const ConfigPanel: React.FC<ConfigPanelProps> = ({ config, onSave, onCancel }) =
 
   const renderSandboxSettings = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>☁️ Sandbox Settings</Text>
+      <Text color="cyan" bold>
+        ☁️ Sandbox Settings
+      </Text>
       <Box marginTop={1} flexDirection="column">
         <ConfigField
           label="Enabled"
@@ -287,7 +305,7 @@ const ConfigField: React.FC<ConfigFieldProps> = ({
   isEditing,
   inputValue,
   onInputChange,
-  help
+  help,
 }) => {
   useInput((_input, key) => {
     if (key.return && !isEditing) {
@@ -302,13 +320,11 @@ const ConfigField: React.FC<ConfigFieldProps> = ({
           <Text color="yellow">{label}:</Text>
         </Box>
         {isEditing ? (
-          <TextInput
-            value={inputValue}
-            onChange={onInputChange}
-            placeholder={value}
-          />
+          <TextInput value={inputValue} onChange={onInputChange} placeholder={value} />
         ) : (
-          <Text color="green">{value} <Text color="gray">(Press Enter to edit)</Text></Text>
+          <Text color="green">
+            {value} <Text color="gray">(Press Enter to edit)</Text>
+          </Text>
         )}
       </Box>
       {help && (

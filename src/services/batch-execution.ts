@@ -23,7 +23,7 @@ export interface BatchExecutionOptions {
   parallel?: boolean;
   maxParallel?: number;
   timeout?: number;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
   dryRun?: boolean;
 }
 
@@ -42,13 +42,13 @@ export interface BatchExecutionResult {
     error?: string;
     duration: number;
   }>;
-  variables: Record<string, any>;
+  variables: Record<string, unknown>;
 }
 
 export class BatchExecutionEngine {
   private static instance: BatchExecutionEngine;
   private commandHandler: SlashCommandHandler | null = null;
-  private variables: Record<string, any> = {};
+  private variables: Record<string, unknown> = {};
   private isExecuting = false;
 
   private constructor() {
@@ -73,10 +73,12 @@ export class BatchExecutionEngine {
    * Parse batch command string
    */
   parseBatchString(batchString: string): BatchCommand[] {
-    const lines = batchString.split('\n').filter(line => line.trim() && !line.trim().startsWith('#'));
+    const lines = batchString
+      .split('\n')
+      .filter((line) => line.trim() && !line.trim().startsWith('#'));
     const commands: BatchCommand[] = [];
-    
-    lines.forEach(line => {
+
+    lines.forEach((line) => {
       // Parse special directives
       const ifMatch = line.match(/^IF\s+(.+)\s+THEN\s+(.+)(?:\s+ELSE\s+(.+))?$/i);
       if (ifMatch) {
@@ -85,45 +87,48 @@ export class BatchExecutionEngine {
           commands.push({
             command: thenCmd.split(' ')[0] || '',
             args: thenCmd.split(' ').slice(1),
-            condition
+            condition,
           });
           if (elseCmd) {
             commands.push({
               command: elseCmd.split(' ')[0] || '',
               args: elseCmd.split(' ').slice(1),
-              condition: `!${condition}`
+              condition: `!${condition}`,
             });
           }
         }
         return;
       }
-      
+
       // Parse parallel execution
       if (line.startsWith('PARALLEL:')) {
-        const parallelCommands = line.substring(9).split('&&').map(cmd => cmd.trim());
-        parallelCommands.forEach(cmd => {
+        const parallelCommands = line
+          .substring(9)
+          .split('&&')
+          .map((cmd) => cmd.trim());
+        parallelCommands.forEach((cmd) => {
           const parts = cmd.split(' ');
           if (parts[0]) {
             commands.push({
               command: parts[0],
               args: parts.slice(1),
-              parallel: true
+              parallel: true,
             });
           }
         });
         return;
       }
-      
+
       // Parse regular command
       const parts = line.split(' ');
       if (parts[0]) {
         commands.push({
           command: parts[0],
-          args: parts.slice(1)
+          args: parts.slice(1),
         });
       }
     });
-    
+
     return commands;
   }
 
@@ -133,7 +138,7 @@ export class BatchExecutionEngine {
   async executeBatch(
     commands: BatchCommand[],
     context: ConversationContext,
-    options: BatchExecutionOptions = {}
+    options: BatchExecutionOptions = {},
   ): Promise<BatchExecutionResult> {
     if (this.isExecuting) {
       throw new Error('Batch execution already in progress');
@@ -141,10 +146,10 @@ export class BatchExecutionEngine {
 
     this.isExecuting = true;
     const startTime = Date.now();
-    
+
     // Initialize variables
     this.variables = { ...options.variables };
-    
+
     const result: BatchExecutionResult = {
       success: true,
       totalCommands: commands.length,
@@ -154,18 +159,18 @@ export class BatchExecutionEngine {
       skipped: 0,
       duration: 0,
       results: [],
-      variables: this.variables
+      variables: this.variables,
     };
 
     console.log(chalk.blue('\n🚀 Starting batch execution\n'));
-    
+
     if (options.dryRun) {
       console.log(chalk.yellow('DRY RUN MODE - Commands will not be executed\n'));
       commands.forEach((cmd, i) => {
         console.log(chalk.gray(`${i + 1}. ${cmd.command} ${cmd.args.join(' ')}`));
         if (cmd.condition) console.log(chalk.gray(`   IF: ${cmd.condition}`));
       });
-      
+
       this.isExecuting = false;
       return result;
     }
@@ -173,13 +178,13 @@ export class BatchExecutionEngine {
     try {
       // Group parallel commands
       const commandGroups = this.groupCommands(commands);
-      
+
       for (const group of commandGroups) {
         if (options.stopOnError && result.failed > 0) {
           console.log(chalk.yellow('\n⏹️  Stopping due to error (stopOnError=true)'));
           break;
         }
-        
+
         if (group.length === 1 && group[0]) {
           // Execute single command
           await this.executeSingleCommand(group[0], context, result);
@@ -188,16 +193,15 @@ export class BatchExecutionEngine {
           await this.executeParallelCommands(group, context, result, options.maxParallel || 3);
         }
       }
-      
+
       result.duration = Date.now() - startTime;
       result.success = result.failed === 0;
-      
+
       this.printSummary(result);
-      
     } finally {
       this.isExecuting = false;
     }
-    
+
     return result;
   }
 
@@ -207,7 +211,7 @@ export class BatchExecutionEngine {
   private async executeSingleCommand(
     cmd: BatchCommand,
     context: ConversationContext,
-    result: BatchExecutionResult
+    result: BatchExecutionResult,
   ): Promise<void> {
     // Check condition
     if (cmd.condition && !this.evaluateCondition(cmd.condition)) {
@@ -215,41 +219,47 @@ export class BatchExecutionEngine {
       console.log(chalk.gray(`⏭️  Skipping ${cmd.command} (condition not met)`));
       return;
     }
-    
+
     console.log(chalk.cyan(`\n▶️  Executing: ${cmd.command} ${cmd.args.join(' ')}`));
-    
+
     const startTime = Date.now();
     let attempts = 0;
     const maxAttempts = cmd.retries ? cmd.retries + 1 : 1;
-    
+
     while (attempts < maxAttempts) {
       attempts++;
-      
+
       try {
         const cmdResult = await this.executeWithTimeout(
           () => this.getCommandHandler().handleCommand(cmd.command, cmd.args, context),
-          cmd.timeout || 30000
+          cmd.timeout || 30000,
         );
-        
+
         const duration = Date.now() - startTime;
         result.executed++;
-        
+
         if (cmdResult.success) {
           result.succeeded++;
           console.log(chalk.green(`✅ Success (${duration}ms)`));
-          
+
           result.results.push({
             command: `${cmd.command} ${cmd.args.join(' ')}`,
             success: true,
             output: cmdResult.message,
-            duration
+            duration,
           });
-          
+
           // Set variable if command sets one
-          if (cmdResult.data?.variable) {
-            this.variables[cmdResult.data.variable] = cmdResult.data.value;
+          if (
+            cmdResult.data &&
+            typeof cmdResult.data === 'object' &&
+            'variable' in cmdResult.data &&
+            'value' in cmdResult.data
+          ) {
+            const resultData = cmdResult.data as { variable: string; value: unknown };
+            this.variables[resultData.variable] = resultData.value;
           }
-          
+
           break;
         } else {
           if (attempts < maxAttempts) {
@@ -258,18 +268,18 @@ export class BatchExecutionEngine {
           } else {
             result.failed++;
             console.log(chalk.red(`❌ Failed: ${cmdResult.message}`));
-            
+
             result.results.push({
               command: `${cmd.command} ${cmd.args.join(' ')}`,
               success: false,
               error: cmdResult.message,
-              duration
+              duration,
             });
           }
         }
-      } catch (error) {
+      } catch (error: unknown) {
         const duration = Date.now() - startTime;
-        
+
         if (attempts < maxAttempts) {
           console.log(chalk.yellow(`⚠️  Error, retrying (${attempts}/${maxAttempts})...`));
           await this.delay(1000);
@@ -278,12 +288,12 @@ export class BatchExecutionEngine {
           result.executed++;
           const errorMsg = error instanceof Error ? error.message : 'Unknown error';
           console.log(chalk.red(`❌ Error: ${errorMsg}`));
-          
+
           result.results.push({
             command: `${cmd.command} ${cmd.args.join(' ')}`,
             success: false,
             error: errorMsg,
-            duration
+            duration,
           });
         }
       }
@@ -297,26 +307,26 @@ export class BatchExecutionEngine {
     commands: BatchCommand[],
     context: ConversationContext,
     result: BatchExecutionResult,
-    maxParallel: number
+    maxParallel: number,
   ): Promise<void> {
     console.log(chalk.cyan(`\n⚡ Executing ${commands.length} commands in parallel`));
-    
-    const promises = commands.map(cmd => 
+
+    const promises = commands.map((cmd) =>
       this.executeSingleCommand(cmd, context, {
         ...result,
         executed: 0,
         succeeded: 0,
         failed: 0,
         skipped: 0,
-        results: []
-      })
+        results: [],
+      }),
     );
-    
+
     // Execute in batches
     for (let i = 0; i < promises.length; i += maxParallel) {
       const batch = promises.slice(i, i + maxParallel);
       const batchResults = await Promise.allSettled(batch);
-      
+
       // Update main result
       batchResults.forEach((batchResult) => {
         if (batchResult.status === 'rejected') {
@@ -333,8 +343,8 @@ export class BatchExecutionEngine {
   private groupCommands(commands: BatchCommand[]): BatchCommand[][] {
     const groups: BatchCommand[][] = [];
     let currentGroup: BatchCommand[] = [];
-    
-    commands.forEach(cmd => {
+
+    commands.forEach((cmd) => {
       if (cmd.parallel && currentGroup.length > 0) {
         currentGroup.push(cmd);
       } else {
@@ -344,11 +354,11 @@ export class BatchExecutionEngine {
         currentGroup = [cmd];
       }
     });
-    
+
     if (currentGroup.length > 0) {
       groups.push(currentGroup);
     }
-    
+
     return groups;
   }
 
@@ -358,17 +368,17 @@ export class BatchExecutionEngine {
   private evaluateCondition(condition: string): boolean {
     // Simple condition evaluation
     // In a real implementation, this would be more sophisticated
-    
+
     if (condition.startsWith('!')) {
       return !this.evaluateCondition(condition.substring(1));
     }
-    
+
     // Check variable existence
     if (condition.startsWith('$')) {
       const varName = condition.substring(1);
       return this.variables[varName] !== undefined;
     }
-    
+
     // Check variable equality
     const eqMatch = condition.match(/^\$(\w+)\s*==\s*(.+)$/);
     if (eqMatch && eqMatch[1] && eqMatch[2] !== undefined) {
@@ -376,13 +386,13 @@ export class BatchExecutionEngine {
       const value = eqMatch[2];
       return String(this.variables[varName] || '') === value;
     }
-    
+
     // Default conditions
     switch (condition) {
       case 'hasErrors':
-        return this.variables.hasErrors === true;
+        return this.variables['hasErrors'] === true;
       case 'testsPass':
-        return this.variables.testsPass === true;
+        return this.variables['testsPass'] === true;
       default:
         return true;
     }
@@ -391,15 +401,12 @@ export class BatchExecutionEngine {
   /**
    * Execute with timeout
    */
-  private async executeWithTimeout<T>(
-    fn: () => Promise<T>,
-    timeout: number
-  ): Promise<T> {
+  private async executeWithTimeout<T>(fn: () => Promise<T>, timeout: number): Promise<T> {
     return Promise.race([
       fn(),
-      new Promise<T>((_, reject) => 
-        setTimeout(() => reject(new Error('Command timeout')), timeout)
-      )
+      new Promise<T>((_, reject) =>
+        setTimeout(() => reject(new Error('Command timeout')), timeout),
+      ),
     ]);
   }
 
@@ -408,11 +415,10 @@ export class BatchExecutionEngine {
    */
   private printSummary(result: BatchExecutionResult): void {
     console.log(chalk.blue('\n📊 Batch Execution Summary\n'));
-    
-    const successRate = result.executed > 0 
-      ? Math.round((result.succeeded / result.executed) * 100) 
-      : 0;
-    
+
+    const successRate =
+      result.executed > 0 ? Math.round((result.succeeded / result.executed) * 100) : 0;
+
     console.log(`Total Commands: ${result.totalCommands}`);
     console.log(`Executed: ${result.executed}`);
     console.log(chalk.green(`Succeeded: ${result.succeeded}`));
@@ -424,7 +430,7 @@ export class BatchExecutionEngine {
     }
     console.log(`Success Rate: ${successRate}%`);
     console.log(`Duration: ${(result.duration / 1000).toFixed(2)}s`);
-    
+
     if (Object.keys(result.variables).length > 0) {
       console.log('\nVariables Set:');
       Object.entries(result.variables).forEach(([key, value]) => {
@@ -437,7 +443,7 @@ export class BatchExecutionEngine {
    * Helper to add delay
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -450,7 +456,7 @@ export class BatchExecutionEngine {
   /**
    * Get current variables
    */
-  getVariables(): Record<string, any> {
+  getVariables(): Record<string, unknown> {
     return { ...this.variables };
   }
 }

@@ -27,18 +27,23 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
   batch = 1,
   variations = 1,
   seed,
-  outputPath
+  outputPath,
 }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState<ImageProgress | null>(null);
-  const [result, setResult] = useState<{ success: boolean; outputPaths?: string[]; error?: string; metadata?: any } | null>(null);
+  const [result, setResult] = useState<{
+    success: boolean;
+    outputPaths?: string[];
+    error?: string;
+    metadata?: unknown;
+  } | null>(null);
   const [startTime, setStartTime] = useState<number>(0);
 
   useEffect(() => {
     const generateImage = async () => {
       setIsGenerating(true);
       setStartTime(Date.now());
-      
+
       const options: ImageOptions = {
         model: 'qwen-image',
         prompt,
@@ -50,21 +55,21 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
         batch,
         variations,
         seed: seed || Math.floor(Math.random() * 1000000),
-        outputPath
+        outputPath,
       };
 
       try {
         const imageResult = await imageGenerationService.generateImage(
           prompt,
           options,
-          (progressUpdate) => setProgress(progressUpdate)
+          (progressUpdate) => setProgress(progressUpdate),
         );
-        
+
         setResult(imageResult);
-      } catch (error) {
+      } catch (error: unknown) {
         setResult({
           success: false,
-          error: error instanceof Error ? error.message : String(error)
+          error: error instanceof Error ? error.message : String(error),
         });
       } finally {
         setIsGenerating(false);
@@ -77,16 +82,23 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
   const renderHeader = () => (
     <Box flexDirection="column">
       <Box>
-        <Text color="blue" bold>🖼️ AI画像生成</Text>
+        <Text color="blue" bold>
+          🖼️ AI画像生成
+        </Text>
       </Box>
       <Text color="gray">プロンプト: {prompt}</Text>
       <Box marginY={1}>
         <Text color="cyan">📊 設定:</Text>
-        <Text> スタイル={style} サイズ={size} 品質={quality}</Text>
+        <Text>
+          {' '}
+          スタイル={style} サイズ={size} 品質={quality}
+        </Text>
       </Box>
       {(batch > 1 || variations > 1) && (
         <Box>
-          <Text color="yellow">📦 バッチ生成: {batch}×{variations} = {batch * variations}枚</Text>
+          <Text color="yellow">
+            📦 バッチ生成: {batch}×{variations} = {batch * variations}枚
+          </Text>
         </Box>
       )}
     </Box>
@@ -99,27 +111,32 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
       <Box flexDirection="column" marginY={1}>
         <Box>
           <Spinner type="dots" />
-          <Text> {progress.stage} ({progress.percentage}%)</Text>
+          <Text>
+            {' '}
+            {progress.stage} ({progress.percentage}%)
+          </Text>
         </Box>
         <Text color="gray">Step: {progress.currentStep}</Text>
         {progress.estimatedTimeRemaining && (
           <Text color="gray">ETA: {progress.estimatedTimeRemaining}s</Text>
         )}
-        
+
         {progress.currentImage && progress.totalImages && progress.totalImages > 1 && (
           <Box marginTop={1}>
             <Text color="blue">📸 </Text>
-            <Text>画像 {progress.currentImage}/{progress.totalImages} 生成中</Text>
+            <Text>
+              画像 {progress.currentImage}/{progress.totalImages} 生成中
+            </Text>
           </Box>
         )}
-        
+
         {progress.stage === 'processing' && (
           <Box marginTop={1}>
             <Text color="blue">🎨 </Text>
             <Text>{progress.currentStep}</Text>
           </Box>
         )}
-        
+
         {progress.error && (
           <Box marginTop={1}>
             <Text color="red">❌ エラー: {progress.error}</Text>
@@ -134,43 +151,51 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
 
     if (result.success && result.outputPaths) {
       const duration = Math.round((Date.now() - startTime) / 1000);
-      
+
       return (
         <Box flexDirection="column" marginTop={1}>
           <Box>
-            <Text color="green" bold>✨ 画像生成完了！</Text>
+            <Text color="green" bold>
+              ✨ 画像生成完了！
+            </Text>
           </Box>
-          
+
           <Box marginTop={1}>
             <Text color="cyan">📁 出力ファイル ({result.outputPaths.length}枚):</Text>
           </Box>
-          
+
           {result.outputPaths.slice(0, 3).map((path, index) => (
             <Box key={index}>
-              <Text color="gray">  • </Text>
+              <Text color="gray"> • </Text>
               <Text>{path}</Text>
             </Box>
           ))}
-          
+
           {result.outputPaths.length > 3 && (
             <Box>
-              <Text color="gray">  ... 他 {result.outputPaths.length - 3} ファイル</Text>
+              <Text color="gray"> ... 他 {result.outputPaths.length - 3} ファイル</Text>
             </Box>
           )}
-          
+
           <Box marginTop={1}>
-            <Text color="gray">⏱️  生成時間: {duration}秒</Text>
+            <Text color="gray">⏱️ 生成時間: {duration}秒</Text>
             <Text color="gray"> | スタイル: {style}</Text>
             <Text color="gray"> | 解像度: {size}</Text>
           </Box>
 
-          {result.metadata && (
+          {result.metadata && typeof result.metadata === 'object' ? (
             <Box marginTop={1}>
               <Text color="cyan">📋 メタデータ:</Text>
-              <Text> シード: {result.metadata.seedUsed}</Text>
-              <Text> モデル: {result.metadata.modelUsed}</Text>
+              <Text>
+                {' '}
+                シード: {String((result.metadata as { seedUsed?: unknown }).seedUsed || 'N/A')}
+              </Text>
+              <Text>
+                {' '}
+                モデル: {String((result.metadata as { modelUsed?: unknown }).modelUsed || 'N/A')}
+              </Text>
             </Box>
-          )}
+          ) : null}
 
           <Box marginTop={1}>
             <Text color="green">💡 ヒント:</Text>
@@ -181,9 +206,11 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
     } else {
       return (
         <Box flexDirection="column" marginTop={1}>
-          <Text color="red" bold>❌ 画像生成エラー</Text>
+          <Text color="red" bold>
+            ❌ 画像生成エラー
+          </Text>
           <Text color="red">{result.error}</Text>
-          
+
           <Box marginTop={1}>
             <Text color="yellow">💡 解決策:</Text>
           </Box>
@@ -201,7 +228,7 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
       artistic: '芸術的で表現豊かなペイント風',
       anime: 'アニメ・漫画スタイル、セルシェーディング',
       concept: 'コンセプトアート風のシネマティック表現',
-      technical: '技術図面のような清潔で正確な線画'
+      technical: '技術図面のような清潔で正確な線画',
     };
 
     return (
@@ -216,10 +243,10 @@ const ImageCommand: React.FC<ImageCommandProps> = ({
       {renderHeader()}
       {renderStyleInfo()}
       <Newline />
-      
+
       {isGenerating && renderProgress()}
       {result && renderResult()}
-      
+
       {!isGenerating && !result && (
         <Box>
           <Text color="blue">🚀 画像生成を開始しています...</Text>

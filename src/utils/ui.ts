@@ -9,8 +9,16 @@ import { HealthStatus } from '../types';
 export function printWelcome(): void {
   console.log(chalk.blue('╔══════════════════════════════════════════════════════════╗'));
   console.log(chalk.blue('║                                                          ║'));
-  console.log(chalk.blue('║') + chalk.bold.cyan('                    MARIA AI Assistant                   ') + chalk.blue('║'));
-  console.log(chalk.blue('║') + chalk.gray('              Intelligent CLI with Multi-Model AI         ') + chalk.blue('║'));
+  console.log(
+    chalk.blue('║') +
+      chalk.bold.cyan('                    MARIA AI Assistant                   ') +
+      chalk.blue('║'),
+  );
+  console.log(
+    chalk.blue('║') +
+      chalk.gray('              Intelligent CLI with Multi-Model AI         ') +
+      chalk.blue('║'),
+  );
   console.log(chalk.blue('║                                                          ║'));
   console.log(chalk.blue('╚══════════════════════════════════════════════════════════╝'));
   console.log('');
@@ -20,16 +28,24 @@ export function printWelcome(): void {
 
 export function printStatus(health: HealthStatus): void {
   console.log(chalk.blue('╔══════════════════════════════════════════════════════════╗'));
-  console.log(chalk.blue('║') + chalk.bold.cyan('                    System Status                        ') + chalk.blue('║'));
+  console.log(
+    chalk.blue('║') +
+      chalk.bold.cyan('                    System Status                        ') +
+      chalk.blue('║'),
+  );
   console.log(chalk.blue('╚══════════════════════════════════════════════════════════╝'));
   console.log('');
 
   // Overall status
-  const statusColor = health.overall === 'healthy' ? chalk.green : 
-                     health.overall === 'degraded' ? chalk.yellow : chalk.red;
-  const statusIcon = health.overall === 'healthy' ? '✅' : 
-                    health.overall === 'degraded' ? '⚠️' : '❌';
-  
+  const statusColor =
+    health.overall === 'healthy'
+      ? chalk.green
+      : health.overall === 'degraded'
+        ? chalk.yellow
+        : chalk.red;
+  const statusIcon =
+    health.overall === 'healthy' ? '✅' : health.overall === 'degraded' ? '⚠️' : '❌';
+
   console.log(statusColor(`${statusIcon} Overall Status: ${health.overall.toUpperCase()}`));
   console.log('');
 
@@ -44,7 +60,8 @@ export function printStatus(health: HealthStatus): void {
   console.log(chalk.blue('🤖 Local AI Services:'));
   Object.entries(health.services).forEach(([name, service]) => {
     const icon = service.status === 'running' ? '✅' : '⚠️';
-    const status = service.status === 'running' ? chalk.green(service.status) : chalk.yellow(service.status);
+    const status =
+      service.status === 'running' ? chalk.green(service.status) : chalk.yellow(service.status);
     console.log(`   ${icon} ${name}: ${status}`);
   });
   console.log('');
@@ -61,7 +78,7 @@ export function printStatus(health: HealthStatus): void {
   if (health.recommendations.length > 0) {
     console.log('');
     console.log(chalk.blue('💡 Recommendations:'));
-    health.recommendations.forEach(rec => {
+    health.recommendations.forEach((rec) => {
       console.log(`   • ${chalk.cyan(rec)}`);
     });
   }
@@ -100,23 +117,35 @@ export function printInfo(message: string): void {
   console.log(chalk.blue('ℹ️'), message);
 }
 
-export function formatTable(data: any[], headers: string[]): void {
-  const maxLengths = headers.map(header => 
-    Math.max(header.length, ...data.map(row => String(row[header] || '').length))
+export function formatTable(data: unknown[], headers: string[]): void {
+  const ensureRowStructure = (row: unknown): Record<string, unknown> => {
+    if (typeof row === 'object' && row !== null) {
+      return row as Record<string, unknown>;
+    }
+    return {};
+  };
+
+  const maxLengths = headers.map((header) =>
+    Math.max(
+      header.length,
+      ...data.map((row) => {
+        const rowData = ensureRowStructure(row);
+        return String(rowData[header] || '').length;
+      }),
+    ),
   );
 
   // Print header
-  const headerRow = headers.map((header, i) => 
-    header.padEnd(maxLengths[i])
-  ).join(' | ');
+  const headerRow = headers.map((header, i) => header.padEnd(maxLengths[i] || 0)).join(' | ');
   console.log(chalk.bold(headerRow));
-  console.log(maxLengths.map(len => '─'.repeat(len)).join('─┼─'));
+  console.log(maxLengths.map((len) => '─'.repeat(len || 0)).join('─┼─'));
 
   // Print data rows
-  data.forEach(row => {
-    const dataRow = headers.map((header, i) => 
-      String(row[header] || '').padEnd(maxLengths[i])
-    ).join(' | ');
+  data.forEach((row) => {
+    const rowData = ensureRowStructure(row);
+    const dataRow = headers
+      .map((header, i) => String(rowData[header] || '').padEnd(maxLengths[i] || 0))
+      .join(' | ');
     console.log(dataRow);
   });
 }

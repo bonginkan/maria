@@ -1,5 +1,5 @@
 /**
- * Agent Manager Component  
+ * Agent Manager Component
  * エージェント設定管理とIDE統合
  */
 
@@ -7,6 +7,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { MariaConfig, Agent } from '../utils/config.js';
+import { isString } from '../utils/type-guards.js';
 import { execSync } from 'child_process';
 import { existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -43,7 +44,12 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
       description: 'AI agent specialized in academic paper writing and LaTeX formatting',
       type: 'built-in',
       status: 'active',
-      capabilities: ['latex-generation', 'citation-management', 'structure-optimization', 'language-enhancement']
+      capabilities: [
+        'latex-generation',
+        'citation-management',
+        'structure-optimization',
+        'language-enhancement',
+      ],
     },
     {
       id: 'slides-creator',
@@ -51,7 +57,12 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
       description: 'AI agent for creating engaging presentations and slide decks',
       type: 'built-in',
       status: 'active',
-      capabilities: ['slide-design', 'content-structuring', 'visual-optimization', 'google-slides-integration']
+      capabilities: [
+        'slide-design',
+        'content-structuring',
+        'visual-optimization',
+        'google-slides-integration',
+      ],
     },
     {
       id: 'code-reviewer',
@@ -59,7 +70,7 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
       description: 'AI agent for comprehensive code review and quality analysis',
       type: 'built-in',
       status: 'active',
-      capabilities: ['static-analysis', 'security-audit', 'performance-review', 'best-practices']
+      capabilities: ['static-analysis', 'security-audit', 'performance-review', 'best-practices'],
     },
     {
       id: 'devops-engineer',
@@ -67,13 +78,18 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
       description: 'AI agent for CI/CD pipeline management and infrastructure automation',
       type: 'built-in',
       status: 'active',
-      capabilities: ['pipeline-optimization', 'monitoring-setup', 'deployment-automation', 'infrastructure-management']
-    }
+      capabilities: [
+        'pipeline-optimization',
+        'monitoring-setup',
+        'deployment-automation',
+        'infrastructure-management',
+      ],
+    },
   ];
 
   useEffect(() => {
     setAgents([...builtInAgents, ...(config.agents?.custom || [])]);
-    
+
     if (action === 'ide') {
       setCurrentView('ide');
     } else if (action === 'github-app') {
@@ -81,19 +97,19 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
     }
   }, [action, config]);
 
-  // Placeholder usage of onUpdate to avoid TypeScript warning  
+  // Placeholder usage of onUpdate to avoid TypeScript warning
   // In a real implementation, onUpdate would be used to save agent configuration changes
   void onUpdate;
 
   // const handleAgentToggle = useCallback((agentId: string) => {
-  //   const updatedAgents = agents.map(agent => 
-  //     agent.id === agentId 
+  //   const updatedAgents = agents.map(agent =>
+  //     agent.id === agentId
   //       ? { ...agent, status: agent.status === 'active' ? 'inactive' : 'active' as 'active' | 'inactive' }
   //       : agent
   //   );
-    
+
   //   setAgents(updatedAgents);
-    
+
   //   const customAgents = updatedAgents.filter(agent => agent.type === 'custom');
   //   const updatedConfig = {
   //     ...config,
@@ -102,14 +118,14 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
   //       custom: customAgents
   //     }
   //   };
-    
+
   //   onUpdate(updatedConfig);
   //   setSuccess(`✅ Agent ${agentId} status updated`);
   // }, [agents, config, onUpdate]);
 
   const checkIDEIntegration = useCallback(() => {
     const integrations = [];
-    
+
     // VS Code Extension
     try {
       const vsCodeExtensions = execSync('code --list-extensions', { encoding: 'utf8' });
@@ -117,13 +133,13 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
       integrations.push({
         name: 'VS Code Extension',
         status: hasMariaExtension ? 'installed' : 'not-installed',
-        command: hasMariaExtension ? 'Installed' : 'code --install-extension maria.maria-code'
+        command: hasMariaExtension ? 'Installed' : 'code --install-extension maria.maria-code',
       });
     } catch {
       integrations.push({
         name: 'VS Code Extension',
         status: 'unavailable',
-        command: 'VS Code not found'
+        command: 'VS Code not found',
       });
     }
 
@@ -131,16 +147,16 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
     integrations.push({
       name: 'JetBrains Plugin',
       status: 'planned',
-      command: 'Available in next release'
+      command: 'Available in next release',
     });
 
     // Neovim Plugin
-    const nvimConfigPath = join(process.env.HOME || '', '.config/nvim/init.lua');
+    const nvimConfigPath = join(process.env['HOME'] || '', '.config/nvim/init.lua');
     const hasNvimConfig = existsSync(nvimConfigPath);
     integrations.push({
       name: 'Neovim Plugin',
       status: hasNvimConfig ? 'configurable' : 'not-available',
-      command: hasNvimConfig ? 'Manual configuration required' : 'Neovim config not found'
+      command: hasNvimConfig ? 'Manual configuration required' : 'Neovim config not found',
     });
 
     return integrations;
@@ -226,47 +242,47 @@ jobs:
 
       const workflowDir = join(process.cwd(), '.github/workflows');
       const workflowPath = join(workflowDir, 'maria-integration.yml');
-      
+
       if (!existsSync(workflowDir)) {
         execSync('mkdir -p .github/workflows');
       }
-      
+
       writeFileSync(workflowPath, workflowContent, 'utf8');
-      
+
       // Playwright MCP configuration
       const playwrightMCPConfig = {
-        "server": {
-          "command": "npx",
-          "args": ["@playwright/mcp"],
-          "env": {}
+        server: {
+          command: 'npx',
+          args: ['@playwright/mcp'],
+          env: {},
         },
-        "client": {
-          "browser": "chromium",
-          "headless": true,
-          "timeout": 30000
+        client: {
+          browser: 'chromium',
+          headless: true,
+          timeout: 30000,
         },
-        "tests": {
-          "baseUrl": "http://localhost:3000",
-          "testDir": "./tests/mcp",
-          "outputDir": "./test-results/mcp"
+        tests: {
+          baseUrl: 'http://localhost:3000',
+          testDir: './tests/mcp',
+          outputDir: './test-results/mcp',
         },
-        "capabilities": [
-          "browser.navigate",
-          "browser.screenshot", 
-          "element.click",
-          "element.type",
-          "accessibility.snapshot"
-        ]
+        capabilities: [
+          'browser.navigate',
+          'browser.screenshot',
+          'element.click',
+          'element.type',
+          'accessibility.snapshot',
+        ],
       };
-      
+
       writeFileSync(
         join(process.cwd(), '.playwright-mcp.json'),
         JSON.stringify(playwrightMCPConfig, null, 2),
-        'utf8'
+        'utf8',
       );
-      
+
       setSuccess('✅ GitHub Actions workflow and Playwright MCP configuration created');
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to install GitHub app configuration: ${err}`);
     }
   }, []);
@@ -281,7 +297,9 @@ jobs:
 
     return (
       <Box flexDirection="column">
-        <Text color="cyan" bold>🎯 Agent & Integration Manager</Text>
+        <Text color="cyan" bold>
+          🎯 Agent & Integration Manager
+        </Text>
         <Text color="gray">Select an option:</Text>
         <Box marginTop={1}>
           <SelectInput
@@ -290,7 +308,12 @@ jobs:
               if (item.value === 'back') {
                 onExit();
               } else {
-                setCurrentView(item.value as any);
+                if (
+                  isString(item.value) &&
+                  ['main', 'ide', 'agents', 'github'].includes(item.value)
+                ) {
+                  setCurrentView(item.value as 'main' | 'ide' | 'agents' | 'github');
+                }
               }
             }}
           />
@@ -301,24 +324,24 @@ jobs:
 
   const renderAgentsList = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>🤖 AI Agents Management</Text>
+      <Text color="cyan" bold>
+        🤖 AI Agents Management
+      </Text>
       <Text color="gray">Current agents in your workspace:</Text>
-      
+
       {agents.map((agent) => (
         <Box key={agent.id} flexDirection="column" marginTop={1}>
           <Box>
             <Text color={agent.status === 'active' ? 'green' : 'gray'}>
               {agent.status === 'active' ? '✅' : '❌'} {agent.name}
             </Text>
-            <Text color={agent.type === 'built-in' ? 'blue' : 'yellow'}>
-              {' '}({agent.type})
-            </Text>
+            <Text color={agent.type === 'built-in' ? 'blue' : 'yellow'}> ({agent.type})</Text>
           </Box>
-          <Text color="gray">   {agent.description}</Text>
-          <Text color="magenta">   Capabilities: {agent.capabilities.join(', ')}</Text>
+          <Text color="gray"> {agent.description}</Text>
+          <Text color="magenta"> Capabilities: {agent.capabilities.join(', ')}</Text>
         </Box>
       ))}
-      
+
       <Box marginTop={2}>
         <Text color="yellow">Available actions:</Text>
       </Box>
@@ -326,7 +349,7 @@ jobs:
         items={[
           { label: 'Toggle agent status', value: 'toggle' },
           { label: 'Add custom agent', value: 'add' },
-          { label: 'Back to main menu', value: 'back' }
+          { label: 'Back to main menu', value: 'back' },
         ]}
         onSelect={(item) => {
           if (item.value === 'back') {
@@ -344,12 +367,14 @@ jobs:
 
   const renderIDEStatus = () => {
     const integrations = checkIDEIntegration();
-    
+
     return (
       <Box flexDirection="column">
-        <Text color="cyan" bold>🔧 IDE Integration Status</Text>
+        <Text color="cyan" bold>
+          🔧 IDE Integration Status
+        </Text>
         <Text color="gray">Current integration status:</Text>
-        
+
         {integrations.map((integration, index) => (
           <Box key={index} flexDirection="column" marginTop={1}>
             <Box>
@@ -357,17 +382,17 @@ jobs:
                 {integration.status === 'installed' ? '✅' : '⚠️ '} {integration.name}
               </Text>
             </Box>
-            <Text color="gray">   Status: {integration.status}</Text>
-            <Text color="gray">   Command: {integration.command}</Text>
+            <Text color="gray"> Status: {integration.status}</Text>
+            <Text color="gray"> Command: {integration.command}</Text>
           </Box>
         ))}
-        
+
         <Box marginTop={2}>
           <SelectInput
             items={[
               { label: 'Refresh status', value: 'refresh' },
               { label: 'Install VS Code extension', value: 'install-vscode' },
-              { label: 'Back to main menu', value: 'back' }
+              { label: 'Back to main menu', value: 'back' },
             ]}
             onSelect={(item) => {
               if (item.value === 'back') {
@@ -386,9 +411,11 @@ jobs:
 
   const renderGitHubApp = () => (
     <Box flexDirection="column">
-      <Text color="cyan" bold>🐙 GitHub Actions Integration</Text>
+      <Text color="cyan" bold>
+        🐙 GitHub Actions Integration
+      </Text>
       <Text color="gray">Set up automated workflows with Playwright MCP:</Text>
-      
+
       <Box marginTop={1} flexDirection="column">
         <Text color="yellow">Features:</Text>
         <Text color="gray">• AI-powered code review on PRs</Text>
@@ -396,13 +423,13 @@ jobs:
         <Text color="gray">• Playwright MCP browser testing</Text>
         <Text color="gray">• MARIA CLI integration</Text>
       </Box>
-      
+
       <Box marginTop={2}>
         <SelectInput
           items={[
             { label: 'Install GitHub Actions workflow', value: 'install' },
             { label: 'View configuration details', value: 'details' },
-            { label: 'Back to main menu', value: 'back' }
+            { label: 'Back to main menu', value: 'back' },
           ]}
           onSelect={(item) => {
             if (item.value === 'back') {
@@ -410,7 +437,9 @@ jobs:
             } else if (item.value === 'install') {
               installGitHubApp();
             } else if (item.value === 'details') {
-              setSuccess('✅ Configuration includes: workflow file, Playwright MCP config, and secrets setup');
+              setSuccess(
+                '✅ Configuration includes: workflow file, Playwright MCP config, and secrets setup',
+              );
             }
           }}
         />

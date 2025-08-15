@@ -46,7 +46,7 @@ export interface VisionResponse {
     };
   }>;
   text?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ModelInfo {
@@ -69,67 +69,71 @@ export interface ModelInfo {
 export interface IAIProvider {
   readonly name: string;
   readonly models: string[];
-  
+
   /**
    * Initialize the provider with API key and configuration
    */
-  initialize(apiKey: string, config?: Record<string, any>): Promise<void>;
-  
+  initialize(apiKey: string, config?: Record<string, unknown>): Promise<void>;
+
   /**
    * Chat completion
    */
   chat(messages: Message[], model?: string, options?: CompletionOptions): Promise<string>;
-  
+
   /**
    * Streaming chat completion
    */
-  chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string>;
-  
+  chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string>;
+
   /**
    * Generate code based on prompt
    */
   generateCode(prompt: string, language?: string, model?: string): Promise<string>;
-  
+
   /**
    * Review code and provide feedback
    */
   reviewCode(code: string, language?: string, model?: string): Promise<CodeReviewResult>;
-  
+
   /**
    * Vision understanding (optional)
    */
   vision?(image: Buffer, prompt: string, model?: string): Promise<VisionResponse>;
-  
+
   /**
    * Generate embeddings (optional)
    */
   embeddings?(text: string, model?: string): Promise<number[]>;
-  
+
   /**
    * Validate connection to the provider
    */
   validateConnection?(): Promise<boolean>;
-  
+
   /**
    * Get model information
    */
   getModelInfo?(model?: string): Promise<ModelInfo>;
-  
+
   /**
    * Estimate cost for tokens
    */
   estimateCost?(tokens: number, model?: string): number;
-  
+
   /**
    * Check if the provider is properly initialized
    */
   isInitialized(): boolean;
-  
+
   /**
    * Get available models
    */
   getModels(): string[];
-  
+
   /**
    * Get default model
    */
@@ -141,26 +145,26 @@ export interface IAIProvider {
  */
 export abstract class BaseAIProvider implements IAIProvider {
   protected apiKey: string = '';
-  protected config: Record<string, any> = {};
+  protected config: Record<string, unknown> = {};
   protected initialized: boolean = false;
-  
+
   abstract readonly name: string;
   abstract readonly models: string[];
-  
-  async initialize(apiKey: string, config?: Record<string, any>): Promise<void> {
+
+  async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
     this.apiKey = apiKey;
     this.config = config || {};
     this.initialized = true;
   }
-  
+
   isInitialized(): boolean {
     return this.initialized;
   }
-  
+
   getModels(): string[] {
     return this.models;
   }
-  
+
   getDefaultModel(): string {
     if (this.models.length === 0) {
       throw new Error(`No models available for ${this.name} provider`);
@@ -171,7 +175,7 @@ export abstract class BaseAIProvider implements IAIProvider {
     }
     return defaultModel;
   }
-  
+
   protected validateModel(model?: string): string {
     const selectedModel = model || this.getDefaultModel();
     if (!this.models.includes(selectedModel)) {
@@ -179,15 +183,19 @@ export abstract class BaseAIProvider implements IAIProvider {
     }
     return selectedModel;
   }
-  
+
   protected ensureInitialized(): void {
     if (!this.initialized) {
       throw new Error(`${this.name} provider is not initialized. Call initialize() first.`);
     }
   }
-  
+
   abstract chat(messages: Message[], model?: string, options?: CompletionOptions): Promise<string>;
-  abstract chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string>;
+  abstract chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string>;
   abstract generateCode(prompt: string, language?: string, model?: string): Promise<string>;
   abstract reviewCode(code: string, language?: string, model?: string): Promise<CodeReviewResult>;
 }
@@ -198,26 +206,26 @@ export abstract class BaseAIProvider implements IAIProvider {
 export class AIProviderRegistry {
   private static providers = new Map<string, IAIProvider>();
   private static defaultProvider: string | null = null;
-  
+
   static register(provider: IAIProvider): void {
     this.providers.set(provider.name.toLowerCase(), provider);
   }
-  
+
   static get(name: string): IAIProvider | undefined {
     return this.providers.get(name.toLowerCase());
   }
-  
+
   static getAll(): IAIProvider[] {
     return Array.from(this.providers.values());
   }
-  
+
   static setDefault(name: string): void {
     if (!this.providers.has(name.toLowerCase())) {
       throw new Error(`Provider ${name} is not registered`);
     }
     this.defaultProvider = name.toLowerCase();
   }
-  
+
   static getDefault(): IAIProvider | undefined {
     if (!this.defaultProvider) {
       // Return the first registered provider as default
@@ -226,7 +234,7 @@ export class AIProviderRegistry {
     }
     return this.providers.get(this.defaultProvider);
   }
-  
+
   static clear(): void {
     this.providers.clear();
     this.defaultProvider = null;

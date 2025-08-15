@@ -5,6 +5,7 @@ import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { AIChatServiceV2, ChatContext } from '../services/ai-chat-service-v2.js';
+import { isString } from '../utils/type-guards.js';
 
 interface SlidesCommand {
   action: 'structure' | 'content' | 'visuals' | 'sync';
@@ -13,7 +14,10 @@ interface SlidesCommand {
   slidesId?: string;
 }
 
-const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({ command, onExit }) => {
+const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
+  command,
+  onExit,
+}) => {
   const [status, setStatus] = React.useState<'processing' | 'done'>('processing');
   const [result, setResult] = React.useState<string>('');
   const [streamingContent, setStreamingContent] = React.useState<string>('');
@@ -24,13 +28,13 @@ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
       try {
         // Initialize AI service
         await aiService.initialize();
-        
+
         // Create chat context
         const context: ChatContext = {
           sessionId: `slides-${Date.now()}`,
           projectRoot: process.cwd(),
           mode: 'creative',
-          history: []
+          history: [],
         };
 
         let prompt = '';
@@ -102,7 +106,7 @@ Provide step-by-step instructions and best practices.`;
 
         // Process with AI service (streaming enabled)
         const response = await aiService.processMessage(prompt, context, true);
-        
+
         if (response.stream) {
           let fullContent = '';
           for await (const chunk of response.stream) {
@@ -111,12 +115,16 @@ Provide step-by-step instructions and best practices.`;
           }
           setResult(fullContent);
         } else {
-          setResult(response.message.content);
+          setResult(
+            typeof response === 'object' && response && 'content' in response
+              ? String(response.content)
+              : String(response),
+          );
         }
-        
+
         setStatus('done');
         setStreamingContent('');
-      } catch (error) {
+      } catch (error: unknown) {
         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setStatus('done');
       }
@@ -134,10 +142,12 @@ Provide step-by-step instructions and best practices.`;
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="magenta">Presentation Agent (AI-Powered)</Text>
+        <Text bold color="magenta">
+          Presentation Agent (AI-Powered)
+        </Text>
         <Text> - {command.action} action</Text>
       </Box>
-      
+
       {status === 'processing' ? (
         <Box flexDirection="column">
           <Box>
@@ -178,7 +188,9 @@ const InteractiveSlidesMenu: React.FC<{ onSelect: (action: string) => void }> = 
   return (
     <Box flexDirection="column" padding={1}>
       <Box marginBottom={1}>
-        <Text bold color="magenta">Presentation Agent - AI-Powered Slide Creation</Text>
+        <Text bold color="magenta">
+          Presentation Agent - AI-Powered Slide Creation
+        </Text>
       </Box>
       <SelectInput items={actions} onSelect={handleSelect} />
     </Box>
@@ -205,7 +217,10 @@ export const slidesCommand = new Command('slides')
     else if (options.visuals) command.action = 'visuals';
     else if (options.sync) command.action = 'sync';
 
-    if (options.interactive || (!options.structure && !options.content && !options.visuals && !options.sync)) {
+    if (
+      options.interactive ||
+      (!options.structure && !options.content && !options.visuals && !options.sync)
+    ) {
       // Interactive mode
       const { waitUntilExit } = render(
         <InteractiveSlidesMenu
@@ -215,31 +230,26 @@ export const slidesCommand = new Command('slides')
             }
             // For interactive mode, we'll use default values
             const interactiveCommand: SlidesCommand = {
-              action: action as any,
+              action:
+                isString(action) && ['structure', 'content', 'visuals', 'sync'].includes(action)
+                  ? (action as 'structure' | 'content' | 'visuals' | 'sync')
+                  : 'structure',
               topic: 'AI and the Future of Work',
               file: 'presentation.pptx',
               slidesId: 'demo-presentation-id',
             };
-            render(
-              <SlidesAgent
-                command={interactiveCommand}
-                onExit={() => process.exit(0)}
-              />
-            );
+            render(<SlidesAgent command={interactiveCommand} onExit={() => process.exit(0)} />);
           }}
-        />
+        />,
       );
-      
+
       await waitUntilExit();
     } else {
       // Direct command mode
       const { waitUntilExit } = render(
-        <SlidesAgent
-          command={command}
-          onExit={() => process.exit(0)}
-        />
+        <SlidesAgent command={command} onExit={() => process.exit(0)} />,
       );
-      
+
       await waitUntilExit();
     }
   });

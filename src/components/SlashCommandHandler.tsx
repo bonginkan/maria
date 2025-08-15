@@ -26,7 +26,7 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
     try {
       const loadedConfig = loadConfig();
       setConfig(loadedConfig);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to load configuration: ${err}`);
     }
   }, []);
@@ -35,7 +35,7 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
     try {
       saveConfig(newConfig);
       setConfig(newConfig);
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to save configuration: ${err}`);
     }
   }, []);
@@ -65,19 +65,44 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
 
   // プロジェクト管理コマンド
   if (command === '/init') {
-    return <ProjectManager action="init" config={config} onUpdate={handleConfigUpdate} onExit={onExit} />;
+    return (
+      <ProjectManager action="init" config={config} onUpdate={handleConfigUpdate} onExit={onExit} />
+    );
   }
 
   if (command === '/add-dir') {
-    return <ProjectManager action="add-dir" config={config} onUpdate={handleConfigUpdate} onExit={onExit} args={args} />;
+    return (
+      <ProjectManager
+        action="add-dir"
+        config={config}
+        onUpdate={handleConfigUpdate}
+        onExit={onExit}
+        args={args}
+      />
+    );
   }
 
   if (command === '/memory') {
-    return <ProjectManager action="memory" config={config} onUpdate={handleConfigUpdate} onExit={onExit} />;
+    return (
+      <ProjectManager
+        action="memory"
+        config={config}
+        onUpdate={handleConfigUpdate}
+        onExit={onExit}
+      />
+    );
   }
 
   if (command === '/export') {
-    return <ProjectManager action="export" config={config} onUpdate={handleConfigUpdate} onExit={onExit} args={args} />;
+    return (
+      <ProjectManager
+        action="export"
+        config={config}
+        onUpdate={handleConfigUpdate}
+        onExit={onExit}
+        args={args}
+      />
+    );
   }
 
   // エージェント・統合管理コマンド
@@ -90,11 +115,20 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
   }
 
   if (command === '/ide') {
-    return <AgentManager action="ide" config={config} onUpdate={handleConfigUpdate} onExit={onExit} />;
+    return (
+      <AgentManager action="ide" config={config} onUpdate={handleConfigUpdate} onExit={onExit} />
+    );
   }
 
   if (command === '/install-github-app') {
-    return <AgentManager action="github-app" config={config} onUpdate={handleConfigUpdate} onExit={onExit} />;
+    return (
+      <AgentManager
+        action="github-app"
+        config={config}
+        onUpdate={handleConfigUpdate}
+        onExit={onExit}
+      />
+    );
   }
 
   // その他のコマンド（既存）
@@ -120,9 +154,9 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
     <Box flexDirection="column">
       <Text color="red">❌ Unknown command: {command}</Text>
       <Text color="yellow">Available commands:</Text>
-      <Text color="gray">  Project Management: /init, /add-dir, /memory, /export</Text>
-      <Text color="gray">  Agent Management: /agents, /mcp, /ide, /install-github-app</Text>
-      <Text color="gray">  Configuration: /config, /doctor</Text>
+      <Text color="gray"> Project Management: /init, /add-dir, /memory, /export</Text>
+      <Text color="gray"> Agent Management: /agents, /mcp, /ide, /install-github-app</Text>
+      <Text color="gray"> Configuration: /config, /doctor</Text>
       <Text color="gray">Press ESC to exit</Text>
     </Box>
   );

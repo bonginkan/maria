@@ -11,7 +11,7 @@ import { logger } from '../utils/logger';
 export interface RouteResult {
   success: boolean;
   command?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   confidence: number;
   message?: string;
   clarificationNeeded?: boolean;
@@ -21,7 +21,7 @@ export interface RouteResult {
 export interface CommandSuggestion {
   command: string;
   confidence: number;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   description?: string;
 }
 
@@ -48,47 +48,46 @@ export class InteractiveRouter {
       // 1. Intent analysis
       logger.debug('Analyzing intent for input:', input);
       const intent = await this.analyzer.analyze(input, this.context || undefined);
-      
+
       // 2. Command mapping
       logger.debug('Mapping intent to commands:', intent);
       const suggestions = this.mapper.mapToCommands(intent);
-      
+
       // 3. Confidence check
       if (intent.confidence < 0.7 || suggestions.length === 0) {
         return this.promptForClarification(suggestions, intent.confidence);
       }
-      
+
       // 4. Select most appropriate command
       const bestCommand = suggestions[0];
       if (!bestCommand) {
         return this.promptForClarification(suggestions, intent.confidence);
       }
-      
+
       // 5. Executability check
       if (!this.isExecutable(bestCommand)) {
         return {
           success: false,
           confidence: bestCommand.confidence,
           message: `Command ${bestCommand.command} is currently unavailable`,
-          suggestions: suggestions.slice(1, 4)
+          suggestions: suggestions.slice(1, 4),
         };
       }
-      
+
       return {
         success: true,
         command: bestCommand.command,
         parameters: bestCommand.parameters,
         confidence: bestCommand.confidence,
-        suggestions: suggestions.slice(1, 4)
+        suggestions: suggestions.slice(1, 4),
       };
-      
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Routing error:', error);
       return {
         success: false,
         confidence: 0,
         message: 'An error occurred during routing',
-        clarificationNeeded: true
+        clarificationNeeded: true,
       };
     }
   }
@@ -98,15 +97,15 @@ export class InteractiveRouter {
    */
   private promptForClarification(
     suggestions: CommandSuggestion[],
-    confidence: number
+    confidence: number,
   ): RouteResult {
     if (suggestions.length === 0) {
       return {
         success: false,
         confidence: 0,
-        message: 'I couldn\'t find anything I can help with. Could you please provide more details?',
+        message: "I couldn't find anything I can help with. Could you please provide more details?",
         clarificationNeeded: true,
-        suggestions: this.getDefaultSuggestions()
+        suggestions: this.getDefaultSuggestions(),
       };
     }
 
@@ -115,7 +114,7 @@ export class InteractiveRouter {
       confidence,
       message: 'Let me confirm if I understand your request correctly:',
       clarificationNeeded: true,
-      suggestions: suggestions.slice(0, 3)
+      suggestions: suggestions.slice(0, 3),
     };
   }
 
@@ -139,20 +138,20 @@ export class InteractiveRouter {
         command: 'mc paper',
         confidence: 0.5,
         parameters: {},
-        description: 'Create a paper'
+        description: 'Create a paper',
       },
       {
         command: 'mc slides',
         confidence: 0.5,
         parameters: {},
-        description: 'Create slides'
+        description: 'Create slides',
       },
       {
         command: 'mc chat',
         confidence: 0.5,
         parameters: {},
-        description: 'Start interactive chat mode'
-      }
+        description: 'Start interactive chat mode',
+      },
     ];
   }
 

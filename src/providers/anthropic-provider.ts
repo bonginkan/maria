@@ -9,42 +9,42 @@ export class AnthropicProvider extends BaseAIProvider {
     'claude-3-5-haiku-20241022',
     'claude-3-opus-20240229',
     'claude-3-sonnet-20240229',
-    'claude-3-haiku-20240307'
+    'claude-3-haiku-20240307',
   ];
-  
+
   private client?: Anthropic;
-  
-  async initialize(apiKey: string, config?: Record<string, any>): Promise<void> {
+
+  override async initialize(apiKey: string, config?: Record<string, unknown>): Promise<void> {
     await super.initialize(apiKey, config);
-    
+
     this.client = new Anthropic({
       apiKey: this.apiKey,
-      baseURL: config?.baseURL,
-      maxRetries: config?.maxRetries || 3,
+      baseURL: config?.['baseURL'] as string | undefined,
+      maxRetries: (config?.['maxRetries'] as number) || 3,
     });
   }
-  
+
   private convertMessages(messages: Message[]): Anthropic.MessageParam[] {
     // Extract system message if present (unused for now but kept for future use)
-    const _systemMessage = messages.find(m => m.role === 'system');
+    const _systemMessage = messages.find((m) => m.role === 'system');
     void _systemMessage; // Will be used in future implementation
-    const conversationMessages = messages.filter(m => m.role !== 'system');
-    
-    return conversationMessages.map(m => ({
+    const conversationMessages = messages.filter((m) => m.role !== 'system');
+
+    return conversationMessages.map((m) => ({
       role: m.role as 'user' | 'assistant',
-      content: m.content
+      content: m.content,
     }));
   }
-  
+
   private getSystemMessage(messages: Message[]): string | undefined {
-    const systemMessage = messages.find(m => m.role === 'system');
+    const systemMessage = messages.find((m) => m.role === 'system');
     return systemMessage?.content;
   }
-  
+
   async chat(messages: Message[], model?: string, options?: CompletionOptions): Promise<string> {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
-    
+
     const response = await this.client!.messages.create({
       model: selectedModel,
       messages: this.convertMessages(messages),
@@ -54,20 +54,24 @@ export class AnthropicProvider extends BaseAIProvider {
       top_p: options?.topP,
       stop_sequences: options?.stopSequences,
     });
-    
+
     // Handle different content types
     const content = response.content[0];
     if (content && content.type === 'text' && 'text' in content) {
       return content.text;
     }
-    
+
     return '';
   }
-  
-  async *chatStream(messages: Message[], model?: string, options?: CompletionOptions): AsyncGenerator<string> {
+
+  async *chatStream(
+    messages: Message[],
+    model?: string,
+    options?: CompletionOptions,
+  ): AsyncGenerator<string> {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
-    
+
     const stream = await this.client!.messages.create({
       model: selectedModel,
       messages: this.convertMessages(messages),
@@ -78,40 +82,48 @@ export class AnthropicProvider extends BaseAIProvider {
       stop_sequences: options?.stopSequences,
       stream: true,
     });
-    
+
     for await (const event of stream) {
       if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
         const text = event.delta.text;
         yield text;
-        
+
         if (options?.streamOptions?.onToken) {
           options.streamOptions.onToken(text);
         }
       }
-      
+
       // Check for abort signal
       if (options?.streamOptions?.signal?.aborted) {
         break;
       }
     }
   }
-  
-  async generateCode(prompt: string, language: string = 'typescript', model?: string): Promise<string> {
+
+  async generateCode(
+    prompt: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<string> {
     const messages: Message[] = [
       {
         role: 'system',
-        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`
+        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`,
       },
       {
         role: 'user',
-        content: prompt
-      }
+        content: prompt,
+      },
     ];
-    
+
     return this.chat(messages, model, { temperature: 0.2 });
   }
-  
-  async reviewCode(code: string, language: string = 'typescript', model?: string): Promise<CodeReviewResult> {
+
+  async reviewCode(
+    code: string,
+    language: string = 'typescript',
+    model?: string,
+  ): Promise<CodeReviewResult> {
     const messages: Message[] = [
       {
         role: 'system',
@@ -127,24 +139,24 @@ export class AnthropicProvider extends BaseAIProvider {
   ],
   "summary": "<overall code quality summary>",
   "improvements": ["<improvement suggestion 1>", "<improvement suggestion 2>", ...]
-}`
+}`,
       },
       {
         role: 'user',
-        content: code
-      }
+        content: code,
+      },
     ];
-    
+
     const response = await this.chat(messages, model, { temperature: 0.1 });
-    
+
     try {
-      return JSON.parse(response);
+      return JSON.parse(response) as CodeReviewResult;
     } catch {
       // Fallback if JSON parsing fails
       return {
         issues: [],
         summary: response,
-        improvements: []
+        improvements: [],
       };
     }
   }
