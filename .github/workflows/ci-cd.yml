@@ -142,8 +142,10 @@ jobs:
         with:
           name: build-artifacts
 
-      - name: 📝 Auto-increment version
+      - name: 📝 Dynamic Auto-versioning System
         run: |
+          echo "🚀 Starting Dynamic Auto-versioning System..."
+          
           # Get current version from package.json
           CURRENT_VERSION=$(node -p "require('./package.json').version")
           echo "Current version in package.json: $CURRENT_VERSION"
@@ -154,21 +156,40 @@ jobs:
           echo "Latest stable version on npm: $LATEST_NPM_VERSION"
           echo "Latest alpha version on npm: $LATEST_ALPHA"
           
+          # Get additional metadata for unique versioning
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date +%Y%m%d%H%M)
+          
+          echo "Commit count: $COMMIT_COUNT"
+          echo "Short SHA: $SHORT_SHA"
+          echo "Timestamp: $TIMESTAMP"
+          
           # Compare and use the highest version as base
           HIGHEST_VERSION=$LATEST_ALPHA
           if [ "$(printf '%s\n' "$LATEST_NPM_VERSION" "$LATEST_ALPHA" | sort -V | tail -n1)" = "$LATEST_NPM_VERSION" ]; then
             HIGHEST_VERSION=$LATEST_NPM_VERSION
           fi
           
-          # Update package.json to the highest version first
-          npm version $HIGHEST_VERSION --no-git-tag-version --allow-same-version
+          echo "Using base version: $HIGHEST_VERSION"
           
-          # Now increment to next alpha version
-          npm version prerelease --preid=alpha --no-git-tag-version
+          # Generate new alpha version with commit count and timestamp
+          BASE_VERSION=$(echo $HIGHEST_VERSION | sed 's/-alpha.*//g')
+          NEW_ALPHA_VERSION="${BASE_VERSION}-alpha.${COMMIT_COUNT}.${TIMESTAMP}"
+          
+          echo "Generated new version: $NEW_ALPHA_VERSION"
+          
+          # Set the new version in package.json
+          npm version $NEW_ALPHA_VERSION --no-git-tag-version --allow-same-version
           
           NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "New version to publish: $NEW_VERSION"
+          echo "Final version to publish: $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: 🔄 Sync versions across all package files
+        run: |
+          echo "🔄 Synchronizing versions across package.json, package-oss.json, and package-lock.json..."
+          node scripts/sync-versions.js
 
       - name: 🔧 Build project
         run: pnpm run build

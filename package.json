@@ -60,7 +60,10 @@
     "pre-commit": "lint-staged",
     "release:latest": "pnpm publish && npm dist-tag add @bonginkan/maria@$(npm pkg get version | tr -d '\"') latest",
     "release:alpha": "pnpm publish --tag alpha",
-    "release:beta": "pnpm publish --tag beta"
+    "release:beta": "pnpm publish --tag beta",
+    "version:sync": "node scripts/sync-versions.js",
+    "version:auto": "npm version prerelease --preid=alpha --no-git-tag-version && npm run version:sync",
+    "version:dynamic": "node scripts/dynamic-version.js && npm run version:sync"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.20.0",
