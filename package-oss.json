@@ -1,6 +1,6 @@
 {
   "name": "@maria/cli",
-  "version": "1.0.5",
+  "version": "1.0.6-alpha.2",
   "description": "Intelligent CLI Assistant with Multi-Model AI Support - Zero Configuration, Privacy First",
   "keywords": [
     "ai",
@@ -34,12 +34,7 @@
     "maria": "./bin/maria",
     "mc": "./bin/maria"
   },
-  "files": [
-    "dist",
-    "bin",
-    "README.md",
-    "LICENSE"
-  ],
+  "files": ["dist", "bin", "README.md", "LICENSE"],
   "type": "commonjs",
   "engines": {
     "node": ">=18.0.0 <=22.0.0"
