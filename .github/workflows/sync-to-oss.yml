@@ -183,18 +183,14 @@ jobs:
 
       - name: 🔄 Clone OSS repository
         env:
-          GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "📥 Cloning maria OSS repository..."
+          echo "🔑 Using GITHUB_TOKEN for authentication"
           
-          # Debug: Test token authentication
-          echo "🔍 Testing token authentication..."
-          curl -s -o /dev/null -w "%{http_code}" \
-            -H "Authorization: token ${GH_TOKEN}" \
-            https://api.github.com/repos/bonginkan/maria | grep -q "200" && echo "✅ Token is valid" || echo "❌ Token authentication failed"
+          # Clone with GITHUB_TOKEN (always available in GitHub Actions)
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/bonginkan/maria.git /tmp/maria-repo
           
-          # Clone with PAT - use username:token format for Classic PAT
-          git clone https://tsubouchi:${GH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
           cd /tmp/maria-repo
           
           # Setup git config
@@ -265,7 +261,7 @@ jobs:
       - name: 📝 Commit and push changes
         if: steps.check_changes.outputs.changes == 'true'
         env:
-          GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd /tmp/maria-repo
           
@@ -325,7 +321,7 @@ jobs:
     steps:
       - name: 🎯 Trigger release workflow in OSS repo
         env:
-          GH_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "🚀 Triggering release workflow in maria OSS repository..."
           
@@ -335,9 +331,9 @@ jobs:
           if [ -n "$VERSION" ]; then
             echo "📦 Triggering release for version: $VERSION"
             
-            # Trigger release workflow via API
+            # Trigger release workflow via API (using GITHUB_TOKEN)
             curl -X POST \
-              -H "Authorization: token ${GH_TOKEN}" \
+              -H "Authorization: token ${GITHUB_TOKEN}" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/bonginkan/maria/actions/workflows/release.yml/dispatches \
               -d "{\"ref\":\"main\",\"inputs\":{\"version\":\"$VERSION\"}}"

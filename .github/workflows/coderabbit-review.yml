@@ -37,61 +37,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: 🤖 CodeRabbit AI Review
-        uses: coderabbitai/coderabbit-action@v2
+        uses: coderabbitai/ai-pr-reviewer@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          openai_api_key: ${{ secrets.OPENAI_API_KEY }}
-          config_path: ${{ env.CODERABBIT_CONFIG_PATH }}
-          # MARIA-specific settings
-          custom_review_prompt: |
-            You are reviewing code for MARIA Platform - an AI-powered development platform with CLI tools.
-            
-            Please focus on:
-            
-            🏗️ **MARIA-Specific Architecture**:
-            - AI provider integration patterns (OpenAI, Anthropic, Google, etc.)
-            - Command pattern implementation for CLI commands
-            - TypeScript strict mode compliance
-            - React/Ink component patterns for CLI UI
-            
-            🧠 **AI Integration Quality**:
-            - Proper error handling for AI API calls
-            - Token usage optimization
-            - Context management for conversations
-            - Model selection logic
-            
-            ⚡ **CLI Performance & UX**:
-            - Startup time optimization (target: <2s)
-            - Memory usage efficiency
-            - Command responsiveness
-            - User feedback and progress indicators
-            
-            📋 **Quality Standards (Zero-Error Policy)**:
-            - TypeScript errors: Must be 0
-            - ESLint warnings: Must be 0
-            - Test coverage: Aim for >80%
-            - Build success: Required
-            
-            🔒 **Security & Best Practices**:
-            - API key handling and storage
-            - Input validation for user commands
-            - File system operation safety
-            - Dependency security
-            
-            📚 **Documentation Standards**:
-            - README.md and CLAUDE.md consistency
-            - Command help text clarity
-            - Code comments for complex AI logic
-            - Type definitions completeness
-            
-            🚀 **MARIA Platform Context**:
-            - This is a monorepo with CLI, Studio app, and API
-            - Focus on CLI-specific issues in /src directory
-            - Consider integration with existing 40+ commands
-            - Ensure compatibility with multiple AI providers
-            
-            Please provide specific, actionable feedback with code suggestions where applicable.
-            Highlight any potential issues that could affect user experience or platform reliability.
+          debug: false
+          review_simple_changes: false
+          review_comment_lgtm: false
       
       - name: 📊 Review Summary
         if: always()
