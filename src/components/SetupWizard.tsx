@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Spinner, Select, Newline } from 'ink';
+import { Box, Text, Newline } from 'ink';
+import Spinner from 'ink-spinner';
 import {
   ZeroConfigSetup,
   SetupWizardConfig,
@@ -16,7 +17,7 @@ type SetupStep = 'language' | 'detection' | 'preferences' | 'testing' | 'complet
 export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }) => {
   const [currentStep, setCurrentStep] = useState<SetupStep>('language');
   const [loading, setLoading] = useState(false);
-  const [config, setConfig] = useState<Partial<SetupWizardConfig>>({});
+  const [_config, setConfig] = useState<Partial<SetupWizardConfig>>({});
   const [providers, setProviders] = useState<ProviderStatus[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<'en' | 'ja'>('en');
@@ -43,7 +44,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
       // Start with language detection
       await detectLanguage();
-    } catch (err) {
+    } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Setup failed');
     } finally {
       setLoading(false);
@@ -56,7 +57,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
     try {
       // Auto-detect language
-      const locale = process.env.LANG || process.env.LC_ALL || 'en_US';
+      const locale = process.env['LANG'] || process.env['LC_ALL'] || 'en_US';
       const detectedLang: 'en' | 'ja' =
         locale.includes('ja') || locale.includes('JP') ? 'ja' : 'en';
 
@@ -65,7 +66,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
       // Move to provider detection
       setTimeout(() => detectProviders(), 1000);
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Language detection failed');
     } finally {
       setLoading(false);
@@ -82,27 +83,8 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
 
       // Move to preferences
       setTimeout(() => setCurrentStep('preferences'), 1500);
-    } catch (err) {
+    } catch (err: unknown) {
       setError('Provider detection failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const configurePreferences = async () => {
-    setCurrentStep('testing');
-    setLoading(true);
-
-    try {
-      // Run full setup
-      const finalConfig = await setup.run();
-      setConfig(finalConfig);
-
-      // Move to completion
-      setCurrentStep('completion');
-      setTimeout(() => onComplete(finalConfig), 2000);
-    } catch (err) {
-      setError('Configuration failed');
     } finally {
       setLoading(false);
     }
@@ -121,7 +103,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
         <Text>
           {isJapanese
             ? `検出された言語: ${selectedLanguage === 'ja' ? '日本語' : 'English'}`
-            : `Detected language: ${selectedLanguage === 'ja' ? 'Japanese' : 'English'}`}
+            : `Detected language: ${(selectedLanguage as 'en' | 'ja') === 'ja' ? 'Japanese' : 'English'}`}
         </Text>
 
         <Newline />
@@ -209,7 +191,7 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
         <Newline />
 
         <Box>
-          <Text color="cyan" backgroundColor="blue" onClick={configurePreferences}>
+          <Text color="cyan" backgroundColor="blue">
             {isJapanese ? ' 設定を続行 ' : ' Continue Setup '}
           </Text>
         </Box>
@@ -313,14 +295,14 @@ export const SetupWizard: React.FC<SetupWizardProps> = ({ onComplete, onCancel }
         <Newline />
 
         <Box>
-          <Text color="yellow" backgroundColor="red" onClick={() => setError(null)}>
+          <Text color="yellow" backgroundColor="red">
             {isJapanese ? ' リトライ ' : ' Retry '}
           </Text>
 
           {onCancel && (
             <>
               <Text> </Text>
-              <Text color="gray" backgroundColor="black" onClick={onCancel}>
+              <Text color="gray" backgroundColor="black">
                 {isJapanese ? ' キャンセル ' : ' Cancel '}
               </Text>
             </>

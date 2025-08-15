@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
 import Spinner from 'ink-spinner';
-import { SlashCommandHandler } from '../services/slash-command-handler.js';
+// import { SlashCommandHandler } from '../services/slash-command-handler.js';
 
 interface Message {
   id: string;
@@ -67,7 +67,8 @@ export const InteractiveChatApp: React.FC = () => {
   useEffect(() => {
     const welcome: Message = {
       id: Date.now().toString(),
-      content: 'Welcome to MARIA CODE CLI!\n\n40 Slash Commands Available - Type /help to see all\nType anytime to interrupt current processing\n\nYou can:\n• Type naturally for AI assistance\n• Use slash commands for specific actions\n• Interrupt anytime with new instructions\n• Examples: /code, /test, /review, /video, /image',
+      content:
+        'Welcome to MARIA CODE CLI!\n\n40 Slash Commands Available - Type /help to see all\nType anytime to interrupt current processing\n\nYou can:\n• Type naturally for AI assistance\n• Use slash commands for specific actions\n• Interrupt anytime with new instructions\n• Examples: /code, /test, /review, /video, /image',
       role: 'system',
       timestamp: new Date(),
     };
@@ -94,69 +95,79 @@ export const InteractiveChatApp: React.FC = () => {
 
   const isAdditionalInfo = (input: string): boolean => {
     const additionalKeywords = [
-      'also', 'additionally', 'and', 'plus', 'with',
-      'また', 'さらに', 'そして', '追加で'
+      'also',
+      'additionally',
+      'and',
+      'plus',
+      'with',
+      'また',
+      'さらに',
+      'そして',
+      '追加で',
     ];
     const lowerInput = input.toLowerCase();
-    return additionalKeywords.some(keyword => lowerInput.includes(keyword));
+    return additionalKeywords.some((keyword) => lowerInput.includes(keyword));
   };
 
-  const handleSubmit = useCallback(async (value: string) => {
-    if (!value.trim()) return;
+  const handleSubmit = useCallback(
+    async (value: string) => {
+      if (!value.trim()) return;
 
-    // Handle interrupt if processing
-    if (isProcessing) {
-      interruptProcessing();
-      
-      const interruptMsg: Message = {
-        id: Date.now().toString(),
-        content: '[Interrupted - Processing new request]',
-        role: 'system',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, interruptMsg]);
+      // Handle interrupt if processing
+      if (isProcessing) {
+        interruptProcessing();
 
-      // Determine if it's additional info or override
-      const isAdditional = isAdditionalInfo(value);
-      const strategyMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        content: isAdditional 
-          ? '[Treating as additional information]' 
-          : '[Overriding previous request]',
-        role: 'system',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, strategyMsg]);
-    }
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: value,
-      role: 'user',
-      timestamp: new Date(),
-    };
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-
-    // Handle special commands
-    if (value.startsWith('/')) {
-      const [cmd] = value.slice(1).split(' ');
-      
-      if (cmd === 'clear') {
-        setMessages([]);
-        return;
-      }
-      
-      if (cmd === 'exit') {
-        process.exit(0);
-      }
-
-      if (cmd === 'help') {
-        const helpMessage: Message = {
+        const interruptMsg: Message = {
           id: Date.now().toString(),
-          content: `MARIA CODE - Available Commands
+          content: '[Interrupted - Processing new request]',
+          role: 'system',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, interruptMsg]);
+
+        // Determine if it's additional info or override
+        const isAdditional = isAdditionalInfo(value);
+        const strategyMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          content: isAdditional
+            ? '[Treating as additional information]'
+            : '[Overriding previous request]',
+          role: 'system',
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, strategyMsg]);
+      }
+
+      const userMessage: Message = {
+        id: Date.now().toString(),
+        content: value,
+        role: 'user',
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, userMessage]);
+      setInputValue('');
+
+      // Handle special commands
+      if (value.startsWith('/')) {
+        const [cmd] = value.slice(1).split(' ');
+
+        if (cmd === 'clear') {
+          setMessages([]);
+          return;
+        }
+
+        if (cmd === 'exit') {
+          process.exit(0);
+        }
+
+        if (cmd === 'help') {
+          const helpMessage: Message = {
+            id: Date.now().toString(),
+            content: `MARIA CODE - Available Commands
 ────────────────────────────────────────
-${FULL_COMMAND_LIST.slice(0, 14).map(c => `${c.cmd.padEnd(20)} ${c.desc}`).join('\n')}
+${FULL_COMMAND_LIST.slice(0, 14)
+  .map((c) => `${c.cmd.padEnd(20)} ${c.desc}`)
+  .join('\n')}
 
 + 26 more slash commands available
 
@@ -166,28 +177,30 @@ Interrupt Feature:
 • Type anytime during processing to interrupt
 • New requests override previous ones
 • Additional info is automatically detected`,
+            role: 'assistant',
+            timestamp: new Date(),
+          };
+          setMessages((prev) => [...prev, helpMessage]);
+          return;
+        }
+      }
+
+      // Simulate AI processing
+      setIsProcessing(true);
+      const timeout = setTimeout(() => {
+        const response: Message = {
+          id: Date.now().toString(),
+          content: `Processing: ${value}\n\n[AI response would appear here]`,
           role: 'assistant',
           timestamp: new Date(),
         };
-        setMessages(prev => [...prev, helpMessage]);
-        return;
-      }
-    }
-
-    // Simulate AI processing
-    setIsProcessing(true);
-    const timeout = setTimeout(() => {
-      const response: Message = {
-        id: Date.now().toString(),
-        content: `Processing: ${value}\n\n[AI response would appear here]`,
-        role: 'assistant',
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, response]);
-      setIsProcessing(false);
-    }, 2000);
-    setProcessingTimeout(timeout);
-  }, [isProcessing, interruptProcessing]);
+        setMessages((prev) => [...prev, response]);
+        setIsProcessing(false);
+      }, 2000);
+      setProcessingTimeout(timeout);
+    },
+    [isProcessing, interruptProcessing],
+  );
 
   return (
     <Box flexDirection="column" minHeight={24}>
@@ -252,7 +265,9 @@ Interrupt Feature:
 
       {/* Welcome Message */}
       <Box marginBottom={1}>
-        <Text color="magenta" bold>Welcome to MARIA CODE CLI!</Text>
+        <Text color="magenta" bold>
+          Welcome to MARIA CODE CLI!
+        </Text>
       </Box>
       <Box marginBottom={1}>
         <Text color="yellow">How can I help you today?</Text>
@@ -269,21 +284,23 @@ Interrupt Feature:
         {messages.slice(-5).map((msg) => (
           <Box key={msg.id} marginBottom={1}>
             {msg.role === 'user' && (
-              <Text color="green">{'> '}{msg.content}</Text>
+              <Text color="green">
+                {'> '}
+                {msg.content}
+              </Text>
             )}
-            {msg.role === 'assistant' && (
-              <Text color="cyan">{msg.content}</Text>
-            )}
-            {msg.role === 'system' && (
-              msg.content.startsWith('Welcome to MARIA CODE CLI!') ? (
+            {msg.role === 'assistant' && <Text color="cyan">{msg.content}</Text>}
+            {msg.role === 'system' &&
+              (msg.content.startsWith('Welcome to MARIA CODE CLI!') ? (
                 <Box flexDirection="column">
-                  <Text color="magenta" bold>Welcome to MARIA CODE CLI!</Text>
+                  <Text color="magenta" bold>
+                    Welcome to MARIA CODE CLI!
+                  </Text>
                   <Text color="yellow">{msg.content.split('\n').slice(1).join('\n')}</Text>
                 </Box>
               ) : (
                 <Text color="yellow">{msg.content}</Text>
-              )
-            )}
+              ))}
           </Box>
         ))}
         {isProcessing && (
@@ -299,7 +316,9 @@ Interrupt Feature:
       {showFullCommands && (
         <Box borderStyle="single" borderColor="magenta" padding={1} marginBottom={1}>
           <Box flexDirection="column">
-            <Text color="magenta" bold>{'🤖 MARIA CODE - Available Commands'}</Text>
+            <Text color="magenta" bold>
+              {'🤖 MARIA CODE - Available Commands'}
+            </Text>
             <Text color="gray">{'─'.repeat(40)}</Text>
             {FULL_COMMAND_LIST.map((cmd, idx) => (
               <Text key={idx} color={idx % 2 === 0 ? 'cyan' : 'white'}>
@@ -308,9 +327,11 @@ Interrupt Feature:
               </Text>
             ))}
             <Box marginTop={1}>
-              <Text color="yellow" bold>{'💡 You can also type natural language requests!'}</Text>
+              <Text color="yellow" bold>
+                {'💡 You can also type natural language requests!'}
+              </Text>
             </Box>
-            <Text color="green">  Example: "Create a React component for user profile"</Text>
+            <Text color="green"> Example: "Create a React component for user profile"</Text>
           </Box>
         </Box>
       )}
@@ -329,7 +350,7 @@ Interrupt Feature:
           value={inputValue}
           onChange={setInputValue}
           onSubmit={handleSubmit}
-          placeholder={isProcessing ? "Type to interrupt..." : "/model"}
+          placeholder={isProcessing ? 'Type to interrupt...' : '/model'}
         />
       </Box>
 

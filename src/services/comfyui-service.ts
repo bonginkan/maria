@@ -25,14 +25,14 @@ export interface ComfyUIConfig {
 export interface WorkflowNode {
   id: number;
   class: string;
-  inputs: Record<string, any>;
-  outputs?: Record<string, any>;
-  _meta?: Record<string, any>;
+  inputs: Record<string, unknown>;
+  outputs?: Record<string, unknown>;
+  _meta?: Record<string, unknown>;
 }
 
 export interface ComfyUIWorkflow {
   nodes: WorkflowNode[];
-  extra_data?: Record<string, any>;
+  extra_data?: Record<string, unknown>;
   version?: string;
 }
 
@@ -82,6 +82,7 @@ export class ComfyUIService {
       await fs.access(path.join(this.config.installPath, 'main.py'));
       return true;
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -104,7 +105,7 @@ export class ComfyUIService {
 
       // Install dependencies
       await this.installDependencies();
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to install ComfyUI: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -140,7 +141,7 @@ export class ComfyUIService {
           { timeout: 600000 },
         );
       }
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to install dependencies: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -205,6 +206,7 @@ export class ComfyUIService {
         await axios.get(`${baseUrl}/system_stats`, { timeout: 5000 });
         return; // Server is ready
       } catch {
+        // Ignore error
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
@@ -221,6 +223,7 @@ export class ComfyUIService {
       await axios.get(`${baseUrl}/system_stats`, { timeout: 5000 });
       return true;
     } catch {
+      // Ignore error
       return false;
     }
   }
@@ -388,7 +391,7 @@ export class ComfyUIService {
       const result = await this.pollForCompletion(promptId, onProgress);
 
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         error: `Workflow execution failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -433,7 +436,7 @@ export class ComfyUIService {
         // Still running
         onProgress?.(`Workflow running... (${i * 5}s)`);
         await new Promise((resolve) => setTimeout(resolve, 5000));
-      } catch (error) {
+      } catch (error: unknown) {
         return {
           success: false,
           error: `Polling failed: ${error instanceof Error ? error.message : String(error)}`,
@@ -472,7 +475,7 @@ export class ComfyUIService {
       }
 
       outputs.push(...recentFiles);
-    } catch (error) {
+    } catch (error: unknown) {
       console.warn(
         'Failed to get output files:',
         error instanceof Error ? error.message : String(error),
@@ -521,7 +524,9 @@ export class ComfyUIService {
         try {
           await fs.access(targetDir);
           continue; // Skip if already exists
-        } catch {}
+        } catch {
+          // Ignore error
+        }
 
         // Clone repository
         await execAsync(`git clone ${repo} "${targetDir}"`);
@@ -533,8 +538,10 @@ export class ComfyUIService {
           await execAsync(
             `cd "${targetDir}" && ${this.config.pythonPath} -m pip install -r requirements.txt`,
           );
-        } catch {}
-      } catch (error) {
+        } catch {
+          // Ignore error
+        }
+      } catch (error: unknown) {
         console.warn(
           `Failed to install custom node ${repo}:`,
           error instanceof Error ? error.message : String(error),
@@ -546,7 +553,7 @@ export class ComfyUIService {
   /**
    * Get system information
    */
-  async getSystemInfo(): Promise<any> {
+  async getSystemInfo(): Promise<unknown> {
     if (!(await this.isServerRunning())) {
       return null;
     }
@@ -556,6 +563,7 @@ export class ComfyUIService {
       const response = await axios.get(`${baseUrl}/system_stats`);
       return response.data;
     } catch {
+      // Ignore error
       return null;
     }
   }

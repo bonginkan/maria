@@ -4,15 +4,24 @@
  */
 
 export { IntentClassifier, type InferredCommand, type CommandPattern } from './intent-classifier';
-export { CommandDispatcher, type CommandResult, type DispatcherOptions } from './command-dispatcher';
-export { ContextManager, type ConversationContext, type UserProfile, type Message } from './context-manager';
+export {
+  CommandDispatcher,
+  type CommandResult,
+  type DispatcherOptions,
+} from './command-dispatcher';
+export {
+  ContextManager,
+  type ConversationContext,
+  type UserProfile,
+  type Message,
+} from './context-manager';
 export { InterruptHandler, type InterruptEvent, type ProcessingTask } from './interrupt-handler';
 export { PriorityQueue, type QueuedTask, type QueueStatistics } from './priority-queue';
 export { StreamProcessor, type StreamChunk, type StreamProgress } from './stream-processor';
 
 // 統合されたインテリジェントルーターシステム
-import { IntentClassifier } from './intent-classifier';
 import { CommandDispatcher } from './command-dispatcher';
+import { type InferredCommand } from './intent-classifier';
 import { ContextManager } from './context-manager';
 import { InterruptHandler } from './interrupt-handler';
 import { PriorityQueue } from './priority-queue';
@@ -35,16 +44,13 @@ export class IntelligentRouter {
   private streamProcessor: StreamProcessor;
   private contextManager: ContextManager;
 
-  constructor(
-    slashCommandHandler: SlashCommandHandler,
-    config: IntelligentRouterConfig = {}
-  ) {
+  constructor(slashCommandHandler: SlashCommandHandler, config: IntelligentRouterConfig = {}) {
     // コンポーネントの初期化
     this.contextManager = new ContextManager();
     this.dispatcher = new CommandDispatcher(slashCommandHandler, {
       verbose: config.verbose,
       autoExecute: config.autoExecute,
-      confirmThreshold: config.confirmThreshold
+      confirmThreshold: config.confirmThreshold,
     });
     this.interruptHandler = new InterruptHandler();
     this.priorityQueue = new PriorityQueue(config.maxConcurrentTasks);
@@ -64,8 +70,8 @@ export class IntelligentRouter {
     });
 
     // タスク完了イベント
-    this.priorityQueue.on('task:completed', (task) => {
-      this.contextManager.updateLastCommand(task.params as any);
+    this.priorityQueue.on('task:completed', (task: { params: unknown }) => {
+      this.contextManager.updateLastCommand(task.params as InferredCommand);
     });
 
     // ストリーミングチャンク
@@ -80,15 +86,15 @@ export class IntelligentRouter {
   /**
    * 自然言語入力を処理
    */
-  async processInput(input: string): Promise<any> {
+  async processInput(input: string): Promise<unknown> {
     // 現在処理中の場合は割り込み処理
     if (this.interruptHandler.isCurrentlyProcessing()) {
       const interruptEvent = await this.interruptHandler.handleInterrupt(input);
-      
+
       if (interruptEvent.type === 'cancel') {
         return { cancelled: true };
       }
-      
+
       if (interruptEvent.type === 'addition') {
         // 追加情報として既存のコンテキストにマージ
         const mergedInput = await this.contextManager.mergeWithLastCommand(input);
@@ -116,10 +122,10 @@ export class IntelligentRouter {
         if (this.streamProcessor.isCurrentlyStreaming()) {
           return await this.processWithStreaming(input);
         }
-        
+
         // 通常のディスパッチ処理
         return await this.dispatcher.dispatch(input);
-      }
+      },
     });
 
     // タスクの実行結果を待つ
@@ -142,24 +148,24 @@ export class IntelligentRouter {
   /**
    * ストリーミング処理
    */
-  private async processWithStreaming(input: string): Promise<any> {
+  private async processWithStreaming(input: string): Promise<unknown> {
     // ストリーミングジェネレーターを作成
     const generator = this.createResponseGenerator(input);
-    
+
     // ストリーミング処理を開始
     await this.streamProcessor.startStreaming(generator, {
       chunkSize: 100,
       progressCallback: (progress) => {
         // プログレス更新
         console.log(`\rProcessing: ${progress.percentage.toFixed(1)}%`);
-      }
+      },
     });
 
     // 最終結果を返す
     return {
       success: true,
       output: this.streamProcessor.getPartialResult(),
-      chunks: this.streamProcessor.getChunks()
+      chunks: this.streamProcessor.getChunks(),
     };
   }
 
@@ -169,14 +175,14 @@ export class IntelligentRouter {
   private async *createResponseGenerator(input: string): AsyncGenerator<string> {
     // ディスパッチ処理をチャンクに分割
     const result = await this.dispatcher.dispatch(input);
-    
+
     if (result.output) {
       // 出力を小さなチャンクに分割
       const chunks = result.output.match(/.{1,50}/g) || [];
       for (const chunk of chunks) {
         yield chunk;
         // 少し遅延を入れてストリーミング効果を演出
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
     }
   }
@@ -184,22 +190,26 @@ export class IntelligentRouter {
   /**
    * 割り込みイベントを処理
    */
-  private async handleInterruptEvent(event: any) {
+  private async handleInterruptEvent(event: unknown) {
     // 高優先度タスクとして実行
     await this.priorityQueue.executeImmediate({
       command: 'interrupt',
       params: { event },
       maxRetries: 1,
       execute: async () => {
-        return await this.dispatcher.dispatch(event.input);
-      }
+        const typedEvent = event as { input: string };
+        return await this.dispatcher.dispatch(typedEvent.input);
+      },
     });
   }
 
   /**
    * 高優先度コマンドを実行
    */
-  async executeHighPriority(command: string, params: Record<string, any> = {}): Promise<any> {
+  async executeHighPriority(
+    command: string,
+    params: Record<string, unknown> = {},
+  ): Promise<unknown> {
     return await this.interruptHandler.executePriorityTask(
       async () => {
         // 直接スラッシュコマンドを実行
@@ -210,8 +220,8 @@ export class IntelligentRouter {
         command,
         priority: 'high',
         interruptible: false,
-        timeout: 30000
-      }
+        timeout: 30000,
+      },
     );
   }
 
@@ -223,7 +233,7 @@ export class IntelligentRouter {
       dispatcher: this.dispatcher.getStatistics(),
       queue: this.priorityQueue.getQueueStatus(),
       stream: this.streamProcessor.getStatistics(),
-      interrupt: this.interruptHandler.getQueueStatus()
+      interrupt: this.interruptHandler.getQueueStatus(),
     };
   }
 

@@ -72,7 +72,7 @@ export const App: React.FC = () => {
           cmd.id === commandId ? { ...cmd, output, status: 'success' as const } : cmd,
         ),
       );
-    } catch (error) {
+    } catch (error: unknown) {
       setCommands((prev) =>
         prev.map((cmd) =>
           cmd.id === commandId
@@ -342,7 +342,8 @@ Type /help to see available commands.`;
       {/* Footer */}
       <Box justifyContent="center" marginTop={1}>
         <Text color="gray">
-          💡 Press Ctrl+R to {showFullCommands ? 'hide' : 'show'} all commands • Ctrl+C to exit • /help for commands
+          💡 Press Ctrl+R to {showFullCommands ? 'hide' : 'show'} all commands • Ctrl+C to exit •
+          /help for commands
         </Text>
       </Box>
     </Box>

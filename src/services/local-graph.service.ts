@@ -9,7 +9,7 @@ import { LocalStorageService } from './local-storage.service';
 export interface GraphNode {
   id: string;
   labels: string[];
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,14 +19,14 @@ export interface GraphEdge {
   type: string;
   fromId: string;
   toId: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   createdAt: string;
 }
 
 export interface GraphQuery {
   nodeLabels?: string[];
   edgeTypes?: string[];
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
   limit?: number;
   depth?: number;
 }
@@ -72,10 +72,19 @@ export class LocalGraphService extends EventEmitter {
     try {
       // Load nodes
       const nodeItems = await this.storage.query({ type: 'memory' });
-      const graphData = nodeItems.find((item) => item.content.type === 'graph');
+      const graphData = nodeItems.find((item) => {
+        return (
+          typeof item.content === 'object' &&
+          item.content !== null &&
+          'type' in item.content &&
+          (item.content as Record<string, unknown>)['type'] === 'graph'
+        );
+      });
 
-      if (graphData) {
-        const { nodes, edges } = graphData.content.data;
+      if (graphData && typeof graphData.content === 'object' && graphData.content !== null) {
+        const content = graphData.content as Record<string, unknown>;
+        const data = content['data'] as Record<string, unknown>;
+        const { nodes, edges } = data as { nodes: GraphNode[]; edges: GraphEdge[] };
 
         // Rebuild nodes
         for (const node of nodes) {
@@ -103,7 +112,7 @@ export class LocalGraphService extends EventEmitter {
           this.adjacencyList.get(edge.fromId)!.add(edge.toId);
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.log('No existing graph data found, starting fresh');
     }
   }
@@ -125,7 +134,14 @@ export class LocalGraphService extends EventEmitter {
 
     // Check if graph data exists
     const existing = await this.storage.query({ type: 'memory' });
-    const graphItem = existing.find((item) => item.content.type === 'graph');
+    const graphItem = existing.find((item) => {
+      return (
+        typeof item.content === 'object' &&
+        item.content !== null &&
+        'type' in item.content &&
+        (item.content as Record<string, unknown>)['type'] === 'graph'
+      );
+    });
 
     if (graphItem) {
       await this.storage.update(graphItem.id, graphData);
@@ -139,7 +155,7 @@ export class LocalGraphService extends EventEmitter {
   }
 
   // Node operations
-  async createNode(labels: string[], properties: Record<string, any> = {}): Promise<GraphNode> {
+  async createNode(labels: string[], properties: Record<string, unknown> = {}): Promise<GraphNode> {
     await this.initialize();
 
     const node: GraphNode = {
@@ -165,7 +181,7 @@ export class LocalGraphService extends EventEmitter {
     return node;
   }
 
-  async updateNode(nodeId: string, properties: Record<string, any>): Promise<GraphNode | null> {
+  async updateNode(nodeId: string, properties: Record<string, unknown>): Promise<GraphNode | null> {
     const node = this.nodes.get(nodeId);
     if (!node) return null;
 
@@ -224,7 +240,7 @@ export class LocalGraphService extends EventEmitter {
     type: string,
     fromId: string,
     toId: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
   ): Promise<GraphEdge | null> {
     await this.initialize();
 

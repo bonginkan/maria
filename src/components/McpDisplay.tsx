@@ -122,7 +122,7 @@ export const McpDisplay: React.FC<{
 
       <ExpandableSection
         title="Server Status"
-        expanded={expandedSections.serverStatus || false}
+        expanded={expandedSections['serverStatus'] || false}
         onToggle={() => toggleSection('serverStatus')}
         icon="🖥️"
         summary={`${data.active}/${data.servers.length} servers active`}
@@ -150,7 +150,7 @@ export const McpDisplay: React.FC<{
 
       <ExpandableSection
         title="Quick Actions"
-        expanded={expandedSections.quickActions || false}
+        expanded={expandedSections['quickActions'] || false}
         onToggle={() => toggleSection('quickActions')}
         icon="⚡"
         summary="Server management commands"

@@ -172,20 +172,20 @@ export class PrioritySystem {
 
     // Privacy scoring
     if (isLocal) {
-      const privacyBonus = (this.config.preferences.privacyRequirement / 100) * 30;
-      breakdown.privacy = privacyBonus;
+      const privacyBonus = (this.config.preferences['privacyRequirement'] / 100) * 30;
+      breakdown['privacy'] = privacyBonus;
       if (privacyBonus > 10) reasoning.push('Local provider (privacy)');
     } else {
       // Cloud providers get penalty for high privacy requirements
-      if (this.config.preferences.privacyRequirement > 80) {
-        breakdown.privacy = -15;
+      if (this.config.preferences['privacyRequirement'] > 80) {
+        breakdown['privacy'] = -15;
         reasoning.push('Cloud provider (privacy concern)');
       }
     }
 
     // Confidentiality level adjustment
     if (task.confidentialityLevel === 'highly-confidential' && !isLocal) {
-      breakdown.privacy -= 25;
+      breakdown['privacy'] -= 25;
       reasoning.push('High confidentiality requires local');
     }
 
@@ -249,19 +249,19 @@ export class PrioritySystem {
     // Apply weights based on preferences and task
     const weights = this.calculateWeights(task);
 
-    score += breakdown.privacy * weights.privacy;
-    score += breakdown.performance * weights.performance;
-    score += breakdown.cost * weights.cost;
-    score += breakdown.quality * weights.quality;
-    score += breakdown.availability * weights.availability;
-    score += breakdown.contextWindow * weights.contextWindow;
+    score += (breakdown['privacy'] || 0) * (weights['privacy'] || 0);
+    score += (breakdown['performance'] || 0) * (weights['performance'] || 0);
+    score += (breakdown['cost'] || 0) * (weights['cost'] || 0);
+    score += (breakdown['quality'] || 0) * (weights['quality'] || 0);
+    score += (breakdown['availability'] || 0) * (weights['availability'] || 0);
+    score += (breakdown['contextWindow'] || 0) * (weights['contextWindow'] || 0);
 
     return score;
   }
 
   private calculateWeights(task: TaskContext): Record<string, number> {
     const base = {
-      privacy: this.config.preferences.privacyRequirement / 100,
+      privacy: this.config.preferences['privacyRequirement'] / 100,
       performance: this.config.preferences.speedRequirement / 100,
       cost: this.config.preferences.costSensitivity / 100,
       quality: this.config.preferences.qualityRequirement / 100,
@@ -460,7 +460,7 @@ export class PrioritySystem {
 
     // Recalculate preferences if mode changed
     if (config.mode && config.mode !== this.config.mode) {
-      this.config.preferences = this.getDefaultPreferences(config.mode);
+      this.config['preferences'] = this.getDefaultPreferences(config.mode);
     }
   }
 

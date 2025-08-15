@@ -44,13 +44,13 @@ export class ImageAttachmentService {
     // Common file path patterns
     const patterns = [
       // Absolute paths
-      /(?:^|\s)([\/~][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
+      /(?:^|\s)([/~][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
       // Relative paths
       /(?:^|\s)(\.?\.?\/[^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
       // Windows paths
-      /(?:^|\s)([a-zA-Z]:[\\\/][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
+      /(?:^|\s)([a-zA-Z]:[\\/][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
       // Just filename if in current directory
-      /(?:^|\s)([^\s\/\\]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
+      /(?:^|\s)([^\s/\\]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
     ];
 
     for (const pattern of patterns) {
@@ -111,7 +111,7 @@ export class ImageAttachmentService {
         size: stats.size,
         dimensions,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(chalk.red(`Error processing image: ${error}`));
       return null;
     }

@@ -8,6 +8,7 @@ import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { AIRouter } from '../services/ai-router';
+import { isObject, getBooleanProperty, getStringProperty } from '../utils/type-guards.js';
 
 // Model profile types
 interface ModelProfile {
@@ -39,7 +40,7 @@ const MODEL_PROFILES: Record<string, ModelProfile> = {
     context: '128K',
     type: 'cloud',
   },
-  'o3': {
+  o3: {
     provider: 'openai',
     name: 'o3',
     badge: '🧠',
@@ -300,7 +301,7 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
 }) => {
   const [mode] = useState(initialMode);
   const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<Record<string, any>>({});
+  const [status, setStatus] = useState<Record<string, unknown>>({});
   const [filter, setFilter] = useState<'all' | 'local' | 'cloud' | 'image' | 'video'>('all');
   const [, setSelectedModel] = useState<string>('auto');
 
@@ -333,7 +334,7 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
 
   const checkModelStatus = async () => {
     setLoading(true);
-    const newStatus: Record<string, any> = {};
+    const newStatus: Record<string, unknown> = {};
 
     // Check each model availability
     for (const [id, profile] of Object.entries(MODEL_PROFILES)) {
@@ -347,9 +348,14 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
       try {
         // Check if provider is available
         const isAvailable = await checkProviderAvailability();
-        newStatus[id].available = isAvailable;
-      } catch (error) {
-        newStatus[id].error = error instanceof Error ? error.message : String(error);
+        if (newStatus[id] && isObject(newStatus[id])) {
+          (newStatus[id] as Record<string, unknown>)['available'] = isAvailable;
+        }
+      } catch (error: unknown) {
+        if (newStatus[id] && isObject(newStatus[id])) {
+          (newStatus[id] as Record<string, unknown>)['error'] =
+            error instanceof Error ? error.message : String(error);
+        }
       }
     }
 
@@ -480,17 +486,22 @@ export const ModelCommand: React.FC<ModelManagerProps> = ({
         </Box>
 
         <Box flexDirection="column" gap={1}>
-          {Object.entries(status).map(([id, info]) => (
-            <Box key={id} gap={1}>
-              <Text color={info.available ? 'green' : 'red'}>{info.available ? '✅' : '❌'}</Text>
-              <Box width={20}>
-                <Text>{info.name}</Text>
+          {Object.entries(status).map(([id, info]) => {
+            const statusInfo = isObject(info) ? info : {};
+            const available = getBooleanProperty(statusInfo, 'available', false);
+            const name = getStringProperty(statusInfo, 'name', id);
+            const error = getStringProperty(statusInfo, 'error', '');
+
+            return (
+              <Box key={id} gap={1}>
+                <Text color={available ? 'green' : 'red'}>{available ? '✅' : '❌'}</Text>
+                <Box width={20}>
+                  <Text>{name}</Text>
+                </Box>
+                <Text color="gray">{available ? 'Available' : error || 'Not available'}</Text>
               </Box>
-              <Text color="gray">
-                {info.available ? 'Available' : info.error || 'Not available'}
-              </Text>
-            </Box>
-          ))}
+            );
+          })}
         </Box>
       </Box>
     );
@@ -555,7 +566,7 @@ export const SwitchCommand: React.FC<{ model: string }> = ({ model }) => {
  * /recommend - Task-based model recommendations
  */
 export const RecommendCommand: React.FC<{ task?: string }> = ({ task = 'chat' }) => {
-  const recommendations = TASK_RECOMMENDATIONS[task] || TASK_RECOMMENDATIONS.chat;
+  const recommendations = TASK_RECOMMENDATIONS[task] || TASK_RECOMMENDATIONS['chat'];
 
   return (
     <Box flexDirection="column">

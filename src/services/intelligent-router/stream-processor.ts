@@ -14,7 +14,7 @@ export interface StreamChunk {
   content: string;
   timestamp: Date;
   type: 'text' | 'code' | 'data' | 'error' | 'progress';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface StreamProgress {
@@ -50,7 +50,7 @@ export class StreamProcessor extends EventEmitter {
       chunkSize?: number;
       encoding?: BufferEncoding;
       progressCallback?: (progress: StreamProgress) => void;
-    } = {}
+    } = {},
   ): Promise<void> {
     this.isStreaming = true;
     this.chunkIndex = 0;
@@ -72,18 +72,16 @@ export class StreamProcessor extends EventEmitter {
   /**
    * Readableストリームを処理
    */
-  private async processReadableStream(
-    stream: Readable,
-    options: any
-  ): Promise<void> {
+  private async processReadableStream(stream: Readable, options: unknown): Promise<void> {
     return new Promise((resolve, reject) => {
       this.currentStream = stream;
       let buffer = '';
-      const chunkSize = options.chunkSize || 100;
+      const typedOptions = options as { chunkSize?: number; encoding?: string };
+      const chunkSize = typedOptions.chunkSize || 100;
 
       // エンコーディング設定
-      if (options.encoding) {
-        stream.setEncoding(options.encoding);
+      if (typedOptions.encoding) {
+        stream.setEncoding(typedOptions.encoding as BufferEncoding);
       }
 
       // データチャンクの処理
@@ -96,7 +94,7 @@ export class StreamProcessor extends EventEmitter {
           stream.pause();
           this.pausedStreams.add(stream.readableObjectMode ? 'object' : 'buffer');
           this.emit('backpressure:high', buffer.length);
-          
+
           // バッファを処理してから再開
           setTimeout(() => {
             this.processBuffer(buffer, chunkSize);
@@ -119,7 +117,7 @@ export class StreamProcessor extends EventEmitter {
         logger.error('Stream error:', error);
         this.emitChunk({
           type: 'error',
-          content: error.message
+          content: error.message,
         });
         reject(error);
       });
@@ -140,12 +138,16 @@ export class StreamProcessor extends EventEmitter {
    */
   private async processAsyncGenerator(
     generator: AsyncGenerator<string>,
-    options: any
+    options: unknown,
   ): Promise<void> {
-    const chunkSize = options.chunkSize || 100;
+    const typedOptions = options as {
+      chunkSize?: number;
+      progressCallback?: (progress: number) => void;
+    };
+    const chunkSize = typedOptions.chunkSize || 100;
     let buffer = '';
     let totalProcessed = 0;
-    let estimatedTotal = 0;
+    const estimatedTotal = 0;
 
     try {
       for await (const chunk of generator) {
@@ -153,14 +155,14 @@ export class StreamProcessor extends EventEmitter {
         totalProcessed += chunk.length;
 
         // プログレス更新
-        if (options.progressCallback) {
+        if (typedOptions.progressCallback) {
           const progress: StreamProgress = {
             current: totalProcessed,
             total: estimatedTotal || totalProcessed * 2, // 推定
             percentage: estimatedTotal ? (totalProcessed / estimatedTotal) * 100 : 50,
-            message: `Processing: ${totalProcessed} bytes`
+            message: `Processing: ${totalProcessed} bytes`,
           };
-          options.progressCallback(progress);
+          typedOptions.progressCallback(progress.percentage);
           this.updateProgress('main', progress);
         }
 
@@ -182,11 +184,11 @@ export class StreamProcessor extends EventEmitter {
       if (buffer.length > 0) {
         await this.processBufferAsync(buffer, chunkSize);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('AsyncGenerator error:', error);
       this.emitChunk({
         type: 'error',
-        content: error instanceof Error ? error.message : 'Unknown error'
+        content: error instanceof Error ? error.message : 'Unknown error',
       });
       throw error;
     }
@@ -197,10 +199,10 @@ export class StreamProcessor extends EventEmitter {
    */
   private processBuffer(buffer: string, chunkSize: number) {
     const chunks = this.splitIntoChunks(buffer, chunkSize);
-    chunks.forEach(chunk => {
+    chunks.forEach((chunk) => {
       this.emitChunk({
         type: 'text',
-        content: chunk
+        content: chunk,
       });
     });
   }
@@ -210,7 +212,7 @@ export class StreamProcessor extends EventEmitter {
    */
   private async processBufferAsync(buffer: string, chunkSize: number): Promise<void> {
     const chunks = this.splitIntoChunks(buffer, chunkSize);
-    
+
     for (const chunk of chunks) {
       // トランスフォーマーを適用
       let processedChunk = chunk;
@@ -220,7 +222,7 @@ export class StreamProcessor extends EventEmitter {
 
       this.emitChunk({
         type: this.detectChunkType(processedChunk),
-        content: processedChunk
+        content: processedChunk,
       });
 
       // 少し遅延を入れて負荷を分散
@@ -236,10 +238,10 @@ export class StreamProcessor extends EventEmitter {
     if (/^```[\s\S]*```$/.test(content.trim())) {
       return 'code';
     }
-    
+
     // JSONデータの検出
     try {
-      JSON.parse(content);
+      JSON.parse(content) as Record<string, unknown>;
       return 'data';
     } catch {
       // JSONではない
@@ -283,7 +285,7 @@ export class StreamProcessor extends EventEmitter {
   private emitChunk(options: {
     type: StreamChunk['type'];
     content: string;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }) {
     const chunk: StreamChunk = {
       id: this.generateChunkId(),
@@ -291,7 +293,7 @@ export class StreamProcessor extends EventEmitter {
       content: options.content,
       timestamp: new Date(),
       type: options.type,
-      metadata: options.metadata
+      metadata: options.metadata,
     };
 
     this.chunks.push(chunk);
@@ -322,7 +324,7 @@ export class StreamProcessor extends EventEmitter {
       case 'data':
         // JSONデータは整形して表示
         try {
-          const data = JSON.parse(chunk.content);
+          const data = JSON.parse(chunk.content) as Record<string, unknown>;
           process.stdout.write(chalk.green(JSON.stringify(data, null, 2)));
         } catch {
           process.stdout.write(chunk.content);
@@ -346,7 +348,7 @@ export class StreamProcessor extends EventEmitter {
   private async applyTransformer(transformer: Transform, chunk: string): Promise<string> {
     return new Promise((resolve, reject) => {
       let result = '';
-      
+
       transformer.on('data', (data) => {
         result += data.toString();
       });
@@ -390,7 +392,7 @@ export class StreamProcessor extends EventEmitter {
    * バッファのドレインを待機
    */
   private async waitForBufferDrain(): Promise<void> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const checkInterval = setInterval(() => {
         if (this.outputBuffer.length < this.backpressureThreshold / 2) {
           clearInterval(checkInterval);
@@ -444,7 +446,7 @@ export class StreamProcessor extends EventEmitter {
    */
   getChunks(type?: StreamChunk['type']): StreamChunk[] {
     if (type) {
-      return this.chunks.filter(c => c.type === type);
+      return this.chunks.filter((c) => c.type === type);
     }
     return [...this.chunks];
   }
@@ -453,9 +455,9 @@ export class StreamProcessor extends EventEmitter {
    * 統計情報を取得
    */
   getStatistics() {
-    const textChunks = this.chunks.filter(c => c.type === 'text').length;
-    const codeChunks = this.chunks.filter(c => c.type === 'code').length;
-    const errorChunks = this.chunks.filter(c => c.type === 'error').length;
+    const textChunks = this.chunks.filter((c) => c.type === 'text').length;
+    const codeChunks = this.chunks.filter((c) => c.type === 'code').length;
+    const errorChunks = this.chunks.filter((c) => c.type === 'error').length;
     const totalBytes = this.outputBuffer.join('').length;
 
     return {
@@ -466,7 +468,7 @@ export class StreamProcessor extends EventEmitter {
       totalBytes,
       isStreaming: this.isStreaming,
       pausedStreams: this.pausedStreams.size,
-      bufferSize: this.outputBuffer.length
+      bufferSize: this.outputBuffer.length,
     };
   }
 
@@ -474,26 +476,26 @@ export class StreamProcessor extends EventEmitter {
    * パイプラインを作成
    */
   createPipeline(...transforms: Transform[]): Writable {
-    let pipeline = this.currentStream as any;
-    
+    let pipeline = this.currentStream as Transform | Writable | undefined;
+
     for (const transform of transforms) {
-      if (pipeline) {
+      if (pipeline && pipeline.pipe) {
         pipeline = pipeline.pipe(transform);
       }
     }
 
     // 最終的な書き込みストリーム
     const writeStream = new Writable({
-      write: (chunk, encoding, callback) => {
+      write: (chunk, _encoding, callback) => {
         this.emitChunk({
           type: 'text',
-          content: chunk.toString()
+          content: chunk.toString(),
         });
         callback();
-      }
+      },
     });
 
-    if (pipeline) {
+    if (pipeline && pipeline.pipe) {
       pipeline.pipe(writeStream);
     }
 
@@ -511,7 +513,7 @@ export class StreamProcessor extends EventEmitter {
    * 遅延を作成
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**

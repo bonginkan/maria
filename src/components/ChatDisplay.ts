@@ -15,9 +15,13 @@ interface StepInfo {
   status: 'pending' | 'in-progress' | 'completed' | 'error';
 }
 
+interface Spinner {
+  stop(): void;
+}
+
 export class ChatDisplay {
   private messages: Message[] = [];
-  private currentSpinner: any = null;
+  private currentSpinner: Spinner | null = null;
 
   constructor() {}
 
@@ -126,8 +130,13 @@ export class ChatDisplay {
         spinner: 'dots',
       }).start();
     } else {
-      if (this.currentSpinner) {
-        this.currentSpinner.stop();
+      if (
+        this.currentSpinner &&
+        typeof this.currentSpinner === 'object' &&
+        'stop' in this.currentSpinner &&
+        typeof (this.currentSpinner as Spinner).stop === 'function'
+      ) {
+        (this.currentSpinner as Spinner).stop();
         this.currentSpinner = null;
       }
       console.log(`${statusIcons[step.status]} ${prefix}`);
@@ -225,8 +234,13 @@ export class ChatDisplay {
   clear() {
     console.clear();
     this.messages = [];
-    if (this.currentSpinner) {
-      this.currentSpinner.stop();
+    if (
+      this.currentSpinner &&
+      typeof this.currentSpinner === 'object' &&
+      'stop' in this.currentSpinner &&
+      typeof (this.currentSpinner as Spinner).stop === 'function'
+    ) {
+      (this.currentSpinner as Spinner).stop();
       this.currentSpinner = null;
     }
   }

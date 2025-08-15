@@ -23,7 +23,7 @@ export interface BatchExecutionOptions {
   parallel?: boolean;
   maxParallel?: number;
   timeout?: number;
-  variables?: Record<string, any>;
+  variables?: Record<string, unknown>;
   dryRun?: boolean;
 }
 
@@ -42,13 +42,13 @@ export interface BatchExecutionResult {
     error?: string;
     duration: number;
   }>;
-  variables: Record<string, any>;
+  variables: Record<string, unknown>;
 }
 
 export class BatchExecutionEngine {
   private static instance: BatchExecutionEngine;
   private commandHandler: SlashCommandHandler | null = null;
-  private variables: Record<string, any> = {};
+  private variables: Record<string, unknown> = {};
   private isExecuting = false;
 
   private constructor() {
@@ -250,8 +250,14 @@ export class BatchExecutionEngine {
           });
 
           // Set variable if command sets one
-          if (cmdResult.data?.variable) {
-            this.variables[cmdResult.data.variable] = cmdResult.data.value;
+          if (
+            cmdResult.data &&
+            typeof cmdResult.data === 'object' &&
+            'variable' in cmdResult.data &&
+            'value' in cmdResult.data
+          ) {
+            const resultData = cmdResult.data as { variable: string; value: unknown };
+            this.variables[resultData.variable] = resultData.value;
           }
 
           break;
@@ -271,7 +277,7 @@ export class BatchExecutionEngine {
             });
           }
         }
-      } catch (error) {
+      } catch (error: unknown) {
         const duration = Date.now() - startTime;
 
         if (attempts < maxAttempts) {
@@ -384,9 +390,9 @@ export class BatchExecutionEngine {
     // Default conditions
     switch (condition) {
       case 'hasErrors':
-        return this.variables.hasErrors === true;
+        return this.variables['hasErrors'] === true;
       case 'testsPass':
-        return this.variables.testsPass === true;
+        return this.variables['testsPass'] === true;
       default:
         return true;
     }
@@ -450,7 +456,7 @@ export class BatchExecutionEngine {
   /**
    * Get current variables
    */
-  getVariables(): Record<string, any> {
+  getVariables(): Record<string, unknown> {
     return { ...this.variables };
   }
 }

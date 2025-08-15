@@ -87,9 +87,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.9.2/node_modules/tsup/assets/cjs_shims.js
+// node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3/node_modules/tsup/assets/cjs_shims.js
 var init_cjs_shims = __esm({
-  "node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.9.2/node_modules/tsup/assets/cjs_shims.js"() {
+  "node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3/node_modules/tsup/assets/cjs_shims.js"() {
   }
 });
 
@@ -26718,9 +26718,9 @@ var OpenAIProvider = class extends BaseAIProvider {
     await super.initialize(apiKey, config);
     this.client = new openai_default({
       apiKey: this.apiKey,
-      baseURL: config?.baseURL,
-      organization: config?.organization,
-      maxRetries: config?.maxRetries || 3
+      baseURL: config?.["baseURL"],
+      organization: config?.["organization"],
+      maxRetries: config?.["maxRetries"] || 3
     });
   }
   async chat(messages, model, options) {
@@ -28888,8 +28888,8 @@ var AnthropicProvider = class extends BaseAIProvider {
     await super.initialize(apiKey, config);
     this.client = new sdk_default({
       apiKey: this.apiKey,
-      baseURL: config?.baseURL,
-      maxRetries: config?.maxRetries || 3
+      baseURL: config?.["baseURL"],
+      maxRetries: config?.["maxRetries"] || 3
     });
   }
   convertMessages(messages) {
@@ -29013,7 +29013,7 @@ var BaseProvider = class {
     this.apiBase = config.apiBase;
   }
   // Optional methods with default implementations
-  async vision(image, prompt) {
+  async vision(_image, _prompt) {
     throw new Error(`${this.name} does not support vision tasks`);
   }
   async generateCode(prompt, language) {
@@ -29023,7 +29023,7 @@ var BaseProvider = class {
       taskType: "coding"
     });
   }
-  estimateCost(tokens) {
+  estimateCost(_tokens) {
     return 0;
   }
   async makeRequest(url, options) {
@@ -30992,7 +30992,7 @@ var GrokProvider = class extends BaseAIProvider {
     await super.initialize(apiKey, config);
     this.client = new groq_sdk_default({
       apiKey: this.apiKey,
-      baseURL: config?.baseURL
+      baseURL: config?.["baseURL"]
     });
   }
   async chat(messages, model, options) {
@@ -31113,10 +31113,10 @@ var LMStudioProvider = class extends BaseAIProvider {
   async initialize(apiKey = "lm-studio", config) {
     await super.initialize(apiKey, config);
     const lmConfig = config;
-    this.apiBase = lmConfig?.apiBase || process.env.LMSTUDIO_API_BASE || "http://localhost:1234/v1";
-    this.timeout = lmConfig?.timeout || parseInt(process.env.LMSTUDIO_TIMEOUT || "300000");
-    this.retryAttempts = lmConfig?.retryAttempts || parseInt(process.env.LMSTUDIO_RETRY_ATTEMPTS || "3");
-    this.retryDelay = lmConfig?.retryDelay || parseInt(process.env.LMSTUDIO_RETRY_DELAY || "1000");
+    this.apiBase = lmConfig?.apiBase || process.env["LMSTUDIO_API_BASE"] || "http://localhost:1234/v1";
+    this.timeout = lmConfig?.timeout || parseInt(process.env["LMSTUDIO_TIMEOUT"] || "300000");
+    this.retryAttempts = lmConfig?.retryAttempts || parseInt(process.env["LMSTUDIO_RETRY_ATTEMPTS"] || "3");
+    this.retryDelay = lmConfig?.retryDelay || parseInt(process.env["LMSTUDIO_RETRY_DELAY"] || "1000");
     await this.checkHealth();
     if (this.isHealthy) {
       await this.fetchAvailableModels();
@@ -31330,9 +31330,9 @@ var LMStudioProvider = class extends BaseAIProvider {
   }
   async switchModel(modelType) {
     if (modelType === "120b") {
-      this.config.model = "gpt-oss-120b";
+      this.config["model"] = "gpt-oss-120b";
     } else {
-      this.config.model = "gpt-oss-20b";
+      this.config["model"] = "gpt-oss-20b";
     }
   }
 };
@@ -31372,10 +31372,10 @@ var OllamaProvider = class extends BaseAIProvider {
   async initialize(apiKey = "ollama", config) {
     await super.initialize(apiKey, config);
     const ollamaConfig = config;
-    this.apiBase = ollamaConfig?.apiBase || process.env.OLLAMA_API_BASE || "http://localhost:11434";
-    this.timeout = ollamaConfig?.timeout || parseInt(process.env.OLLAMA_TIMEOUT || "300000");
-    this.retryAttempts = ollamaConfig?.retryAttempts || parseInt(process.env.OLLAMA_RETRY_ATTEMPTS || "3");
-    this.retryDelay = ollamaConfig?.retryDelay || parseInt(process.env.OLLAMA_RETRY_DELAY || "1000");
+    this.apiBase = ollamaConfig?.apiBase || process.env["OLLAMA_API_BASE"] || "http://localhost:11434";
+    this.timeout = ollamaConfig?.timeout || parseInt(process.env["OLLAMA_TIMEOUT"] || "300000");
+    this.retryAttempts = ollamaConfig?.retryAttempts || parseInt(process.env["OLLAMA_RETRY_ATTEMPTS"] || "3");
+    this.retryDelay = ollamaConfig?.retryDelay || parseInt(process.env["OLLAMA_RETRY_DELAY"] || "1000");
     await this.checkHealth();
     if (this.isHealthy) {
       await this.fetchAvailableModels();
@@ -31493,7 +31493,8 @@ var OllamaProvider = class extends BaseAIProvider {
     const decoder = new TextDecoder();
     let buffer = "";
     try {
-      while (true) {
+      const running = true;
+      while (running) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
@@ -31618,7 +31619,8 @@ var OllamaProvider = class extends BaseAIProvider {
     const decoder = new TextDecoder();
     let buffer = "";
     try {
-      while (true) {
+      const running = true;
+      while (running) {
         const { done, value } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
@@ -31685,8 +31687,8 @@ var VLLMProvider = class extends BaseAIProvider {
   async initialize(apiKey = "vllm-local", config) {
     await super.initialize(apiKey, config);
     this.vllmConfig = config || {};
-    this.apiBase = this.vllmConfig.apiBase || process.env.VLLM_API_BASE || "http://localhost:8000/v1";
-    this.timeout = this.vllmConfig.timeout || parseInt(process.env.VLLM_TIMEOUT || "120000");
+    this.apiBase = this.vllmConfig.apiBase || process.env["VLLM_API_BASE"] || "http://localhost:8000/v1";
+    this.timeout = this.vllmConfig.timeout || parseInt(process.env["VLLM_TIMEOUT"] || "120000");
     await this.checkHealth();
     if (this.isHealthy) {
       await this.fetchAvailableModels();
@@ -31907,7 +31909,7 @@ var VLLMProvider = class extends BaseAIProvider {
   async selectModelForTask(task) {
     const availableModels = await this.getAvailableModels();
     switch (task) {
-      case "japanese":
+      case "japanese": {
         const japaneseModels = availableModels.filter(
           (m3) => m3.includes("japanese") || m3.includes("jp")
         );
@@ -31915,7 +31917,8 @@ var VLLMProvider = class extends BaseAIProvider {
           return japaneseModels[0];
         }
         break;
-      case "code":
+      }
+      case "code": {
         const codeModels = availableModels.filter(
           (m3) => m3.includes("code") || m3.includes("instruct")
         );
@@ -31923,7 +31926,8 @@ var VLLMProvider = class extends BaseAIProvider {
           return codeModels[0];
         }
         break;
-      case "fast":
+      }
+      case "fast": {
         const smallModels = availableModels.filter(
           (m3) => m3.includes("1_6b") || m3.includes("1.6b") || m3.includes("7b")
         );
@@ -31931,6 +31935,7 @@ var VLLMProvider = class extends BaseAIProvider {
           return smallModels[0];
         }
         break;
+      }
     }
     return availableModels[0] || this.getDefaultModel();
   }
@@ -31954,31 +31959,31 @@ var AIProviderManager = class {
   async initializeProviders() {
     const apiKeys = this.config.get("apiKeys", {});
     const localProviders = this.config.get("localProviders", {});
-    if (apiKeys.OPENAI_API_KEY) {
-      this.providers.set("openai", new OpenAIProvider(apiKeys.OPENAI_API_KEY));
+    if (apiKeys["OPENAI_API_KEY"]) {
+      this.providers.set("openai", new OpenAIProvider(apiKeys["OPENAI_API_KEY"]));
     }
-    if (apiKeys.ANTHROPIC_API_KEY) {
-      this.providers.set("anthropic", new AnthropicProvider(apiKeys.ANTHROPIC_API_KEY));
+    if (apiKeys["ANTHROPIC_API_KEY"]) {
+      this.providers.set("anthropic", new AnthropicProvider(apiKeys["ANTHROPIC_API_KEY"]));
     }
-    if (apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY) {
+    if (apiKeys["GOOGLE_API_KEY"] || apiKeys["GEMINI_API_KEY"]) {
       this.providers.set(
         "google",
-        new GoogleProvider(apiKeys.GOOGLE_API_KEY || apiKeys.GEMINI_API_KEY)
+        new GoogleProvider(apiKeys["GOOGLE_API_KEY"] || apiKeys["GEMINI_API_KEY"])
       );
     }
-    if (apiKeys.GROQ_API_KEY) {
-      this.providers.set("groq", new GroqProvider(apiKeys.GROQ_API_KEY));
+    if (apiKeys["GROQ_API_KEY"]) {
+      this.providers.set("groq", new GroqProvider(apiKeys["GROQ_API_KEY"]));
     }
-    if (apiKeys.GROK_API_KEY) {
-      this.providers.set("grok", new GrokProvider(apiKeys.GROK_API_KEY));
+    if (apiKeys["GROK_API_KEY"]) {
+      this.providers.set("grok", new GrokProvider(apiKeys["GROK_API_KEY"]));
     }
-    if (localProviders.lmstudio !== false) {
+    if (localProviders["lmstudio"] !== false) {
       this.providers.set("lmstudio", new LMStudioProvider());
     }
-    if (localProviders.ollama !== false) {
+    if (localProviders["ollama"] !== false) {
       this.providers.set("ollama", new OllamaProvider());
     }
-    if (localProviders.vllm !== false) {
+    if (localProviders["vllm"] !== false) {
       this.providers.set("vllm", new VLLMProvider());
     }
   }
@@ -32635,7 +32640,7 @@ var ConfigManager = class _ConfigManager {
   }
   mergeConfig(newConfig) {
     if (newConfig.priority) {
-      this.config.priority = newConfig.priority;
+      this.config["priority"] = newConfig.priority;
     }
     if (newConfig.apiKeys) {
       this.set("apiKeys", newConfig.apiKeys);
@@ -32644,10 +32649,10 @@ var ConfigManager = class _ConfigManager {
       this.set("localProviders", newConfig.localProviders);
     }
     if (newConfig.autoStart !== void 0) {
-      this.config.autoStart = newConfig.autoStart;
+      this.config["autoStart"] = newConfig.autoStart;
     }
     if (newConfig.healthMonitoring !== void 0) {
-      this.config.healthMonitoring = newConfig.healthMonitoring;
+      this.config["healthMonitoring"] = newConfig.healthMonitoring;
     }
     if (newConfig.enabledProviders) {
       this.set("enabledProviders", newConfig.enabledProviders);
@@ -32665,21 +32670,21 @@ var ConfigManager = class _ConfigManager {
   // Load configuration from environment variables
   static fromEnvironment() {
     const config = {
-      priority: process.env.MARIA_PRIORITY || "privacy-first",
+      priority: process.env["MARIA_PRIORITY"] || "privacy-first",
       apiKeys: {
-        OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
-        ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || "",
-        GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "",
-        GROQ_API_KEY: process.env.GROQ_API_KEY || "",
-        GROK_API_KEY: process.env.GROK_API_KEY || ""
+        OPENAI_API_KEY: process.env["OPENAI_API_KEY"] || "",
+        ANTHROPIC_API_KEY: process.env["ANTHROPIC_API_KEY"] || "",
+        GOOGLE_API_KEY: process.env["GOOGLE_API_KEY"] || process.env["GEMINI_API_KEY"] || "",
+        GROQ_API_KEY: process.env["GROQ_API_KEY"] || "",
+        GROK_API_KEY: process.env["GROK_API_KEY"] || ""
       },
       localProviders: {
-        lmstudio: process.env.LMSTUDIO_ENABLED !== "false",
-        ollama: process.env.OLLAMA_ENABLED !== "false",
-        vllm: process.env.VLLM_ENABLED !== "false"
+        lmstudio: process.env["LMSTUDIO_ENABLED"] !== "false",
+        ollama: process.env["OLLAMA_ENABLED"] !== "false",
+        vllm: process.env["VLLM_ENABLED"] !== "false"
       },
-      autoStart: process.env.AUTO_START_LLMS !== "false",
-      healthMonitoring: process.env.HEALTH_MONITORING !== "false"
+      autoStart: process.env["AUTO_START_LLMS"] !== "false",
+      healthMonitoring: process.env["HEALTH_MONITORING"] !== "false"
     };
     return new _ConfigManager(config);
   }
@@ -32840,11 +32845,9 @@ function createInteractiveSession(maria) {
           }
           process.stdout.write(source_default.blue("\nMARIA: "));
           try {
-            let fullResponse = "";
             const stream = maria.chatStream(message);
             for await (const chunk of stream) {
               process.stdout.write(chunk);
-              fullResponse += chunk;
             }
             console.log("\n");
           } catch (error) {
@@ -33019,28 +33022,28 @@ async function loadConfig(options = {}) {
     // Disable auto-start in offline mode
     healthMonitoring: baseConfig.healthMonitoring
   };
-  config.apiKeys = {
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
-    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || "",
-    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "",
-    GROQ_API_KEY: process.env.GROQ_API_KEY || "",
-    GROK_API_KEY: process.env.GROK_API_KEY || ""
+  config["apiKeys"] = {
+    OPENAI_API_KEY: process.env["OPENAI_API_KEY"] || "",
+    ANTHROPIC_API_KEY: process.env["ANTHROPIC_API_KEY"] || "",
+    GOOGLE_API_KEY: process.env["GOOGLE_API_KEY"] || process.env["GEMINI_API_KEY"] || "",
+    GROQ_API_KEY: process.env["GROQ_API_KEY"] || "",
+    GROK_API_KEY: process.env["GROK_API_KEY"] || ""
   };
-  config.localProviders = {
-    lmstudio: process.env.LMSTUDIO_ENABLED !== "false" && !options.offline,
-    ollama: process.env.OLLAMA_ENABLED !== "false" && !options.offline,
-    vllm: process.env.VLLM_ENABLED !== "false" && !options.offline
+  config["localProviders"] = {
+    lmstudio: process.env["LMSTUDIO_ENABLED"] !== "false" && !options.offline,
+    ollama: process.env["OLLAMA_ENABLED"] !== "false" && !options.offline,
+    vllm: process.env["VLLM_ENABLED"] !== "false" && !options.offline
   };
   if (options.offline) {
-    config.apiKeys = {};
-    config.localProviders = {
+    config["apiKeys"] = {};
+    config["localProviders"] = {
       lmstudio: true,
       ollama: true,
       vllm: true
     };
   }
   if (options.provider) {
-    config.enabledProviders = [options.provider];
+    config["enabledProviders"] = [options.provider];
   }
   return config;
 }

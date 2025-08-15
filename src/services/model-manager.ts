@@ -192,7 +192,7 @@ export class ModelManager {
           resolve(false);
         });
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('❌ ComfyUI起動失敗:', error);
       return false;
     }
@@ -234,26 +234,29 @@ export class ModelManager {
   /**
    * ワークフロー読み込み
    */
-  async loadWorkflow(workflowId: string): Promise<any> {
+  async loadWorkflow(workflowId: string): Promise<unknown> {
     const workflowConfigPath = join(this.workflowsDir, 'workflow_config.json');
 
     try {
       const configContent = await fs.readFile(workflowConfigPath, 'utf-8');
-      const config = JSON.parse(configContent);
+      const config = JSON.parse(configContent) as Record<string, unknown>;
 
-      const workflow = config.workflows[workflowId];
+      const workflow = (config['workflows'] as Record<string, unknown>)?.[workflowId];
       if (!workflow) {
         throw new Error(`ワークフロー '${workflowId}' が見つかりません`);
       }
 
-      const workflowPath = join(this.workflowsDir, workflow.file);
+      const workflowPath = join(
+        this.workflowsDir,
+        (workflow as Record<string, unknown>)['file'] as string,
+      );
       const workflowContent = await fs.readFile(workflowPath, 'utf-8');
 
       return {
         ...workflow,
-        workflow: JSON.parse(workflowContent),
+        workflow: JSON.parse(workflowContent) as Record<string, unknown>,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(`ワークフロー読み込みエラー: ${error}`);
     }
   }
@@ -261,7 +264,7 @@ export class ModelManager {
   /**
    * ワークフローパラメータ置換
    */
-  replaceWorkflowParameters(workflow: any, params: GenerationOptions): any {
+  replaceWorkflowParameters(workflow: unknown, params: GenerationOptions): unknown {
     const workflowStr = JSON.stringify(workflow);
 
     const replacements = {
@@ -281,13 +284,13 @@ export class ModelManager {
       processedWorkflow = processedWorkflow.replace(new RegExp(placeholder, 'g'), value);
     }
 
-    return JSON.parse(processedWorkflow);
+    return JSON.parse(processedWorkflow) as Record<string, unknown>;
   }
 
   /**
    * ComfyUI API経由でワークフロー実行
    */
-  async executeWorkflow(workflow: any): Promise<string> {
+  async executeWorkflow(workflow: unknown): Promise<string> {
     if (!(await this.checkComfyUIStatus())) {
       throw new Error('ComfyUIが起動していません');
     }
@@ -305,9 +308,9 @@ export class ModelManager {
         throw new Error(`ComfyUI API エラー: ${response.status}`);
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as { prompt_id: string };
       return result.prompt_id;
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(`ワークフロー実行エラー: ${error}`);
     }
   }
@@ -325,7 +328,11 @@ export class ModelManager {
         return { completed: false, error: 'プロンプトIDが見つかりません' };
       }
 
-      const result = await response.json();
+      const result = (await response.json()) as {
+        status: string;
+        message?: string;
+        progress?: number;
+      };
 
       // ComfyUIの実際のレスポンス形式に合わせて調整が必要
       if (result.status === 'completed') {
@@ -335,7 +342,7 @@ export class ModelManager {
       } else {
         return { completed: false, progress: result.progress || 0 };
       }
-    } catch (error) {
+    } catch (error: unknown) {
       return { completed: false, error: `進捗確認エラー: ${error}` };
     }
   }
@@ -350,7 +357,7 @@ export class ModelManager {
         const lastUsedFile = join(model.path, '.last_used');
         await fs.writeFile(lastUsedFile, new Date().toISOString());
         model.lastUsed = new Date();
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`最終使用日時更新エラー (${modelId}):`, error);
       }
     }

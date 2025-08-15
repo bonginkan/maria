@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Interactive Model Selection Command
  * Standalone executable for model selection with arrow key navigation

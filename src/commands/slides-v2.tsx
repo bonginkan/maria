@@ -5,6 +5,7 @@ import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
 import { AIChatServiceV2, ChatContext } from '../services/ai-chat-service-v2.js';
+import { isString } from '../utils/type-guards.js';
 
 interface SlidesCommand {
   action: 'structure' | 'content' | 'visuals' | 'sync';
@@ -114,12 +115,16 @@ Provide step-by-step instructions and best practices.`;
           }
           setResult(fullContent);
         } else {
-          setResult(response.message.content);
+          setResult(
+            typeof response === 'object' && response && 'content' in response
+              ? String(response.content)
+              : String(response),
+          );
         }
 
         setStatus('done');
         setStreamingContent('');
-      } catch (error) {
+      } catch (error: unknown) {
         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setStatus('done');
       }
@@ -225,7 +230,10 @@ export const slidesCommand = new Command('slides')
             }
             // For interactive mode, we'll use default values
             const interactiveCommand: SlidesCommand = {
-              action: action as any,
+              action:
+                isString(action) && ['structure', 'content', 'visuals', 'sync'].includes(action)
+                  ? (action as 'structure' | 'content' | 'visuals' | 'sync')
+                  : 'structure',
               topic: 'AI and the Future of Work',
               file: 'presentation.pptx',
               slidesId: 'demo-presentation-id',

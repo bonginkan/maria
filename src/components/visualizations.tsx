@@ -162,11 +162,11 @@ interface TableColumn {
 
 export const Table: React.FC<{
   columns: TableColumn[];
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   showHeader?: boolean;
   compact?: boolean;
 }> = ({ columns, data, showHeader = true, compact = false }) => {
-  const renderCell = (value: any, column: TableColumn) => {
+  const renderCell = (value: unknown, column: TableColumn) => {
     const str = String(value || '');
     const width = column.width || 15;
 
@@ -255,7 +255,7 @@ interface TreeNode {
   expanded?: boolean;
   icon?: string;
   highlighted?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export const TreeView: React.FC<{
@@ -455,9 +455,11 @@ export const DrillDownNav: React.FC<{
  * Generates intelligent summaries based on data patterns
  */
 export const SmartSummary: React.FC<{
-  data: any;
+  data: unknown;
   type: 'status' | 'cost' | 'performance' | 'usage';
 }> = ({ data, type }) => {
+  const dataRecord = data as Record<string, unknown>;
+
   const generateSummary = () => {
     switch (type) {
       case 'status':
@@ -465,29 +467,30 @@ export const SmartSummary: React.FC<{
           title: 'System Status Summary',
           points: [
             `${figures.tick} All systems operational`,
-            `${figures.info} ${data.services?.length || 0} services running`,
-            `${figures.warning} ${data.warnings || 0} warnings to review`,
+            `${figures.info} ${(dataRecord['services'] as unknown[] | undefined)?.length || 0} services running`,
+            `${figures.warning} ${dataRecord['warnings'] || 0} warnings to review`,
           ],
           insight: 'System performance is within normal parameters',
         };
-      case 'cost':
-        const trend = data.trend || 'stable';
+      case 'cost': {
+        const trend = dataRecord['trend'] || 'stable';
         return {
           title: 'Cost Analysis Summary',
           points: [
-            `${figures.pointer} Current session: $${data.cost || '0.00'}`,
+            `${figures.pointer} Current session: $${dataRecord['cost'] || '0.00'}`,
             `${trend === 'up' ? figures.arrowUp : figures.arrowDown} ${trend} trend`,
-            `${figures.star} Most expensive: ${data.mostExpensive || 'API calls'}`,
+            `${figures.star} Most expensive: ${dataRecord['mostExpensive'] || 'API calls'}`,
           ],
           insight: `Cost optimization ${trend === 'up' ? 'recommended' : 'not required'}`,
         };
+      }
       case 'performance':
         return {
           title: 'Performance Summary',
           points: [
-            `${figures.circleFilled} Avg response: ${data.avgResponse || 'N/A'}`,
-            `${figures.tick} Success rate: ${data.successRate || 'N/A'}%`,
-            `${figures.warning} Bottleneck: ${data.bottleneck || 'None detected'}`,
+            `${figures.circleFilled} Avg response: ${dataRecord['avgResponse'] || 'N/A'}`,
+            `${figures.tick} Success rate: ${dataRecord['successRate'] || 'N/A'}%`,
+            `${figures.warning} Bottleneck: ${dataRecord['bottleneck'] || 'None detected'}`,
           ],
           insight: 'Performance metrics are healthy',
         };
@@ -495,9 +498,9 @@ export const SmartSummary: React.FC<{
         return {
           title: 'Usage Summary',
           points: [
-            `${figures.circleFilled} Total calls: ${data.totalCalls || 0}`,
-            `${figures.star} Most active: ${data.mostActive || 'N/A'}`,
-            `${figures.arrowUp} Peak time: ${data.peakTime || 'N/A'}`,
+            `${figures.circleFilled} Total calls: ${dataRecord['totalCalls'] || 0}`,
+            `${figures.star} Most active: ${dataRecord['mostActive'] || 'N/A'}`,
+            `${figures.arrowUp} Peak time: ${dataRecord['peakTime'] || 'N/A'}`,
           ],
           insight: 'Usage patterns are consistent with expectations',
         };

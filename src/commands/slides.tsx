@@ -45,7 +45,7 @@ const SlidesAgent: React.FC<{ command: SlidesCommand; onExit: () => void }> = ({
 
         setResult(mockResult);
         setStatus('done');
-      } catch (error) {
+      } catch (error: unknown) {
         setResult(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setStatus('done');
       }

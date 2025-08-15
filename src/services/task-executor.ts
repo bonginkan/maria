@@ -13,7 +13,7 @@ const execAsync = promisify(exec);
 export interface TaskResult {
   success: boolean;
   deliverable?: string;
-  output?: any;
+  output?: unknown;
   cost?: number;
   duration: number;
   error?: Error;
@@ -57,7 +57,7 @@ export class TaskExecutor {
       logger.task(task.name, 'complete', `Duration: ${duration}ms`);
 
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       const duration = Date.now() - startTime;
       logger.task(task.name, 'error', error instanceof Error ? error.message : 'Unknown error');
 
@@ -349,7 +349,7 @@ export class TaskExecutor {
       success: true,
       deliverable: 'slide_1_title.json',
       output: {
-        title: mission.parameters?.title || 'Presentation',
+        title: mission.parameters?.['title'] || 'Presentation',
         subtitle: mission.description,
       },
       cost: 0.1,
@@ -501,8 +501,14 @@ export class TaskExecutor {
         },
         cost: 0.8,
       };
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      // Return default test result on error
+      return {
+        success: false,
+        duration: 0,
+        cost: 0,
+        error: new Error('Task execution failed'),
+      };
     }
   }
 
@@ -539,7 +545,7 @@ export class TaskExecutor {
       success: true,
       deliverable: 'deployment-manifest.yaml',
       output: {
-        environment: mission.parameters?.environment || 'staging',
+        environment: mission.parameters?.['environment'] || 'staging',
         url: 'https://app.example.com',
       },
       cost: 0.3,

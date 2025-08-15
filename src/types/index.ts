@@ -106,7 +106,7 @@ export interface ServiceStatus {
   status: 'running' | 'stopped' | 'error' | 'available' | 'unavailable';
   responseTime?: number;
   lastCheck: string;
-  details?: any;
+  details?: unknown;
 }
 
 export interface Config {

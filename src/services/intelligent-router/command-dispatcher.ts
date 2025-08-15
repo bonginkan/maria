@@ -23,16 +23,27 @@ export interface DispatcherOptions {
   confirmThreshold?: number;
 }
 
+export interface CommandContext {
+  recentFiles?: string[];
+  hasErrors?: boolean;
+  errors?: unknown[];
+  projectType?: string;
+  primaryLanguage?: string;
+  primaryFramework?: string;
+  workingDirectory?: string;
+  conversationId?: string;
+  currentTask?: string;
+  lastCommand?: unknown;
+  metadata?: Record<string, unknown>;
+}
+
 export class CommandDispatcher {
   private classifier: IntentClassifier;
   private contextManager: ContextManager;
   private slashCommandHandler: SlashCommandHandler;
   private options: DispatcherOptions;
 
-  constructor(
-    slashCommandHandler: SlashCommandHandler,
-    options: DispatcherOptions = {}
-  ) {
+  constructor(slashCommandHandler: SlashCommandHandler, options: DispatcherOptions = {}) {
     this.classifier = new IntentClassifier();
     this.contextManager = new ContextManager();
     this.slashCommandHandler = slashCommandHandler;
@@ -40,7 +51,7 @@ export class CommandDispatcher {
       verbose: false,
       autoExecute: true,
       confirmThreshold: 0.7,
-      ...options
+      ...options,
     };
   }
 
@@ -51,15 +62,15 @@ export class CommandDispatcher {
     try {
       // 1. コンテキスト取得
       const context = await this.contextManager.getCurrentContext();
-      
+
       // 2. 意図分類
       const inferredCommand = this.classifier.classify(userInput);
-      
+
       // 3. コンテキストベースの調整
-      const adjustedCommand = inferredCommand 
-        ? await this.adjustCommandWithContext(inferredCommand, context)
+      const adjustedCommand = inferredCommand
+        ? await this.adjustCommandWithContext(inferredCommand, context as CommandContext)
         : null;
-      
+
       // 4. コマンド実行判定
       if (adjustedCommand && adjustedCommand.confidence >= this.options.confirmThreshold!) {
         return await this.executeInternalCommand(adjustedCommand);
@@ -67,18 +78,18 @@ export class CommandDispatcher {
         // 信頼度が低い場合は確認
         return await this.confirmAndExecute(adjustedCommand);
       }
-      
+
       // 5. コマンドが推論できない場合は通常の会話として処理
       return {
         success: false,
         output: undefined,
-        error: 'コマンドを推論できませんでした。通常の会話として処理します。'
+        error: 'コマンドを推論できませんでした。通常の会話として処理します。',
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Dispatch error:', error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : '不明なエラーが発生しました'
+        error: error instanceof Error ? error.message : '不明なエラーが発生しました',
       };
     }
   }
@@ -88,43 +99,46 @@ export class CommandDispatcher {
    */
   private async adjustCommandWithContext(
     command: InferredCommand,
-    context: any
+    context: CommandContext,
   ): Promise<InferredCommand> {
     const adjusted = { ...command };
 
     // 最近のファイル操作を考慮
-    if (context.recentFiles?.length > 0) {
-      if (command.command === '/test' && !command.params.target) {
-        adjusted.params.target = context.recentFiles[0];
+    if (context.recentFiles && context.recentFiles.length > 0) {
+      if (command.command === '/test' && !command.params['target']) {
+        adjusted.params['target'] = context.recentFiles[0];
         adjusted.confidence = Math.min(1, adjusted.confidence + 0.1);
       }
-      
-      if (command.command === '/code' && command.params.task === 'fix' && context.hasErrors) {
-        adjusted.params.errors = context.errors;
+
+      if (command.command === '/code' && command.params['task'] === 'fix' && context.hasErrors) {
+        adjusted.params['errors'] = context['errors'];
         adjusted.confidence = Math.min(1, adjusted.confidence + 0.15);
       }
     }
 
     // プロジェクトタイプを考慮
     if (context.projectType) {
-      if (command.command === '/deploy' && !command.params.platform) {
+      if (command.command === '/deploy' && !command.params['platform']) {
         if (context.projectType === 'next-app') {
-          adjusted.params.platform = 'vercel';
+          adjusted.params['platform'] = 'vercel';
         } else if (context.projectType === 'node-app') {
-          adjusted.params.platform = 'gcp';
+          adjusted.params['platform'] = 'gcp';
         }
       }
 
       // 言語/フレームワークの自動検出
-      if (command.command === '/code' && !command.params.language) {
-        adjusted.params.language = context.primaryLanguage || 'typescript';
-        adjusted.params.framework = context.primaryFramework;
+      if (command.command === '/code' && !command.params['language']) {
+        adjusted.params['language'] = context.primaryLanguage || 'typescript';
+        adjusted.params['framework'] = context.primaryFramework;
       }
     }
 
     // 前のコマンドとの関連性チェック
     if (context.lastCommand) {
-      adjusted.relatedTo = this.checkCommandRelation(command, context.lastCommand);
+      (adjusted as Record<string, unknown>)['relatedTo'] = this.checkCommandRelation(
+        command,
+        context.lastCommand,
+      );
     }
 
     return adjusted;
@@ -133,19 +147,23 @@ export class CommandDispatcher {
   /**
    * コマンドの関連性をチェック
    */
-  private checkCommandRelation(current: InferredCommand, last: any): string | undefined {
+  private checkCommandRelation(current: InferredCommand, last: unknown): string | undefined {
     // 画像→動画の連続処理
-    if (last.command === '/image' && current.command === '/video') {
+    if ((last as Record<string, unknown>)['command'] === '/image' && current.command === '/video') {
       return 'image-to-video';
     }
-    
+
     // コード→テストの連続処理
-    if (last.command === '/code' && current.command === '/test') {
+    if ((last as Record<string, unknown>)['command'] === '/code' && current.command === '/test') {
       return 'code-to-test';
     }
-    
+
     // レビュー→修正の連続処理
-    if (last.command === '/review' && current.command === '/code' && current.params.task === 'fix') {
+    if (
+      (last as Record<string, unknown>)['command'] === '/review' &&
+      current.command === '/code' &&
+      current.params['task'] === 'fix'
+    ) {
       return 'review-to-fix';
     }
 
@@ -157,37 +175,53 @@ export class CommandDispatcher {
    */
   private async executeInternalCommand(command: InferredCommand): Promise<CommandResult> {
     if (this.options.verbose) {
-      console.log(chalk.gray(`[内部実行] ${command.command} (信頼度: ${(command.confidence * 100).toFixed(1)}%)`));
+      console.log(
+        chalk.gray(
+          `[内部実行] ${command.command} (信頼度: ${(command.confidence * 100).toFixed(1)}%)`,
+        ),
+      );
       console.log(chalk.gray(`パラメータ: ${JSON.stringify(command.params, null, 2)}`));
     }
 
     try {
       // スラッシュコマンドハンドラーに内部実行フラグを付けて実行
-      const result = await this.slashCommandHandler.execute({
+      const result = await (
+        this.slashCommandHandler as unknown as {
+          execute: (params: {
+            command: string;
+            args: string[];
+            internal: boolean;
+            originalInput: string;
+          }) => Promise<unknown>;
+        }
+      ).execute({
         command: command.command.replace('/', ''),
-        args: command.params,
+        args: (command.params as unknown as string[]) || [],
         internal: true,
-        originalInput: command.originalInput
+        originalInput: command.originalInput,
       });
 
       // コンテキストを更新
       await this.contextManager.updateLastCommand(command);
 
       // ユーザー向けにフォーマット
-      const formattedResult = this.formatUserResponse(result, command);
-      
+      const formattedResult = this.formatUserResponse(
+        typeof result === 'object' && result !== null ? (result as Record<string, unknown>) : {},
+        command,
+      );
+
       return {
         success: true,
         output: formattedResult,
         command: command.command,
-        confidence: command.confidence
+        confidence: command.confidence,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error(`Internal command execution failed:`, error);
       return {
         success: false,
         error: `コマンド実行エラー: ${error instanceof Error ? error.message : '不明なエラー'}`,
-        command: command.command
+        command: command.command,
       };
     }
   }
@@ -198,9 +232,11 @@ export class CommandDispatcher {
   private async confirmAndExecute(command: InferredCommand): Promise<CommandResult> {
     // 実際のアプリケーションではユーザーに確認を求める
     // ここではデモ用に自動実行
-    console.log(chalk.yellow(`\n⚠️  推論の信頼度が低いです (${(command.confidence * 100).toFixed(1)}%)`));
+    console.log(
+      chalk.yellow(`\n⚠️  推論の信頼度が低いです (${(command.confidence * 100).toFixed(1)}%)`),
+    );
     console.log(chalk.yellow(`実行予定: ${command.command} ${JSON.stringify(command.params)}`));
-    
+
     if (this.options.autoExecute) {
       console.log(chalk.gray('自動実行モードのため、実行します...'));
       return await this.executeInternalCommand(command);
@@ -210,44 +246,44 @@ export class CommandDispatcher {
       success: false,
       output: `確認が必要です: ${command.command}を実行しますか？`,
       command: command.command,
-      confidence: command.confidence
+      confidence: command.confidence,
     };
   }
 
   /**
    * ユーザー向けレスポンスのフォーマット
    */
-  private formatUserResponse(result: any, command: InferredCommand): string {
+  private formatUserResponse(result: Record<string, unknown>, command: InferredCommand): string {
     const commandName = this.getCommandDisplayName(command.command);
-    
+
     // コマンドごとのカスタムメッセージ
     switch (command.command) {
       case '/video':
-        return `🎬 ${command.params.prompt}の動画を生成しています...\n${result.output || ''}`;
-      
+        return `🎬 ${command.params['prompt']}の動画を生成しています...\n${result['output'] || ''}`;
+
       case '/image':
-        return `🎨 ${command.params.prompt}の画像を生成しています...\n${result.output || ''}`;
-      
+        return `🎨 ${command.params['prompt']}の画像を生成しています...\n${result['output'] || ''}`;
+
       case '/code':
-        if (command.params.task === 'fix') {
-          return `🔧 バグを修正しています...\n${result.output || ''}`;
+        if (command.params['task'] === 'fix') {
+          return `🔧 バグを修正しています...\n${result['output'] || ''}`;
         }
-        return `💻 コードを生成しています...\n${result.output || ''}`;
-      
+        return `💻 コードを生成しています...\n${result['output'] || ''}`;
+
       case '/test':
-        return `🧪 テストを生成しています...\n${result.output || ''}`;
-      
+        return `🧪 テストを生成しています...\n${result['output'] || ''}`;
+
       case '/review':
-        return `👀 コードをレビューしています...\n${result.output || ''}`;
-      
+        return `👀 コードをレビューしています...\n${result['output'] || ''}`;
+
       case '/commit':
-        return `📝 変更をコミットしています...\n${result.output || ''}`;
-      
+        return `📝 変更をコミットしています...\n${result['output'] || ''}`;
+
       case '/deploy':
-        return `🚀 ${command.params.target || 'production'}環境にデプロイしています...\n${result.output || ''}`;
-      
+        return `🚀 ${command.params['target'] || 'production'}環境にデプロイしています...\n${result['output'] || ''}`;
+
       default:
-        return `✨ ${commandName}を実行しました\n${result.output || ''}`;
+        return `✨ ${commandName}を実行しました\n${result['output'] || ''}`;
     }
   }
 
@@ -263,7 +299,7 @@ export class CommandDispatcher {
       '/review': 'コードレビュー',
       '/commit': 'コミット',
       '/deploy': 'デプロイ',
-      '/init': 'プロジェクト初期化'
+      '/init': 'プロジェクト初期化',
     };
 
     return displayNames[command] || command;
@@ -274,19 +310,31 @@ export class CommandDispatcher {
    */
   async processContinuation(input: string): Promise<CommandResult | null> {
     const context = await this.contextManager.getCurrentContext();
-    
+
     if (!context.lastCommand) {
       return null;
     }
 
     // 追加指示のキーワード
     const continuationKeywords = [
-      'それ', 'これ', 'さらに', 'もっと', 'また', 'あと', '追加で',
-      'it', 'that', 'more', 'also', 'then', 'next', 'additionally'
+      'それ',
+      'これ',
+      'さらに',
+      'もっと',
+      'また',
+      'あと',
+      '追加で',
+      'it',
+      'that',
+      'more',
+      'also',
+      'then',
+      'next',
+      'additionally',
     ];
 
-    const isContinuation = continuationKeywords.some(keyword => 
-      input.toLowerCase().includes(keyword)
+    const isContinuation = continuationKeywords.some((keyword) =>
+      input.toLowerCase().includes(keyword),
     );
 
     if (isContinuation) {

@@ -11,7 +11,7 @@ export interface ChatMessage {
   role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ChatContext {
@@ -120,7 +120,7 @@ export class AIChatServiceV2 {
       } else {
         return await this.generateChatResponse(message, context, stream);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error processing message:', error);
       return {
         message: {
@@ -444,15 +444,11 @@ export class AIChatServiceV2 {
     return {
       provider: this.provider.name,
       model: this.currentModel || this.provider.getDefaultModel(),
-      available: AIProviderRegistry.getAll().map((p) => ({
-        name: p.name,
-        models: p.getModels(),
-        initialized: p.isInitialized(),
-      })) as any,
+      available: AIProviderRegistry.getAll().map((p) => p.name),
     };
   }
 
-  async reviewCode(code: string, language?: string): Promise<any> {
+  async reviewCode(code: string, language?: string): Promise<unknown> {
     await this.initialize();
 
     if (!this.provider) {

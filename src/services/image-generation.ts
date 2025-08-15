@@ -127,7 +127,7 @@ export class ImageGenerationService {
         outputPaths: results,
         metadata,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       onProgress?.({
         stage: 'error',
         percentage: 0,
@@ -232,7 +232,7 @@ export class ImageGenerationService {
 
     // ワークフロー実行
     const processedWorkflow = modelManager.replaceWorkflowParameters(
-      workflowData.workflow,
+      (workflowData as { workflow: unknown }).workflow,
       generationParams,
     );
 

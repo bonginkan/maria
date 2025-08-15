@@ -68,7 +68,7 @@ export class AIRouter {
         await provider.initialize();
         const models = await provider.listModels();
         this.modelCache.set(name, models);
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Failed to initialize provider ${name}:`, error);
       }
     }
@@ -128,7 +128,7 @@ export class AIRouter {
             { outputFormat: 'json' },
           );
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Vision provider ${providerName} failed:`, error);
         continue;
       }
@@ -152,7 +152,7 @@ export class AIRouter {
 
         const score = await this.scoreProvider(name, provider, request, taskType);
         scores.push(score);
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Failed to score provider ${name}:`, error);
       }
     }
@@ -287,7 +287,7 @@ export class AIRouter {
    * Execute with fallback support
    */
   private async executeWithFallback(providerName: string, request: AIRequest): Promise<AIResponse> {
-    const primaryProvider = this.providers.get(providerName);
+    const primaryProvider = this['providers'].get(providerName);
 
     if (!primaryProvider) {
       throw new AIProviderError(`Provider ${providerName} not found`, 'PROVIDER_NOT_FOUND');
@@ -303,7 +303,7 @@ export class AIRouter {
       this.updateMetrics(providerName, Date.now() - startTime, true);
 
       return response;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error(`Primary provider ${providerName} failed:`, error);
 
       // Update metrics
@@ -340,7 +340,7 @@ export class AIRouter {
           console.log(`Falling back to ${nextProvider}`);
           return await provider.chat(request.messages, request.options);
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn(`Fallback provider ${nextProvider} failed:`, error);
         continue;
       }
@@ -458,14 +458,14 @@ export class AIRouter {
       };
     }
 
-    metrics.totalRequests++;
+    metrics['totalRequests']++;
     if (success) {
       metrics.successfulRequests++;
       metrics.totalLatency += latency;
     }
 
     metrics.averageLatency = metrics.totalLatency / Math.max(1, metrics.successfulRequests);
-    metrics.successRate = metrics.successfulRequests / metrics.totalRequests;
+    metrics.successRate = metrics.successfulRequests / metrics['totalRequests'];
 
     this.performanceMetrics.set(provider, metrics);
   }
@@ -473,20 +473,25 @@ export class AIRouter {
   /**
    * Get router statistics
    */
-  public getStatistics(): Record<string, any> {
-    const stats: Record<string, any> = {
-      providers: {},
+  public getStatistics(): Record<string, unknown> {
+    const stats = {
+      providers: {} as Record<string, unknown>,
       totalRequests: 0,
       averageLatency: 0,
     };
 
     for (const [name, metrics] of this.performanceMetrics) {
-      stats.providers[name] = {
-        requests: metrics.totalRequests,
-        successRate: `${(metrics.successRate * 100).toFixed(1)}%`,
-        avgLatency: `${metrics.averageLatency.toFixed(0)}ms`,
+      const metricsData = metrics as {
+        totalRequests: number;
+        successRate: number;
+        averageLatency: number;
       };
-      stats.totalRequests += metrics.totalRequests;
+      stats.providers[name] = {
+        requests: metricsData.totalRequests,
+        successRate: `${(metricsData.successRate * 100).toFixed(1)}%`,
+        avgLatency: `${metricsData.averageLatency.toFixed(0)}ms`,
+      };
+      stats.totalRequests += metricsData.totalRequests;
     }
 
     return stats;

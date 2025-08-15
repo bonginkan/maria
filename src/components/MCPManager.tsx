@@ -224,7 +224,7 @@ async function testPlaywrightMCP() {
       server.kill();
     }, 3000);
     
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('❌ Failed to start Playwright MCP:', error);
   }
 }
@@ -263,7 +263,7 @@ module.exports = { testPlaywrightMCP };
 
       onUpdate(updatedConfig);
       setSuccess('✅ Playwright MCP configuration created successfully');
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to install Playwright MCP: ${err}`);
     }
   }, [config, onUpdate]);
@@ -289,7 +289,7 @@ module.exports = { testPlaywrightMCP };
   //     setServers(updatedServers);
 
   //     setSuccess(`✅ Started ${server.name}`);
-  //   } catch (err) {
+  //   } catch (err: unknown) {
   //     setError(`Failed to start ${server.name}: ${err}`);
   //   }
   // }, [servers]);
@@ -333,7 +333,7 @@ module.exports = { testPlaywrightMCP };
               } else if (item.value === 'install') {
                 installPlaywrightMCP();
               } else {
-                setCurrentView(item.value as any);
+                setCurrentView(item.value as 'main' | 'servers' | 'install' | 'config');
               }
             }}
           />

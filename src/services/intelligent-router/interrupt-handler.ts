@@ -65,7 +65,7 @@ export class InterruptHandler extends EventEmitter {
     id: string,
     command?: string,
     interruptible: boolean = true,
-    cleanup?: () => Promise<void>
+    cleanup?: () => Promise<void>,
   ): Promise<void> {
     this.currentTask = {
       id,
@@ -73,7 +73,7 @@ export class InterruptHandler extends EventEmitter {
       status: 'running',
       command,
       interruptible,
-      cleanup
+      cleanup,
     };
 
     this.isProcessing = true;
@@ -94,7 +94,7 @@ export class InterruptHandler extends EventEmitter {
     if (this.currentTask?.id === id) {
       this.currentTask.status = 'completed';
       this.isProcessing = false;
-      
+
       if (this.processingTimeout) {
         clearTimeout(this.processingTimeout);
         this.processingTimeout = null;
@@ -117,13 +117,13 @@ export class InterruptHandler extends EventEmitter {
       timestamp: new Date(),
       input,
       priority: this.determinePriority(input),
-      type: this.determineInterruptType(input)
+      type: this.determineInterruptType(input),
     };
 
     // 現在処理中のタスクがある場合
     if (this.isProcessing && this.currentTask) {
       console.log(chalk.yellow('\n[Interrupted - Processing new request]'));
-      
+
       if (interruptEvent.type === 'override') {
         console.log(chalk.gray('[Overriding previous request]'));
         await this.interruptCurrentTask('override');
@@ -170,7 +170,7 @@ export class InterruptHandler extends EventEmitter {
     if (task.cleanup) {
       try {
         await task.cleanup();
-      } catch (error) {
+      } catch (error: unknown) {
         logger.error('Cleanup failed:', error);
       }
     }
@@ -185,13 +185,13 @@ export class InterruptHandler extends EventEmitter {
   private determinePriority(input: string): 'high' | 'normal' | 'low' {
     // 緊急キーワード
     const urgentKeywords = ['今すぐ', '緊急', 'urgent', 'immediately', 'now', 'stop', '止めて'];
-    if (urgentKeywords.some(keyword => input.toLowerCase().includes(keyword))) {
+    if (urgentKeywords.some((keyword) => input.toLowerCase().includes(keyword))) {
       return 'high';
     }
 
     // 追加情報キーワード
     const additionalKeywords = ['また', 'さらに', 'あと', 'also', 'additionally', 'more'];
-    if (additionalKeywords.some(keyword => input.toLowerCase().includes(keyword))) {
+    if (additionalKeywords.some((keyword) => input.toLowerCase().includes(keyword))) {
       return 'low';
     }
 
@@ -204,16 +204,24 @@ export class InterruptHandler extends EventEmitter {
   private determineInterruptType(input: string): 'override' | 'addition' | 'cancel' {
     // キャンセルキーワード
     const cancelKeywords = ['キャンセル', 'cancel', '中止', 'stop', '止めて', 'やめて'];
-    if (cancelKeywords.some(keyword => input.toLowerCase().includes(keyword))) {
+    if (cancelKeywords.some((keyword) => input.toLowerCase().includes(keyword))) {
       return 'cancel';
     }
 
     // 追加情報キーワード
     const additionalKeywords = [
-      'また', 'さらに', 'それに', 'あと', '追加で',
-      'also', 'additionally', 'furthermore', 'moreover', 'and'
+      'また',
+      'さらに',
+      'それに',
+      'あと',
+      '追加で',
+      'also',
+      'additionally',
+      'furthermore',
+      'moreover',
+      'and',
     ];
-    if (additionalKeywords.some(keyword => input.toLowerCase().includes(keyword))) {
+    if (additionalKeywords.some((keyword) => input.toLowerCase().includes(keyword))) {
       return 'addition';
     }
 
@@ -251,7 +259,7 @@ export class InterruptHandler extends EventEmitter {
           nextTask.id,
           nextTask.command,
           nextTask.interruptible,
-          nextTask.cleanup
+          nextTask.cleanup,
         );
       }
     } else if (this.interruptQueue.length > 0) {
@@ -269,7 +277,7 @@ export class InterruptHandler extends EventEmitter {
     this.taskQueue.push({
       ...task,
       startTime: new Date(),
-      status: 'running'
+      status: 'running',
     });
   }
 
@@ -296,7 +304,7 @@ export class InterruptHandler extends EventEmitter {
       taskQueue: this.taskQueue.length,
       interruptQueue: this.interruptQueue.length,
       isProcessing: this.isProcessing,
-      contextBuffer: this.contextBuffer.length
+      contextBuffer: this.contextBuffer.length,
     };
   }
 
@@ -332,15 +340,15 @@ export class InterruptHandler extends EventEmitter {
    * 優先度付きタスクの実行
    */
   async executePriorityTask(
-    task: () => Promise<any>,
+    task: () => Promise<unknown>,
     options: {
       id?: string;
       command?: string;
       interruptible?: boolean;
       timeout?: number;
       priority?: 'high' | 'normal' | 'low';
-    } = {}
-  ): Promise<any> {
+    } = {},
+  ): Promise<unknown> {
     const taskId = options.id || this.generateId();
     const priority = options.priority || 'normal';
 
@@ -350,11 +358,7 @@ export class InterruptHandler extends EventEmitter {
     }
 
     try {
-      await this.startTask(
-        taskId,
-        options.command,
-        options.interruptible ?? true
-      );
+      await this.startTask(taskId, options.command, options.interruptible ?? true);
 
       // カスタムタイムアウトの設定
       if (options.timeout) {
@@ -369,7 +373,7 @@ export class InterruptHandler extends EventEmitter {
       const result = await task();
       await this.completeTask(taskId);
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       if (this.currentTask?.id === taskId) {
         this.currentTask.status = 'failed';
         this.isProcessing = false;

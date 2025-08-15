@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/cli.ts'],
+  entry: ['src/index.ts', 'src/cli.ts', 'src/bin/maria.ts'],
   format: ['cjs'],  // CJSのみに変更してdynamic require問題を回避
   dts: true,
   clean: true,

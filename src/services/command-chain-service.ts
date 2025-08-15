@@ -5,7 +5,38 @@
 
 import { SlashCommandHandler, SlashCommandResult } from './slash-command-handler';
 import { ConversationContext } from '../types/conversation';
-// import.*from.*../lib/command-groups';
+// import { commandChains } from '../lib/command-groups';
+
+// Define command chains here temporarily
+export interface CommandChain {
+  name: string;
+  description: string;
+  commands: readonly string[];
+  nextSuggestions?: readonly string[];
+}
+
+const commandChains: Record<string, CommandChain> = {
+  fullDevelopment: {
+    name: 'Full Development',
+    description: 'Complete development workflow',
+    commands: ['init', 'code', 'test', 'review', 'commit'],
+  },
+  quickFix: {
+    name: 'Quick Fix',
+    description: 'Bug fix workflow',
+    commands: ['bug', 'test', 'commit'],
+  },
+  deployment: {
+    name: 'Deployment',
+    description: 'Build and deploy workflow',
+    commands: ['test', 'build', 'deploy'],
+  },
+  analysis: {
+    name: 'Analysis',
+    description: 'Code analysis workflow',
+    commands: ['graph', 'analyze'],
+  },
+};
 // import { logger } from '../utils/logger';
 import chalk from 'chalk';
 
@@ -46,7 +77,7 @@ export class CommandChainService {
    * Execute a predefined command chain
    */
   async executeChain(
-    chainName: keyof typeof commandChains,
+    chainName: string,
     context: ConversationContext,
     options: ChainExecutionOptions = {},
   ): Promise<ChainExecutionResult> {
@@ -61,7 +92,7 @@ export class CommandChainService {
       };
     }
 
-    return this.executeCommandSequence(chain.commands, context, {
+    return this.executeCommandSequence([...chain.commands], context, {
       ...options,
       chainName: chain.name,
       chainDescription: chain.description,
@@ -135,7 +166,7 @@ export class CommandChainService {
             console.log(chalk.red(result.message));
             errors.push({ command, error: result.message });
           }
-        } catch (error) {
+        } catch (error: unknown) {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
           console.log(chalk.red(`❌ ${command} threw an error: ${errorMessage}`));
           errors.push({ command, error: errorMessage });
@@ -238,7 +269,7 @@ export class CommandChainService {
     return Object.entries(commandChains).map(([key, chain]) => ({
       name: key,
       description: chain.description,
-      commands: chain.commands,
+      commands: [...chain.commands],
     }));
   }
 }

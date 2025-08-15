@@ -1,10 +1,12 @@
-#!/usr/bin/env node
-
 /**
  * MARIA CLI Binary Entry Point
  */
 
 import { createCLI } from '../cli';
+import { checkNodeVersion } from '../utils/version-check';
+
+// Check Node.js version before starting
+checkNodeVersion();
 
 const program = createCLI();
 

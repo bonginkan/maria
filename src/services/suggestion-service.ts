@@ -71,7 +71,8 @@ export class SuggestionService {
         }
       } else if (currentIndex === chain.commands.length - 1) {
         // Workflow completed, suggest next workflow commands
-        chain.nextSuggestions?.forEach((cmd) => {
+        const chainWithSuggestions = chain as { nextSuggestions?: string[] } & typeof chain;
+        chainWithSuggestions.nextSuggestions?.forEach((cmd: string) => {
           suggestions.push({
             command: cmd,
             description: `Recommended after ${chain.name}`,
@@ -84,9 +85,9 @@ export class SuggestionService {
     // Get related commands
     const related = getRelatedCommands(command);
     related.forEach((rel) => {
-      if (!suggestions.find((s) => s.command === rel.command)) {
+      if (!suggestions.find((s) => s.command === rel.name)) {
         suggestions.push({
-          command: rel.command,
+          command: rel.name,
           description: rel.description,
           reason: `Related to ${command}`,
           priority: 'medium',

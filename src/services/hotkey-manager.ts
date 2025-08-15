@@ -7,7 +7,7 @@ import { SlashCommandHandler } from './slash-command-handler';
 import { ConversationContext } from '../types/conversation';
 import { logger } from '../utils/logger';
 import chalk from 'chalk';
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -154,21 +154,29 @@ export class HotkeyManager {
    * Process keypress event
    */
   async processKeypress(
-    key: any,
+    key: unknown,
     context: ConversationContext,
-  ): Promise<{ handled: boolean; result?: any }> {
+  ): Promise<{ handled: boolean; result?: unknown }> {
     if (!this.isEnabled || !key) {
       return { handled: false };
     }
 
     // Build key combination string
     const modifiers: string[] = [];
-    if (key.ctrl) modifiers.push('ctrl');
-    if (key.shift) modifiers.push('shift');
-    if (key.meta) modifiers.push('meta');
-    if (key.alt) modifiers.push('alt');
+    const keyObj = key as {
+      ctrl?: boolean;
+      shift?: boolean;
+      meta?: boolean;
+      alt?: boolean;
+      name?: string;
+      sequence?: string;
+    };
+    if (keyObj.ctrl) modifiers.push('ctrl');
+    if (keyObj.shift) modifiers.push('shift');
+    if (keyObj.meta) modifiers.push('meta');
+    if (keyObj.alt) modifiers.push('alt');
 
-    const keyName = key.name || key.sequence;
+    const keyName = keyObj.name || keyObj.sequence;
     if (!keyName) return { handled: false };
 
     const bindingKey = modifiers.length > 0 ? `${modifiers.sort().join('+')}+${keyName}` : keyName;
@@ -190,7 +198,7 @@ export class HotkeyManager {
       );
 
       return { handled: true, result };
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Error executing hotkey command:', error);
       return {
         handled: true,
@@ -395,7 +403,7 @@ export class HotkeyManager {
         success: true,
         message: `Imported ${config.bindings.length} hotkey bindings`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         message: `Failed to import config: ${error}`,
@@ -410,10 +418,10 @@ export class HotkeyManager {
     try {
       if (existsSync(this.configPath)) {
         const data = readFileSync(this.configPath, 'utf-8');
-        const config: HotkeyConfig = JSON.parse(data);
+        const config = JSON.parse(data) as HotkeyConfig;
         this.importConfig(config);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.warn('Failed to load hotkey bindings:', error);
     }
   }
@@ -428,11 +436,11 @@ export class HotkeyManager {
 
       // Ensure directory exists
       if (!existsSync(dir)) {
-        require('fs').mkdirSync(dir, { recursive: true });
+        mkdirSync(dir, { recursive: true });
       }
 
       writeFileSync(this.configPath, JSON.stringify(config, null, 2));
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to save hotkey bindings:', error);
     }
   }

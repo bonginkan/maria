@@ -11,6 +11,7 @@ import { promisify } from 'util';
 import fetch from 'node-fetch';
 import * as fs from 'fs';
 import * as path from 'path';
+import { isObject, hasStringProperty, getBooleanProperty } from '../utils/type-guards.js';
 
 const execAsync = promisify(exec);
 
@@ -132,8 +133,16 @@ export const EnhancedModelCommand: React.FC = () => {
           const availableModels = data.data || [];
           const updatedModels = LM_STUDIO_MODELS.map((model) => ({
             ...model,
-            available: availableModels.some((m: any) => m.id.includes(model.id)),
-            loaded: availableModels.some((m: any) => m.id === model.id && m.loaded),
+            available: availableModels.some(
+              (m: unknown) => isObject(m) && hasStringProperty(m, 'id') && m.id.includes(model.id),
+            ),
+            loaded: availableModels.some(
+              (m: unknown) =>
+                isObject(m) &&
+                hasStringProperty(m, 'id') &&
+                m.id === model.id &&
+                getBooleanProperty(m, 'loaded', false),
+            ),
           }));
 
           return updatedModels;
@@ -147,7 +156,7 @@ export const EnhancedModelCommand: React.FC = () => {
         setLmStudioStatus('not-running');
         return false;
       }
-    } catch (error) {
+    } catch (error: unknown) {
       setError(
         `Error checking LM Studio: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -171,7 +180,7 @@ export const EnhancedModelCommand: React.FC = () => {
       setLmStudioStatus('running');
       setStatusMessage('LM Studio server started successfully');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       setError(
         `Failed to start LM Studio: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -213,13 +222,13 @@ export const EnhancedModelCommand: React.FC = () => {
       fs.writeFileSync(envPath, updatedEnv);
 
       // Set environment variables for current session
-      process.env.LMSTUDIO_DEFAULT_MODEL = modelId;
-      process.env.AI_PROVIDER = 'lmstudio';
-      process.env.OFFLINE_MODE = 'true';
+      process.env['LMSTUDIO_DEFAULT_MODEL'] = modelId;
+      process.env['AI_PROVIDER'] = 'lmstudio';
+      process.env['OFFLINE_MODE'] = 'true';
 
       setStep('ready');
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       setError(`Failed to load model: ${error instanceof Error ? error.message : String(error)}`);
       return false;
     }
@@ -232,16 +241,16 @@ export const EnhancedModelCommand: React.FC = () => {
 
       switch (model.provider) {
         case 'OpenAI':
-          apiKeySet = !!process.env.OPENAI_API_KEY;
+          apiKeySet = !!process.env['OPENAI_API_KEY'];
           break;
         case 'Anthropic':
-          apiKeySet = !!process.env.ANTHROPIC_API_KEY;
+          apiKeySet = !!process.env['ANTHROPIC_API_KEY'];
           break;
         case 'Google':
-          apiKeySet = !!process.env.GEMINI_API_KEY;
+          apiKeySet = !!process.env['GEMINI_API_KEY'];
           break;
         case 'Groq':
-          apiKeySet = !!process.env.GROQ_API_KEY;
+          apiKeySet = !!process.env['GROQ_API_KEY'];
           break;
       }
 
@@ -306,8 +315,8 @@ export const EnhancedModelCommand: React.FC = () => {
             loadModel(selected.id);
           } else {
             // Cloud model - just set it
-            process.env.AI_PROVIDER = selected.provider.toLowerCase();
-            process.env.CURRENT_MODEL = selected.id;
+            process.env['AI_PROVIDER'] = selected.provider.toLowerCase();
+            process.env['CURRENT_MODEL'] = selected.id;
             setStep('ready');
           }
         }
@@ -377,7 +386,7 @@ export const EnhancedModelCommand: React.FC = () => {
         <Box marginTop={1}>
           <Text color="cyan">💡 Active Model: </Text>
           <Text bold color="yellow">
-            {process.env.LMSTUDIO_DEFAULT_MODEL || process.env.CURRENT_MODEL || 'None'}
+            {process.env['LMSTUDIO_DEFAULT_MODEL'] || process.env['CURRENT_MODEL'] || 'None'}
           </Text>
         </Box>
 

@@ -36,7 +36,7 @@ export class LocalAuthService {
   constructor(options: AuthOptions = {}) {
     this.jwtSecret = options.jwtSecret || crypto.randomBytes(32).toString('hex');
     this.sessionTTL = options.sessionTTL || 86400000; // 24 hours
-    this.dataPath = options.dataPath || path.join(process.env.HOME || '', '.maria', 'auth');
+    this.dataPath = options.dataPath || path.join(process.env['HOME'] || '', '.maria', 'auth');
 
     // Ensure data directory exists
     fs.ensureDirSync(this.dataPath);
@@ -86,7 +86,9 @@ export class LocalAuthService {
 
     // Verify password
     const [salt, hash] = user.passwordHash.split(':');
-    const verifyHash = crypto.pbkdf2Sync(password, salt, 100000, 64, 'sha512').toString('hex');
+    const verifyHash = crypto
+      .pbkdf2Sync(password, salt || '', 100000, 64, 'sha512')
+      .toString('hex');
 
     if (hash !== verifyHash) {
       throw new Error('Invalid credentials');
@@ -137,7 +139,7 @@ export class LocalAuthService {
       }
 
       // Verify JWT
-      const decoded = jwt.verify(token, this.jwtSecret) as any;
+      const decoded = jwt.verify(token, this.jwtSecret) as { userId: string };
 
       // Get user
       return this.getUserById(decoded.userId);
@@ -220,4 +222,4 @@ export class LocalAuthService {
     }
   }
 }
-EOF < /dev/llnu;
+// File end

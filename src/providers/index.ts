@@ -35,7 +35,7 @@ export interface AIProviderConfig {
   provider: string;
   apiKey: string;
   model?: string;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 // Provider initialization helper
@@ -61,20 +61,20 @@ export async function initializeProvider(config: AIProviderConfig): Promise<void
 // Helper to get provider from environment variables
 export function getProviderConfigFromEnv(): AIProviderConfig | null {
   // Check for provider-specific API keys
-  const openaiKey = process.env.OPENAI_API_KEY;
-  const anthropicKey = process.env.ANTHROPIC_API_KEY;
-  const googleKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_AI_API_KEY;
-  const grokKey = process.env.GROK_API_KEY;
-  const lmstudioEnabled = process.env.LMSTUDIO_ENABLED === 'true';
-  const lmstudioKey = process.env.LMSTUDIO_API_KEY || 'lm-studio';
-  const vllmEnabled = process.env.VLLM_ENABLED === 'true';
-  const vllmKey = process.env.VLLM_API_KEY || 'vllm-local';
-  const ollamaEnabled = process.env.OLLAMA_ENABLED === 'true';
-  const ollamaKey = process.env.OLLAMA_API_KEY || 'ollama';
+  const openaiKey = process.env['OPENAI_API_KEY'];
+  const anthropicKey = process.env['ANTHROPIC_API_KEY'];
+  const googleKey = process.env['GEMINI_API_KEY'] || process.env['GOOGLE_AI_API_KEY'];
+  const grokKey = process.env['GROK_API_KEY'];
+  const lmstudioEnabled = process.env['LMSTUDIO_ENABLED'] === 'true';
+  const lmstudioKey = process.env['LMSTUDIO_API_KEY'] || 'lm-studio';
+  const vllmEnabled = process.env['VLLM_ENABLED'] === 'true';
+  const vllmKey = process.env['VLLM_API_KEY'] || 'vllm-local';
+  const ollamaEnabled = process.env['OLLAMA_ENABLED'] === 'true';
+  const ollamaKey = process.env['OLLAMA_API_KEY'] || 'ollama';
 
   // Check for preferred provider
-  const preferredProvider = process.env.AI_PROVIDER || process.env.LLM_PROVIDER;
-  const preferredModel = process.env.AI_MODEL || process.env.LLM_MODEL;
+  const preferredProvider = process.env['AI_PROVIDER'] || process.env['LLM_PROVIDER'];
+  const preferredModel = process.env['AI_MODEL'] || process.env['LLM_MODEL'];
 
   // If preferred provider is specified, use it
   if (preferredProvider) {
@@ -127,7 +127,7 @@ export function getProviderConfigFromEnv(): AIProviderConfig | null {
       apiKey: vllmKey,
       model:
         preferredModel ||
-        process.env.VLLM_DEFAULT_MODEL ||
+        process.env['VLLM_DEFAULT_MODEL'] ||
         'stabilityai/japanese-stablelm-2-instruct-1_6b',
     };
   }
@@ -137,7 +137,7 @@ export function getProviderConfigFromEnv(): AIProviderConfig | null {
     return {
       provider: 'lmstudio',
       apiKey: lmstudioKey,
-      model: preferredModel || process.env.LMSTUDIO_DEFAULT_MODEL || 'gpt-oss-20b',
+      model: preferredModel || process.env['LMSTUDIO_DEFAULT_MODEL'] || 'gpt-oss-20b',
     };
   }
 
@@ -146,7 +146,7 @@ export function getProviderConfigFromEnv(): AIProviderConfig | null {
     return {
       provider: 'ollama',
       apiKey: ollamaKey,
-      model: preferredModel || process.env.OLLAMA_DEFAULT_MODEL || 'llama3.2:3b',
+      model: preferredModel || process.env['OLLAMA_DEFAULT_MODEL'] || 'llama3.2:3b',
     };
   }
 

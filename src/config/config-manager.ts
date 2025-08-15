@@ -27,7 +27,7 @@ export class ConfigManager {
 
   private mergeConfig(newConfig: MariaAIConfig): void {
     if (newConfig.priority) {
-      this.config.priority = newConfig.priority;
+      this.config['priority'] = newConfig.priority;
     }
 
     if (newConfig.apiKeys) {
@@ -40,11 +40,11 @@ export class ConfigManager {
     }
 
     if (newConfig.autoStart !== undefined) {
-      this.config.autoStart = newConfig.autoStart;
+      this.config['autoStart'] = newConfig.autoStart;
     }
 
     if (newConfig.healthMonitoring !== undefined) {
-      this.config.healthMonitoring = newConfig.healthMonitoring;
+      this.config['healthMonitoring'] = newConfig.healthMonitoring;
     }
 
     if (newConfig.enabledProviders) {
@@ -52,12 +52,13 @@ export class ConfigManager {
     }
   }
 
-  get<T>(key: string, defaultValue?: T): T {
-    return (this.config as any)[key] ?? defaultValue;
+  get<T>(key: string, defaultValue?: T): T | undefined {
+    const value = (this.config as Record<string, unknown>)[key] as T;
+    return value !== undefined ? value : defaultValue;
   }
 
-  set(key: string, value: any): void {
-    (this.config as any)[key] = value;
+  set(key: string, value: unknown): void {
+    (this.config as Record<string, unknown>)[key] = value;
   }
 
   getAll(): Partial<Config> {
@@ -67,21 +68,21 @@ export class ConfigManager {
   // Load configuration from environment variables
   static fromEnvironment(): ConfigManager {
     const config: MariaAIConfig = {
-      priority: (process.env.MARIA_PRIORITY as PriorityMode) || 'privacy-first',
+      priority: (process.env['MARIA_PRIORITY'] as PriorityMode) || 'privacy-first',
       apiKeys: {
-        OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
-        ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY || '',
-        GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || '',
-        GROQ_API_KEY: process.env.GROQ_API_KEY || '',
-        GROK_API_KEY: process.env.GROK_API_KEY || '',
+        OPENAI_API_KEY: process.env['OPENAI_API_KEY'] || '',
+        ANTHROPIC_API_KEY: process.env['ANTHROPIC_API_KEY'] || '',
+        GOOGLE_API_KEY: process.env['GOOGLE_API_KEY'] || process.env['GEMINI_API_KEY'] || '',
+        GROQ_API_KEY: process.env['GROQ_API_KEY'] || '',
+        GROK_API_KEY: process.env['GROK_API_KEY'] || '',
       },
       localProviders: {
-        lmstudio: process.env.LMSTUDIO_ENABLED !== 'false',
-        ollama: process.env.OLLAMA_ENABLED !== 'false',
-        vllm: process.env.VLLM_ENABLED !== 'false',
+        lmstudio: process.env['LMSTUDIO_ENABLED'] !== 'false',
+        ollama: process.env['OLLAMA_ENABLED'] !== 'false',
+        vllm: process.env['VLLM_ENABLED'] !== 'false',
       },
-      autoStart: process.env.AUTO_START_LLMS !== 'false',
-      healthMonitoring: process.env.HEALTH_MONITORING !== 'false',
+      autoStart: process.env['AUTO_START_LLMS'] !== 'false',
+      healthMonitoring: process.env['HEALTH_MONITORING'] !== 'false',
     };
 
     return new ConfigManager(config);
@@ -114,7 +115,7 @@ export class ConfigManager {
       try {
         const savedConfig = await fs.readJson(targetPath);
         return new ConfigManager(savedConfig);
-      } catch (error) {
+      } catch (error: unknown) {
         console.warn('Failed to load config file, using defaults:', error);
       }
     }

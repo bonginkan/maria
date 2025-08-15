@@ -21,6 +21,10 @@ export interface IntentAnalysis {
   originalInput: string;
 }
 
+// export class IntentClassifier {
+//   // Alias for backward compatibility
+// }
+
 export class IntentAnalyzer {
   private readonly taskPatterns = {
     paper: {
@@ -245,16 +249,17 @@ export class IntentAnalyzer {
     }
 
     // 現在のタスクと関連する場合は信頼度を上げる
-    if (context.currentTask.type === analysis.taskType) {
+    // currentTaskはstringなので、タスクタイプに直接マッチした場合の処理
+    if (context.currentTask && context.currentTask.includes(analysis.taskType || '')) {
       analysis.confidence = Math.min((analysis.confidence || 0) + 0.2, 1.0);
     }
 
     // 前の会話から追加のコンテキストを取得
-    if (context.history.length > 0) {
+    if (context.history && context.history.length > 0) {
       const recentMessages = context.history.slice(-3);
       analysis.parameters = {
         ...analysis.parameters,
-        additionalContext: recentMessages.map((m) => m.content),
+        additionalContext: recentMessages.map((m) => m.action),
       };
     }
 

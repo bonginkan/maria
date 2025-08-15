@@ -7,7 +7,7 @@ import * as path from 'path';
 interface Node {
   id: string;
   labels: string[];
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 interface Relationship {
@@ -15,7 +15,7 @@ interface Relationship {
   type: string;
   startNode: string;
   endNode: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 interface GraphOptions {
@@ -34,7 +34,8 @@ export class LocalGraphService {
   private maxRelationships: number;
 
   constructor(options: GraphOptions = {}) {
-    this.persistPath = options.persistPath || path.join(process.env.HOME || '', '.maria', 'graph');
+    this.persistPath =
+      options.persistPath || path.join(process.env['HOME'] || '', '.maria', 'graph');
     this.maxNodes = options.maxNodes || 100000;
     this.maxRelationships = options.maxRelationships || 500000;
 
@@ -45,7 +46,7 @@ export class LocalGraphService {
     this.load();
   }
 
-  async createNode(labels: string[], properties: Record<string, any> = {}): Promise<Node> {
+  async createNode(labels: string[], properties: Record<string, unknown> = {}): Promise<Node> {
     if (this.nodes.size >= this.maxNodes) {
       throw new Error(`Maximum node limit (${this.maxNodes}) reached`);
     }
@@ -71,7 +72,7 @@ export class LocalGraphService {
     startNodeId: string,
     endNodeId: string,
     type: string,
-    properties: Record<string, any> = {},
+    properties: Record<string, unknown> = {},
   ): Promise<Relationship> {
     if (this.relationships.size >= this.maxRelationships) {
       throw new Error(`Maximum relationship limit (${this.maxRelationships}) reached`);
@@ -102,7 +103,7 @@ export class LocalGraphService {
     return relationship;
   }
 
-  async findNodes(label?: string, properties?: Record<string, any>): Promise<Node[]> {
+  async findNodes(label?: string, properties?: Record<string, unknown>): Promise<Node[]> {
     let nodes: Node[] = [];
 
     if (label) {
@@ -343,7 +344,7 @@ export class LocalGraphService {
       this.relationshipsByType = new Map(
         data.relationshipsByType.map(([type, ids]: [string, string[]]) => [type, new Set(ids)]),
       );
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to load graph data:', error);
     }
   }

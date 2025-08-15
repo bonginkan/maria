@@ -122,14 +122,14 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
       }
 
       // Login with token from environment
-      const hfToken = process.env.HF_TOKEN;
+      const hfToken = process.env['HF_TOKEN'];
       if (!hfToken) {
         throw new Error('HF_TOKEN not found in environment variables');
       }
 
       await execAsync(`huggingface-cli login --token ${hfToken}`);
       setProgress('Hugging Face CLI setup complete');
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to setup Hugging Face CLI: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -138,7 +138,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 
   const downloadModel = async (modelId: keyof typeof VIDEO_MODELS): Promise<void> => {
     const model = VIDEO_MODELS[modelId];
-    const modelPath = `${process.env.HF_MODEL_DIR || '~/.maria/huggingface/models'}/${modelId}`;
+    const modelPath = `${process.env['HF_MODEL_DIR'] || '~/.maria/huggingface/models'}/${modelId}`;
 
     setProgress(`Downloading ${model.name}... This may take several minutes`);
 
@@ -150,7 +150,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
       await execAsync(`huggingface-cli download ${model.huggingface} --local-dir "${modelPath}"`);
 
       setProgress(`Model ${model.name} downloaded successfully`);
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to download model: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -158,7 +158,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
   };
 
   const setupComfyUI = async (): Promise<void> => {
-    const comfyPath = `${process.env.HOME}/.maria/comfyui`;
+    const comfyPath = `${process.env['HOME']}/.maria/comfyui`;
 
     setProgress('Setting up ComfyUI...');
 
@@ -176,7 +176,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
       }
 
       setProgress('ComfyUI setup complete');
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Failed to setup ComfyUI: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -185,7 +185,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 
   const generateVideo = async (params: VideoGenerationParams): Promise<string> => {
     const timestamp = Date.now();
-    const outputDir = `${process.env.HOME}/.maria/outputs/video/${timestamp}`;
+    const outputDir = `${process.env['HOME']}/.maria/outputs/video/${timestamp}`;
     const outputFile = path.join(outputDir, `${params.model}_${timestamp}.mp4`);
 
     setProgress('Initializing video generation...');
@@ -211,7 +211,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
       await runComfyUIHeadless(workflowPath, outputFile);
 
       return outputFile;
-    } catch (error) {
+    } catch (error: unknown) {
       throw new Error(
         `Video generation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
@@ -223,7 +223,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
     outputPath: string,
   ): Promise<string> => {
     const model = VIDEO_MODELS[params.model];
-    const workflowDir = `${process.env.HOME}/.maria/comfyui/workflows`;
+    const workflowDir = `${process.env['HOME']}/.maria/comfyui/workflows`;
     const workflowPath = path.join(workflowDir, `${params.model}_workflow.json`);
 
     await execAsync(`mkdir -p "${workflowDir}"`);
@@ -268,7 +268,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
   };
 
   const runComfyUIHeadless = async (workflowPath: string, outputPath: string): Promise<void> => {
-    const comfyPath = `${process.env.HOME}/.maria/comfyui`;
+    const comfyPath = `${process.env['HOME']}/.maria/comfyui`;
     const port = 8188;
 
     setProgress('Starting ComfyUI server...');
@@ -341,7 +341,7 @@ export const VideoCommand: React.FC<VideoCommandProps> = ({
 
       setResult(outputFile);
       setProgress('Video generated successfully!');
-    } catch (error) {
+    } catch (error: unknown) {
       setError(error instanceof Error ? error.message : String(error));
     } finally {
       setIsGenerating(false);

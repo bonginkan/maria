@@ -36,13 +36,16 @@ export class VLLMProvider extends BaseAIProvider {
   private availableModels: string[] = [];
   private vllmConfig: VLLMConfig = {};
 
-  async initialize(apiKey: string = 'vllm-local', config?: Record<string, any>): Promise<void> {
+  override async initialize(
+    apiKey: string = 'vllm-local',
+    config?: Record<string, unknown>,
+  ): Promise<void> {
     await super.initialize(apiKey, config);
 
     this.vllmConfig = (config as VLLMConfig) || {};
     this.apiBase =
-      this.vllmConfig.apiBase || process.env.VLLM_API_BASE || 'http://localhost:8000/v1';
-    this.timeout = this.vllmConfig.timeout || parseInt(process.env.VLLM_TIMEOUT || '120000');
+      this.vllmConfig.apiBase || process.env['VLLM_API_BASE'] || 'http://localhost:8000/v1';
+    this.timeout = this.vllmConfig.timeout || parseInt(process.env['VLLM_TIMEOUT'] || '120000');
 
     // Check health and get available models
     await this.checkHealth();
@@ -80,15 +83,15 @@ export class VLLMProvider extends BaseAIProvider {
       });
 
       if (response.ok) {
-        const data = (await response.json()) as any;
-        this.availableModels = data.data?.map((model: any) => model.id) || [];
+        const data = (await response.json()) as { data?: Array<{ id: string }> };
+        this.availableModels = data.data?.map((model) => model.id) || [];
       }
     } catch {
       console.warn('Failed to fetch available models');
     }
   }
 
-  getModels(): string[] {
+  override getModels(): string[] {
     // Return available models if we have them, otherwise return default list
     return this.availableModels.length > 0 ? this.availableModels : this.models;
   }
@@ -100,7 +103,7 @@ export class VLLMProvider extends BaseAIProvider {
     for (let i = 0; i < attempts; i++) {
       try {
         return await fn();
-      } catch (error) {
+      } catch (error: unknown) {
         if (i === attempts - 1) throw error;
         await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
       }
@@ -148,8 +151,8 @@ export class VLLMProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const data = (await response.json()) as any;
-    return data.choices[0]?.message?.content || '';
+    const data = (await response.json()) as { choices?: Array<{ message?: { content?: string } }> };
+    return data.choices?.[0]?.message?.content || '';
   }
 
   async *chatStream(
@@ -196,7 +199,9 @@ export class VLLMProvider extends BaseAIProvider {
     };
 
     const response = await this.retryWithBackoff(makeRequest);
-    const nodeResponse = response as any; // Node.js fetch response
+    const nodeResponse = response as unknown as {
+      body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
+    };
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error('No response body');
 
@@ -218,7 +223,9 @@ export class VLLMProvider extends BaseAIProvider {
             if (data === '[DONE]') return;
 
             try {
-              const parsed = JSON.parse(data);
+              const parsed = JSON.parse(data) as {
+                choices?: Array<{ delta?: { content?: string } }>;
+              };
               const content = parsed.choices?.[0]?.delta?.content;
               if (content) {
                 yield content;
@@ -292,7 +299,7 @@ export class VLLMProvider extends BaseAIProvider {
     const response = await this.chat(messages, model, { temperature: 0.1, maxTokens: 4096 });
 
     try {
-      return JSON.parse(response);
+      return JSON.parse(response) as CodeReviewResult;
     } catch {
       // Fallback if JSON parsing fails
       return {
@@ -317,7 +324,7 @@ export class VLLMProvider extends BaseAIProvider {
     const availableModels = await this.getAvailableModels();
 
     switch (task) {
-      case 'japanese':
+      case 'japanese': {
         // Prefer Japanese-specific models
         const japaneseModels = availableModels.filter(
           (m) => m.includes('japanese') || m.includes('jp'),
@@ -326,8 +333,9 @@ export class VLLMProvider extends BaseAIProvider {
           return japaneseModels[0];
         }
         break;
+      }
 
-      case 'code':
+      case 'code': {
         // Prefer code-optimized models
         const codeModels = availableModels.filter(
           (m) => m.includes('code') || m.includes('instruct'),
@@ -336,8 +344,9 @@ export class VLLMProvider extends BaseAIProvider {
           return codeModels[0];
         }
         break;
+      }
 
-      case 'fast':
+      case 'fast': {
         // Prefer smaller models for speed
         const smallModels = availableModels.filter(
           (m) => m.includes('1_6b') || m.includes('1.6b') || m.includes('7b'),
@@ -346,6 +355,7 @@ export class VLLMProvider extends BaseAIProvider {
           return smallModels[0];
         }
         break;
+      }
     }
 
     // Default to first available model

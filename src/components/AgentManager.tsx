@@ -7,6 +7,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import { MariaConfig, Agent } from '../utils/config.js';
+import { isString } from '../utils/type-guards.js';
 import { execSync } from 'child_process';
 import { existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -150,7 +151,7 @@ const AgentManager: React.FC<AgentManagerProps> = ({ action, config, onUpdate, o
     });
 
     // Neovim Plugin
-    const nvimConfigPath = join(process.env.HOME || '', '.config/nvim/init.lua');
+    const nvimConfigPath = join(process.env['HOME'] || '', '.config/nvim/init.lua');
     const hasNvimConfig = existsSync(nvimConfigPath);
     integrations.push({
       name: 'Neovim Plugin',
@@ -281,7 +282,7 @@ jobs:
       );
 
       setSuccess('✅ GitHub Actions workflow and Playwright MCP configuration created');
-    } catch (err) {
+    } catch (err: unknown) {
       setError(`Failed to install GitHub app configuration: ${err}`);
     }
   }, []);
@@ -307,7 +308,12 @@ jobs:
               if (item.value === 'back') {
                 onExit();
               } else {
-                setCurrentView(item.value as any);
+                if (
+                  isString(item.value) &&
+                  ['main', 'ide', 'agents', 'github'].includes(item.value)
+                ) {
+                  setCurrentView(item.value as 'main' | 'ide' | 'agents' | 'github');
+                }
               }
             }}
           />

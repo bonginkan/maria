@@ -11,7 +11,7 @@ import { logger } from '../utils/logger';
 export interface Neo4jNode {
   id: string;
   labels: string[];
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 export interface Neo4jRelationship {
@@ -19,20 +19,20 @@ export interface Neo4jRelationship {
   type: string;
   startNode: string;
   endNode: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 export interface QueryResult {
   nodes: Neo4jNode[];
   relationships: Neo4jRelationship[];
-  records: any[];
+  records: unknown[];
 }
 
 interface Pattern {
   name: string;
   pattern: string;
   count: number;
-  example?: any;
+  example?: unknown;
 }
 
 interface Metric {
@@ -81,7 +81,7 @@ export class Neo4jService {
   /**
    * クエリを実行
    */
-  async executeQuery(query: string, params?: Record<string, any>): Promise<QueryResult> {
+  async executeQuery(query: string, params?: Record<string, unknown>): Promise<QueryResult> {
     if (!this.connected) {
       throw new Error('Not connected to Neo4j');
     }
@@ -135,7 +135,7 @@ export class Neo4jService {
   /**
    * スキーマを分析
    */
-  async analyzeSchema(): Promise<any> {
+  async analyzeSchema(): Promise<unknown> {
     logger.info('Analyzing schema...');
     // Mock implementation for now
     return {
@@ -220,7 +220,7 @@ export class Neo4jService {
   /**
    * クエリを実行（互換性のため）
    */
-  async runQuery(query: string, params?: Record<string, any>): Promise<any[]> {
+  async runQuery(query: string, params?: Record<string, unknown>): Promise<unknown[]> {
     logger.debug('Running query:', query, params);
 
     // Mock implementation - return sample data based on query patterns
@@ -288,17 +288,17 @@ export class Neo4jService {
 
 // Mock implementation for OSS version
 export class MockNeo4jService extends Neo4jService {
-  async connect() {
+  override async connect() {
     console.warn('Neo4j is not configured. Using mock implementation.');
     // Use the parent's connected property instead of trying to assign to isConnected method
   }
 
-  async analyzeSchema() {
+  override async analyzeSchema() {
     return { nodes: [], relationships: [], constraints: [], indexes: [] };
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async runQuery(_query: string, _params?: Record<string, any>): Promise<any[]> {
+  override async runQuery(_query: string, _params?: Record<string, unknown>): Promise<unknown[]> {
     // Return empty array to match the expected return type
     return [];
   }

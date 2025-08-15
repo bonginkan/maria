@@ -11,7 +11,7 @@ export interface Mission {
   id: string;
   type: 'paper' | 'slides' | 'development' | 'composite';
   description: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   sow: SOWDocument;
   deadline?: Date;
   priority: 'low' | 'medium' | 'high';
@@ -45,9 +45,9 @@ export interface Task {
   name: string;
   description: string;
   command?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   status: 'pending' | 'in_progress' | 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
   estimatedDuration: number;
 }
 
@@ -56,7 +56,7 @@ export interface MissionResult {
   success: boolean;
   completedPhases: string[];
   totalDuration: number;
-  outputs: any[];
+  outputs: unknown[];
   errors?: Error[];
 }
 
@@ -159,7 +159,7 @@ export class AutoModeController extends EventEmitter {
 
       result.success = result.completedPhases.length === mission.sow.phases.length;
       result.totalDuration = Date.now() - startTime;
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Mission execution error:', error);
       result.errors = [error as Error];
     } finally {
@@ -232,8 +232,8 @@ export class AutoModeController extends EventEmitter {
   private async executePhase(
     phase: MissionPhase,
     context?: ConversationContext,
-  ): Promise<{ success: boolean; outputs: any[]; error?: Error }> {
-    const outputs: any[] = [];
+  ): Promise<{ success: boolean; outputs: unknown[]; error?: Error }> {
+    const outputs: unknown[] = [];
 
     try {
       for (const task of phase.tasks) {
@@ -255,7 +255,7 @@ export class AutoModeController extends EventEmitter {
       }
 
       return { success: true, outputs };
-    } catch (error) {
+    } catch (error: unknown) {
       return { success: false, outputs, error: error as Error };
     }
   }
@@ -267,7 +267,7 @@ export class AutoModeController extends EventEmitter {
     task: Task,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _context?: ConversationContext,
-  ): Promise<{ success: boolean; output?: any }> {
+  ): Promise<{ success: boolean; output?: unknown }> {
     logger.debug(`Executing task: ${task.description}`);
 
     // TODO: 実際のタスク実行ロジックを実装

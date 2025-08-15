@@ -5,7 +5,7 @@
 
 import { readConfig, writeConfig } from '../utils/config';
 import { logger } from '../utils/logger';
-// import.*from.*../lib/command-groups';
+import { getCommandInfo } from '../lib/command-groups';
 
 export interface CommandAlias {
   alias: string;
@@ -114,12 +114,12 @@ export class AliasSystem {
   private async saveAliases(): Promise<void> {
     try {
       const config = await readConfig();
-      config.aliases = Array.from(this.aliases.values()).map((alias) => ({
+      config['aliases'] = Array.from(this.aliases.values()).map((alias) => ({
         ...alias,
         createdAt: alias.createdAt.toISOString(),
       }));
       await writeConfig(config);
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error('Failed to save aliases:', error);
     }
   }
@@ -334,9 +334,9 @@ export class AliasSystem {
    */
   async importAliases(jsonData: string): Promise<{ success: boolean; message: string }> {
     try {
-      const data = JSON.parse(jsonData);
+      const data = JSON.parse(jsonData) as Record<string, unknown>;
 
-      if (!data.userAliases || !Array.isArray(data.userAliases)) {
+      if (!data['userAliases'] || !Array.isArray(data['userAliases'])) {
         return {
           success: false,
           message: 'Invalid alias data format',
@@ -346,7 +346,7 @@ export class AliasSystem {
       let imported = 0;
       let skipped = 0;
 
-      for (const alias of data.userAliases) {
+      for (const alias of data['userAliases']) {
         if (!this.aliases.has(alias.alias) && !this.builtInAliases.has(alias.alias)) {
           this.aliases.set(alias.alias, {
             ...alias,
@@ -365,7 +365,7 @@ export class AliasSystem {
         success: true,
         message: `Imported ${imported} aliases (${skipped} skipped due to conflicts)`,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       return {
         success: false,
         message: `Failed to import aliases: ${error instanceof Error ? error.message : 'Unknown error'}`,

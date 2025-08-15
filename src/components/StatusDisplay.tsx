@@ -137,7 +137,7 @@ export const StatusDisplay: React.FC<{
 
       <ExpandableSection
         title="User Information"
-        expanded={expandedSections.user || false}
+        expanded={expandedSections['user'] || false}
         onToggle={() => toggleSection('user')}
         icon="👤"
         summary={
@@ -176,7 +176,7 @@ export const StatusDisplay: React.FC<{
 
       <ExpandableSection
         title="Service Status"
-        expanded={expandedSections.services || false}
+        expanded={expandedSections['services'] || false}
         onToggle={() => toggleSection('services')}
         icon="🔌"
         summary="All services operational"
@@ -357,13 +357,13 @@ export const StatusDisplay: React.FC<{
             { service: 'Vertex AI', status: '● Active', latency: '45ms', requests: '120' },
             {
               service: 'Graph Database',
-              status: process.env.NEO4J_ENABLED === 'true' ? '● Active' : '○ Disabled',
+              status: process.env['NEO4J_ENABLED'] === 'true' ? '● Active' : '○ Disabled',
               latency: 'N/A',
               requests: '0',
             },
             {
               service: 'Authentication',
-              status: process.env.FIREBASE_ENABLED === 'true' ? '● Active' : '○ Local Mode',
+              status: process.env['FIREBASE_ENABLED'] === 'true' ? '● Active' : '○ Local Mode',
               latency: 'N/A',
               requests: '0',
             },

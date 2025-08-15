@@ -54,13 +54,13 @@ const TaskProgress: React.FC<TaskProgressProps> = ({ executionId, onComplete }) 
         const response = await fetch(`${apiUrl}/api/conversation/status/${executionId}`);
         if (!response.ok) throw new Error('Failed to fetch status');
 
-        const data = await response.json();
+        const data = (await response.json()) as ExecutionStatus;
         setStatus(data);
 
         if (data.status === 'completed' || data.status === 'failed') {
           setTimeout(onComplete, 2000);
         }
-      } catch (err) {
+      } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Failed to fetch status');
       }
     };
