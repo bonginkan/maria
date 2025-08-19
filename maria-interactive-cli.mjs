@@ -140,6 +140,7 @@ class MariaCLI {
       '/status': 'Display system status',
       '/model': 'Select AI model',
       '/config': 'Configuration panel',
+      '/avatar': 'Interactive ASCII avatar chat',
       '/video': 'AI video generation',
       '/image': 'AI image generation',
       '/build': 'Build project',
@@ -199,9 +200,9 @@ class MariaCLI {
   }
 
   showInputPrompt() {
-    console.log(chalk.white('┌' + '─'.repeat(72) + '┐'));
-    console.log(chalk.white('│') + chalk.gray(' Input:') + ' '.repeat(64) + chalk.white('│'));
-    console.log(chalk.white('└' + '─'.repeat(72) + '┘'));
+    console.log(chalk.white('┌' + '─'.repeat(96) + '┐'));
+    console.log(chalk.white('│') + chalk.gray(' Input:') + ' '.repeat(89) + chalk.white('│'));
+    console.log(chalk.white('└' + '─'.repeat(96) + '┘'));
     this.rl.setPrompt(chalk.cyan('> '));
     this.rl.prompt();
   }
@@ -341,6 +342,9 @@ class MariaCLI {
       case '/deploy':
         await this.deployProject();
         break;
+      case '/avatar':
+        await this.showAvatar();
+        break;
       case '/exit':
         console.log(chalk.gray('Goodbye!'));
         process.exit(0);
@@ -435,6 +439,112 @@ class MariaCLI {
     console.log(chalk.gray('• Type anytime during processing to interrupt'));
     console.log(chalk.gray('• New requests override previous ones'));
     console.log(chalk.gray('• Additional info is automatically detected'));
+  }
+
+  async showAvatar() {
+    const avatarPath = '/Users/bongin_max/maria_code/face_only_48x48_ramp.txt';
+    
+    try {
+      // Load avatar data
+      const avatarData = fs.readFileSync(avatarPath, 'utf-8');
+      const avatarLines = avatarData.split('\n');
+      
+      // Display title once at the beginning
+      console.log(chalk.white('\n🎭 MARIA Avatar Interface'));
+      console.log(chalk.white('═'.repeat(80)));
+      
+      // Start avatar chat with animations
+      await this.startAvatarChatWithAnimation(avatarLines);
+      
+    } catch (error) {
+      console.log(chalk.red('❌ Could not load avatar file'));
+      console.log(chalk.gray('Avatar file should be at: ' + avatarPath));
+      console.log(chalk.gray('Error: ' + error.message));
+    }
+  }
+  
+  async startAvatarChatWithAnimation(avatarLines) {
+    // Avatar animation states
+    const mouthStates = {
+      closed: { lines: [18, 19], chars: [[40, 55]] },
+      slightlyOpen: { lines: [18, 19], chars: [[40, 55]] },
+      halfOpen: { lines: [18, 19, 20], chars: [[40, 55]] },
+      fullyOpen: { lines: [18, 19, 20, 21], chars: [[38, 58]] },
+      wide: { lines: [17, 18, 19, 20, 21], chars: [[38, 58]] }
+    };
+    
+    // Function to display avatar with specific mouth state
+    const displayAvatar = (state = 'closed', message = '') => {
+      // ロゴを保持するため console.clear() を削除
+      
+      // Display first 55 lines of avatar to show full face
+      // Center the face by taking middle portion of each line (96x96 art in 80 char terminal)
+      const displayLines = avatarLines.slice(0, 55).map((line, index) => {
+        // Take center 80 characters from the ~192 char wide lines
+        // Start from position 56 to center the face
+        let displayLine = line;
+
+        // Apply mouth animation for lines 37-43 (actual mouth area)
+        if (index >= 37 && index <= 43) {
+          if (state === 'fullyOpen' || state === 'wide') {
+            // Replace mouth area with 'o' or 'O' characters for open mouth
+            const chars = displayLine.split('');
+            // Adjust for centered view (mouth is roughly in center)
+            for (let i = 35; i < Math.min(45, chars.length); i++) {
+              if (chars[i] !== ' ') {
+                chars[i] = state === 'wide' ? 'O' : 'o';
+              }
+            }
+            displayLine = chars.join('');
+          } else if (state === 'halfOpen') {
+            // Replace with '-' for half open
+            const chars = displayLine.split('');
+            // Adjust for centered view
+            for (let i = 35; i < Math.min(45, chars.length); i++) {
+              if (chars[i] !== ' ' && index === 40) {
+                chars[i] = '-';
+              }
+            }
+            displayLine = chars.join('');
+          }
+        }
+        
+        return chalk.white(displayLine);
+      });
+      
+      displayLines.forEach(line => console.log(line));
+      console.log(chalk.white('═'.repeat(80)));
+      
+      // Display dialogue area
+      if (message) {
+        console.log(chalk.yellow('\nMARIA: ') + chalk.white(message));
+      }
+      console.log(chalk.gray('\nType messages to chat with me. Type /back to leave avatar mode.\n'));
+    };
+    
+    // Function to animate talking (disabled for now to prevent multiple displays)
+    const animateTalking = async (text) => {
+      // Animation disabled - just display once with the complete message
+      displayAvatar('closed', text);
+    };
+    
+    // Avatar responses
+    const avatarResponses = [
+      'Hello! I\'m MARIA, your AI assistant. How can I help you today?',
+      'That\'s interesting! Tell me more about it.',
+      'I understand. Let me think about that for a moment...',
+      'Great question! Here\'s what I think...',
+      'I\'m here to assist you with anything you need!',
+      'That sounds wonderful! What would you like to do next?',
+      'Fascinating! I\'d love to hear more details.',
+      'Let me help you with that right away!'
+    ];
+    
+    // Display static avatar (no animation for initial display)
+    displayAvatar('closed', 'Hello! I am MARIA, your AI assistant!');
+    
+    // Simple interaction loop
+    console.log(chalk.cyan('\n[Avatar mode active - Type /back to return to main menu]'));
   }
 
   showStatus() {

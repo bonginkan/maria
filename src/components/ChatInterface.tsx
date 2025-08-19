@@ -428,6 +428,9 @@ Would you like me to create a detailed plan for your specific needs?`;
         '/mcp',
         '/ide',
         '/install-github-app',
+        '/avatar',
+        '/image',
+        '/video',
       ];
 
       if (supportedCommands.includes(`/${cmd}`)) {

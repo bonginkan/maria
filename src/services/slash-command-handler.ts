@@ -47,7 +47,8 @@ export interface SlashCommandResult {
     | 'mcp-display'
     | 'model-selector'
     | 'image-generator'
-    | 'video-generator';
+    | 'video-generator'
+    | 'avatar-interface';
   suggestions?: string; // Formatted suggestion text
 }
 
@@ -256,6 +257,9 @@ export class SlashCommandHandler {
           break;
         case '/image':
           result = await this.handleImage(args);
+          break;
+        case '/avatar':
+          result = await this.handleAvatar(args);
           break;
 
         // コード生成・テスト (最重要)
@@ -3414,6 +3418,15 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
       message: `🎬 動画生成を開始します...\nプロンプト: ${prompt}\nモデル: ${options['model']}`,
       component: 'video-generator',
       data: { prompt, ...options },
+    };
+  }
+
+  private async handleAvatar(args: string[]): Promise<SlashCommandResult> {
+    return {
+      success: true,
+      message: '🎭 Starting MARIA Avatar Interface...',
+      component: 'avatar-interface',
+      data: { args },
     };
   }
 

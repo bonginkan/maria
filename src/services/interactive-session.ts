@@ -7,6 +7,8 @@
 import { MariaAI } from '../maria-ai';
 import chalk from 'chalk';
 import * as readline from 'readline';
+import * as fs from 'fs/promises';
+// import * as path from 'path'; // Not used
 
 export interface InteractiveSession {
   start(): Promise<void>;
@@ -146,6 +148,10 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
       console.log('');
       return true;
 
+    case '/avatar':
+      await showAvatar();
+      return true;
+
     default:
       console.log(chalk.red(`Unknown command: ${cmd}. Type /help for available commands.`));
       return true;
@@ -155,6 +161,7 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
 function showHelp(): void {
   console.log(chalk.blue('\n📖 MARIA Commands:\n'));
   console.log(chalk.cyan('/help') + '     - Show this help message');
+  console.log(chalk.cyan('/avatar') + '   - Show ASCII avatar interface');
   console.log(chalk.cyan('/status') + '   - Show system status');
   console.log(chalk.cyan('/models') + '   - List available models');
   console.log(chalk.cyan('/health') + '   - Check system health');
@@ -249,4 +256,31 @@ function showConfig(maria: MariaAI): void {
   console.log(chalk.cyan('Auto Start:'), config.autoStart ? 'enabled' : 'disabled');
   console.log(chalk.cyan('Health Monitoring:'), config.healthMonitoring ? 'enabled' : 'disabled');
   console.log('');
+}
+
+async function showAvatar(): Promise<void> {
+  console.log(chalk.blue('\n🎭 MARIA Avatar Interface\n'));
+
+  const avatarPath = '/Users/bongin_max/maria_code/face_only_96x96_ramp.txt';
+
+  try {
+    // Load and display avatar
+    const avatarData = await fs.readFile(avatarPath, 'utf-8');
+    const lines = avatarData.split('\n').slice(0, 30); // Show first 30 lines for compact display
+
+    console.log(chalk.white('═'.repeat(80)));
+    lines.forEach((line) => {
+      // Trim long lines for terminal display
+      const displayLine = line.length > 80 ? line.substring(0, 80) : line;
+      console.log(chalk.white(displayLine));
+    });
+    console.log(chalk.white('═'.repeat(80)));
+
+    console.log(chalk.yellow('\n👋 Hello! I am MARIA, your AI assistant!'));
+    console.log(chalk.gray('This is a preview of the avatar interface.'));
+    console.log(chalk.gray('Full interactive avatar with animations is coming soon!\n'));
+  } catch (error) {
+    console.log(chalk.red('❌ Could not load avatar file'));
+    console.log(chalk.gray('Avatar file should be at: ' + avatarPath));
+  }
 }
