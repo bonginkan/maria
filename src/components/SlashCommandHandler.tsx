@@ -11,6 +11,7 @@ import SystemDiagnostics from './SystemDiagnostics.js';
 import ProjectManager from './ProjectManager.js';
 import AgentManager from './AgentManager.js';
 import MCPManager from './MCPManager.js';
+import AvatarInterface from '../commands/avatar.js';
 
 export interface SlashCommandProps {
   command: string;
@@ -129,6 +130,11 @@ const SlashCommandHandler: React.FC<SlashCommandProps> = ({ command, args, onExi
         onExit={onExit}
       />
     );
+  }
+
+  // マルチメディアコマンド
+  if (command === '/avatar') {
+    return <AvatarInterface onExit={onExit} />;
   }
 
   // その他のコマンド（既存）

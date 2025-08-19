@@ -2,20 +2,21 @@
 
 var fs = require('fs');
 var path = require('path');
-var Stream = require('stream');
-var util = require('util');
-var buffer = require('buffer');
-var http2 = require('http');
-var net = require('net');
-var Url = require('url');
-var https2 = require('https');
-var zlib = require('zlib');
 var process2 = require('process');
 var os = require('os');
 var tty = require('tty');
+var Stream = require('stream');
+var http2 = require('http');
+var Url = require('url');
+var https = require('https');
+var zlib = require('zlib');
+var util = require('util');
 var web = require('stream/web');
+var buffer = require('buffer');
+var net = require('net');
 var events = require('events');
 var readline = require('readline');
+var fs4 = require('fs/promises');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -37,15 +38,16 @@ function _interopNamespace(e) {
   return Object.freeze(n);
 }
 
-var Stream__default = /*#__PURE__*/_interopDefault(Stream);
-var http2__default = /*#__PURE__*/_interopDefault(http2);
-var Url__default = /*#__PURE__*/_interopDefault(Url);
-var https2__default = /*#__PURE__*/_interopDefault(https2);
-var zlib__default = /*#__PURE__*/_interopDefault(zlib);
 var process2__default = /*#__PURE__*/_interopDefault(process2);
 var os__default = /*#__PURE__*/_interopDefault(os);
 var tty__default = /*#__PURE__*/_interopDefault(tty);
+var Stream__default = /*#__PURE__*/_interopDefault(Stream);
+var http2__default = /*#__PURE__*/_interopDefault(http2);
+var Url__default = /*#__PURE__*/_interopDefault(Url);
+var https__default = /*#__PURE__*/_interopDefault(https);
+var zlib__default = /*#__PURE__*/_interopDefault(zlib);
 var readline__namespace = /*#__PURE__*/_interopNamespace(readline);
+var fs4__namespace = /*#__PURE__*/_interopNamespace(fs4);
 
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -87,9 +89,9 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3/node_modules/tsup/assets/cjs_shims.js
+// node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3_yaml@2.8.1/node_modules/tsup/assets/cjs_shims.js
 var init_cjs_shims = __esm({
-  "node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3/node_modules/tsup/assets/cjs_shims.js"() {
+  "node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3_yaml@2.8.1/node_modules/tsup/assets/cjs_shims.js"() {
   }
 });
 
@@ -1058,7 +1060,7 @@ var require_command = __commonJS({
     var EventEmitter2 = __require("events").EventEmitter;
     var childProcess = __require("child_process");
     var path = __require("path");
-    var fs4 = __require("fs");
+    var fs5 = __require("fs");
     var process3 = __require("process");
     var { Argument: Argument2, humanReadableArgName } = require_argument();
     var { CommanderError: CommanderError2 } = require_error();
@@ -1993,10 +1995,10 @@ Expecting one of '${allowedValues.join("', '")}'`);
         const sourceExt = [".js", ".ts", ".tsx", ".mjs", ".cjs"];
         function findFile(baseDir, baseName) {
           const localBin = path.resolve(baseDir, baseName);
-          if (fs4.existsSync(localBin)) return localBin;
+          if (fs5.existsSync(localBin)) return localBin;
           if (sourceExt.includes(path.extname(baseName))) return void 0;
           const foundExt = sourceExt.find(
-            (ext) => fs4.existsSync(`${localBin}${ext}`)
+            (ext) => fs5.existsSync(`${localBin}${ext}`)
           );
           if (foundExt) return `${localBin}${foundExt}`;
           return void 0;
@@ -2009,7 +2011,7 @@ Expecting one of '${allowedValues.join("', '")}'`);
         if (this._scriptPath) {
           let resolvedScriptPath;
           try {
-            resolvedScriptPath = fs4.realpathSync(this._scriptPath);
+            resolvedScriptPath = fs5.realpathSync(this._scriptPath);
           } catch (err) {
             resolvedScriptPath = this._scriptPath;
           }
@@ -13261,52 +13263,6 @@ var require_ponyfill_es2018 = __commonJS({
   }
 });
 
-// node_modules/.pnpm/data-uri-to-buffer@4.0.1/node_modules/data-uri-to-buffer/dist/index.js
-function dataUriToBuffer(uri) {
-  if (!/^data:/i.test(uri)) {
-    throw new TypeError('`uri` does not appear to be a Data URI (must begin with "data:")');
-  }
-  uri = uri.replace(/\r?\n/g, "");
-  const firstComma = uri.indexOf(",");
-  if (firstComma === -1 || firstComma <= 4) {
-    throw new TypeError("malformed data: URI");
-  }
-  const meta = uri.substring(5, firstComma).split(";");
-  let charset = "";
-  let base64 = false;
-  const type = meta[0] || "text/plain";
-  let typeFull = type;
-  for (let i3 = 1; i3 < meta.length; i3++) {
-    if (meta[i3] === "base64") {
-      base64 = true;
-    } else if (meta[i3]) {
-      typeFull += `;${meta[i3]}`;
-      if (meta[i3].indexOf("charset=") === 0) {
-        charset = meta[i3].substring(8);
-      }
-    }
-  }
-  if (!meta[0] && !charset.length) {
-    typeFull += ";charset=US-ASCII";
-    charset = "US-ASCII";
-  }
-  const encoding = base64 ? "base64" : "ascii";
-  const data = unescape(uri.substring(firstComma + 1));
-  const buffer = Buffer.from(data, encoding);
-  buffer.type = type;
-  buffer.typeFull = typeFull;
-  buffer.charset = charset;
-  return buffer;
-}
-var dist_default;
-var init_dist = __esm({
-  "node_modules/.pnpm/data-uri-to-buffer@4.0.1/node_modules/data-uri-to-buffer/dist/index.js"() {
-    init_cjs_shims();
-    __name(dataUriToBuffer, "dataUriToBuffer");
-    dist_default = dataUriToBuffer;
-  }
-});
-
 // node_modules/.pnpm/fetch-blob@3.2.0/node_modules/fetch-blob/streams.cjs
 var require_streams = __commonJS({
   "node_modules/.pnpm/fetch-blob@3.2.0/node_modules/fetch-blob/streams.cjs"() {
@@ -13389,14 +13345,14 @@ async function* toIterator(parts, clone3 = true) {
     }
   }
 }
-var POOL_SIZE, _Blob, Blob6, fetch_blob_default;
+var POOL_SIZE, _Blob, Blob7, fetch_blob_default;
 var init_fetch_blob = __esm({
   "node_modules/.pnpm/fetch-blob@3.2.0/node_modules/fetch-blob/index.js"() {
     init_cjs_shims();
     __toESM(require_streams(), 1);
     POOL_SIZE = 65536;
     __name(toIterator, "toIterator");
-    _Blob = class Blob5 {
+    _Blob = class Blob6 {
       static {
         __name(this, "Blob");
       }
@@ -13431,7 +13387,7 @@ var init_fetch_blob = __esm({
             part = new Uint8Array(element.buffer.slice(element.byteOffset, element.byteOffset + element.byteLength));
           } else if (element instanceof ArrayBuffer) {
             part = new Uint8Array(element.slice(0));
-          } else if (element instanceof Blob5) {
+          } else if (element instanceof Blob6) {
             part = element;
           } else {
             part = encoder.encode(`${element}`);
@@ -13541,7 +13497,7 @@ var init_fetch_blob = __esm({
             relativeStart = 0;
           }
         }
-        const blob = new Blob5([], { type: String(type).toLowerCase() });
+        const blob = new Blob6([], { type: String(type).toLowerCase() });
         blob.#size = span;
         blob.#parts = blobParts;
         return blob;
@@ -13558,18 +13514,18 @@ var init_fetch_blob = __esm({
       type: { enumerable: true },
       slice: { enumerable: true }
     });
-    Blob6 = _Blob;
-    fetch_blob_default = Blob6;
+    Blob7 = _Blob;
+    fetch_blob_default = Blob7;
   }
 });
 
 // node_modules/.pnpm/fetch-blob@3.2.0/node_modules/fetch-blob/file.js
-var _File, File5, file_default;
+var _File, File6, file_default;
 var init_file = __esm({
   "node_modules/.pnpm/fetch-blob@3.2.0/node_modules/fetch-blob/file.js"() {
     init_cjs_shims();
     init_fetch_blob();
-    _File = class File4 extends fetch_blob_default {
+    _File = class File5 extends fetch_blob_default {
       static {
         __name(this, "File");
       }
@@ -13606,8 +13562,8 @@ var init_file = __esm({
         return !!object && object instanceof fetch_blob_default && /^(File)$/.test(object[Symbol.toStringTag]);
       }
     };
-    File5 = _File;
-    file_default = File5;
+    File6 = _File;
+    file_default = File6;
   }
 });
 
@@ -13625,7 +13581,7 @@ Content-Type: ${v2.type || "application/octet-stream"}\r
   c2.push(`--${b2}--`);
   return new B2(c2, { type: "multipart/form-data; boundary=" + b2 });
 }
-var t2, i2, h2, r2, m2, f2, e2, x2, FormData4;
+var t2, i2, h2, r2, m2, f2, e2, x2, FormData5;
 var init_esm_min = __esm({
   "node_modules/.pnpm/formdata-polyfill@4.0.10/node_modules/formdata-polyfill/esm.min.js"() {
     init_cjs_shims();
@@ -13641,7 +13597,7 @@ var init_esm_min = __esm({
         throw new TypeError(`Failed to execute '${n2}' on 'FormData': ${e3} arguments required, but only ${a2.length} present.`);
       }
     }, "x");
-    FormData4 = class FormData5 {
+    FormData5 = class FormData6 {
       static {
         __name(this, "FormData");
       }
@@ -13712,146 +13668,14 @@ var init_esm_min = __esm({
     __name(formDataToBlob, "formDataToBlob");
   }
 });
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/base.js
-var FetchBaseError;
-var init_base = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/base.js"() {
-    init_cjs_shims();
-    FetchBaseError = class extends Error {
-      static {
-        __name(this, "FetchBaseError");
-      }
-      constructor(message, type) {
-        super(message);
-        Error.captureStackTrace(this, this.constructor);
-        this.type = type;
-      }
-      get name() {
-        return this.constructor.name;
-      }
-      get [Symbol.toStringTag]() {
-        return this.constructor.name;
-      }
-    };
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/fetch-error.js
-var FetchError2;
-var init_fetch_error = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/fetch-error.js"() {
-    init_cjs_shims();
-    init_base();
-    FetchError2 = class extends FetchBaseError {
-      static {
-        __name(this, "FetchError");
-      }
-      /**
-       * @param  {string} message -      Error message for human
-       * @param  {string} [type] -        Error type for machine
-       * @param  {SystemError} [systemError] - For Node.js system error
-       */
-      constructor(message, type, systemError) {
-        super(message, type);
-        if (systemError) {
-          this.code = this.errno = systemError.code;
-          this.erroredSysCall = systemError.syscall;
-        }
-      }
-    };
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/is.js
-var NAME, isURLSearchParameters, isBlob3, isAbortSignal2, isDomainOrSubdomain3, isSameProtocol3;
-var init_is = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/is.js"() {
-    init_cjs_shims();
-    NAME = Symbol.toStringTag;
-    isURLSearchParameters = /* @__PURE__ */ __name((object) => {
-      return typeof object === "object" && typeof object.append === "function" && typeof object.delete === "function" && typeof object.get === "function" && typeof object.getAll === "function" && typeof object.has === "function" && typeof object.set === "function" && typeof object.sort === "function" && object[NAME] === "URLSearchParams";
-    }, "isURLSearchParameters");
-    isBlob3 = /* @__PURE__ */ __name((object) => {
-      return object && typeof object === "object" && typeof object.arrayBuffer === "function" && typeof object.type === "string" && typeof object.stream === "function" && typeof object.constructor === "function" && /^(Blob|File)$/.test(object[NAME]);
-    }, "isBlob");
-    isAbortSignal2 = /* @__PURE__ */ __name((object) => {
-      return typeof object === "object" && (object[NAME] === "AbortSignal" || object[NAME] === "EventTarget");
-    }, "isAbortSignal");
-    isDomainOrSubdomain3 = /* @__PURE__ */ __name((destination, original) => {
-      const orig = new URL(original).hostname;
-      const dest = new URL(destination).hostname;
-      return orig === dest || orig.endsWith(`.${dest}`);
-    }, "isDomainOrSubdomain");
-    isSameProtocol3 = /* @__PURE__ */ __name((destination, original) => {
-      const orig = new URL(original).protocol;
-      const dest = new URL(destination).protocol;
-      return orig === dest;
-    }, "isSameProtocol");
-  }
-});
-var import_node_domexception2, stat, blobFromSync, blobFrom, fileFrom, fileFromSync, fromBlob, fromFile, BlobDataItem;
+var stat;
 var init_from = __esm({
   "node_modules/.pnpm/fetch-blob@3.2.0/node_modules/fetch-blob/from.js"() {
     init_cjs_shims();
-    import_node_domexception2 = __toESM(require_node_domexception(), 1);
+    __toESM(require_node_domexception(), 1);
     init_file();
     init_fetch_blob();
     ({ stat } = fs.promises);
-    blobFromSync = /* @__PURE__ */ __name((path, type) => fromBlob(fs.statSync(path), path, type), "blobFromSync");
-    blobFrom = /* @__PURE__ */ __name((path, type) => stat(path).then((stat2) => fromBlob(stat2, path, type)), "blobFrom");
-    fileFrom = /* @__PURE__ */ __name((path, type) => stat(path).then((stat2) => fromFile(stat2, path, type)), "fileFrom");
-    fileFromSync = /* @__PURE__ */ __name((path, type) => fromFile(fs.statSync(path), path, type), "fileFromSync");
-    fromBlob = /* @__PURE__ */ __name((stat2, path, type = "") => new fetch_blob_default([new BlobDataItem({
-      path,
-      size: stat2.size,
-      lastModified: stat2.mtimeMs,
-      start: 0
-    })], { type }), "fromBlob");
-    fromFile = /* @__PURE__ */ __name((stat2, path$1, type = "") => new file_default([new BlobDataItem({
-      path: path$1,
-      size: stat2.size,
-      lastModified: stat2.mtimeMs,
-      start: 0
-    })], path.basename(path$1), { type, lastModified: stat2.mtimeMs }), "fromFile");
-    BlobDataItem = class _BlobDataItem {
-      static {
-        __name(this, "BlobDataItem");
-      }
-      #path;
-      #start;
-      constructor(options) {
-        this.#path = options.path;
-        this.#start = options.start;
-        this.size = options.size;
-        this.lastModified = options.lastModified;
-      }
-      /**
-       * Slicing arguments is first validated and formatted
-       * to not be out of range by Blob.prototype.slice
-       */
-      slice(start, end) {
-        return new _BlobDataItem({
-          path: this.#path,
-          lastModified: this.lastModified,
-          size: end - start,
-          start: this.#start + start
-        });
-      }
-      async *stream() {
-        const { mtimeMs } = await stat(this.#path);
-        if (mtimeMs > this.lastModified) {
-          throw new import_node_domexception2.default("The requested file could not be read, typically due to permission problems that have occurred after a reference to a file was acquired.", "NotReadableError");
-        }
-        yield* fs.createReadStream(this.#path, {
-          start: this.#start,
-          end: this.#start + this.size - 1
-        });
-      }
-      get [Symbol.toStringTag]() {
-        return "Blob";
-      }
-    };
   }
 });
 
@@ -13889,7 +13713,7 @@ async function toFormData(Body3, ct2) {
   let contentType;
   let filename;
   const entryChunks = [];
-  const formData = new FormData4();
+  const formData = new FormData5();
   const onPartData = /* @__PURE__ */ __name((ui8a) => {
     entryValue += decoder.decode(ui8a, { stream: true });
   }, "onPartData");
@@ -14222,1282 +14046,6 @@ var init_multipart_parser = __esm({
     __name(toFormData, "toFormData");
   }
 });
-async function consumeBody2(data) {
-  if (data[INTERNALS2].disturbed) {
-    throw new TypeError(`body used already for: ${data.url}`);
-  }
-  data[INTERNALS2].disturbed = true;
-  if (data[INTERNALS2].error) {
-    throw data[INTERNALS2].error;
-  }
-  const { body } = data;
-  if (body === null) {
-    return buffer.Buffer.alloc(0);
-  }
-  if (!(body instanceof Stream__default.default)) {
-    return buffer.Buffer.alloc(0);
-  }
-  const accum = [];
-  let accumBytes = 0;
-  try {
-    for await (const chunk of body) {
-      if (data.size > 0 && accumBytes + chunk.length > data.size) {
-        const error = new FetchError2(`content size at ${data.url} over limit: ${data.size}`, "max-size");
-        body.destroy(error);
-        throw error;
-      }
-      accumBytes += chunk.length;
-      accum.push(chunk);
-    }
-  } catch (error) {
-    const error_ = error instanceof FetchBaseError ? error : new FetchError2(`Invalid response body while trying to fetch ${data.url}: ${error.message}`, "system", error);
-    throw error_;
-  }
-  if (body.readableEnded === true || body._readableState.ended === true) {
-    try {
-      if (accum.every((c2) => typeof c2 === "string")) {
-        return buffer.Buffer.from(accum.join(""));
-      }
-      return buffer.Buffer.concat(accum, accumBytes);
-    } catch (error) {
-      throw new FetchError2(`Could not create Buffer from response body for ${data.url}: ${error.message}`, "system", error);
-    }
-  } else {
-    throw new FetchError2(`Premature close of server response while trying to fetch ${data.url}`);
-  }
-}
-var pipeline, INTERNALS2, Body2, clone2, getNonSpecFormDataBoundary, extractContentType2, getTotalBytes2, writeToStream2;
-var init_body = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/body.js"() {
-    init_cjs_shims();
-    init_fetch_blob();
-    init_esm_min();
-    init_fetch_error();
-    init_base();
-    init_is();
-    pipeline = util.promisify(Stream__default.default.pipeline);
-    INTERNALS2 = Symbol("Body internals");
-    Body2 = class {
-      static {
-        __name(this, "Body");
-      }
-      constructor(body, {
-        size = 0
-      } = {}) {
-        let boundary = null;
-        if (body === null) {
-          body = null;
-        } else if (isURLSearchParameters(body)) {
-          body = buffer.Buffer.from(body.toString());
-        } else if (isBlob3(body)) ; else if (buffer.Buffer.isBuffer(body)) ; else if (util.types.isAnyArrayBuffer(body)) {
-          body = buffer.Buffer.from(body);
-        } else if (ArrayBuffer.isView(body)) {
-          body = buffer.Buffer.from(body.buffer, body.byteOffset, body.byteLength);
-        } else if (body instanceof Stream__default.default) ; else if (body instanceof FormData4) {
-          body = formDataToBlob(body);
-          boundary = body.type.split("=")[1];
-        } else {
-          body = buffer.Buffer.from(String(body));
-        }
-        let stream = body;
-        if (buffer.Buffer.isBuffer(body)) {
-          stream = Stream__default.default.Readable.from(body);
-        } else if (isBlob3(body)) {
-          stream = Stream__default.default.Readable.from(body.stream());
-        }
-        this[INTERNALS2] = {
-          body,
-          stream,
-          boundary,
-          disturbed: false,
-          error: null
-        };
-        this.size = size;
-        if (body instanceof Stream__default.default) {
-          body.on("error", (error_) => {
-            const error = error_ instanceof FetchBaseError ? error_ : new FetchError2(`Invalid response body while trying to fetch ${this.url}: ${error_.message}`, "system", error_);
-            this[INTERNALS2].error = error;
-          });
-        }
-      }
-      get body() {
-        return this[INTERNALS2].stream;
-      }
-      get bodyUsed() {
-        return this[INTERNALS2].disturbed;
-      }
-      /**
-       * Decode response as ArrayBuffer
-       *
-       * @return  Promise
-       */
-      async arrayBuffer() {
-        const { buffer, byteOffset, byteLength } = await consumeBody2(this);
-        return buffer.slice(byteOffset, byteOffset + byteLength);
-      }
-      async formData() {
-        const ct2 = this.headers.get("content-type");
-        if (ct2.startsWith("application/x-www-form-urlencoded")) {
-          const formData = new FormData4();
-          const parameters = new URLSearchParams(await this.text());
-          for (const [name, value] of parameters) {
-            formData.append(name, value);
-          }
-          return formData;
-        }
-        const { toFormData: toFormData2 } = await Promise.resolve().then(() => (init_multipart_parser(), multipart_parser_exports));
-        return toFormData2(this.body, ct2);
-      }
-      /**
-       * Return raw response as Blob
-       *
-       * @return Promise
-       */
-      async blob() {
-        const ct2 = this.headers && this.headers.get("content-type") || this[INTERNALS2].body && this[INTERNALS2].body.type || "";
-        const buf = await this.arrayBuffer();
-        return new fetch_blob_default([buf], {
-          type: ct2
-        });
-      }
-      /**
-       * Decode response as json
-       *
-       * @return  Promise
-       */
-      async json() {
-        const text = await this.text();
-        return JSON.parse(text);
-      }
-      /**
-       * Decode response as text
-       *
-       * @return  Promise
-       */
-      async text() {
-        const buffer = await consumeBody2(this);
-        return new TextDecoder().decode(buffer);
-      }
-      /**
-       * Decode response as buffer (non-spec api)
-       *
-       * @return  Promise
-       */
-      buffer() {
-        return consumeBody2(this);
-      }
-    };
-    Body2.prototype.buffer = util.deprecate(Body2.prototype.buffer, "Please use 'response.arrayBuffer()' instead of 'response.buffer()'", "node-fetch#buffer");
-    Object.defineProperties(Body2.prototype, {
-      body: { enumerable: true },
-      bodyUsed: { enumerable: true },
-      arrayBuffer: { enumerable: true },
-      blob: { enumerable: true },
-      json: { enumerable: true },
-      text: { enumerable: true },
-      data: { get: util.deprecate(
-        () => {
-        },
-        "data doesn't exist, use json(), text(), arrayBuffer(), or body instead",
-        "https://github.com/node-fetch/node-fetch/issues/1000 (response)"
-      ) }
-    });
-    __name(consumeBody2, "consumeBody");
-    clone2 = /* @__PURE__ */ __name((instance, highWaterMark) => {
-      let p1;
-      let p2;
-      let { body } = instance[INTERNALS2];
-      if (instance.bodyUsed) {
-        throw new Error("cannot clone body after it is used");
-      }
-      if (body instanceof Stream__default.default && typeof body.getBoundary !== "function") {
-        p1 = new Stream.PassThrough({ highWaterMark });
-        p2 = new Stream.PassThrough({ highWaterMark });
-        body.pipe(p1);
-        body.pipe(p2);
-        instance[INTERNALS2].stream = p1;
-        body = p2;
-      }
-      return body;
-    }, "clone");
-    getNonSpecFormDataBoundary = util.deprecate(
-      (body) => body.getBoundary(),
-      "form-data doesn't follow the spec and requires special treatment. Use alternative package",
-      "https://github.com/node-fetch/node-fetch/issues/1167"
-    );
-    extractContentType2 = /* @__PURE__ */ __name((body, request) => {
-      if (body === null) {
-        return null;
-      }
-      if (typeof body === "string") {
-        return "text/plain;charset=UTF-8";
-      }
-      if (isURLSearchParameters(body)) {
-        return "application/x-www-form-urlencoded;charset=UTF-8";
-      }
-      if (isBlob3(body)) {
-        return body.type || null;
-      }
-      if (buffer.Buffer.isBuffer(body) || util.types.isAnyArrayBuffer(body) || ArrayBuffer.isView(body)) {
-        return null;
-      }
-      if (body instanceof FormData4) {
-        return `multipart/form-data; boundary=${request[INTERNALS2].boundary}`;
-      }
-      if (body && typeof body.getBoundary === "function") {
-        return `multipart/form-data;boundary=${getNonSpecFormDataBoundary(body)}`;
-      }
-      if (body instanceof Stream__default.default) {
-        return null;
-      }
-      return "text/plain;charset=UTF-8";
-    }, "extractContentType");
-    getTotalBytes2 = /* @__PURE__ */ __name((request) => {
-      const { body } = request[INTERNALS2];
-      if (body === null) {
-        return 0;
-      }
-      if (isBlob3(body)) {
-        return body.size;
-      }
-      if (buffer.Buffer.isBuffer(body)) {
-        return body.length;
-      }
-      if (body && typeof body.getLengthSync === "function") {
-        return body.hasKnownLength && body.hasKnownLength() ? body.getLengthSync() : null;
-      }
-      return null;
-    }, "getTotalBytes");
-    writeToStream2 = /* @__PURE__ */ __name(async (dest, { body }) => {
-      if (body === null) {
-        dest.end();
-      } else {
-        await pipeline(body, dest);
-      }
-    }, "writeToStream");
-  }
-});
-function fromRawHeaders(headers = []) {
-  return new Headers4(
-    headers.reduce((result, value, index, array) => {
-      if (index % 2 === 0) {
-        result.push(array.slice(index, index + 2));
-      }
-      return result;
-    }, []).filter(([name, value]) => {
-      try {
-        validateHeaderName(name);
-        validateHeaderValue(name, String(value));
-        return true;
-      } catch {
-        return false;
-      }
-    })
-  );
-}
-var validateHeaderName, validateHeaderValue, Headers4;
-var init_headers = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/headers.js"() {
-    init_cjs_shims();
-    validateHeaderName = typeof http2__default.default.validateHeaderName === "function" ? http2__default.default.validateHeaderName : (name) => {
-      if (!/^[\^`\-\w!#$%&'*+.|~]+$/.test(name)) {
-        const error = new TypeError(`Header name must be a valid HTTP token [${name}]`);
-        Object.defineProperty(error, "code", { value: "ERR_INVALID_HTTP_TOKEN" });
-        throw error;
-      }
-    };
-    validateHeaderValue = typeof http2__default.default.validateHeaderValue === "function" ? http2__default.default.validateHeaderValue : (name, value) => {
-      if (/[^\t\u0020-\u007E\u0080-\u00FF]/.test(value)) {
-        const error = new TypeError(`Invalid character in header content ["${name}"]`);
-        Object.defineProperty(error, "code", { value: "ERR_INVALID_CHAR" });
-        throw error;
-      }
-    };
-    Headers4 = class _Headers extends URLSearchParams {
-      static {
-        __name(this, "Headers");
-      }
-      /**
-       * Headers class
-       *
-       * @constructor
-       * @param {HeadersInit} [init] - Response headers
-       */
-      constructor(init2) {
-        let result = [];
-        if (init2 instanceof _Headers) {
-          const raw = init2.raw();
-          for (const [name, values] of Object.entries(raw)) {
-            result.push(...values.map((value) => [name, value]));
-          }
-        } else if (init2 == null) ; else if (typeof init2 === "object" && !util.types.isBoxedPrimitive(init2)) {
-          const method = init2[Symbol.iterator];
-          if (method == null) {
-            result.push(...Object.entries(init2));
-          } else {
-            if (typeof method !== "function") {
-              throw new TypeError("Header pairs must be iterable");
-            }
-            result = [...init2].map((pair) => {
-              if (typeof pair !== "object" || util.types.isBoxedPrimitive(pair)) {
-                throw new TypeError("Each header pair must be an iterable object");
-              }
-              return [...pair];
-            }).map((pair) => {
-              if (pair.length !== 2) {
-                throw new TypeError("Each header pair must be a name/value tuple");
-              }
-              return [...pair];
-            });
-          }
-        } else {
-          throw new TypeError("Failed to construct 'Headers': The provided value is not of type '(sequence<sequence<ByteString>> or record<ByteString, ByteString>)");
-        }
-        result = result.length > 0 ? result.map(([name, value]) => {
-          validateHeaderName(name);
-          validateHeaderValue(name, String(value));
-          return [String(name).toLowerCase(), String(value)];
-        }) : void 0;
-        super(result);
-        return new Proxy(this, {
-          get(target, p2, receiver) {
-            switch (p2) {
-              case "append":
-              case "set":
-                return (name, value) => {
-                  validateHeaderName(name);
-                  validateHeaderValue(name, String(value));
-                  return URLSearchParams.prototype[p2].call(
-                    target,
-                    String(name).toLowerCase(),
-                    String(value)
-                  );
-                };
-              case "delete":
-              case "has":
-              case "getAll":
-                return (name) => {
-                  validateHeaderName(name);
-                  return URLSearchParams.prototype[p2].call(
-                    target,
-                    String(name).toLowerCase()
-                  );
-                };
-              case "keys":
-                return () => {
-                  target.sort();
-                  return new Set(URLSearchParams.prototype.keys.call(target)).keys();
-                };
-              default:
-                return Reflect.get(target, p2, receiver);
-            }
-          }
-        });
-      }
-      get [Symbol.toStringTag]() {
-        return this.constructor.name;
-      }
-      toString() {
-        return Object.prototype.toString.call(this);
-      }
-      get(name) {
-        const values = this.getAll(name);
-        if (values.length === 0) {
-          return null;
-        }
-        let value = values.join(", ");
-        if (/^content-encoding$/i.test(name)) {
-          value = value.toLowerCase();
-        }
-        return value;
-      }
-      forEach(callback, thisArg = void 0) {
-        for (const name of this.keys()) {
-          Reflect.apply(callback, thisArg, [this.get(name), name, this]);
-        }
-      }
-      *values() {
-        for (const name of this.keys()) {
-          yield this.get(name);
-        }
-      }
-      /**
-       * @type {() => IterableIterator<[string, string]>}
-       */
-      *entries() {
-        for (const name of this.keys()) {
-          yield [name, this.get(name)];
-        }
-      }
-      [Symbol.iterator]() {
-        return this.entries();
-      }
-      /**
-       * Node-fetch non-spec method
-       * returning all headers and their values as array
-       * @returns {Record<string, string[]>}
-       */
-      raw() {
-        return [...this.keys()].reduce((result, key) => {
-          result[key] = this.getAll(key);
-          return result;
-        }, {});
-      }
-      /**
-       * For better console.log(headers) and also to convert Headers into Node.js Request compatible format
-       */
-      [Symbol.for("nodejs.util.inspect.custom")]() {
-        return [...this.keys()].reduce((result, key) => {
-          const values = this.getAll(key);
-          if (key === "host") {
-            result[key] = values[0];
-          } else {
-            result[key] = values.length > 1 ? values : values[0];
-          }
-          return result;
-        }, {});
-      }
-    };
-    Object.defineProperties(
-      Headers4.prototype,
-      ["get", "entries", "forEach", "values"].reduce((result, property) => {
-        result[property] = { enumerable: true };
-        return result;
-      }, {})
-    );
-    __name(fromRawHeaders, "fromRawHeaders");
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/is-redirect.js
-var redirectStatus, isRedirect;
-var init_is_redirect = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/is-redirect.js"() {
-    init_cjs_shims();
-    redirectStatus = /* @__PURE__ */ new Set([301, 302, 303, 307, 308]);
-    isRedirect = /* @__PURE__ */ __name((code) => {
-      return redirectStatus.has(code);
-    }, "isRedirect");
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/response.js
-var INTERNALS3, Response4;
-var init_response = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/response.js"() {
-    init_cjs_shims();
-    init_headers();
-    init_body();
-    init_is_redirect();
-    INTERNALS3 = Symbol("Response internals");
-    Response4 = class _Response extends Body2 {
-      static {
-        __name(this, "Response");
-      }
-      constructor(body = null, options = {}) {
-        super(body, options);
-        const status = options.status != null ? options.status : 200;
-        const headers = new Headers4(options.headers);
-        if (body !== null && !headers.has("Content-Type")) {
-          const contentType = extractContentType2(body, this);
-          if (contentType) {
-            headers.append("Content-Type", contentType);
-          }
-        }
-        this[INTERNALS3] = {
-          type: "default",
-          url: options.url,
-          status,
-          statusText: options.statusText || "",
-          headers,
-          counter: options.counter,
-          highWaterMark: options.highWaterMark
-        };
-      }
-      get type() {
-        return this[INTERNALS3].type;
-      }
-      get url() {
-        return this[INTERNALS3].url || "";
-      }
-      get status() {
-        return this[INTERNALS3].status;
-      }
-      /**
-       * Convenience property representing if the request ended normally
-       */
-      get ok() {
-        return this[INTERNALS3].status >= 200 && this[INTERNALS3].status < 300;
-      }
-      get redirected() {
-        return this[INTERNALS3].counter > 0;
-      }
-      get statusText() {
-        return this[INTERNALS3].statusText;
-      }
-      get headers() {
-        return this[INTERNALS3].headers;
-      }
-      get highWaterMark() {
-        return this[INTERNALS3].highWaterMark;
-      }
-      /**
-       * Clone this response
-       *
-       * @return  Response
-       */
-      clone() {
-        return new _Response(clone2(this, this.highWaterMark), {
-          type: this.type,
-          url: this.url,
-          status: this.status,
-          statusText: this.statusText,
-          headers: this.headers,
-          ok: this.ok,
-          redirected: this.redirected,
-          size: this.size,
-          highWaterMark: this.highWaterMark
-        });
-      }
-      /**
-       * @param {string} url    The URL that the new response is to originate from.
-       * @param {number} status An optional status code for the response (e.g., 302.)
-       * @returns {Response}    A Response object.
-       */
-      static redirect(url, status = 302) {
-        if (!isRedirect(status)) {
-          throw new RangeError('Failed to execute "redirect" on "response": Invalid status code');
-        }
-        return new _Response(null, {
-          headers: {
-            location: new URL(url).toString()
-          },
-          status
-        });
-      }
-      static error() {
-        const response = new _Response(null, { status: 0, statusText: "" });
-        response[INTERNALS3].type = "error";
-        return response;
-      }
-      static json(data = void 0, init2 = {}) {
-        const body = JSON.stringify(data);
-        if (body === void 0) {
-          throw new TypeError("data is not JSON serializable");
-        }
-        const headers = new Headers4(init2 && init2.headers);
-        if (!headers.has("content-type")) {
-          headers.set("content-type", "application/json");
-        }
-        return new _Response(body, {
-          ...init2,
-          headers
-        });
-      }
-      get [Symbol.toStringTag]() {
-        return "Response";
-      }
-    };
-    Object.defineProperties(Response4.prototype, {
-      type: { enumerable: true },
-      url: { enumerable: true },
-      status: { enumerable: true },
-      ok: { enumerable: true },
-      redirected: { enumerable: true },
-      statusText: { enumerable: true },
-      headers: { enumerable: true },
-      clone: { enumerable: true }
-    });
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/get-search.js
-var getSearch;
-var init_get_search = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/get-search.js"() {
-    init_cjs_shims();
-    getSearch = /* @__PURE__ */ __name((parsedURL) => {
-      if (parsedURL.search) {
-        return parsedURL.search;
-      }
-      const lastOffset = parsedURL.href.length - 1;
-      const hash = parsedURL.hash || (parsedURL.href[lastOffset] === "#" ? "#" : "");
-      return parsedURL.href[lastOffset - hash.length] === "?" ? "?" : "";
-    }, "getSearch");
-  }
-});
-function stripURLForUseAsAReferrer(url, originOnly = false) {
-  if (url == null) {
-    return "no-referrer";
-  }
-  url = new URL(url);
-  if (/^(about|blob|data):$/.test(url.protocol)) {
-    return "no-referrer";
-  }
-  url.username = "";
-  url.password = "";
-  url.hash = "";
-  if (originOnly) {
-    url.pathname = "";
-    url.search = "";
-  }
-  return url;
-}
-function validateReferrerPolicy(referrerPolicy) {
-  if (!ReferrerPolicy.has(referrerPolicy)) {
-    throw new TypeError(`Invalid referrerPolicy: ${referrerPolicy}`);
-  }
-  return referrerPolicy;
-}
-function isOriginPotentiallyTrustworthy(url) {
-  if (/^(http|ws)s:$/.test(url.protocol)) {
-    return true;
-  }
-  const hostIp = url.host.replace(/(^\[)|(]$)/g, "");
-  const hostIPVersion = net.isIP(hostIp);
-  if (hostIPVersion === 4 && /^127\./.test(hostIp)) {
-    return true;
-  }
-  if (hostIPVersion === 6 && /^(((0+:){7})|(::(0+:){0,6}))0*1$/.test(hostIp)) {
-    return true;
-  }
-  if (url.host === "localhost" || url.host.endsWith(".localhost")) {
-    return false;
-  }
-  if (url.protocol === "file:") {
-    return true;
-  }
-  return false;
-}
-function isUrlPotentiallyTrustworthy(url) {
-  if (/^about:(blank|srcdoc)$/.test(url)) {
-    return true;
-  }
-  if (url.protocol === "data:") {
-    return true;
-  }
-  if (/^(blob|filesystem):$/.test(url.protocol)) {
-    return true;
-  }
-  return isOriginPotentiallyTrustworthy(url);
-}
-function determineRequestsReferrer(request, { referrerURLCallback, referrerOriginCallback } = {}) {
-  if (request.referrer === "no-referrer" || request.referrerPolicy === "") {
-    return null;
-  }
-  const policy = request.referrerPolicy;
-  if (request.referrer === "about:client") {
-    return "no-referrer";
-  }
-  const referrerSource = request.referrer;
-  let referrerURL = stripURLForUseAsAReferrer(referrerSource);
-  let referrerOrigin = stripURLForUseAsAReferrer(referrerSource, true);
-  if (referrerURL.toString().length > 4096) {
-    referrerURL = referrerOrigin;
-  }
-  if (referrerURLCallback) {
-    referrerURL = referrerURLCallback(referrerURL);
-  }
-  if (referrerOriginCallback) {
-    referrerOrigin = referrerOriginCallback(referrerOrigin);
-  }
-  const currentURL = new URL(request.url);
-  switch (policy) {
-    case "no-referrer":
-      return "no-referrer";
-    case "origin":
-      return referrerOrigin;
-    case "unsafe-url":
-      return referrerURL;
-    case "strict-origin":
-      if (isUrlPotentiallyTrustworthy(referrerURL) && !isUrlPotentiallyTrustworthy(currentURL)) {
-        return "no-referrer";
-      }
-      return referrerOrigin.toString();
-    case "strict-origin-when-cross-origin":
-      if (referrerURL.origin === currentURL.origin) {
-        return referrerURL;
-      }
-      if (isUrlPotentiallyTrustworthy(referrerURL) && !isUrlPotentiallyTrustworthy(currentURL)) {
-        return "no-referrer";
-      }
-      return referrerOrigin;
-    case "same-origin":
-      if (referrerURL.origin === currentURL.origin) {
-        return referrerURL;
-      }
-      return "no-referrer";
-    case "origin-when-cross-origin":
-      if (referrerURL.origin === currentURL.origin) {
-        return referrerURL;
-      }
-      return referrerOrigin;
-    case "no-referrer-when-downgrade":
-      if (isUrlPotentiallyTrustworthy(referrerURL) && !isUrlPotentiallyTrustworthy(currentURL)) {
-        return "no-referrer";
-      }
-      return referrerURL;
-    default:
-      throw new TypeError(`Invalid referrerPolicy: ${policy}`);
-  }
-}
-function parseReferrerPolicyFromHeader(headers) {
-  const policyTokens = (headers.get("referrer-policy") || "").split(/[,\s]+/);
-  let policy = "";
-  for (const token of policyTokens) {
-    if (token && ReferrerPolicy.has(token)) {
-      policy = token;
-    }
-  }
-  return policy;
-}
-var ReferrerPolicy, DEFAULT_REFERRER_POLICY;
-var init_referrer = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/referrer.js"() {
-    init_cjs_shims();
-    __name(stripURLForUseAsAReferrer, "stripURLForUseAsAReferrer");
-    ReferrerPolicy = /* @__PURE__ */ new Set([
-      "",
-      "no-referrer",
-      "no-referrer-when-downgrade",
-      "same-origin",
-      "origin",
-      "strict-origin",
-      "origin-when-cross-origin",
-      "strict-origin-when-cross-origin",
-      "unsafe-url"
-    ]);
-    DEFAULT_REFERRER_POLICY = "strict-origin-when-cross-origin";
-    __name(validateReferrerPolicy, "validateReferrerPolicy");
-    __name(isOriginPotentiallyTrustworthy, "isOriginPotentiallyTrustworthy");
-    __name(isUrlPotentiallyTrustworthy, "isUrlPotentiallyTrustworthy");
-    __name(determineRequestsReferrer, "determineRequestsReferrer");
-    __name(parseReferrerPolicyFromHeader, "parseReferrerPolicyFromHeader");
-  }
-});
-var INTERNALS4, isRequest2, doBadDataWarn, Request4, getNodeRequestOptions2;
-var init_request = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/request.js"() {
-    init_cjs_shims();
-    init_headers();
-    init_body();
-    init_is();
-    init_get_search();
-    init_referrer();
-    INTERNALS4 = Symbol("Request internals");
-    isRequest2 = /* @__PURE__ */ __name((object) => {
-      return typeof object === "object" && typeof object[INTERNALS4] === "object";
-    }, "isRequest");
-    doBadDataWarn = util.deprecate(
-      () => {
-      },
-      ".data is not a valid RequestInit property, use .body instead",
-      "https://github.com/node-fetch/node-fetch/issues/1000 (request)"
-    );
-    Request4 = class _Request extends Body2 {
-      static {
-        __name(this, "Request");
-      }
-      constructor(input, init2 = {}) {
-        let parsedURL;
-        if (isRequest2(input)) {
-          parsedURL = new URL(input.url);
-        } else {
-          parsedURL = new URL(input);
-          input = {};
-        }
-        if (parsedURL.username !== "" || parsedURL.password !== "") {
-          throw new TypeError(`${parsedURL} is an url with embedded credentials.`);
-        }
-        let method = init2.method || input.method || "GET";
-        if (/^(delete|get|head|options|post|put)$/i.test(method)) {
-          method = method.toUpperCase();
-        }
-        if (!isRequest2(init2) && "data" in init2) {
-          doBadDataWarn();
-        }
-        if ((init2.body != null || isRequest2(input) && input.body !== null) && (method === "GET" || method === "HEAD")) {
-          throw new TypeError("Request with GET/HEAD method cannot have body");
-        }
-        const inputBody = init2.body ? init2.body : isRequest2(input) && input.body !== null ? clone2(input) : null;
-        super(inputBody, {
-          size: init2.size || input.size || 0
-        });
-        const headers = new Headers4(init2.headers || input.headers || {});
-        if (inputBody !== null && !headers.has("Content-Type")) {
-          const contentType = extractContentType2(inputBody, this);
-          if (contentType) {
-            headers.set("Content-Type", contentType);
-          }
-        }
-        let signal = isRequest2(input) ? input.signal : null;
-        if ("signal" in init2) {
-          signal = init2.signal;
-        }
-        if (signal != null && !isAbortSignal2(signal)) {
-          throw new TypeError("Expected signal to be an instanceof AbortSignal or EventTarget");
-        }
-        let referrer = init2.referrer == null ? input.referrer : init2.referrer;
-        if (referrer === "") {
-          referrer = "no-referrer";
-        } else if (referrer) {
-          const parsedReferrer = new URL(referrer);
-          referrer = /^about:(\/\/)?client$/.test(parsedReferrer) ? "client" : parsedReferrer;
-        } else {
-          referrer = void 0;
-        }
-        this[INTERNALS4] = {
-          method,
-          redirect: init2.redirect || input.redirect || "follow",
-          headers,
-          parsedURL,
-          signal,
-          referrer
-        };
-        this.follow = init2.follow === void 0 ? input.follow === void 0 ? 20 : input.follow : init2.follow;
-        this.compress = init2.compress === void 0 ? input.compress === void 0 ? true : input.compress : init2.compress;
-        this.counter = init2.counter || input.counter || 0;
-        this.agent = init2.agent || input.agent;
-        this.highWaterMark = init2.highWaterMark || input.highWaterMark || 16384;
-        this.insecureHTTPParser = init2.insecureHTTPParser || input.insecureHTTPParser || false;
-        this.referrerPolicy = init2.referrerPolicy || input.referrerPolicy || "";
-      }
-      /** @returns {string} */
-      get method() {
-        return this[INTERNALS4].method;
-      }
-      /** @returns {string} */
-      get url() {
-        return Url.format(this[INTERNALS4].parsedURL);
-      }
-      /** @returns {Headers} */
-      get headers() {
-        return this[INTERNALS4].headers;
-      }
-      get redirect() {
-        return this[INTERNALS4].redirect;
-      }
-      /** @returns {AbortSignal} */
-      get signal() {
-        return this[INTERNALS4].signal;
-      }
-      // https://fetch.spec.whatwg.org/#dom-request-referrer
-      get referrer() {
-        if (this[INTERNALS4].referrer === "no-referrer") {
-          return "";
-        }
-        if (this[INTERNALS4].referrer === "client") {
-          return "about:client";
-        }
-        if (this[INTERNALS4].referrer) {
-          return this[INTERNALS4].referrer.toString();
-        }
-        return void 0;
-      }
-      get referrerPolicy() {
-        return this[INTERNALS4].referrerPolicy;
-      }
-      set referrerPolicy(referrerPolicy) {
-        this[INTERNALS4].referrerPolicy = validateReferrerPolicy(referrerPolicy);
-      }
-      /**
-       * Clone this request
-       *
-       * @return  Request
-       */
-      clone() {
-        return new _Request(this);
-      }
-      get [Symbol.toStringTag]() {
-        return "Request";
-      }
-    };
-    Object.defineProperties(Request4.prototype, {
-      method: { enumerable: true },
-      url: { enumerable: true },
-      headers: { enumerable: true },
-      redirect: { enumerable: true },
-      clone: { enumerable: true },
-      signal: { enumerable: true },
-      referrer: { enumerable: true },
-      referrerPolicy: { enumerable: true }
-    });
-    getNodeRequestOptions2 = /* @__PURE__ */ __name((request) => {
-      const { parsedURL } = request[INTERNALS4];
-      const headers = new Headers4(request[INTERNALS4].headers);
-      if (!headers.has("Accept")) {
-        headers.set("Accept", "*/*");
-      }
-      let contentLengthValue = null;
-      if (request.body === null && /^(post|put)$/i.test(request.method)) {
-        contentLengthValue = "0";
-      }
-      if (request.body !== null) {
-        const totalBytes = getTotalBytes2(request);
-        if (typeof totalBytes === "number" && !Number.isNaN(totalBytes)) {
-          contentLengthValue = String(totalBytes);
-        }
-      }
-      if (contentLengthValue) {
-        headers.set("Content-Length", contentLengthValue);
-      }
-      if (request.referrerPolicy === "") {
-        request.referrerPolicy = DEFAULT_REFERRER_POLICY;
-      }
-      if (request.referrer && request.referrer !== "no-referrer") {
-        request[INTERNALS4].referrer = determineRequestsReferrer(request);
-      } else {
-        request[INTERNALS4].referrer = "no-referrer";
-      }
-      if (request[INTERNALS4].referrer instanceof URL) {
-        headers.set("Referer", request.referrer);
-      }
-      if (!headers.has("User-Agent")) {
-        headers.set("User-Agent", "node-fetch");
-      }
-      if (request.compress && !headers.has("Accept-Encoding")) {
-        headers.set("Accept-Encoding", "gzip, deflate, br");
-      }
-      let { agent } = request;
-      if (typeof agent === "function") {
-        agent = agent(parsedURL);
-      }
-      const search = getSearch(parsedURL);
-      const options = {
-        // Overwrite search to retain trailing ? (issue #776)
-        path: parsedURL.pathname + search,
-        // The following options are not expressed in the URL
-        method: request.method,
-        headers: headers[Symbol.for("nodejs.util.inspect.custom")](),
-        insecureHTTPParser: request.insecureHTTPParser,
-        agent
-      };
-      return {
-        /** @type {URL} */
-        parsedURL,
-        options
-      };
-    }, "getNodeRequestOptions");
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/abort-error.js
-var AbortError2;
-var init_abort_error = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/abort-error.js"() {
-    init_cjs_shims();
-    init_base();
-    AbortError2 = class extends FetchBaseError {
-      static {
-        __name(this, "AbortError");
-      }
-      constructor(message, type = "aborted") {
-        super(message, type);
-      }
-    };
-  }
-});
-
-// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/index.js
-var src_exports = {};
-__export(src_exports, {
-  AbortError: () => AbortError2,
-  Blob: () => fetch_blob_default,
-  FetchError: () => FetchError2,
-  File: () => file_default,
-  FormData: () => FormData4,
-  Headers: () => Headers4,
-  Request: () => Request4,
-  Response: () => Response4,
-  blobFrom: () => blobFrom,
-  blobFromSync: () => blobFromSync,
-  default: () => fetch4,
-  fileFrom: () => fileFrom,
-  fileFromSync: () => fileFromSync,
-  isRedirect: () => isRedirect
-});
-async function fetch4(url, options_) {
-  return new Promise((resolve, reject) => {
-    const request = new Request4(url, options_);
-    const { parsedURL, options } = getNodeRequestOptions2(request);
-    if (!supportedSchemas.has(parsedURL.protocol)) {
-      throw new TypeError(`node-fetch cannot load ${url}. URL scheme "${parsedURL.protocol.replace(/:$/, "")}" is not supported.`);
-    }
-    if (parsedURL.protocol === "data:") {
-      const data = dist_default(request.url);
-      const response2 = new Response4(data, { headers: { "Content-Type": data.typeFull } });
-      resolve(response2);
-      return;
-    }
-    const send = (parsedURL.protocol === "https:" ? https2__default.default : http2__default.default).request;
-    const { signal } = request;
-    let response = null;
-    const abort = /* @__PURE__ */ __name(() => {
-      const error = new AbortError2("The operation was aborted.");
-      reject(error);
-      if (request.body && request.body instanceof Stream__default.default.Readable) {
-        request.body.destroy(error);
-      }
-      if (!response || !response.body) {
-        return;
-      }
-      response.body.emit("error", error);
-    }, "abort");
-    if (signal && signal.aborted) {
-      abort();
-      return;
-    }
-    const abortAndFinalize = /* @__PURE__ */ __name(() => {
-      abort();
-      finalize();
-    }, "abortAndFinalize");
-    const request_ = send(parsedURL.toString(), options);
-    if (signal) {
-      signal.addEventListener("abort", abortAndFinalize);
-    }
-    const finalize = /* @__PURE__ */ __name(() => {
-      request_.abort();
-      if (signal) {
-        signal.removeEventListener("abort", abortAndFinalize);
-      }
-    }, "finalize");
-    request_.on("error", (error) => {
-      reject(new FetchError2(`request to ${request.url} failed, reason: ${error.message}`, "system", error));
-      finalize();
-    });
-    fixResponseChunkedTransferBadEnding2(request_, (error) => {
-      if (response && response.body) {
-        response.body.destroy(error);
-      }
-    });
-    if (process.version < "v14") {
-      request_.on("socket", (s3) => {
-        let endedWithEventsCount;
-        s3.prependListener("end", () => {
-          endedWithEventsCount = s3._eventsCount;
-        });
-        s3.prependListener("close", (hadError) => {
-          if (response && endedWithEventsCount < s3._eventsCount && !hadError) {
-            const error = new Error("Premature close");
-            error.code = "ERR_STREAM_PREMATURE_CLOSE";
-            response.body.emit("error", error);
-          }
-        });
-      });
-    }
-    request_.on("response", (response_) => {
-      request_.setTimeout(0);
-      const headers = fromRawHeaders(response_.rawHeaders);
-      if (isRedirect(response_.statusCode)) {
-        const location = headers.get("Location");
-        let locationURL = null;
-        try {
-          locationURL = location === null ? null : new URL(location, request.url);
-        } catch {
-          if (request.redirect !== "manual") {
-            reject(new FetchError2(`uri requested responds with an invalid redirect URL: ${location}`, "invalid-redirect"));
-            finalize();
-            return;
-          }
-        }
-        switch (request.redirect) {
-          case "error":
-            reject(new FetchError2(`uri requested responds with a redirect, redirect mode is set to error: ${request.url}`, "no-redirect"));
-            finalize();
-            return;
-          case "manual":
-            break;
-          case "follow": {
-            if (locationURL === null) {
-              break;
-            }
-            if (request.counter >= request.follow) {
-              reject(new FetchError2(`maximum redirect reached at: ${request.url}`, "max-redirect"));
-              finalize();
-              return;
-            }
-            const requestOptions = {
-              headers: new Headers4(request.headers),
-              follow: request.follow,
-              counter: request.counter + 1,
-              agent: request.agent,
-              compress: request.compress,
-              method: request.method,
-              body: clone2(request),
-              signal: request.signal,
-              size: request.size,
-              referrer: request.referrer,
-              referrerPolicy: request.referrerPolicy
-            };
-            if (!isDomainOrSubdomain3(request.url, locationURL) || !isSameProtocol3(request.url, locationURL)) {
-              for (const name of ["authorization", "www-authenticate", "cookie", "cookie2"]) {
-                requestOptions.headers.delete(name);
-              }
-            }
-            if (response_.statusCode !== 303 && request.body && options_.body instanceof Stream__default.default.Readable) {
-              reject(new FetchError2("Cannot follow redirect with body being a readable stream", "unsupported-redirect"));
-              finalize();
-              return;
-            }
-            if (response_.statusCode === 303 || (response_.statusCode === 301 || response_.statusCode === 302) && request.method === "POST") {
-              requestOptions.method = "GET";
-              requestOptions.body = void 0;
-              requestOptions.headers.delete("content-length");
-            }
-            const responseReferrerPolicy = parseReferrerPolicyFromHeader(headers);
-            if (responseReferrerPolicy) {
-              requestOptions.referrerPolicy = responseReferrerPolicy;
-            }
-            resolve(fetch4(new Request4(locationURL, requestOptions)));
-            finalize();
-            return;
-          }
-          default:
-            return reject(new TypeError(`Redirect option '${request.redirect}' is not a valid value of RequestRedirect`));
-        }
-      }
-      if (signal) {
-        response_.once("end", () => {
-          signal.removeEventListener("abort", abortAndFinalize);
-        });
-      }
-      let body = Stream.pipeline(response_, new Stream.PassThrough(), (error) => {
-        if (error) {
-          reject(error);
-        }
-      });
-      if (process.version < "v12.10") {
-        response_.on("aborted", abortAndFinalize);
-      }
-      const responseOptions = {
-        url: request.url,
-        status: response_.statusCode,
-        statusText: response_.statusMessage,
-        headers,
-        size: request.size,
-        counter: request.counter,
-        highWaterMark: request.highWaterMark
-      };
-      const codings = headers.get("Content-Encoding");
-      if (!request.compress || request.method === "HEAD" || codings === null || response_.statusCode === 204 || response_.statusCode === 304) {
-        response = new Response4(body, responseOptions);
-        resolve(response);
-        return;
-      }
-      const zlibOptions = {
-        flush: zlib__default.default.Z_SYNC_FLUSH,
-        finishFlush: zlib__default.default.Z_SYNC_FLUSH
-      };
-      if (codings === "gzip" || codings === "x-gzip") {
-        body = Stream.pipeline(body, zlib__default.default.createGunzip(zlibOptions), (error) => {
-          if (error) {
-            reject(error);
-          }
-        });
-        response = new Response4(body, responseOptions);
-        resolve(response);
-        return;
-      }
-      if (codings === "deflate" || codings === "x-deflate") {
-        const raw = Stream.pipeline(response_, new Stream.PassThrough(), (error) => {
-          if (error) {
-            reject(error);
-          }
-        });
-        raw.once("data", (chunk) => {
-          if ((chunk[0] & 15) === 8) {
-            body = Stream.pipeline(body, zlib__default.default.createInflate(), (error) => {
-              if (error) {
-                reject(error);
-              }
-            });
-          } else {
-            body = Stream.pipeline(body, zlib__default.default.createInflateRaw(), (error) => {
-              if (error) {
-                reject(error);
-              }
-            });
-          }
-          response = new Response4(body, responseOptions);
-          resolve(response);
-        });
-        raw.once("end", () => {
-          if (!response) {
-            response = new Response4(body, responseOptions);
-            resolve(response);
-          }
-        });
-        return;
-      }
-      if (codings === "br") {
-        body = Stream.pipeline(body, zlib__default.default.createBrotliDecompress(), (error) => {
-          if (error) {
-            reject(error);
-          }
-        });
-        response = new Response4(body, responseOptions);
-        resolve(response);
-        return;
-      }
-      response = new Response4(body, responseOptions);
-      resolve(response);
-    });
-    writeToStream2(request_, request).catch(reject);
-  });
-}
-function fixResponseChunkedTransferBadEnding2(request, errorCallback) {
-  const LAST_CHUNK = buffer.Buffer.from("0\r\n\r\n");
-  let isChunkedTransfer = false;
-  let properLastChunkReceived = false;
-  let previousChunk;
-  request.on("response", (response) => {
-    const { headers } = response;
-    isChunkedTransfer = headers["transfer-encoding"] === "chunked" && !headers["content-length"];
-  });
-  request.on("socket", (socket) => {
-    const onSocketClose = /* @__PURE__ */ __name(() => {
-      if (isChunkedTransfer && !properLastChunkReceived) {
-        const error = new Error("Premature close");
-        error.code = "ERR_STREAM_PREMATURE_CLOSE";
-        errorCallback(error);
-      }
-    }, "onSocketClose");
-    const onData = /* @__PURE__ */ __name((buf) => {
-      properLastChunkReceived = buffer.Buffer.compare(buf.slice(-5), LAST_CHUNK) === 0;
-      if (!properLastChunkReceived && previousChunk) {
-        properLastChunkReceived = buffer.Buffer.compare(previousChunk.slice(-3), LAST_CHUNK.slice(0, 3)) === 0 && buffer.Buffer.compare(buf.slice(-2), LAST_CHUNK.slice(3)) === 0;
-      }
-      previousChunk = buf;
-    }, "onData");
-    socket.prependListener("close", onSocketClose);
-    socket.on("data", onData);
-    request.on("close", () => {
-      socket.removeListener("close", onSocketClose);
-      socket.removeListener("data", onData);
-    });
-  });
-}
-var supportedSchemas;
-var init_src = __esm({
-  "node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/index.js"() {
-    init_cjs_shims();
-    init_dist();
-    init_body();
-    init_response();
-    init_headers();
-    init_request();
-    init_fetch_error();
-    init_abort_error();
-    init_is_redirect();
-    init_esm_min();
-    init_is();
-    init_referrer();
-    init_from();
-    supportedSchemas = /* @__PURE__ */ new Set(["data:", "http:", "https:"]);
-    __name(fetch4, "fetch");
-    __name(fixResponseChunkedTransferBadEnding2, "fixResponseChunkedTransferBadEnding");
-  }
-});
 
 // node_modules/.pnpm/universalify@2.0.1/node_modules/universalify/index.js
 var require_universalify = __commonJS({
@@ -15554,54 +14102,54 @@ var require_polyfills = __commonJS({
     }
     var chdir;
     module.exports = patch;
-    function patch(fs4) {
+    function patch(fs5) {
       if (constants.hasOwnProperty("O_SYMLINK") && process.version.match(/^v0\.6\.[0-2]|^v0\.5\./)) {
-        patchLchmod(fs4);
+        patchLchmod(fs5);
       }
-      if (!fs4.lutimes) {
-        patchLutimes(fs4);
+      if (!fs5.lutimes) {
+        patchLutimes(fs5);
       }
-      fs4.chown = chownFix(fs4.chown);
-      fs4.fchown = chownFix(fs4.fchown);
-      fs4.lchown = chownFix(fs4.lchown);
-      fs4.chmod = chmodFix(fs4.chmod);
-      fs4.fchmod = chmodFix(fs4.fchmod);
-      fs4.lchmod = chmodFix(fs4.lchmod);
-      fs4.chownSync = chownFixSync(fs4.chownSync);
-      fs4.fchownSync = chownFixSync(fs4.fchownSync);
-      fs4.lchownSync = chownFixSync(fs4.lchownSync);
-      fs4.chmodSync = chmodFixSync(fs4.chmodSync);
-      fs4.fchmodSync = chmodFixSync(fs4.fchmodSync);
-      fs4.lchmodSync = chmodFixSync(fs4.lchmodSync);
-      fs4.stat = statFix(fs4.stat);
-      fs4.fstat = statFix(fs4.fstat);
-      fs4.lstat = statFix(fs4.lstat);
-      fs4.statSync = statFixSync(fs4.statSync);
-      fs4.fstatSync = statFixSync(fs4.fstatSync);
-      fs4.lstatSync = statFixSync(fs4.lstatSync);
-      if (fs4.chmod && !fs4.lchmod) {
-        fs4.lchmod = function(path, mode, cb) {
+      fs5.chown = chownFix(fs5.chown);
+      fs5.fchown = chownFix(fs5.fchown);
+      fs5.lchown = chownFix(fs5.lchown);
+      fs5.chmod = chmodFix(fs5.chmod);
+      fs5.fchmod = chmodFix(fs5.fchmod);
+      fs5.lchmod = chmodFix(fs5.lchmod);
+      fs5.chownSync = chownFixSync(fs5.chownSync);
+      fs5.fchownSync = chownFixSync(fs5.fchownSync);
+      fs5.lchownSync = chownFixSync(fs5.lchownSync);
+      fs5.chmodSync = chmodFixSync(fs5.chmodSync);
+      fs5.fchmodSync = chmodFixSync(fs5.fchmodSync);
+      fs5.lchmodSync = chmodFixSync(fs5.lchmodSync);
+      fs5.stat = statFix(fs5.stat);
+      fs5.fstat = statFix(fs5.fstat);
+      fs5.lstat = statFix(fs5.lstat);
+      fs5.statSync = statFixSync(fs5.statSync);
+      fs5.fstatSync = statFixSync(fs5.fstatSync);
+      fs5.lstatSync = statFixSync(fs5.lstatSync);
+      if (fs5.chmod && !fs5.lchmod) {
+        fs5.lchmod = function(path, mode, cb) {
           if (cb) process.nextTick(cb);
         };
-        fs4.lchmodSync = function() {
+        fs5.lchmodSync = function() {
         };
       }
-      if (fs4.chown && !fs4.lchown) {
-        fs4.lchown = function(path, uid, gid, cb) {
+      if (fs5.chown && !fs5.lchown) {
+        fs5.lchown = function(path, uid, gid, cb) {
           if (cb) process.nextTick(cb);
         };
-        fs4.lchownSync = function() {
+        fs5.lchownSync = function() {
         };
       }
       if (platform === "win32") {
-        fs4.rename = typeof fs4.rename !== "function" ? fs4.rename : function(fs$rename) {
+        fs5.rename = typeof fs5.rename !== "function" ? fs5.rename : function(fs$rename) {
           function rename(from, to, cb) {
             var start = Date.now();
             var backoff = 0;
             fs$rename(from, to, /* @__PURE__ */ __name(function CB(er2) {
               if (er2 && (er2.code === "EACCES" || er2.code === "EPERM" || er2.code === "EBUSY") && Date.now() - start < 6e4) {
                 setTimeout(function() {
-                  fs4.stat(to, function(stater, st2) {
+                  fs5.stat(to, function(stater, st2) {
                     if (stater && stater.code === "ENOENT")
                       fs$rename(from, to, CB);
                     else
@@ -15618,9 +14166,9 @@ var require_polyfills = __commonJS({
           __name(rename, "rename");
           if (Object.setPrototypeOf) Object.setPrototypeOf(rename, fs$rename);
           return rename;
-        }(fs4.rename);
+        }(fs5.rename);
       }
-      fs4.read = typeof fs4.read !== "function" ? fs4.read : function(fs$read) {
+      fs5.read = typeof fs5.read !== "function" ? fs5.read : function(fs$read) {
         function read(fd, buffer, offset, length, position, callback_) {
           var callback;
           if (callback_ && typeof callback_ === "function") {
@@ -15628,23 +14176,23 @@ var require_polyfills = __commonJS({
             callback = /* @__PURE__ */ __name(function(er2, _2, __) {
               if (er2 && er2.code === "EAGAIN" && eagCounter < 10) {
                 eagCounter++;
-                return fs$read.call(fs4, fd, buffer, offset, length, position, callback);
+                return fs$read.call(fs5, fd, buffer, offset, length, position, callback);
               }
               callback_.apply(this, arguments);
             }, "callback");
           }
-          return fs$read.call(fs4, fd, buffer, offset, length, position, callback);
+          return fs$read.call(fs5, fd, buffer, offset, length, position, callback);
         }
         __name(read, "read");
         if (Object.setPrototypeOf) Object.setPrototypeOf(read, fs$read);
         return read;
-      }(fs4.read);
-      fs4.readSync = typeof fs4.readSync !== "function" ? fs4.readSync : /* @__PURE__ */ function(fs$readSync) {
+      }(fs5.read);
+      fs5.readSync = typeof fs5.readSync !== "function" ? fs5.readSync : /* @__PURE__ */ function(fs$readSync) {
         return function(fd, buffer, offset, length, position) {
           var eagCounter = 0;
           while (true) {
             try {
-              return fs$readSync.call(fs4, fd, buffer, offset, length, position);
+              return fs$readSync.call(fs5, fd, buffer, offset, length, position);
             } catch (er2) {
               if (er2.code === "EAGAIN" && eagCounter < 10) {
                 eagCounter++;
@@ -15654,10 +14202,10 @@ var require_polyfills = __commonJS({
             }
           }
         };
-      }(fs4.readSync);
-      function patchLchmod(fs5) {
-        fs5.lchmod = function(path, mode, callback) {
-          fs5.open(
+      }(fs5.readSync);
+      function patchLchmod(fs6) {
+        fs6.lchmod = function(path, mode, callback) {
+          fs6.open(
             path,
             constants.O_WRONLY | constants.O_SYMLINK,
             mode,
@@ -15666,74 +14214,74 @@ var require_polyfills = __commonJS({
                 if (callback) callback(err);
                 return;
               }
-              fs5.fchmod(fd, mode, function(err2) {
-                fs5.close(fd, function(err22) {
+              fs6.fchmod(fd, mode, function(err2) {
+                fs6.close(fd, function(err22) {
                   if (callback) callback(err2 || err22);
                 });
               });
             }
           );
         };
-        fs5.lchmodSync = function(path, mode) {
-          var fd = fs5.openSync(path, constants.O_WRONLY | constants.O_SYMLINK, mode);
+        fs6.lchmodSync = function(path, mode) {
+          var fd = fs6.openSync(path, constants.O_WRONLY | constants.O_SYMLINK, mode);
           var threw = true;
           var ret;
           try {
-            ret = fs5.fchmodSync(fd, mode);
+            ret = fs6.fchmodSync(fd, mode);
             threw = false;
           } finally {
             if (threw) {
               try {
-                fs5.closeSync(fd);
+                fs6.closeSync(fd);
               } catch (er2) {
               }
             } else {
-              fs5.closeSync(fd);
+              fs6.closeSync(fd);
             }
           }
           return ret;
         };
       }
       __name(patchLchmod, "patchLchmod");
-      function patchLutimes(fs5) {
-        if (constants.hasOwnProperty("O_SYMLINK") && fs5.futimes) {
-          fs5.lutimes = function(path, at2, mt2, cb) {
-            fs5.open(path, constants.O_SYMLINK, function(er2, fd) {
+      function patchLutimes(fs6) {
+        if (constants.hasOwnProperty("O_SYMLINK") && fs6.futimes) {
+          fs6.lutimes = function(path, at2, mt2, cb) {
+            fs6.open(path, constants.O_SYMLINK, function(er2, fd) {
               if (er2) {
                 if (cb) cb(er2);
                 return;
               }
-              fs5.futimes(fd, at2, mt2, function(er3) {
-                fs5.close(fd, function(er22) {
+              fs6.futimes(fd, at2, mt2, function(er3) {
+                fs6.close(fd, function(er22) {
                   if (cb) cb(er3 || er22);
                 });
               });
             });
           };
-          fs5.lutimesSync = function(path, at2, mt2) {
-            var fd = fs5.openSync(path, constants.O_SYMLINK);
+          fs6.lutimesSync = function(path, at2, mt2) {
+            var fd = fs6.openSync(path, constants.O_SYMLINK);
             var ret;
             var threw = true;
             try {
-              ret = fs5.futimesSync(fd, at2, mt2);
+              ret = fs6.futimesSync(fd, at2, mt2);
               threw = false;
             } finally {
               if (threw) {
                 try {
-                  fs5.closeSync(fd);
+                  fs6.closeSync(fd);
                 } catch (er2) {
                 }
               } else {
-                fs5.closeSync(fd);
+                fs6.closeSync(fd);
               }
             }
             return ret;
           };
-        } else if (fs5.futimes) {
-          fs5.lutimes = function(_a4, _b, _c, cb) {
+        } else if (fs6.futimes) {
+          fs6.lutimes = function(_a4, _b, _c, cb) {
             if (cb) process.nextTick(cb);
           };
-          fs5.lutimesSync = function() {
+          fs6.lutimesSync = function() {
           };
         }
       }
@@ -15741,7 +14289,7 @@ var require_polyfills = __commonJS({
       function chmodFix(orig) {
         if (!orig) return orig;
         return function(target, mode, cb) {
-          return orig.call(fs4, target, mode, function(er2) {
+          return orig.call(fs5, target, mode, function(er2) {
             if (chownErOk(er2)) er2 = null;
             if (cb) cb.apply(this, arguments);
           });
@@ -15752,7 +14300,7 @@ var require_polyfills = __commonJS({
         if (!orig) return orig;
         return function(target, mode) {
           try {
-            return orig.call(fs4, target, mode);
+            return orig.call(fs5, target, mode);
           } catch (er2) {
             if (!chownErOk(er2)) throw er2;
           }
@@ -15762,7 +14310,7 @@ var require_polyfills = __commonJS({
       function chownFix(orig) {
         if (!orig) return orig;
         return function(target, uid, gid, cb) {
-          return orig.call(fs4, target, uid, gid, function(er2) {
+          return orig.call(fs5, target, uid, gid, function(er2) {
             if (chownErOk(er2)) er2 = null;
             if (cb) cb.apply(this, arguments);
           });
@@ -15773,7 +14321,7 @@ var require_polyfills = __commonJS({
         if (!orig) return orig;
         return function(target, uid, gid) {
           try {
-            return orig.call(fs4, target, uid, gid);
+            return orig.call(fs5, target, uid, gid);
           } catch (er2) {
             if (!chownErOk(er2)) throw er2;
           }
@@ -15795,14 +14343,14 @@ var require_polyfills = __commonJS({
             if (cb) cb.apply(this, arguments);
           }
           __name(callback, "callback");
-          return options ? orig.call(fs4, target, options, callback) : orig.call(fs4, target, callback);
+          return options ? orig.call(fs5, target, options, callback) : orig.call(fs5, target, callback);
         };
       }
       __name(statFix, "statFix");
       function statFixSync(orig) {
         if (!orig) return orig;
         return function(target, options) {
-          var stats = options ? orig.call(fs4, target, options) : orig.call(fs4, target);
+          var stats = options ? orig.call(fs5, target, options) : orig.call(fs5, target);
           if (stats) {
             if (stats.uid < 0) stats.uid += 4294967296;
             if (stats.gid < 0) stats.gid += 4294967296;
@@ -15835,7 +14383,7 @@ var require_legacy_streams = __commonJS({
     init_cjs_shims();
     var Stream7 = __require("stream").Stream;
     module.exports = legacy;
-    function legacy(fs4) {
+    function legacy(fs5) {
       return {
         ReadStream,
         WriteStream
@@ -15878,7 +14426,7 @@ var require_legacy_streams = __commonJS({
           });
           return;
         }
-        fs4.open(this.path, this.flags, this.mode, function(err, fd) {
+        fs5.open(this.path, this.flags, this.mode, function(err, fd) {
           if (err) {
             self2.emit("error", err);
             self2.readable = false;
@@ -15917,7 +14465,7 @@ var require_legacy_streams = __commonJS({
         this.busy = false;
         this._queue = [];
         if (this.fd === null) {
-          this._open = fs4.open;
+          this._open = fs5.open;
           this._queue.push([this._open, this.path, this.flags, this.mode, void 0]);
           this.flush();
         }
@@ -15955,7 +14503,7 @@ var require_clone = __commonJS({
 var require_graceful_fs = __commonJS({
   "node_modules/.pnpm/graceful-fs@4.2.11/node_modules/graceful-fs/graceful-fs.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = __require("fs");
+    var fs5 = __require("fs");
     var polyfills = require_polyfills();
     var legacy = require_legacy_streams();
     var clone3 = require_clone();
@@ -15989,12 +14537,12 @@ var require_graceful_fs = __commonJS({
         m3 = "GFS4: " + m3.split(/\n/).join("\nGFS4: ");
         console.error(m3);
       }, "debug");
-    if (!fs4[gracefulQueue]) {
+    if (!fs5[gracefulQueue]) {
       queue = global[gracefulQueue] || [];
-      publishQueue(fs4, queue);
-      fs4.close = function(fs$close) {
+      publishQueue(fs5, queue);
+      fs5.close = function(fs$close) {
         function close(fd, cb) {
-          return fs$close.call(fs4, fd, function(err) {
+          return fs$close.call(fs5, fd, function(err) {
             if (!err) {
               resetQueue();
             }
@@ -16007,10 +14555,10 @@ var require_graceful_fs = __commonJS({
           value: fs$close
         });
         return close;
-      }(fs4.close);
-      fs4.closeSync = function(fs$closeSync) {
+      }(fs5.close);
+      fs5.closeSync = function(fs$closeSync) {
         function closeSync(fd) {
-          fs$closeSync.apply(fs4, arguments);
+          fs$closeSync.apply(fs5, arguments);
           resetQueue();
         }
         __name(closeSync, "closeSync");
@@ -16018,31 +14566,31 @@ var require_graceful_fs = __commonJS({
           value: fs$closeSync
         });
         return closeSync;
-      }(fs4.closeSync);
+      }(fs5.closeSync);
       if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || "")) {
         process.on("exit", function() {
-          debug4(fs4[gracefulQueue]);
-          __require("assert").equal(fs4[gracefulQueue].length, 0);
+          debug4(fs5[gracefulQueue]);
+          __require("assert").equal(fs5[gracefulQueue].length, 0);
         });
       }
     }
     var queue;
     if (!global[gracefulQueue]) {
-      publishQueue(global, fs4[gracefulQueue]);
+      publishQueue(global, fs5[gracefulQueue]);
     }
-    module.exports = patch(clone3(fs4));
-    if (process.env.TEST_GRACEFUL_FS_GLOBAL_PATCH && !fs4.__patched) {
-      module.exports = patch(fs4);
-      fs4.__patched = true;
+    module.exports = patch(clone3(fs5));
+    if (process.env.TEST_GRACEFUL_FS_GLOBAL_PATCH && !fs5.__patched) {
+      module.exports = patch(fs5);
+      fs5.__patched = true;
     }
-    function patch(fs5) {
-      polyfills(fs5);
-      fs5.gracefulify = patch;
-      fs5.createReadStream = createReadStream3;
-      fs5.createWriteStream = createWriteStream;
-      var fs$readFile = fs5.readFile;
-      fs5.readFile = readFile;
-      function readFile(path, options, cb) {
+    function patch(fs6) {
+      polyfills(fs6);
+      fs6.gracefulify = patch;
+      fs6.createReadStream = createReadStream3;
+      fs6.createWriteStream = createWriteStream;
+      var fs$readFile = fs6.readFile;
+      fs6.readFile = readFile2;
+      function readFile2(path, options, cb) {
         if (typeof options === "function")
           cb = options, options = null;
         return go$readFile(path, options, cb);
@@ -16057,9 +14605,9 @@ var require_graceful_fs = __commonJS({
           });
         }
       }
-      __name(readFile, "readFile");
-      var fs$writeFile = fs5.writeFile;
-      fs5.writeFile = writeFile;
+      __name(readFile2, "readFile");
+      var fs$writeFile = fs6.writeFile;
+      fs6.writeFile = writeFile;
       function writeFile(path, data, options, cb) {
         if (typeof options === "function")
           cb = options, options = null;
@@ -16076,9 +14624,9 @@ var require_graceful_fs = __commonJS({
         }
       }
       __name(writeFile, "writeFile");
-      var fs$appendFile = fs5.appendFile;
+      var fs$appendFile = fs6.appendFile;
       if (fs$appendFile)
-        fs5.appendFile = appendFile;
+        fs6.appendFile = appendFile;
       function appendFile(path, data, options, cb) {
         if (typeof options === "function")
           cb = options, options = null;
@@ -16095,9 +14643,9 @@ var require_graceful_fs = __commonJS({
         }
       }
       __name(appendFile, "appendFile");
-      var fs$copyFile = fs5.copyFile;
+      var fs$copyFile = fs6.copyFile;
       if (fs$copyFile)
-        fs5.copyFile = copyFile;
+        fs6.copyFile = copyFile;
       function copyFile(src, dest, flags, cb) {
         if (typeof flags === "function") {
           cb = flags;
@@ -16116,8 +14664,8 @@ var require_graceful_fs = __commonJS({
         }
       }
       __name(copyFile, "copyFile");
-      var fs$readdir = fs5.readdir;
-      fs5.readdir = readdir;
+      var fs$readdir = fs6.readdir;
+      fs6.readdir = readdir;
       var noReaddirOptionVersions = /^v[0-5]\./;
       function readdir(path, options, cb) {
         if (typeof options === "function")
@@ -16159,21 +14707,21 @@ var require_graceful_fs = __commonJS({
       }
       __name(readdir, "readdir");
       if (process.version.substr(0, 4) === "v0.8") {
-        var legStreams = legacy(fs5);
+        var legStreams = legacy(fs6);
         ReadStream = legStreams.ReadStream;
         WriteStream = legStreams.WriteStream;
       }
-      var fs$ReadStream = fs5.ReadStream;
+      var fs$ReadStream = fs6.ReadStream;
       if (fs$ReadStream) {
         ReadStream.prototype = Object.create(fs$ReadStream.prototype);
         ReadStream.prototype.open = ReadStream$open;
       }
-      var fs$WriteStream = fs5.WriteStream;
+      var fs$WriteStream = fs6.WriteStream;
       if (fs$WriteStream) {
         WriteStream.prototype = Object.create(fs$WriteStream.prototype);
         WriteStream.prototype.open = WriteStream$open;
       }
-      Object.defineProperty(fs5, "ReadStream", {
+      Object.defineProperty(fs6, "ReadStream", {
         get: /* @__PURE__ */ __name(function() {
           return ReadStream;
         }, "get"),
@@ -16183,7 +14731,7 @@ var require_graceful_fs = __commonJS({
         enumerable: true,
         configurable: true
       });
-      Object.defineProperty(fs5, "WriteStream", {
+      Object.defineProperty(fs6, "WriteStream", {
         get: /* @__PURE__ */ __name(function() {
           return WriteStream;
         }, "get"),
@@ -16194,7 +14742,7 @@ var require_graceful_fs = __commonJS({
         configurable: true
       });
       var FileReadStream = ReadStream;
-      Object.defineProperty(fs5, "FileReadStream", {
+      Object.defineProperty(fs6, "FileReadStream", {
         get: /* @__PURE__ */ __name(function() {
           return FileReadStream;
         }, "get"),
@@ -16205,7 +14753,7 @@ var require_graceful_fs = __commonJS({
         configurable: true
       });
       var FileWriteStream = WriteStream;
-      Object.defineProperty(fs5, "FileWriteStream", {
+      Object.defineProperty(fs6, "FileWriteStream", {
         get: /* @__PURE__ */ __name(function() {
           return FileWriteStream;
         }, "get"),
@@ -16258,15 +14806,15 @@ var require_graceful_fs = __commonJS({
       }
       __name(WriteStream$open, "WriteStream$open");
       function createReadStream3(path, options) {
-        return new fs5.ReadStream(path, options);
+        return new fs6.ReadStream(path, options);
       }
       __name(createReadStream3, "createReadStream");
       function createWriteStream(path, options) {
-        return new fs5.WriteStream(path, options);
+        return new fs6.WriteStream(path, options);
       }
       __name(createWriteStream, "createWriteStream");
-      var fs$open = fs5.open;
-      fs5.open = open;
+      var fs$open = fs6.open;
+      fs6.open = open;
       function open(path, flags, mode, cb) {
         if (typeof mode === "function")
           cb = mode, mode = null;
@@ -16283,22 +14831,22 @@ var require_graceful_fs = __commonJS({
         }
       }
       __name(open, "open");
-      return fs5;
+      return fs6;
     }
     __name(patch, "patch");
     function enqueue(elem) {
       debug4("ENQUEUE", elem[0].name, elem[1]);
-      fs4[gracefulQueue].push(elem);
+      fs5[gracefulQueue].push(elem);
       retry();
     }
     __name(enqueue, "enqueue");
     var retryTimer;
     function resetQueue() {
       var now = Date.now();
-      for (var i3 = 0; i3 < fs4[gracefulQueue].length; ++i3) {
-        if (fs4[gracefulQueue][i3].length > 2) {
-          fs4[gracefulQueue][i3][3] = now;
-          fs4[gracefulQueue][i3][4] = now;
+      for (var i3 = 0; i3 < fs5[gracefulQueue].length; ++i3) {
+        if (fs5[gracefulQueue][i3].length > 2) {
+          fs5[gracefulQueue][i3][3] = now;
+          fs5[gracefulQueue][i3][4] = now;
         }
       }
       retry();
@@ -16307,9 +14855,9 @@ var require_graceful_fs = __commonJS({
     function retry() {
       clearTimeout(retryTimer);
       retryTimer = void 0;
-      if (fs4[gracefulQueue].length === 0)
+      if (fs5[gracefulQueue].length === 0)
         return;
-      var elem = fs4[gracefulQueue].shift();
+      var elem = fs5[gracefulQueue].shift();
       var fn = elem[0];
       var args = elem[1];
       var err = elem[2];
@@ -16331,7 +14879,7 @@ var require_graceful_fs = __commonJS({
           debug4("RETRY", fn.name, args);
           fn.apply(null, args.concat([startTime]));
         } else {
-          fs4[gracefulQueue].push(elem);
+          fs5[gracefulQueue].push(elem);
         }
       }
       if (retryTimer === void 0) {
@@ -16347,7 +14895,7 @@ var require_fs = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/fs/index.js"(exports) {
     init_cjs_shims();
     var u2 = require_universalify().fromCallback;
-    var fs4 = require_graceful_fs();
+    var fs5 = require_graceful_fs();
     var api = [
       "access",
       "appendFile",
@@ -16388,26 +14936,26 @@ var require_fs = __commonJS({
       "utimes",
       "writeFile"
     ].filter((key) => {
-      return typeof fs4[key] === "function";
+      return typeof fs5[key] === "function";
     });
-    Object.assign(exports, fs4);
+    Object.assign(exports, fs5);
     api.forEach((method) => {
-      exports[method] = u2(fs4[method]);
+      exports[method] = u2(fs5[method]);
     });
     exports.exists = function(filename, callback) {
       if (typeof callback === "function") {
-        return fs4.exists(filename, callback);
+        return fs5.exists(filename, callback);
       }
       return new Promise((resolve) => {
-        return fs4.exists(filename, resolve);
+        return fs5.exists(filename, resolve);
       });
     };
     exports.read = function(fd, buffer, offset, length, position, callback) {
       if (typeof callback === "function") {
-        return fs4.read(fd, buffer, offset, length, position, callback);
+        return fs5.read(fd, buffer, offset, length, position, callback);
       }
       return new Promise((resolve, reject) => {
-        fs4.read(fd, buffer, offset, length, position, (err, bytesRead, buffer2) => {
+        fs5.read(fd, buffer, offset, length, position, (err, bytesRead, buffer2) => {
           if (err) return reject(err);
           resolve({ bytesRead, buffer: buffer2 });
         });
@@ -16415,10 +14963,10 @@ var require_fs = __commonJS({
     };
     exports.write = function(fd, buffer, ...args) {
       if (typeof args[args.length - 1] === "function") {
-        return fs4.write(fd, buffer, ...args);
+        return fs5.write(fd, buffer, ...args);
       }
       return new Promise((resolve, reject) => {
-        fs4.write(fd, buffer, ...args, (err, bytesWritten, buffer2) => {
+        fs5.write(fd, buffer, ...args, (err, bytesWritten, buffer2) => {
           if (err) return reject(err);
           resolve({ bytesWritten, buffer: buffer2 });
         });
@@ -16426,10 +14974,10 @@ var require_fs = __commonJS({
     };
     exports.readv = function(fd, buffers, ...args) {
       if (typeof args[args.length - 1] === "function") {
-        return fs4.readv(fd, buffers, ...args);
+        return fs5.readv(fd, buffers, ...args);
       }
       return new Promise((resolve, reject) => {
-        fs4.readv(fd, buffers, ...args, (err, bytesRead, buffers2) => {
+        fs5.readv(fd, buffers, ...args, (err, bytesRead, buffers2) => {
           if (err) return reject(err);
           resolve({ bytesRead, buffers: buffers2 });
         });
@@ -16437,17 +14985,17 @@ var require_fs = __commonJS({
     };
     exports.writev = function(fd, buffers, ...args) {
       if (typeof args[args.length - 1] === "function") {
-        return fs4.writev(fd, buffers, ...args);
+        return fs5.writev(fd, buffers, ...args);
       }
       return new Promise((resolve, reject) => {
-        fs4.writev(fd, buffers, ...args, (err, bytesWritten, buffers2) => {
+        fs5.writev(fd, buffers, ...args, (err, bytesWritten, buffers2) => {
           if (err) return reject(err);
           resolve({ bytesWritten, buffers: buffers2 });
         });
       });
     };
-    if (typeof fs4.realpath.native === "function") {
-      exports.realpath.native = u2(fs4.realpath.native);
+    if (typeof fs5.realpath.native === "function") {
+      exports.realpath.native = u2(fs5.realpath.native);
     } else {
       process.emitWarning(
         "fs.realpath.native is not a function. Is fs being monkey-patched?",
@@ -16480,7 +15028,7 @@ var require_utils2 = __commonJS({
 var require_make_dir = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/mkdirs/make-dir.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var { checkPath } = require_utils2();
     var getMode = /* @__PURE__ */ __name((options) => {
       const defaults2 = { mode: 511 };
@@ -16489,14 +15037,14 @@ var require_make_dir = __commonJS({
     }, "getMode");
     module.exports.makeDir = async (dir, options) => {
       checkPath(dir);
-      return fs4.mkdir(dir, {
+      return fs5.mkdir(dir, {
         mode: getMode(options),
         recursive: true
       });
     };
     module.exports.makeDirSync = (dir, options) => {
       checkPath(dir);
-      return fs4.mkdirSync(dir, {
+      return fs5.mkdirSync(dir, {
         mode: getMode(options),
         recursive: true
       });
@@ -16528,14 +15076,14 @@ var require_path_exists = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/path-exists/index.js"(exports, module) {
     init_cjs_shims();
     var u2 = require_universalify().fromPromise;
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     function pathExists(path) {
-      return fs4.access(path).then(() => true).catch(() => false);
+      return fs5.access(path).then(() => true).catch(() => false);
     }
     __name(pathExists, "pathExists");
     module.exports = {
       pathExists: u2(pathExists),
-      pathExistsSync: fs4.existsSync
+      pathExistsSync: fs5.existsSync
     };
   }
 });
@@ -16544,16 +15092,16 @@ var require_path_exists = __commonJS({
 var require_utimes = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/util/utimes.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var u2 = require_universalify().fromPromise;
     async function utimesMillis(path, atime, mtime) {
-      const fd = await fs4.open(path, "r+");
+      const fd = await fs5.open(path, "r+");
       let closeErr = null;
       try {
-        await fs4.futimes(fd, atime, mtime);
+        await fs5.futimes(fd, atime, mtime);
       } finally {
         try {
-          await fs4.close(fd);
+          await fs5.close(fd);
         } catch (e3) {
           closeErr = e3;
         }
@@ -16564,9 +15112,9 @@ var require_utimes = __commonJS({
     }
     __name(utimesMillis, "utimesMillis");
     function utimesMillisSync(path, atime, mtime) {
-      const fd = fs4.openSync(path, "r+");
-      fs4.futimesSync(fd, atime, mtime);
-      return fs4.closeSync(fd);
+      const fd = fs5.openSync(path, "r+");
+      fs5.futimesSync(fd, atime, mtime);
+      return fs5.closeSync(fd);
     }
     __name(utimesMillisSync, "utimesMillisSync");
     module.exports = {
@@ -16580,11 +15128,11 @@ var require_utimes = __commonJS({
 var require_stat = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/util/stat.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var path = __require("path");
     var u2 = require_universalify().fromPromise;
     function getStats(src, dest, opts) {
-      const statFunc = opts.dereference ? (file) => fs4.stat(file, { bigint: true }) : (file) => fs4.lstat(file, { bigint: true });
+      const statFunc = opts.dereference ? (file) => fs5.stat(file, { bigint: true }) : (file) => fs5.lstat(file, { bigint: true });
       return Promise.all([
         statFunc(src),
         statFunc(dest).catch((err) => {
@@ -16596,7 +15144,7 @@ var require_stat = __commonJS({
     __name(getStats, "getStats");
     function getStatsSync(src, dest, opts) {
       let destStat;
-      const statFunc = opts.dereference ? (file) => fs4.statSync(file, { bigint: true }) : (file) => fs4.lstatSync(file, { bigint: true });
+      const statFunc = opts.dereference ? (file) => fs5.statSync(file, { bigint: true }) : (file) => fs5.lstatSync(file, { bigint: true });
       const srcStat = statFunc(src);
       try {
         destStat = statFunc(dest);
@@ -16661,7 +15209,7 @@ var require_stat = __commonJS({
       if (destParent === srcParent || destParent === path.parse(destParent).root) return;
       let destStat;
       try {
-        destStat = await fs4.stat(destParent, { bigint: true });
+        destStat = await fs5.stat(destParent, { bigint: true });
       } catch (err) {
         if (err.code === "ENOENT") return;
         throw err;
@@ -16678,7 +15226,7 @@ var require_stat = __commonJS({
       if (destParent === srcParent || destParent === path.parse(destParent).root) return;
       let destStat;
       try {
-        destStat = fs4.statSync(destParent, { bigint: true });
+        destStat = fs5.statSync(destParent, { bigint: true });
       } catch (err) {
         if (err.code === "ENOENT") return;
         throw err;
@@ -16721,7 +15269,7 @@ var require_stat = __commonJS({
 var require_copy = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/copy/copy.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var path = __require("path");
     var { mkdirs } = require_mkdirs();
     var { pathExists } = require_path_exists();
@@ -16758,7 +15306,7 @@ var require_copy = __commonJS({
     }
     __name(runFilter, "runFilter");
     async function getStatsAndPerformCopy(destStat, src, dest, opts) {
-      const statFn = opts.dereference ? fs4.stat : fs4.lstat;
+      const statFn = opts.dereference ? fs5.stat : fs5.lstat;
       const srcStat = await statFn(src);
       if (srcStat.isDirectory()) return onDir(srcStat, destStat, src, dest, opts);
       if (srcStat.isFile() || srcStat.isCharacterDevice() || srcStat.isBlockDevice()) return onFile(srcStat, destStat, src, dest, opts);
@@ -16771,7 +15319,7 @@ var require_copy = __commonJS({
     async function onFile(srcStat, destStat, src, dest, opts) {
       if (!destStat) return copyFile(srcStat, src, dest, opts);
       if (opts.overwrite) {
-        await fs4.unlink(dest);
+        await fs5.unlink(dest);
         return copyFile(srcStat, src, dest, opts);
       }
       if (opts.errorOnExist) {
@@ -16780,15 +15328,15 @@ var require_copy = __commonJS({
     }
     __name(onFile, "onFile");
     async function copyFile(srcStat, src, dest, opts) {
-      await fs4.copyFile(src, dest);
+      await fs5.copyFile(src, dest);
       if (opts.preserveTimestamps) {
         if (fileIsNotWritable(srcStat.mode)) {
           await makeFileWritable(dest, srcStat.mode);
         }
-        const updatedSrcStat = await fs4.stat(src);
+        const updatedSrcStat = await fs5.stat(src);
         await utimesMillis(dest, updatedSrcStat.atime, updatedSrcStat.mtime);
       }
-      return fs4.chmod(dest, srcStat.mode);
+      return fs5.chmod(dest, srcStat.mode);
     }
     __name(copyFile, "copyFile");
     function fileIsNotWritable(srcMode) {
@@ -16796,15 +15344,15 @@ var require_copy = __commonJS({
     }
     __name(fileIsNotWritable, "fileIsNotWritable");
     function makeFileWritable(dest, srcMode) {
-      return fs4.chmod(dest, srcMode | 128);
+      return fs5.chmod(dest, srcMode | 128);
     }
     __name(makeFileWritable, "makeFileWritable");
     async function onDir(srcStat, destStat, src, dest, opts) {
       if (!destStat) {
-        await fs4.mkdir(dest);
+        await fs5.mkdir(dest);
       }
       const promises = [];
-      for await (const item of await fs4.opendir(src)) {
+      for await (const item of await fs5.opendir(src)) {
         const srcItem = path.join(src, item.name);
         const destItem = path.join(dest, item.name);
         promises.push(
@@ -16819,23 +15367,23 @@ var require_copy = __commonJS({
       }
       await Promise.all(promises);
       if (!destStat) {
-        await fs4.chmod(dest, srcStat.mode);
+        await fs5.chmod(dest, srcStat.mode);
       }
     }
     __name(onDir, "onDir");
     async function onLink(destStat, src, dest, opts) {
-      let resolvedSrc = await fs4.readlink(src);
+      let resolvedSrc = await fs5.readlink(src);
       if (opts.dereference) {
         resolvedSrc = path.resolve(process.cwd(), resolvedSrc);
       }
       if (!destStat) {
-        return fs4.symlink(resolvedSrc, dest);
+        return fs5.symlink(resolvedSrc, dest);
       }
       let resolvedDest = null;
       try {
-        resolvedDest = await fs4.readlink(dest);
+        resolvedDest = await fs5.readlink(dest);
       } catch (e3) {
-        if (e3.code === "EINVAL" || e3.code === "UNKNOWN") return fs4.symlink(resolvedSrc, dest);
+        if (e3.code === "EINVAL" || e3.code === "UNKNOWN") return fs5.symlink(resolvedSrc, dest);
         throw e3;
       }
       if (opts.dereference) {
@@ -16847,8 +15395,8 @@ var require_copy = __commonJS({
       if (stat2.isSrcSubdir(resolvedDest, resolvedSrc)) {
         throw new Error(`Cannot overwrite '${resolvedDest}' with '${resolvedSrc}'.`);
       }
-      await fs4.unlink(dest);
-      return fs4.symlink(resolvedSrc, dest);
+      await fs5.unlink(dest);
+      return fs5.symlink(resolvedSrc, dest);
     }
     __name(onLink, "onLink");
     module.exports = copy;
@@ -16859,7 +15407,7 @@ var require_copy = __commonJS({
 var require_copy_sync = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/copy/copy-sync.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_graceful_fs();
+    var fs5 = require_graceful_fs();
     var path = __require("path");
     var mkdirsSync = require_mkdirs().mkdirsSync;
     var utimesMillisSync = require_utimes().utimesMillisSync;
@@ -16882,12 +15430,12 @@ var require_copy_sync = __commonJS({
       stat2.checkParentPathsSync(src, srcStat, dest, "copy");
       if (opts.filter && !opts.filter(src, dest)) return;
       const destParent = path.dirname(dest);
-      if (!fs4.existsSync(destParent)) mkdirsSync(destParent);
+      if (!fs5.existsSync(destParent)) mkdirsSync(destParent);
       return getStats(destStat, src, dest, opts);
     }
     __name(copySync, "copySync");
     function getStats(destStat, src, dest, opts) {
-      const statSync3 = opts.dereference ? fs4.statSync : fs4.lstatSync;
+      const statSync3 = opts.dereference ? fs5.statSync : fs5.lstatSync;
       const srcStat = statSync3(src);
       if (srcStat.isDirectory()) return onDir(srcStat, destStat, src, dest, opts);
       else if (srcStat.isFile() || srcStat.isCharacterDevice() || srcStat.isBlockDevice()) return onFile(srcStat, destStat, src, dest, opts);
@@ -16904,7 +15452,7 @@ var require_copy_sync = __commonJS({
     __name(onFile, "onFile");
     function mayCopyFile(srcStat, src, dest, opts) {
       if (opts.overwrite) {
-        fs4.unlinkSync(dest);
+        fs5.unlinkSync(dest);
         return copyFile(srcStat, src, dest, opts);
       } else if (opts.errorOnExist) {
         throw new Error(`'${dest}' already exists`);
@@ -16912,7 +15460,7 @@ var require_copy_sync = __commonJS({
     }
     __name(mayCopyFile, "mayCopyFile");
     function copyFile(srcStat, src, dest, opts) {
-      fs4.copyFileSync(src, dest);
+      fs5.copyFileSync(src, dest);
       if (opts.preserveTimestamps) handleTimestamps(srcStat.mode, src, dest);
       return setDestMode(dest, srcStat.mode);
     }
@@ -16931,11 +15479,11 @@ var require_copy_sync = __commonJS({
     }
     __name(makeFileWritable, "makeFileWritable");
     function setDestMode(dest, srcMode) {
-      return fs4.chmodSync(dest, srcMode);
+      return fs5.chmodSync(dest, srcMode);
     }
     __name(setDestMode, "setDestMode");
     function setDestTimestamps(src, dest) {
-      const updatedSrcStat = fs4.statSync(src);
+      const updatedSrcStat = fs5.statSync(src);
       return utimesMillisSync(dest, updatedSrcStat.atime, updatedSrcStat.mtime);
     }
     __name(setDestTimestamps, "setDestTimestamps");
@@ -16945,13 +15493,13 @@ var require_copy_sync = __commonJS({
     }
     __name(onDir, "onDir");
     function mkDirAndCopy(srcMode, src, dest, opts) {
-      fs4.mkdirSync(dest);
+      fs5.mkdirSync(dest);
       copyDir(src, dest, opts);
       return setDestMode(dest, srcMode);
     }
     __name(mkDirAndCopy, "mkDirAndCopy");
     function copyDir(src, dest, opts) {
-      const dir = fs4.opendirSync(src);
+      const dir = fs5.opendirSync(src);
       try {
         let dirent;
         while ((dirent = dir.readSync()) !== null) {
@@ -16971,18 +15519,18 @@ var require_copy_sync = __commonJS({
     }
     __name(copyDirItem, "copyDirItem");
     function onLink(destStat, src, dest, opts) {
-      let resolvedSrc = fs4.readlinkSync(src);
+      let resolvedSrc = fs5.readlinkSync(src);
       if (opts.dereference) {
         resolvedSrc = path.resolve(process.cwd(), resolvedSrc);
       }
       if (!destStat) {
-        return fs4.symlinkSync(resolvedSrc, dest);
+        return fs5.symlinkSync(resolvedSrc, dest);
       } else {
         let resolvedDest;
         try {
-          resolvedDest = fs4.readlinkSync(dest);
+          resolvedDest = fs5.readlinkSync(dest);
         } catch (err) {
-          if (err.code === "EINVAL" || err.code === "UNKNOWN") return fs4.symlinkSync(resolvedSrc, dest);
+          if (err.code === "EINVAL" || err.code === "UNKNOWN") return fs5.symlinkSync(resolvedSrc, dest);
           throw err;
         }
         if (opts.dereference) {
@@ -16999,8 +15547,8 @@ var require_copy_sync = __commonJS({
     }
     __name(onLink, "onLink");
     function copyLink(resolvedSrc, dest) {
-      fs4.unlinkSync(dest);
-      return fs4.symlinkSync(resolvedSrc, dest);
+      fs5.unlinkSync(dest);
+      return fs5.symlinkSync(resolvedSrc, dest);
     }
     __name(copyLink, "copyLink");
     module.exports = copySync;
@@ -17023,14 +15571,14 @@ var require_copy2 = __commonJS({
 var require_remove = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/remove/index.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_graceful_fs();
+    var fs5 = require_graceful_fs();
     var u2 = require_universalify().fromCallback;
     function remove(path, callback) {
-      fs4.rm(path, { recursive: true, force: true }, callback);
+      fs5.rm(path, { recursive: true, force: true }, callback);
     }
     __name(remove, "remove");
     function removeSync(path) {
-      fs4.rmSync(path, { recursive: true, force: true });
+      fs5.rmSync(path, { recursive: true, force: true });
     }
     __name(removeSync, "removeSync");
     module.exports = {
@@ -17045,14 +15593,14 @@ var require_empty = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/empty/index.js"(exports, module) {
     init_cjs_shims();
     var u2 = require_universalify().fromPromise;
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var path = __require("path");
     var mkdir = require_mkdirs();
     var remove = require_remove();
     var emptyDir = u2(/* @__PURE__ */ __name(async function emptyDir2(dir) {
       let items;
       try {
-        items = await fs4.readdir(dir);
+        items = await fs5.readdir(dir);
       } catch {
         return mkdir.mkdirs(dir);
       }
@@ -17061,7 +15609,7 @@ var require_empty = __commonJS({
     function emptyDirSync(dir) {
       let items;
       try {
-        items = fs4.readdirSync(dir);
+        items = fs5.readdirSync(dir);
       } catch {
         return mkdir.mkdirsSync(dir);
       }
@@ -17086,52 +15634,52 @@ var require_file = __commonJS({
     init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var path = __require("path");
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var mkdir = require_mkdirs();
     async function createFile(file) {
       let stats;
       try {
-        stats = await fs4.stat(file);
+        stats = await fs5.stat(file);
       } catch {
       }
       if (stats && stats.isFile()) return;
       const dir = path.dirname(file);
       let dirStats = null;
       try {
-        dirStats = await fs4.stat(dir);
+        dirStats = await fs5.stat(dir);
       } catch (err) {
         if (err.code === "ENOENT") {
           await mkdir.mkdirs(dir);
-          await fs4.writeFile(file, "");
+          await fs5.writeFile(file, "");
           return;
         } else {
           throw err;
         }
       }
       if (dirStats.isDirectory()) {
-        await fs4.writeFile(file, "");
+        await fs5.writeFile(file, "");
       } else {
-        await fs4.readdir(dir);
+        await fs5.readdir(dir);
       }
     }
     __name(createFile, "createFile");
     function createFileSync(file) {
       let stats;
       try {
-        stats = fs4.statSync(file);
+        stats = fs5.statSync(file);
       } catch {
       }
       if (stats && stats.isFile()) return;
       const dir = path.dirname(file);
       try {
-        if (!fs4.statSync(dir).isDirectory()) {
-          fs4.readdirSync(dir);
+        if (!fs5.statSync(dir).isDirectory()) {
+          fs5.readdirSync(dir);
         }
       } catch (err) {
         if (err && err.code === "ENOENT") mkdir.mkdirsSync(dir);
         else throw err;
       }
-      fs4.writeFileSync(file, "");
+      fs5.writeFileSync(file, "");
     }
     __name(createFileSync, "createFileSync");
     module.exports = {
@@ -17147,19 +15695,19 @@ var require_link = __commonJS({
     init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var path = __require("path");
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var mkdir = require_mkdirs();
     var { pathExists } = require_path_exists();
     var { areIdentical } = require_stat();
     async function createLink(srcpath, dstpath) {
       let dstStat;
       try {
-        dstStat = await fs4.lstat(dstpath);
+        dstStat = await fs5.lstat(dstpath);
       } catch {
       }
       let srcStat;
       try {
-        srcStat = await fs4.lstat(srcpath);
+        srcStat = await fs5.lstat(srcpath);
       } catch (err) {
         err.message = err.message.replace("lstat", "ensureLink");
         throw err;
@@ -17170,27 +15718,27 @@ var require_link = __commonJS({
       if (!dirExists) {
         await mkdir.mkdirs(dir);
       }
-      await fs4.link(srcpath, dstpath);
+      await fs5.link(srcpath, dstpath);
     }
     __name(createLink, "createLink");
     function createLinkSync(srcpath, dstpath) {
       let dstStat;
       try {
-        dstStat = fs4.lstatSync(dstpath);
+        dstStat = fs5.lstatSync(dstpath);
       } catch {
       }
       try {
-        const srcStat = fs4.lstatSync(srcpath);
+        const srcStat = fs5.lstatSync(srcpath);
         if (dstStat && areIdentical(srcStat, dstStat)) return;
       } catch (err) {
         err.message = err.message.replace("lstat", "ensureLink");
         throw err;
       }
       const dir = path.dirname(dstpath);
-      const dirExists = fs4.existsSync(dir);
-      if (dirExists) return fs4.linkSync(srcpath, dstpath);
+      const dirExists = fs5.existsSync(dir);
+      if (dirExists) return fs5.linkSync(srcpath, dstpath);
       mkdir.mkdirsSync(dir);
-      return fs4.linkSync(srcpath, dstpath);
+      return fs5.linkSync(srcpath, dstpath);
     }
     __name(createLinkSync, "createLinkSync");
     module.exports = {
@@ -17205,13 +15753,13 @@ var require_symlink_paths = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/ensure/symlink-paths.js"(exports, module) {
     init_cjs_shims();
     var path = __require("path");
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var { pathExists } = require_path_exists();
     var u2 = require_universalify().fromPromise;
     async function symlinkPaths(srcpath, dstpath) {
       if (path.isAbsolute(srcpath)) {
         try {
-          await fs4.lstat(srcpath);
+          await fs5.lstat(srcpath);
         } catch (err) {
           err.message = err.message.replace("lstat", "ensureSymlink");
           throw err;
@@ -17231,7 +15779,7 @@ var require_symlink_paths = __commonJS({
         };
       }
       try {
-        await fs4.lstat(srcpath);
+        await fs5.lstat(srcpath);
       } catch (err) {
         err.message = err.message.replace("lstat", "ensureSymlink");
         throw err;
@@ -17244,7 +15792,7 @@ var require_symlink_paths = __commonJS({
     __name(symlinkPaths, "symlinkPaths");
     function symlinkPathsSync(srcpath, dstpath) {
       if (path.isAbsolute(srcpath)) {
-        const exists2 = fs4.existsSync(srcpath);
+        const exists2 = fs5.existsSync(srcpath);
         if (!exists2) throw new Error("absolute srcpath does not exist");
         return {
           toCwd: srcpath,
@@ -17253,14 +15801,14 @@ var require_symlink_paths = __commonJS({
       }
       const dstdir = path.dirname(dstpath);
       const relativeToDst = path.join(dstdir, srcpath);
-      const exists = fs4.existsSync(relativeToDst);
+      const exists = fs5.existsSync(relativeToDst);
       if (exists) {
         return {
           toCwd: relativeToDst,
           toDst: srcpath
         };
       }
-      const srcExists = fs4.existsSync(srcpath);
+      const srcExists = fs5.existsSync(srcpath);
       if (!srcExists) throw new Error("relative srcpath does not exist");
       return {
         toCwd: srcpath,
@@ -17279,13 +15827,13 @@ var require_symlink_paths = __commonJS({
 var require_symlink_type = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/ensure/symlink-type.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var u2 = require_universalify().fromPromise;
     async function symlinkType(srcpath, type) {
       if (type) return type;
       let stats;
       try {
-        stats = await fs4.lstat(srcpath);
+        stats = await fs5.lstat(srcpath);
       } catch {
         return "file";
       }
@@ -17296,7 +15844,7 @@ var require_symlink_type = __commonJS({
       if (type) return type;
       let stats;
       try {
-        stats = fs4.lstatSync(srcpath);
+        stats = fs5.lstatSync(srcpath);
       } catch {
         return "file";
       }
@@ -17316,7 +15864,7 @@ var require_symlink = __commonJS({
     init_cjs_shims();
     var u2 = require_universalify().fromPromise;
     var path = __require("path");
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var { mkdirs, mkdirsSync } = require_mkdirs();
     var { symlinkPaths, symlinkPathsSync } = require_symlink_paths();
     var { symlinkType, symlinkTypeSync } = require_symlink_type();
@@ -17325,13 +15873,13 @@ var require_symlink = __commonJS({
     async function createSymlink(srcpath, dstpath, type) {
       let stats;
       try {
-        stats = await fs4.lstat(dstpath);
+        stats = await fs5.lstat(dstpath);
       } catch {
       }
       if (stats && stats.isSymbolicLink()) {
         const [srcStat, dstStat] = await Promise.all([
-          fs4.stat(srcpath),
-          fs4.stat(dstpath)
+          fs5.stat(srcpath),
+          fs5.stat(dstpath)
         ]);
         if (areIdentical(srcStat, dstStat)) return;
       }
@@ -17342,28 +15890,28 @@ var require_symlink = __commonJS({
       if (!await pathExists(dir)) {
         await mkdirs(dir);
       }
-      return fs4.symlink(srcpath, dstpath, toType);
+      return fs5.symlink(srcpath, dstpath, toType);
     }
     __name(createSymlink, "createSymlink");
     function createSymlinkSync(srcpath, dstpath, type) {
       let stats;
       try {
-        stats = fs4.lstatSync(dstpath);
+        stats = fs5.lstatSync(dstpath);
       } catch {
       }
       if (stats && stats.isSymbolicLink()) {
-        const srcStat = fs4.statSync(srcpath);
-        const dstStat = fs4.statSync(dstpath);
+        const srcStat = fs5.statSync(srcpath);
+        const dstStat = fs5.statSync(dstpath);
         if (areIdentical(srcStat, dstStat)) return;
       }
       const relative = symlinkPathsSync(srcpath, dstpath);
       srcpath = relative.toDst;
       type = symlinkTypeSync(relative.toCwd, type);
       const dir = path.dirname(dstpath);
-      const exists = fs4.existsSync(dir);
-      if (exists) return fs4.symlinkSync(srcpath, dstpath, type);
+      const exists = fs5.existsSync(dir);
+      if (exists) return fs5.symlinkSync(srcpath, dstpath, type);
       mkdirsSync(dir);
-      return fs4.symlinkSync(srcpath, dstpath, type);
+      return fs5.symlinkSync(srcpath, dstpath, type);
     }
     __name(createSymlinkSync, "createSymlinkSync");
     module.exports = {
@@ -17435,9 +15983,9 @@ var require_jsonfile = __commonJS({
       if (typeof options === "string") {
         options = { encoding: options };
       }
-      const fs4 = options.fs || _fs;
+      const fs5 = options.fs || _fs;
       const shouldThrow = "throws" in options ? options.throws : true;
-      let data = await universalify.fromCallback(fs4.readFile)(file, options);
+      let data = await universalify.fromCallback(fs5.readFile)(file, options);
       data = stripBom(data);
       let obj;
       try {
@@ -17453,15 +16001,15 @@ var require_jsonfile = __commonJS({
       return obj;
     }
     __name(_readFile, "_readFile");
-    var readFile = universalify.fromPromise(_readFile);
+    var readFile2 = universalify.fromPromise(_readFile);
     function readFileSync(file, options = {}) {
       if (typeof options === "string") {
         options = { encoding: options };
       }
-      const fs4 = options.fs || _fs;
+      const fs5 = options.fs || _fs;
       const shouldThrow = "throws" in options ? options.throws : true;
       try {
-        let content = fs4.readFileSync(file, options);
+        let content = fs5.readFileSync(file, options);
         content = stripBom(content);
         return JSON.parse(content, options.reviver);
       } catch (err) {
@@ -17475,20 +16023,20 @@ var require_jsonfile = __commonJS({
     }
     __name(readFileSync, "readFileSync");
     async function _writeFile(file, obj, options = {}) {
-      const fs4 = options.fs || _fs;
+      const fs5 = options.fs || _fs;
       const str2 = stringify2(obj, options);
-      await universalify.fromCallback(fs4.writeFile)(file, str2, options);
+      await universalify.fromCallback(fs5.writeFile)(file, str2, options);
     }
     __name(_writeFile, "_writeFile");
     var writeFile = universalify.fromPromise(_writeFile);
     function writeFileSync(file, obj, options = {}) {
-      const fs4 = options.fs || _fs;
+      const fs5 = options.fs || _fs;
       const str2 = stringify2(obj, options);
-      return fs4.writeFileSync(file, str2, options);
+      return fs5.writeFileSync(file, str2, options);
     }
     __name(writeFileSync, "writeFileSync");
     var jsonfile = {
-      readFile,
+      readFile: readFile2,
       readFileSync,
       writeFile,
       writeFileSync
@@ -17517,7 +16065,7 @@ var require_output_file = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/output-file/index.js"(exports, module) {
     init_cjs_shims();
     var u2 = require_universalify().fromPromise;
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var path = __require("path");
     var mkdir = require_mkdirs();
     var pathExists = require_path_exists().pathExists;
@@ -17526,15 +16074,15 @@ var require_output_file = __commonJS({
       if (!await pathExists(dir)) {
         await mkdir.mkdirs(dir);
       }
-      return fs4.writeFile(file, data, encoding);
+      return fs5.writeFile(file, data, encoding);
     }
     __name(outputFile, "outputFile");
     function outputFileSync(file, ...args) {
       const dir = path.dirname(file);
-      if (!fs4.existsSync(dir)) {
+      if (!fs5.existsSync(dir)) {
         mkdir.mkdirsSync(dir);
       }
-      fs4.writeFileSync(file, ...args);
+      fs5.writeFileSync(file, ...args);
     }
     __name(outputFileSync, "outputFileSync");
     module.exports = {
@@ -17596,7 +16144,7 @@ var require_json = __commonJS({
 var require_move = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/move/move.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_fs();
+    var fs5 = require_fs();
     var path = __require("path");
     var { copy } = require_copy2();
     var { remove } = require_remove();
@@ -17624,7 +16172,7 @@ var require_move = __commonJS({
         }
       }
       try {
-        await fs4.rename(src, dest);
+        await fs5.rename(src, dest);
       } catch (err) {
         if (err.code !== "EXDEV") {
           throw err;
@@ -17651,7 +16199,7 @@ var require_move = __commonJS({
 var require_move_sync = __commonJS({
   "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/move/move-sync.js"(exports, module) {
     init_cjs_shims();
-    var fs4 = require_graceful_fs();
+    var fs5 = require_graceful_fs();
     var path = __require("path");
     var copySync = require_copy2().copySync;
     var removeSync = require_remove().removeSync;
@@ -17678,13 +16226,13 @@ var require_move_sync = __commonJS({
         removeSync(dest);
         return rename(src, dest, overwrite);
       }
-      if (fs4.existsSync(dest)) throw new Error("dest already exists.");
+      if (fs5.existsSync(dest)) throw new Error("dest already exists.");
       return rename(src, dest, overwrite);
     }
     __name(doRename, "doRename");
     function rename(src, dest, overwrite) {
       try {
-        fs4.renameSync(src, dest);
+        fs5.renameSync(src, dest);
       } catch (err) {
         if (err.code !== "EXDEV") throw err;
         return moveAcrossDevice(src, dest, overwrite);
@@ -18677,7 +17225,7 @@ init_cjs_shims();
 init_cjs_shims();
 var auto = false;
 var kind = void 0;
-var fetch = void 0;
+var fetch2 = void 0;
 var FormData = void 0;
 var File = void 0;
 var ReadableStream2 = void 0;
@@ -18694,7 +17242,7 @@ function setShims(shims, options = { auto: false }) {
   }
   auto = options.auto;
   kind = shims.kind;
-  fetch = shims.fetch;
+  fetch2 = shims.fetch;
   shims.Request;
   shims.Response;
   shims.Headers;
@@ -19729,15 +18277,15 @@ var isSameProtocol = /* @__PURE__ */ __name(function isSameProtocol2(destination
   const dest = new URL$1(destination).protocol;
   return orig === dest;
 }, "isSameProtocol");
-function fetch2(url, opts) {
-  if (!fetch2.Promise) {
+function fetch3(url, opts) {
+  if (!fetch3.Promise) {
     throw new Error("native promise missing, set fetch.Promise to your favorite alternative");
   }
-  Body.Promise = fetch2.Promise;
-  return new fetch2.Promise(function(resolve, reject) {
+  Body.Promise = fetch3.Promise;
+  return new fetch3.Promise(function(resolve, reject) {
     const request = new Request2(url, opts);
     const options = getNodeRequestOptions(request);
-    const send = (options.protocol === "https:" ? https2__default.default : http2__default.default).request;
+    const send = (options.protocol === "https:" ? https__default.default : http2__default.default).request;
     const signal = request.signal;
     let response = null;
     const abort = /* @__PURE__ */ __name(function abort2() {
@@ -19806,7 +18354,7 @@ function fetch2(url, opts) {
     req.on("response", function(res) {
       clearTimeout(reqTimeout);
       const headers = createHeadersLenient(res.headers);
-      if (fetch2.isRedirect(res.statusCode)) {
+      if (fetch3.isRedirect(res.statusCode)) {
         const location = headers.get("Location");
         let locationURL = null;
         try {
@@ -19868,7 +18416,7 @@ function fetch2(url, opts) {
               requestOpts.body = void 0;
               requestOpts.headers.delete("content-length");
             }
-            resolve(fetch2(new Request2(locationURL, requestOpts)));
+            resolve(fetch3(new Request2(locationURL, requestOpts)));
             finalize();
             return;
         }
@@ -19933,7 +18481,7 @@ function fetch2(url, opts) {
     writeToStream(req, request);
   });
 }
-__name(fetch2, "fetch");
+__name(fetch3, "fetch");
 function fixResponseChunkedTransferBadEnding(request, errorCallback) {
   let socket;
   request.on("socket", function(s3) {
@@ -19963,11 +18511,11 @@ function destroyStream(stream, err) {
   }
 }
 __name(destroyStream, "destroyStream");
-fetch2.isRedirect = function(code) {
+fetch3.isRedirect = function(code) {
   return code === 301 || code === 302 || code === 303 || code === 307 || code === 308;
 };
-fetch2.Promise = global.Promise;
-var lib_default = fetch2;
+fetch3.Promise = global.Promise;
+var lib_default = fetch3;
 
 // node_modules/.pnpm/formdata-node@4.4.1/node_modules/formdata-node/lib/esm/index.js
 init_cjs_shims();
@@ -21168,7 +19716,7 @@ var APIClient = class {
     this.maxRetries = validatePositiveInteger("maxRetries", maxRetries);
     this.timeout = validatePositiveInteger("timeout", timeout);
     this.httpAgent = httpAgent;
-    this.fetch = overriddenFetch ?? fetch;
+    this.fetch = overriddenFetch ?? fetch2;
   }
   authHeaders(opts) {
     return {};
@@ -26842,7 +25390,7 @@ init_cjs_shims();
 init_cjs_shims();
 var auto2 = false;
 var kind2 = void 0;
-var fetch3 = void 0;
+var fetch4 = void 0;
 var File3 = void 0;
 var ReadableStream5 = void 0;
 var getDefaultAgent2 = void 0;
@@ -26856,7 +25404,7 @@ function setShims2(shims, options = { auto: false }) {
   }
   auto2 = options.auto;
   kind2 = shims.kind;
-  fetch3 = shims.fetch;
+  fetch4 = shims.fetch;
   shims.Request;
   shims.Response;
   shims.Headers;
@@ -27670,7 +26218,7 @@ var APIClient2 = class {
     this.maxRetries = validatePositiveInteger2("maxRetries", maxRetries);
     this.timeout = validatePositiveInteger2("timeout", timeout);
     this.httpAgent = httpAgent;
-    this.fetch = overridenFetch ?? fetch3;
+    this.fetch = overridenFetch ?? fetch4;
   }
   authHeaders(opts) {
     return {};
@@ -29000,390 +27548,770 @@ var AnthropicProvider = class extends BaseAIProvider {
   }
 };
 
-// src/providers/google-provider.ts
+// src/providers/google-ai-provider.ts
 init_cjs_shims();
 
-// src/providers/base-provider.ts
+// node_modules/.pnpm/@google+generative-ai@0.1.3/node_modules/@google/generative-ai/dist/index.mjs
 init_cjs_shims();
-var BaseProvider = class {
+var HarmCategory;
+(function(HarmCategory2) {
+  HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = "HARM_CATEGORY_UNSPECIFIED";
+  HarmCategory2["HARM_CATEGORY_HATE_SPEECH"] = "HARM_CATEGORY_HATE_SPEECH";
+  HarmCategory2["HARM_CATEGORY_SEXUALLY_EXPLICIT"] = "HARM_CATEGORY_SEXUALLY_EXPLICIT";
+  HarmCategory2["HARM_CATEGORY_HARASSMENT"] = "HARM_CATEGORY_HARASSMENT";
+  HarmCategory2["HARM_CATEGORY_DANGEROUS_CONTENT"] = "HARM_CATEGORY_DANGEROUS_CONTENT";
+})(HarmCategory || (HarmCategory = {}));
+var HarmBlockThreshold;
+(function(HarmBlockThreshold2) {
+  HarmBlockThreshold2["HARM_BLOCK_THRESHOLD_UNSPECIFIED"] = "HARM_BLOCK_THRESHOLD_UNSPECIFIED";
+  HarmBlockThreshold2["BLOCK_LOW_AND_ABOVE"] = "BLOCK_LOW_AND_ABOVE";
+  HarmBlockThreshold2["BLOCK_MEDIUM_AND_ABOVE"] = "BLOCK_MEDIUM_AND_ABOVE";
+  HarmBlockThreshold2["BLOCK_ONLY_HIGH"] = "BLOCK_ONLY_HIGH";
+  HarmBlockThreshold2["BLOCK_NONE"] = "BLOCK_NONE";
+})(HarmBlockThreshold || (HarmBlockThreshold = {}));
+var HarmProbability;
+(function(HarmProbability2) {
+  HarmProbability2["HARM_PROBABILITY_UNSPECIFIED"] = "HARM_PROBABILITY_UNSPECIFIED";
+  HarmProbability2["NEGLIGIBLE"] = "NEGLIGIBLE";
+  HarmProbability2["LOW"] = "LOW";
+  HarmProbability2["MEDIUM"] = "MEDIUM";
+  HarmProbability2["HIGH"] = "HIGH";
+})(HarmProbability || (HarmProbability = {}));
+var BlockReason;
+(function(BlockReason2) {
+  BlockReason2["BLOCKED_REASON_UNSPECIFIED"] = "BLOCKED_REASON_UNSPECIFIED";
+  BlockReason2["SAFETY"] = "SAFETY";
+  BlockReason2["OTHER"] = "OTHER";
+})(BlockReason || (BlockReason = {}));
+var FinishReason;
+(function(FinishReason2) {
+  FinishReason2["FINISH_REASON_UNSPECIFIED"] = "FINISH_REASON_UNSPECIFIED";
+  FinishReason2["STOP"] = "STOP";
+  FinishReason2["MAX_TOKENS"] = "MAX_TOKENS";
+  FinishReason2["SAFETY"] = "SAFETY";
+  FinishReason2["RECITATION"] = "RECITATION";
+  FinishReason2["OTHER"] = "OTHER";
+})(FinishReason || (FinishReason = {}));
+var TaskType;
+(function(TaskType2) {
+  TaskType2["TASK_TYPE_UNSPECIFIED"] = "TASK_TYPE_UNSPECIFIED";
+  TaskType2["RETRIEVAL_QUERY"] = "RETRIEVAL_QUERY";
+  TaskType2["RETRIEVAL_DOCUMENT"] = "RETRIEVAL_DOCUMENT";
+  TaskType2["SEMANTIC_SIMILARITY"] = "SEMANTIC_SIMILARITY";
+  TaskType2["CLASSIFICATION"] = "CLASSIFICATION";
+  TaskType2["CLUSTERING"] = "CLUSTERING";
+})(TaskType || (TaskType = {}));
+var GoogleGenerativeAIError = class extends Error {
   static {
-    __name(this, "BaseProvider");
+    __name(this, "GoogleGenerativeAIError");
   }
-  apiKey;
-  apiBase;
-  constructor(config = {}) {
-    this.apiKey = config.apiKey;
-    this.apiBase = config.apiBase;
+  constructor(message) {
+    super(`[GoogleGenerativeAI Error]: ${message}`);
   }
-  // Optional methods with default implementations
-  async vision(_image, _prompt) {
-    throw new Error(`${this.name} does not support vision tasks`);
+};
+var GoogleGenerativeAIResponseError = class extends GoogleGenerativeAIError {
+  static {
+    __name(this, "GoogleGenerativeAIResponseError");
   }
-  async generateCode(prompt, language) {
-    const codePrompt = language ? `Generate ${language} code for: ${prompt}` : `Generate code for: ${prompt}`;
-    return this.chat({
-      messages: [{ role: "user", content: codePrompt }],
-      taskType: "coding"
-    });
+  constructor(message, response) {
+    super(message);
+    this.response = response;
   }
-  estimateCost(_tokens) {
-    return 0;
+};
+var BASE_URL = "https://generativelanguage.googleapis.com";
+var API_VERSION = "v1";
+var PACKAGE_VERSION = "0.1.3";
+var PACKAGE_LOG_HEADER = "genai-js";
+var Task;
+(function(Task2) {
+  Task2["GENERATE_CONTENT"] = "generateContent";
+  Task2["STREAM_GENERATE_CONTENT"] = "streamGenerateContent";
+  Task2["COUNT_TOKENS"] = "countTokens";
+  Task2["EMBED_CONTENT"] = "embedContent";
+  Task2["BATCH_EMBED_CONTENTS"] = "batchEmbedContents";
+})(Task || (Task = {}));
+var RequestUrl = class {
+  static {
+    __name(this, "RequestUrl");
   }
-  async makeRequest(url, options) {
-    const fetch6 = (await Promise.resolve().then(() => (init_src(), src_exports))).default;
-    const response = await fetch6(url, {
-      ...options,
+  constructor(model, task, apiKey, stream) {
+    this.model = model;
+    this.task = task;
+    this.apiKey = apiKey;
+    this.stream = stream;
+  }
+  toString() {
+    let url = `${BASE_URL}/${API_VERSION}/models/${this.model}:${this.task}`;
+    if (this.stream) {
+      url += "?alt=sse";
+    }
+    return url;
+  }
+};
+function getClientHeaders() {
+  return `${PACKAGE_LOG_HEADER}/${PACKAGE_VERSION}`;
+}
+__name(getClientHeaders, "getClientHeaders");
+async function makeRequest(url, body) {
+  let response;
+  try {
+    response = await fetch(url.toString(), {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...options.headers
-      }
+        "x-goog-api-client": getClientHeaders(),
+        "x-goog-api-key": url.apiKey
+      },
+      body
     });
     if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`${this.name} API error: ${response.status} ${error}`);
-    }
-    return response.json();
-  }
-  async makeStreamRequest(url, options) {
-    const fetch6 = (await Promise.resolve().then(() => (init_src(), src_exports))).default;
-    const response = await fetch6(url, {
-      ...options,
-      headers: {
-        "Content-Type": "application/json",
-        ...options.headers
+      let message = "";
+      try {
+        const json = await response.json();
+        message = json.error.message;
+        if (json.error.details) {
+          message += ` ${JSON.stringify(json.error.details)}`;
+        }
+      } catch (e3) {
       }
-    });
-    if (!response.ok) {
-      const error = await response.text();
-      throw new Error(`${this.name} API error: ${response.status} ${error}`);
+      throw new Error(`[${response.status} ${response.statusText}] ${message}`);
     }
-    return this.parseStreamResponse(response);
+  } catch (e3) {
+    const err = new GoogleGenerativeAIError(`Error fetching from ${url.toString()}: ${e3.message}`);
+    err.stack = e3.stack;
+    throw err;
   }
-  async *parseStreamResponse(response) {
-    const reader = response.body?.getReader();
-    if (!reader) return;
-    const decoder = new TextDecoder();
+  return response;
+}
+__name(makeRequest, "makeRequest");
+function addHelpers(response) {
+  response.text = () => {
+    if (response.candidates && response.candidates.length > 0) {
+      if (response.candidates.length > 1) {
+        console.warn(`This response had ${response.candidates.length} candidates. Returning text from the first candidate only. Access response.candidates directly to use the other candidates.`);
+      }
+      if (hadBadFinishReason(response.candidates[0])) {
+        throw new GoogleGenerativeAIResponseError(`${formatBlockErrorMessage(response)}`, response);
+      }
+      return getText(response);
+    } else if (response.promptFeedback) {
+      throw new GoogleGenerativeAIResponseError(`Text not available. ${formatBlockErrorMessage(response)}`, response);
+    }
+    return "";
+  };
+  return response;
+}
+__name(addHelpers, "addHelpers");
+function getText(response) {
+  var _a4, _b, _c, _d;
+  if ((_d = (_c = (_b = (_a4 = response.candidates) === null || _a4 === void 0 ? void 0 : _a4[0].content) === null || _b === void 0 ? void 0 : _b.parts) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.text) {
+    return response.candidates[0].content.parts[0].text;
+  } else {
+    return "";
+  }
+}
+__name(getText, "getText");
+var badFinishReasons = [FinishReason.RECITATION, FinishReason.SAFETY];
+function hadBadFinishReason(candidate) {
+  return !!candidate.finishReason && badFinishReasons.includes(candidate.finishReason);
+}
+__name(hadBadFinishReason, "hadBadFinishReason");
+function formatBlockErrorMessage(response) {
+  var _a4, _b, _c;
+  let message = "";
+  if ((!response.candidates || response.candidates.length === 0) && response.promptFeedback) {
+    message += "Response was blocked";
+    if ((_a4 = response.promptFeedback) === null || _a4 === void 0 ? void 0 : _a4.blockReason) {
+      message += ` due to ${response.promptFeedback.blockReason}`;
+    }
+    if ((_b = response.promptFeedback) === null || _b === void 0 ? void 0 : _b.blockReasonMessage) {
+      message += `: ${response.promptFeedback.blockReasonMessage}`;
+    }
+  } else if ((_c = response.candidates) === null || _c === void 0 ? void 0 : _c[0]) {
+    const firstCandidate = response.candidates[0];
+    if (hadBadFinishReason(firstCandidate)) {
+      message += `Candidate was blocked due to ${firstCandidate.finishReason}`;
+      if (firstCandidate.finishMessage) {
+        message += `: ${firstCandidate.finishMessage}`;
+      }
+    }
+  }
+  return message;
+}
+__name(formatBlockErrorMessage, "formatBlockErrorMessage");
+function __await(v2) {
+  return this instanceof __await ? (this.v = v2, this) : new __await(v2);
+}
+__name(__await, "__await");
+function __asyncGenerator(thisArg, _arguments, generator) {
+  if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+  var g2 = generator.apply(thisArg, _arguments || []), i3, q2 = [];
+  return i3 = {}, verb("next"), verb("throw"), verb("return"), i3[Symbol.asyncIterator] = function() {
+    return this;
+  }, i3;
+  function verb(n2) {
+    if (g2[n2]) i3[n2] = function(v2) {
+      return new Promise(function(a2, b2) {
+        q2.push([n2, v2, a2, b2]) > 1 || resume(n2, v2);
+      });
+    };
+  }
+  function resume(n2, v2) {
     try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n").filter((line) => line.trim());
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const data = line.slice(6);
-            if (data === "[DONE]") return;
+      step(g2[n2](v2));
+    } catch (e3) {
+      settle(q2[0][3], e3);
+    }
+  }
+  function step(r3) {
+    r3.value instanceof __await ? Promise.resolve(r3.value.v).then(fulfill, reject) : settle(q2[0][2], r3);
+  }
+  function fulfill(value) {
+    resume("next", value);
+  }
+  function reject(value) {
+    resume("throw", value);
+  }
+  function settle(f4, v2) {
+    if (f4(v2), q2.shift(), q2.length) resume(q2[0][0], q2[0][1]);
+  }
+}
+__name(__asyncGenerator, "__asyncGenerator");
+var responseLineRE = /^data\: (.*)(?:\n\n|\r\r|\r\n\r\n)/;
+function processStream(response) {
+  const inputStream = response.body.pipeThrough(new TextDecoderStream("utf8", { fatal: true }));
+  const responseStream = getResponseStream(inputStream);
+  const [stream1, stream2] = responseStream.tee();
+  return {
+    stream: generateResponseSequence(stream1),
+    response: getResponsePromise(stream2)
+  };
+}
+__name(processStream, "processStream");
+async function getResponsePromise(stream) {
+  const allResponses = [];
+  const reader = stream.getReader();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) {
+      return addHelpers(aggregateResponses(allResponses));
+    }
+    allResponses.push(value);
+  }
+}
+__name(getResponsePromise, "getResponsePromise");
+function generateResponseSequence(stream) {
+  return __asyncGenerator(this, arguments, /* @__PURE__ */ __name(function* generateResponseSequence_1() {
+    const reader = stream.getReader();
+    while (true) {
+      const { value, done } = yield __await(reader.read());
+      if (done) {
+        break;
+      }
+      yield yield __await(addHelpers(value));
+    }
+  }, "generateResponseSequence_1"));
+}
+__name(generateResponseSequence, "generateResponseSequence");
+function getResponseStream(inputStream) {
+  const reader = inputStream.getReader();
+  const stream = new ReadableStream({
+    start(controller) {
+      let currentText = "";
+      return pump2();
+      function pump2() {
+        return reader.read().then(({ value, done }) => {
+          if (done) {
+            if (currentText.trim()) {
+              controller.error(new GoogleGenerativeAIError("Failed to parse stream"));
+              return;
+            }
+            controller.close();
+            return;
+          }
+          currentText += value;
+          let match = currentText.match(responseLineRE);
+          let parsedResponse;
+          while (match) {
             try {
-              const parsed = JSON.parse(data);
-              const content = this.extractStreamContent(parsed);
-              if (content) yield content;
+              parsedResponse = JSON.parse(match[1]);
             } catch (e3) {
+              controller.error(new GoogleGenerativeAIError(`Error parsing JSON response: "${match[1]}"`));
+              return;
+            }
+            controller.enqueue(parsedResponse);
+            currentText = currentText.substring(match[0].length);
+            match = currentText.match(responseLineRE);
+          }
+          return pump2();
+        });
+      }
+    }
+  });
+  return stream;
+}
+__name(getResponseStream, "getResponseStream");
+function aggregateResponses(responses) {
+  const lastResponse = responses[responses.length - 1];
+  const aggregatedResponse = {
+    promptFeedback: lastResponse === null || lastResponse === void 0 ? void 0 : lastResponse.promptFeedback
+  };
+  for (const response of responses) {
+    if (response.candidates) {
+      for (const candidate of response.candidates) {
+        const i3 = candidate.index;
+        if (!aggregatedResponse.candidates) {
+          aggregatedResponse.candidates = [];
+        }
+        if (!aggregatedResponse.candidates[i3]) {
+          aggregatedResponse.candidates[i3] = {
+            index: candidate.index
+          };
+        }
+        aggregatedResponse.candidates[i3].citationMetadata = candidate.citationMetadata;
+        aggregatedResponse.candidates[i3].finishReason = candidate.finishReason;
+        aggregatedResponse.candidates[i3].finishMessage = candidate.finishMessage;
+        aggregatedResponse.candidates[i3].safetyRatings = candidate.safetyRatings;
+        if (candidate.content && candidate.content.parts) {
+          if (!aggregatedResponse.candidates[i3].content) {
+            aggregatedResponse.candidates[i3].content = {
+              role: candidate.content.role || "user",
+              parts: [{ text: "" }]
+            };
+          }
+          for (const part of candidate.content.parts) {
+            if (part.text) {
+              aggregatedResponse.candidates[i3].content.parts[0].text += part.text;
             }
           }
         }
       }
-    } finally {
-      reader.releaseLock();
     }
   }
-  extractStreamContent(data) {
-    return data?.choices?.[0]?.delta?.content || null;
+  return aggregatedResponse;
+}
+__name(aggregateResponses, "aggregateResponses");
+async function generateContentStream(apiKey, model, params) {
+  const url = new RequestUrl(
+    model,
+    Task.STREAM_GENERATE_CONTENT,
+    apiKey,
+    /* stream */
+    true
+  );
+  const response = await makeRequest(url, JSON.stringify(params));
+  return processStream(response);
+}
+__name(generateContentStream, "generateContentStream");
+async function generateContent(apiKey, model, params) {
+  const url = new RequestUrl(
+    model,
+    Task.GENERATE_CONTENT,
+    apiKey,
+    /* stream */
+    false
+  );
+  const response = await makeRequest(url, JSON.stringify(params));
+  const responseJson = await response.json();
+  const enhancedResponse = addHelpers(responseJson);
+  return {
+    response: enhancedResponse
+  };
+}
+__name(generateContent, "generateContent");
+function formatNewContent(request, role) {
+  let newParts = [];
+  if (typeof request === "string") {
+    newParts = [{ text: request }];
+  } else {
+    for (const partOrString of request) {
+      if (typeof partOrString === "string") {
+        newParts.push({ text: partOrString });
+      } else {
+        newParts.push(partOrString);
+      }
+    }
   }
-  createModelInfo(model) {
-    return {
-      id: model.id,
-      name: model.name || model.id,
-      provider: this.name,
-      description: model.description || "",
-      contextLength: model.context_length || 4096,
-      capabilities: model.capabilities || ["text"],
-      pricing: model.pricing,
-      local: model.local || false,
-      available: true,
-      memoryRequired: model.memory_required,
-      recommendedFor: model.recommended_for || ["general_purpose"]
+  return { role, parts: newParts };
+}
+__name(formatNewContent, "formatNewContent");
+function formatGenerateContentInput(params) {
+  if (params.contents) {
+    return params;
+  } else {
+    const content = formatNewContent(params, "user");
+    return { contents: [content] };
+  }
+}
+__name(formatGenerateContentInput, "formatGenerateContentInput");
+function formatEmbedContentInput(params) {
+  if (typeof params === "string" || Array.isArray(params)) {
+    const content = formatNewContent(params, "user");
+    return { content };
+  }
+  return params;
+}
+__name(formatEmbedContentInput, "formatEmbedContentInput");
+var SILENT_ERROR = "SILENT_ERROR";
+var ChatSession = class {
+  static {
+    __name(this, "ChatSession");
+  }
+  constructor(apiKey, model, params) {
+    this.model = model;
+    this.params = params;
+    this._history = [];
+    this._sendPromise = Promise.resolve();
+    this._apiKey = apiKey;
+    if (params === null || params === void 0 ? void 0 : params.history) {
+      this._history = params.history.map((content) => {
+        if (!content.role) {
+          throw new Error("Missing role for history item: " + JSON.stringify(content));
+        }
+        return formatNewContent(content.parts, content.role);
+      });
+    }
+  }
+  /**
+   * Gets the chat history so far. Blocked prompts are not added to history.
+   * Blocked candidates are not added to history, nor are the prompts that
+   * generated them.
+   */
+  async getHistory() {
+    await this._sendPromise;
+    return this._history;
+  }
+  /**
+   * Sends a chat message and receives a non-streaming
+   * {@link GenerateContentResult}
+   */
+  async sendMessage(request) {
+    var _a4, _b;
+    await this._sendPromise;
+    const newContent = formatNewContent(request, "user");
+    const generateContentRequest = {
+      safetySettings: (_a4 = this.params) === null || _a4 === void 0 ? void 0 : _a4.safetySettings,
+      generationConfig: (_b = this.params) === null || _b === void 0 ? void 0 : _b.generationConfig,
+      contents: [...this._history, newContent]
     };
+    let finalResult;
+    this._sendPromise = this._sendPromise.then(() => generateContent(this._apiKey, this.model, generateContentRequest)).then((result) => {
+      var _a5;
+      if (result.response.candidates && result.response.candidates.length > 0) {
+        this._history.push(newContent);
+        const responseContent = Object.assign({
+          parts: [],
+          // Response seems to come back without a role set.
+          role: "model"
+        }, (_a5 = result.response.candidates) === null || _a5 === void 0 ? void 0 : _a5[0].content);
+        this._history.push(responseContent);
+      } else {
+        const blockErrorMessage = formatBlockErrorMessage(result.response);
+        if (blockErrorMessage) {
+          console.warn(`sendMessage() was unsuccessful. ${blockErrorMessage}. Inspect response object for details.`);
+        }
+      }
+      finalResult = result;
+    });
+    await this._sendPromise;
+    return finalResult;
+  }
+  /**
+   * Sends a chat message and receives the response as a
+   * {@link GenerateContentStreamResult} containing an iterable stream
+   * and a response promise.
+   */
+  async sendMessageStream(request) {
+    var _a4, _b;
+    await this._sendPromise;
+    const newContent = formatNewContent(request, "user");
+    const generateContentRequest = {
+      safetySettings: (_a4 = this.params) === null || _a4 === void 0 ? void 0 : _a4.safetySettings,
+      generationConfig: (_b = this.params) === null || _b === void 0 ? void 0 : _b.generationConfig,
+      contents: [...this._history, newContent]
+    };
+    const streamPromise = generateContentStream(this._apiKey, this.model, generateContentRequest);
+    this._sendPromise = this._sendPromise.then(() => streamPromise).catch((_ignored) => {
+      throw new Error(SILENT_ERROR);
+    }).then((streamResult) => streamResult.response).then((response) => {
+      if (response.candidates && response.candidates.length > 0) {
+        this._history.push(newContent);
+        const responseContent = Object.assign({}, response.candidates[0].content);
+        if (!responseContent.role) {
+          responseContent.role = "model";
+        }
+        this._history.push(responseContent);
+      } else {
+        const blockErrorMessage = formatBlockErrorMessage(response);
+        if (blockErrorMessage) {
+          console.warn(`sendMessageStream() was unsuccessful. ${blockErrorMessage}. Inspect response object for details.`);
+        }
+      }
+    }).catch((e3) => {
+      if (e3.message !== SILENT_ERROR) {
+        console.error(e3);
+      }
+    });
+    return streamPromise;
+  }
+};
+async function countTokens(apiKey, model, params) {
+  const url = new RequestUrl(model, Task.COUNT_TOKENS, apiKey, false);
+  const response = await makeRequest(url, JSON.stringify(Object.assign(Object.assign({}, params), { model })));
+  return response.json();
+}
+__name(countTokens, "countTokens");
+async function embedContent(apiKey, model, params) {
+  const url = new RequestUrl(model, Task.EMBED_CONTENT, apiKey, false);
+  const response = await makeRequest(url, JSON.stringify(params));
+  return response.json();
+}
+__name(embedContent, "embedContent");
+async function batchEmbedContents(apiKey, model, params) {
+  const url = new RequestUrl(model, Task.BATCH_EMBED_CONTENTS, apiKey, false);
+  const requestsWithModel = params.requests.map((request) => {
+    return Object.assign(Object.assign({}, request), { model: `models/${model}` });
+  });
+  const response = await makeRequest(url, JSON.stringify({ requests: requestsWithModel }));
+  return response.json();
+}
+__name(batchEmbedContents, "batchEmbedContents");
+var GenerativeModel = class {
+  static {
+    __name(this, "GenerativeModel");
+  }
+  constructor(apiKey, modelParams) {
+    var _a4;
+    this.apiKey = apiKey;
+    if (modelParams.model.startsWith("models/")) {
+      this.model = (_a4 = modelParams.model.split("models/")) === null || _a4 === void 0 ? void 0 : _a4[1];
+    } else {
+      this.model = modelParams.model;
+    }
+    this.generationConfig = modelParams.generationConfig || {};
+    this.safetySettings = modelParams.safetySettings || [];
+  }
+  /**
+   * Makes a single non-streaming call to the model
+   * and returns an object containing a single {@link GenerateContentResponse}.
+   */
+  async generateContent(request) {
+    const formattedParams = formatGenerateContentInput(request);
+    return generateContent(this.apiKey, this.model, Object.assign({ generationConfig: this.generationConfig, safetySettings: this.safetySettings }, formattedParams));
+  }
+  /**
+   * Makes a single streaming call to the model
+   * and returns an object containing an iterable stream that iterates
+   * over all chunks in the streaming response as well as
+   * a promise that returns the final aggregated response.
+   */
+  async generateContentStream(request) {
+    const formattedParams = formatGenerateContentInput(request);
+    return generateContentStream(this.apiKey, this.model, Object.assign({ generationConfig: this.generationConfig, safetySettings: this.safetySettings }, formattedParams));
+  }
+  /**
+   * Gets a new {@link ChatSession} instance which can be used for
+   * multi-turn chats.
+   */
+  startChat(startChatParams) {
+    return new ChatSession(this.apiKey, this.model, startChatParams);
+  }
+  /**
+   * Counts the tokens in the provided request.
+   */
+  async countTokens(request) {
+    const formattedParams = formatGenerateContentInput(request);
+    return countTokens(this.apiKey, this.model, formattedParams);
+  }
+  /**
+   * Embeds the provided content.
+   */
+  async embedContent(request) {
+    const formattedParams = formatEmbedContentInput(request);
+    return embedContent(this.apiKey, this.model, formattedParams);
+  }
+  /**
+   * Embeds an array of {@link EmbedContentRequest}s.
+   */
+  async batchEmbedContents(batchEmbedContentRequest) {
+    return batchEmbedContents(this.apiKey, this.model, batchEmbedContentRequest);
+  }
+};
+var GoogleGenerativeAI = class {
+  static {
+    __name(this, "GoogleGenerativeAI");
+  }
+  constructor(apiKey) {
+    this.apiKey = apiKey;
+  }
+  /**
+   * Gets a {@link GenerativeModel} instance for the provided model name.
+   */
+  getGenerativeModel(modelParams) {
+    if (!modelParams.model) {
+      throw new GoogleGenerativeAIError(`Must provide a model name. Example: genai.getGenerativeModel({ model: 'my-model-name' })`);
+    }
+    return new GenerativeModel(this.apiKey, modelParams);
   }
 };
 
-// src/providers/google-provider.ts
-var GoogleProvider = class extends BaseProvider {
+// src/providers/google-ai-provider.ts
+var GoogleAIProvider = class extends BaseAIProvider {
   static {
-    __name(this, "GoogleProvider");
+    __name(this, "GoogleAIProvider");
   }
-  name = "google";
-  modelsCache;
-  constructor(apiKey) {
-    super({
-      apiKey,
-      apiBase: "https://generativelanguage.googleapis.com/v1beta"
-    });
+  name = "GoogleAI";
+  models = [
+    "gemini-2.5-pro",
+    "gemini-2.5-flash",
+    "gemini-2.5-flash-lite",
+    "gemini-2.0-flash-exp",
+    "gemini-1.5-pro",
+    "gemini-1.5-pro-002",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-002",
+    "gemini-1.5-flash-8b",
+    "gemini-1.0-pro"
+  ];
+  client;
+  async initialize(apiKey, config) {
+    await super.initialize(apiKey, config);
+    this.client = new GoogleGenerativeAI(apiKey);
   }
-  async isAvailable() {
-    if (!this.apiKey || this.apiKey.startsWith("your-gemini-")) {
-      return false;
-    }
-    try {
-      await this.makeRequest(`${this.apiBase}/models?key=${this.apiKey}`, {
-        method: "GET"
+  convertMessages(messages) {
+    const systemMessage = messages.find((m3) => m3.role === "system");
+    const conversationMessages = messages.filter((m3) => m3.role !== "system");
+    const contents = [];
+    if (systemMessage) {
+      contents.push({
+        role: "user",
+        parts: [{ text: `System: ${systemMessage.content}` }]
       });
-      return true;
-    } catch {
-      return false;
+      contents.push({
+        role: "model",
+        parts: [{ text: "Understood. I will follow these instructions." }]
+      });
     }
+    conversationMessages.forEach((msg) => {
+      contents.push({
+        role: msg.role === "user" ? "user" : "model",
+        parts: [{ text: msg.content }]
+      });
+    });
+    return contents;
   }
-  async getModels() {
-    if (this.modelsCache) return this.modelsCache;
-    const models = [
-      {
-        id: "gemini-2.5-pro",
-        name: "Gemini 2.5 Pro",
-        provider: this.name,
-        description: "Most capable Gemini model",
-        contextLength: 128e3,
-        capabilities: ["text", "vision", "code", "multimodal"],
-        pricing: { input: 25e-4, output: 0.01 },
-        available: await this.isAvailable(),
-        recommendedFor: ["complex_tasks", "multimodal", "analysis"]
-      },
-      {
-        id: "gemini-2.5-flash",
-        name: "Gemini 2.5 Flash",
-        provider: this.name,
-        description: "Fast and efficient Gemini model",
-        contextLength: 32e3,
-        capabilities: ["text", "vision", "code"],
-        pricing: { input: 1e-4, output: 4e-4 },
-        available: await this.isAvailable(),
-        recommendedFor: ["quick_tasks", "cost_effective", "general_use"]
-      }
-    ];
-    this.modelsCache = models;
-    return models;
-  }
-  async chat(request) {
-    if (!await this.isAvailable()) {
-      throw new Error("Google AI API not available");
+  getModel(modelName) {
+    if (!this.client) {
+      throw new Error("Client not initialized");
     }
-    const model = request.model || "gemini-2.5-flash";
-    const startTime = Date.now();
-    const payload = {
-      contents: [
-        {
-          parts: [{ text: request.messages.map((m3) => `${m3.role}: ${m3.content}`).join("\n") }]
-        }
-      ],
+    return this.client.getGenerativeModel({
+      model: modelName,
       generationConfig: {
-        temperature: request.temperature || 0.7,
-        maxOutputTokens: request.maxTokens || 4e3
+        candidateCount: 1
       }
-    };
-    const response = await this.makeRequest(
-      `${this.apiBase}/models/${model}:generateContent?key=${this.apiKey}`,
-      {
-        method: "POST",
-        body: JSON.stringify(payload)
-      }
-    );
-    return {
-      content: response.candidates?.[0]?.content?.parts?.[0]?.text || "",
-      model,
-      provider: this.name,
-      responseTime: Date.now() - startTime
-    };
-  }
-  estimateCost(tokens, model = "gemini-2.5-flash") {
-    const pricing = {
-      "gemini-2.5-pro": { input: 25e-4, output: 0.01 },
-      "gemini-2.5-flash": { input: 1e-4, output: 4e-4 },
-      "gemini-1.5-pro": { input: 125e-5, output: 5e-3 },
-      "gemini-1.5-flash": { input: 5e-5, output: 15e-5 }
-    };
-    const modelPricing = pricing[model] || pricing["gemini-2.5-flash"];
-    return tokens * 0.75 * modelPricing.input + tokens * 0.25 * modelPricing.output;
-  }
-};
-
-// src/providers/groq-provider.ts
-init_cjs_shims();
-var GroqProvider = class extends BaseProvider {
-  static {
-    __name(this, "GroqProvider");
-  }
-  name = "groq";
-  modelsCache;
-  constructor(apiKey) {
-    super({
-      apiKey,
-      apiBase: "https://api.groq.com/openai/v1"
     });
   }
-  async isAvailable() {
-    if (!this.apiKey || this.apiKey.startsWith("gsk_your-groq-")) {
-      return false;
+  async chat(messages, model, options) {
+    this.ensureInitialized();
+    const selectedModel = this.validateModel(model);
+    const genModel = this.getModel(selectedModel);
+    const contents = this.convertMessages(messages);
+    const chat = genModel.startChat({
+      history: contents.slice(0, -1),
+      // All messages except the last one
+      generationConfig: {
+        temperature: options?.temperature || 0.7,
+        maxOutputTokens: options?.maxTokens,
+        topP: options?.topP,
+        stopSequences: options?.stopSequences
+      }
+    });
+    const lastMessage = contents[contents.length - 1];
+    if (!lastMessage || !lastMessage.parts || !lastMessage.parts[0]) {
+      throw new Error("Invalid message format");
     }
-    try {
-      await this.makeRequest(`${this.apiBase}/models`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`
+    const result = await chat.sendMessage(lastMessage.parts[0].text || "");
+    const response = await result.response;
+    return response.text();
+  }
+  async *chatStream(messages, model, options) {
+    this.ensureInitialized();
+    const selectedModel = this.validateModel(model);
+    const genModel = this.getModel(selectedModel);
+    const contents = this.convertMessages(messages);
+    const chat = genModel.startChat({
+      history: contents.slice(0, -1),
+      generationConfig: {
+        temperature: options?.temperature || 0.7,
+        maxOutputTokens: options?.maxTokens,
+        topP: options?.topP,
+        stopSequences: options?.stopSequences
+      }
+    });
+    const lastMessage = contents[contents.length - 1];
+    if (!lastMessage || !lastMessage.parts || !lastMessage.parts[0]) {
+      throw new Error("Invalid message format");
+    }
+    const result = await chat.sendMessageStream(lastMessage.parts[0].text || "");
+    for await (const chunk of result.stream) {
+      const text = chunk.text();
+      if (text) {
+        yield text;
+        if (options?.streamOptions?.onToken) {
+          options.streamOptions.onToken(text);
         }
-      });
-      return true;
-    } catch {
-      return false;
+      }
+      if (options?.streamOptions?.signal?.aborted) {
+        break;
+      }
     }
   }
-  async getModels() {
-    if (this.modelsCache) return this.modelsCache;
-    const models = [
+  async generateCode(prompt, language = "typescript", model) {
+    const messages = [
       {
-        id: "llama-3.3-70b-versatile",
-        name: "Llama 3.3 70B",
-        provider: this.name,
-        description: "Most capable Llama model with versatile performance",
-        contextLength: 32768,
-        capabilities: ["text", "reasoning", "code"],
-        pricing: { input: 59e-5, output: 79e-5 },
-        available: await this.isAvailable(),
-        recommendedFor: ["complex_reasoning", "coding", "analysis"]
+        role: "system",
+        content: `You are an expert ${language} developer. Generate clean, well-commented code based on the user's request. Only return the code without any explanations or markdown formatting.`
       },
       {
-        id: "llama-3.2-90b-vision-preview",
-        name: "Llama 3.2 90B Vision",
-        provider: this.name,
-        description: "Vision-capable Llama model for multimodal tasks",
-        contextLength: 128e3,
-        capabilities: ["text", "vision", "reasoning"],
-        pricing: { input: 9e-4, output: 9e-4 },
-        available: await this.isAvailable(),
-        recommendedFor: ["vision_tasks", "multimodal", "analysis"]
-      },
-      {
-        id: "mixtral-8x7b-32768",
-        name: "Mixtral 8x7B",
-        provider: this.name,
-        description: "Mixture of experts model for balanced performance",
-        contextLength: 32768,
-        capabilities: ["text", "reasoning", "code"],
-        pricing: { input: 24e-5, output: 24e-5 },
-        available: await this.isAvailable(),
-        recommendedFor: ["balanced_performance", "multilingual"]
-      },
-      {
-        id: "gemma2-9b-it",
-        name: "Gemma 2 9B",
-        provider: this.name,
-        description: "Google's efficient open model",
-        contextLength: 8192,
-        capabilities: ["text", "reasoning"],
-        pricing: { input: 2e-4, output: 2e-4 },
-        available: await this.isAvailable(),
-        recommendedFor: ["quick_tasks", "cost_effective"]
+        role: "user",
+        content: prompt
       }
     ];
-    this.modelsCache = models;
-    return models;
+    return this.chat(messages, model, { temperature: 0.2 });
   }
-  async chat(request) {
-    if (!await this.isAvailable()) {
-      throw new Error("Groq API not available");
+  async reviewCode(code, language = "typescript", model) {
+    const messages = [
+      {
+        role: "system",
+        content: `You are an expert code reviewer. Analyze the following ${language} code and provide a detailed review. Format your response as JSON with the following structure:
+{
+  "issues": [
+    {
+      "line": <line_number>,
+      "severity": "error" | "warning" | "info",
+      "message": "<issue description>",
+      "suggestion": "<optional fix suggestion>"
     }
-    const model = request.model || "mixtral-8x7b-32768";
-    const startTime = Date.now();
-    const payload = {
-      model,
-      messages: request.messages,
-      temperature: request.temperature || 0.7,
-      max_tokens: request.maxTokens || 4e3,
-      stream: request.stream || false
-    };
-    if (request.stream) {
-      const stream = await this.makeStreamRequest(`${this.apiBase}/chat/completions`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`
-        },
-        body: JSON.stringify(payload)
-      });
+  ],
+  "summary": "<overall code quality summary>",
+  "improvements": ["<improvement suggestion 1>", "<improvement suggestion 2>", ...]
+}`
+      },
+      {
+        role: "user",
+        content: code
+      }
+    ];
+    const response = await this.chat(messages, model, { temperature: 0.1 });
+    try {
+      return JSON.parse(response);
+    } catch {
       return {
-        stream,
-        model,
-        provider: this.name,
-        responseTime: Date.now() - startTime
+        issues: [],
+        summary: response,
+        improvements: []
       };
     }
-    const response = await this.makeRequest(`${this.apiBase}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify(payload)
-    });
-    return {
-      content: response.choices[0]?.message?.content || "",
-      model,
-      provider: this.name,
-      usage: {
-        promptTokens: response.usage?.prompt_tokens || 0,
-        completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0
-      },
-      responseTime: Date.now() - startTime
-    };
-  }
-  async vision(image, prompt) {
-    if (!await this.isAvailable()) {
-      throw new Error("Groq API not available");
-    }
-    const base64Image = image.toString("base64");
-    const startTime = Date.now();
-    const payload = {
-      model: "llama-3.2-90b-vision-preview",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${base64Image}`
-              }
-            }
-          ]
-        }
-      ],
-      max_tokens: 4e3
-    };
-    const response = await this.makeRequest(`${this.apiBase}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify(payload)
-    });
-    return {
-      content: response.choices[0]?.message?.content || "",
-      model: "llama-3.2-90b-vision-preview",
-      provider: this.name,
-      usage: {
-        promptTokens: response.usage?.prompt_tokens || 0,
-        completionTokens: response.usage?.completion_tokens || 0,
-        totalTokens: response.usage?.total_tokens || 0
-      },
-      responseTime: Date.now() - startTime
-    };
-  }
-  estimateCost(tokens, model = "mixtral-8x7b-32768") {
-    const pricing = {
-      "llama-3.3-70b-versatile": { input: 59e-5, output: 79e-5 },
-      "llama-3.2-90b-vision-preview": { input: 9e-4, output: 9e-4 },
-      "mixtral-8x7b-32768": { input: 24e-5, output: 24e-5 },
-      "gemma2-9b-it": { input: 2e-4, output: 2e-4 }
-    };
-    const modelPricing = pricing[model] || pricing["mixtral-8x7b-32768"];
-    return tokens * 0.75 * modelPricing.input + tokens * 0.25 * modelPricing.output;
   }
 };
 
@@ -29411,8 +28339,8 @@ init_cjs_shims();
 var auto3 = false;
 var kind3 = void 0;
 var fetch5 = void 0;
-var FormData6 = void 0;
-var File6 = void 0;
+var FormData4 = void 0;
+var File4 = void 0;
 var ReadableStream7 = void 0;
 var getMultipartRequestOptions5 = void 0;
 var getDefaultAgent3 = void 0;
@@ -29431,9 +28359,9 @@ function setShims3(shims, options = { auto: false }) {
   shims.Request;
   shims.Response;
   shims.Headers;
-  FormData6 = shims.FormData;
+  FormData4 = shims.FormData;
   shims.Blob;
-  File6 = shims.File;
+  File4 = shims.File;
   ReadableStream7 = shims.ReadableStream;
   getMultipartRequestOptions5 = shims.getMultipartRequestOptions;
   getDefaultAgent3 = shims.getDefaultAgent;
@@ -29688,7 +28616,7 @@ var InternalServerError4 = class extends APIError4 {
 };
 
 // node_modules/.pnpm/groq-sdk@0.3.3/node_modules/groq-sdk/lib/streaming.mjs
-var Stream6 = class _Stream {
+var Stream4 = class _Stream {
   static {
     __name(this, "Stream");
   }
@@ -30028,7 +28956,7 @@ async function toFile3(value, name, options = {}) {
   if (isResponseLike3(value)) {
     const blob = await value.blob();
     name || (name = new URL(value.url).pathname.split(/[\\/]/).pop() ?? "unknown_file");
-    return new File6([blob], name, options);
+    return new File4([blob], name, options);
   }
   const bits = await getBytes3(value);
   name || (name = getName3(value) ?? "unknown_file");
@@ -30038,7 +28966,7 @@ async function toFile3(value, name, options = {}) {
       options = { ...options, type };
     }
   }
-  return new File6(bits, name, options);
+  return new File4(bits, name, options);
 }
 __name(toFile3, "toFile");
 async function getBytes3(value) {
@@ -30082,7 +29010,7 @@ var multipartFormRequestOptions2 = /* @__PURE__ */ __name(async (opts) => {
   return getMultipartRequestOptions5(form, opts);
 }, "multipartFormRequestOptions");
 var createForm2 = /* @__PURE__ */ __name(async (body) => {
-  const form = new FormData6();
+  const form = new FormData4();
   await Promise.all(Object.entries(body || {}).map(([key, value]) => addFormValue2(form, key, value)));
   return form;
 }, "createForm");
@@ -30123,7 +29051,7 @@ async function defaultParseResponse3(props) {
     if (props.options.__streamClass) {
       return props.options.__streamClass.fromSSEResponse(response, props.controller);
     }
-    return Stream6.fromSSEResponse(response, props.controller);
+    return Stream4.fromSSEResponse(response, props.controller);
   }
   if (response.status === 204) {
     return null;
@@ -31093,7 +30021,1321 @@ var GrokProvider = class extends BaseAIProvider {
 
 // src/providers/lmstudio-provider.ts
 init_cjs_shims();
-init_src();
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/index.js
+init_cjs_shims();
+
+// node_modules/.pnpm/data-uri-to-buffer@4.0.1/node_modules/data-uri-to-buffer/dist/index.js
+init_cjs_shims();
+function dataUriToBuffer(uri) {
+  if (!/^data:/i.test(uri)) {
+    throw new TypeError('`uri` does not appear to be a Data URI (must begin with "data:")');
+  }
+  uri = uri.replace(/\r?\n/g, "");
+  const firstComma = uri.indexOf(",");
+  if (firstComma === -1 || firstComma <= 4) {
+    throw new TypeError("malformed data: URI");
+  }
+  const meta = uri.substring(5, firstComma).split(";");
+  let charset = "";
+  let base64 = false;
+  const type = meta[0] || "text/plain";
+  let typeFull = type;
+  for (let i3 = 1; i3 < meta.length; i3++) {
+    if (meta[i3] === "base64") {
+      base64 = true;
+    } else if (meta[i3]) {
+      typeFull += `;${meta[i3]}`;
+      if (meta[i3].indexOf("charset=") === 0) {
+        charset = meta[i3].substring(8);
+      }
+    }
+  }
+  if (!meta[0] && !charset.length) {
+    typeFull += ";charset=US-ASCII";
+    charset = "US-ASCII";
+  }
+  const encoding = base64 ? "base64" : "ascii";
+  const data = unescape(uri.substring(firstComma + 1));
+  const buffer = Buffer.from(data, encoding);
+  buffer.type = type;
+  buffer.typeFull = typeFull;
+  buffer.charset = charset;
+  return buffer;
+}
+__name(dataUriToBuffer, "dataUriToBuffer");
+var dist_default = dataUriToBuffer;
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/body.js
+init_cjs_shims();
+init_fetch_blob();
+init_esm_min();
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/fetch-error.js
+init_cjs_shims();
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/base.js
+init_cjs_shims();
+var FetchBaseError = class extends Error {
+  static {
+    __name(this, "FetchBaseError");
+  }
+  constructor(message, type) {
+    super(message);
+    Error.captureStackTrace(this, this.constructor);
+    this.type = type;
+  }
+  get name() {
+    return this.constructor.name;
+  }
+  get [Symbol.toStringTag]() {
+    return this.constructor.name;
+  }
+};
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/fetch-error.js
+var FetchError2 = class extends FetchBaseError {
+  static {
+    __name(this, "FetchError");
+  }
+  /**
+   * @param  {string} message -      Error message for human
+   * @param  {string} [type] -        Error type for machine
+   * @param  {SystemError} [systemError] - For Node.js system error
+   */
+  constructor(message, type, systemError) {
+    super(message, type);
+    if (systemError) {
+      this.code = this.errno = systemError.code;
+      this.erroredSysCall = systemError.syscall;
+    }
+  }
+};
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/is.js
+init_cjs_shims();
+var NAME = Symbol.toStringTag;
+var isURLSearchParameters = /* @__PURE__ */ __name((object) => {
+  return typeof object === "object" && typeof object.append === "function" && typeof object.delete === "function" && typeof object.get === "function" && typeof object.getAll === "function" && typeof object.has === "function" && typeof object.set === "function" && typeof object.sort === "function" && object[NAME] === "URLSearchParams";
+}, "isURLSearchParameters");
+var isBlob3 = /* @__PURE__ */ __name((object) => {
+  return object && typeof object === "object" && typeof object.arrayBuffer === "function" && typeof object.type === "string" && typeof object.stream === "function" && typeof object.constructor === "function" && /^(Blob|File)$/.test(object[NAME]);
+}, "isBlob");
+var isAbortSignal2 = /* @__PURE__ */ __name((object) => {
+  return typeof object === "object" && (object[NAME] === "AbortSignal" || object[NAME] === "EventTarget");
+}, "isAbortSignal");
+var isDomainOrSubdomain3 = /* @__PURE__ */ __name((destination, original) => {
+  const orig = new URL(original).hostname;
+  const dest = new URL(destination).hostname;
+  return orig === dest || orig.endsWith(`.${dest}`);
+}, "isDomainOrSubdomain");
+var isSameProtocol3 = /* @__PURE__ */ __name((destination, original) => {
+  const orig = new URL(original).protocol;
+  const dest = new URL(destination).protocol;
+  return orig === dest;
+}, "isSameProtocol");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/body.js
+var pipeline = util.promisify(Stream__default.default.pipeline);
+var INTERNALS2 = Symbol("Body internals");
+var Body2 = class {
+  static {
+    __name(this, "Body");
+  }
+  constructor(body, {
+    size = 0
+  } = {}) {
+    let boundary = null;
+    if (body === null) {
+      body = null;
+    } else if (isURLSearchParameters(body)) {
+      body = buffer.Buffer.from(body.toString());
+    } else if (isBlob3(body)) ; else if (buffer.Buffer.isBuffer(body)) ; else if (util.types.isAnyArrayBuffer(body)) {
+      body = buffer.Buffer.from(body);
+    } else if (ArrayBuffer.isView(body)) {
+      body = buffer.Buffer.from(body.buffer, body.byteOffset, body.byteLength);
+    } else if (body instanceof Stream__default.default) ; else if (body instanceof FormData5) {
+      body = formDataToBlob(body);
+      boundary = body.type.split("=")[1];
+    } else {
+      body = buffer.Buffer.from(String(body));
+    }
+    let stream = body;
+    if (buffer.Buffer.isBuffer(body)) {
+      stream = Stream__default.default.Readable.from(body);
+    } else if (isBlob3(body)) {
+      stream = Stream__default.default.Readable.from(body.stream());
+    }
+    this[INTERNALS2] = {
+      body,
+      stream,
+      boundary,
+      disturbed: false,
+      error: null
+    };
+    this.size = size;
+    if (body instanceof Stream__default.default) {
+      body.on("error", (error_) => {
+        const error = error_ instanceof FetchBaseError ? error_ : new FetchError2(`Invalid response body while trying to fetch ${this.url}: ${error_.message}`, "system", error_);
+        this[INTERNALS2].error = error;
+      });
+    }
+  }
+  get body() {
+    return this[INTERNALS2].stream;
+  }
+  get bodyUsed() {
+    return this[INTERNALS2].disturbed;
+  }
+  /**
+   * Decode response as ArrayBuffer
+   *
+   * @return  Promise
+   */
+  async arrayBuffer() {
+    const { buffer, byteOffset, byteLength } = await consumeBody2(this);
+    return buffer.slice(byteOffset, byteOffset + byteLength);
+  }
+  async formData() {
+    const ct2 = this.headers.get("content-type");
+    if (ct2.startsWith("application/x-www-form-urlencoded")) {
+      const formData = new FormData5();
+      const parameters = new URLSearchParams(await this.text());
+      for (const [name, value] of parameters) {
+        formData.append(name, value);
+      }
+      return formData;
+    }
+    const { toFormData: toFormData2 } = await Promise.resolve().then(() => (init_multipart_parser(), multipart_parser_exports));
+    return toFormData2(this.body, ct2);
+  }
+  /**
+   * Return raw response as Blob
+   *
+   * @return Promise
+   */
+  async blob() {
+    const ct2 = this.headers && this.headers.get("content-type") || this[INTERNALS2].body && this[INTERNALS2].body.type || "";
+    const buf = await this.arrayBuffer();
+    return new fetch_blob_default([buf], {
+      type: ct2
+    });
+  }
+  /**
+   * Decode response as json
+   *
+   * @return  Promise
+   */
+  async json() {
+    const text = await this.text();
+    return JSON.parse(text);
+  }
+  /**
+   * Decode response as text
+   *
+   * @return  Promise
+   */
+  async text() {
+    const buffer = await consumeBody2(this);
+    return new TextDecoder().decode(buffer);
+  }
+  /**
+   * Decode response as buffer (non-spec api)
+   *
+   * @return  Promise
+   */
+  buffer() {
+    return consumeBody2(this);
+  }
+};
+Body2.prototype.buffer = util.deprecate(Body2.prototype.buffer, "Please use 'response.arrayBuffer()' instead of 'response.buffer()'", "node-fetch#buffer");
+Object.defineProperties(Body2.prototype, {
+  body: { enumerable: true },
+  bodyUsed: { enumerable: true },
+  arrayBuffer: { enumerable: true },
+  blob: { enumerable: true },
+  json: { enumerable: true },
+  text: { enumerable: true },
+  data: { get: util.deprecate(
+    () => {
+    },
+    "data doesn't exist, use json(), text(), arrayBuffer(), or body instead",
+    "https://github.com/node-fetch/node-fetch/issues/1000 (response)"
+  ) }
+});
+async function consumeBody2(data) {
+  if (data[INTERNALS2].disturbed) {
+    throw new TypeError(`body used already for: ${data.url}`);
+  }
+  data[INTERNALS2].disturbed = true;
+  if (data[INTERNALS2].error) {
+    throw data[INTERNALS2].error;
+  }
+  const { body } = data;
+  if (body === null) {
+    return buffer.Buffer.alloc(0);
+  }
+  if (!(body instanceof Stream__default.default)) {
+    return buffer.Buffer.alloc(0);
+  }
+  const accum = [];
+  let accumBytes = 0;
+  try {
+    for await (const chunk of body) {
+      if (data.size > 0 && accumBytes + chunk.length > data.size) {
+        const error = new FetchError2(`content size at ${data.url} over limit: ${data.size}`, "max-size");
+        body.destroy(error);
+        throw error;
+      }
+      accumBytes += chunk.length;
+      accum.push(chunk);
+    }
+  } catch (error) {
+    const error_ = error instanceof FetchBaseError ? error : new FetchError2(`Invalid response body while trying to fetch ${data.url}: ${error.message}`, "system", error);
+    throw error_;
+  }
+  if (body.readableEnded === true || body._readableState.ended === true) {
+    try {
+      if (accum.every((c2) => typeof c2 === "string")) {
+        return buffer.Buffer.from(accum.join(""));
+      }
+      return buffer.Buffer.concat(accum, accumBytes);
+    } catch (error) {
+      throw new FetchError2(`Could not create Buffer from response body for ${data.url}: ${error.message}`, "system", error);
+    }
+  } else {
+    throw new FetchError2(`Premature close of server response while trying to fetch ${data.url}`);
+  }
+}
+__name(consumeBody2, "consumeBody");
+var clone2 = /* @__PURE__ */ __name((instance, highWaterMark) => {
+  let p1;
+  let p2;
+  let { body } = instance[INTERNALS2];
+  if (instance.bodyUsed) {
+    throw new Error("cannot clone body after it is used");
+  }
+  if (body instanceof Stream__default.default && typeof body.getBoundary !== "function") {
+    p1 = new Stream.PassThrough({ highWaterMark });
+    p2 = new Stream.PassThrough({ highWaterMark });
+    body.pipe(p1);
+    body.pipe(p2);
+    instance[INTERNALS2].stream = p1;
+    body = p2;
+  }
+  return body;
+}, "clone");
+var getNonSpecFormDataBoundary = util.deprecate(
+  (body) => body.getBoundary(),
+  "form-data doesn't follow the spec and requires special treatment. Use alternative package",
+  "https://github.com/node-fetch/node-fetch/issues/1167"
+);
+var extractContentType2 = /* @__PURE__ */ __name((body, request) => {
+  if (body === null) {
+    return null;
+  }
+  if (typeof body === "string") {
+    return "text/plain;charset=UTF-8";
+  }
+  if (isURLSearchParameters(body)) {
+    return "application/x-www-form-urlencoded;charset=UTF-8";
+  }
+  if (isBlob3(body)) {
+    return body.type || null;
+  }
+  if (buffer.Buffer.isBuffer(body) || util.types.isAnyArrayBuffer(body) || ArrayBuffer.isView(body)) {
+    return null;
+  }
+  if (body instanceof FormData5) {
+    return `multipart/form-data; boundary=${request[INTERNALS2].boundary}`;
+  }
+  if (body && typeof body.getBoundary === "function") {
+    return `multipart/form-data;boundary=${getNonSpecFormDataBoundary(body)}`;
+  }
+  if (body instanceof Stream__default.default) {
+    return null;
+  }
+  return "text/plain;charset=UTF-8";
+}, "extractContentType");
+var getTotalBytes2 = /* @__PURE__ */ __name((request) => {
+  const { body } = request[INTERNALS2];
+  if (body === null) {
+    return 0;
+  }
+  if (isBlob3(body)) {
+    return body.size;
+  }
+  if (buffer.Buffer.isBuffer(body)) {
+    return body.length;
+  }
+  if (body && typeof body.getLengthSync === "function") {
+    return body.hasKnownLength && body.hasKnownLength() ? body.getLengthSync() : null;
+  }
+  return null;
+}, "getTotalBytes");
+var writeToStream2 = /* @__PURE__ */ __name(async (dest, { body }) => {
+  if (body === null) {
+    dest.end();
+  } else {
+    await pipeline(body, dest);
+  }
+}, "writeToStream");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/response.js
+init_cjs_shims();
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/headers.js
+init_cjs_shims();
+var validateHeaderName = typeof http2__default.default.validateHeaderName === "function" ? http2__default.default.validateHeaderName : (name) => {
+  if (!/^[\^`\-\w!#$%&'*+.|~]+$/.test(name)) {
+    const error = new TypeError(`Header name must be a valid HTTP token [${name}]`);
+    Object.defineProperty(error, "code", { value: "ERR_INVALID_HTTP_TOKEN" });
+    throw error;
+  }
+};
+var validateHeaderValue = typeof http2__default.default.validateHeaderValue === "function" ? http2__default.default.validateHeaderValue : (name, value) => {
+  if (/[^\t\u0020-\u007E\u0080-\u00FF]/.test(value)) {
+    const error = new TypeError(`Invalid character in header content ["${name}"]`);
+    Object.defineProperty(error, "code", { value: "ERR_INVALID_CHAR" });
+    throw error;
+  }
+};
+var Headers5 = class _Headers extends URLSearchParams {
+  static {
+    __name(this, "Headers");
+  }
+  /**
+   * Headers class
+   *
+   * @constructor
+   * @param {HeadersInit} [init] - Response headers
+   */
+  constructor(init2) {
+    let result = [];
+    if (init2 instanceof _Headers) {
+      const raw = init2.raw();
+      for (const [name, values] of Object.entries(raw)) {
+        result.push(...values.map((value) => [name, value]));
+      }
+    } else if (init2 == null) ; else if (typeof init2 === "object" && !util.types.isBoxedPrimitive(init2)) {
+      const method = init2[Symbol.iterator];
+      if (method == null) {
+        result.push(...Object.entries(init2));
+      } else {
+        if (typeof method !== "function") {
+          throw new TypeError("Header pairs must be iterable");
+        }
+        result = [...init2].map((pair) => {
+          if (typeof pair !== "object" || util.types.isBoxedPrimitive(pair)) {
+            throw new TypeError("Each header pair must be an iterable object");
+          }
+          return [...pair];
+        }).map((pair) => {
+          if (pair.length !== 2) {
+            throw new TypeError("Each header pair must be a name/value tuple");
+          }
+          return [...pair];
+        });
+      }
+    } else {
+      throw new TypeError("Failed to construct 'Headers': The provided value is not of type '(sequence<sequence<ByteString>> or record<ByteString, ByteString>)");
+    }
+    result = result.length > 0 ? result.map(([name, value]) => {
+      validateHeaderName(name);
+      validateHeaderValue(name, String(value));
+      return [String(name).toLowerCase(), String(value)];
+    }) : void 0;
+    super(result);
+    return new Proxy(this, {
+      get(target, p2, receiver) {
+        switch (p2) {
+          case "append":
+          case "set":
+            return (name, value) => {
+              validateHeaderName(name);
+              validateHeaderValue(name, String(value));
+              return URLSearchParams.prototype[p2].call(
+                target,
+                String(name).toLowerCase(),
+                String(value)
+              );
+            };
+          case "delete":
+          case "has":
+          case "getAll":
+            return (name) => {
+              validateHeaderName(name);
+              return URLSearchParams.prototype[p2].call(
+                target,
+                String(name).toLowerCase()
+              );
+            };
+          case "keys":
+            return () => {
+              target.sort();
+              return new Set(URLSearchParams.prototype.keys.call(target)).keys();
+            };
+          default:
+            return Reflect.get(target, p2, receiver);
+        }
+      }
+    });
+  }
+  get [Symbol.toStringTag]() {
+    return this.constructor.name;
+  }
+  toString() {
+    return Object.prototype.toString.call(this);
+  }
+  get(name) {
+    const values = this.getAll(name);
+    if (values.length === 0) {
+      return null;
+    }
+    let value = values.join(", ");
+    if (/^content-encoding$/i.test(name)) {
+      value = value.toLowerCase();
+    }
+    return value;
+  }
+  forEach(callback, thisArg = void 0) {
+    for (const name of this.keys()) {
+      Reflect.apply(callback, thisArg, [this.get(name), name, this]);
+    }
+  }
+  *values() {
+    for (const name of this.keys()) {
+      yield this.get(name);
+    }
+  }
+  /**
+   * @type {() => IterableIterator<[string, string]>}
+   */
+  *entries() {
+    for (const name of this.keys()) {
+      yield [name, this.get(name)];
+    }
+  }
+  [Symbol.iterator]() {
+    return this.entries();
+  }
+  /**
+   * Node-fetch non-spec method
+   * returning all headers and their values as array
+   * @returns {Record<string, string[]>}
+   */
+  raw() {
+    return [...this.keys()].reduce((result, key) => {
+      result[key] = this.getAll(key);
+      return result;
+    }, {});
+  }
+  /**
+   * For better console.log(headers) and also to convert Headers into Node.js Request compatible format
+   */
+  [Symbol.for("nodejs.util.inspect.custom")]() {
+    return [...this.keys()].reduce((result, key) => {
+      const values = this.getAll(key);
+      if (key === "host") {
+        result[key] = values[0];
+      } else {
+        result[key] = values.length > 1 ? values : values[0];
+      }
+      return result;
+    }, {});
+  }
+};
+Object.defineProperties(
+  Headers5.prototype,
+  ["get", "entries", "forEach", "values"].reduce((result, property) => {
+    result[property] = { enumerable: true };
+    return result;
+  }, {})
+);
+function fromRawHeaders(headers = []) {
+  return new Headers5(
+    headers.reduce((result, value, index, array) => {
+      if (index % 2 === 0) {
+        result.push(array.slice(index, index + 2));
+      }
+      return result;
+    }, []).filter(([name, value]) => {
+      try {
+        validateHeaderName(name);
+        validateHeaderValue(name, String(value));
+        return true;
+      } catch {
+        return false;
+      }
+    })
+  );
+}
+__name(fromRawHeaders, "fromRawHeaders");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/is-redirect.js
+init_cjs_shims();
+var redirectStatus = /* @__PURE__ */ new Set([301, 302, 303, 307, 308]);
+var isRedirect = /* @__PURE__ */ __name((code) => {
+  return redirectStatus.has(code);
+}, "isRedirect");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/response.js
+var INTERNALS3 = Symbol("Response internals");
+var Response5 = class _Response extends Body2 {
+  static {
+    __name(this, "Response");
+  }
+  constructor(body = null, options = {}) {
+    super(body, options);
+    const status = options.status != null ? options.status : 200;
+    const headers = new Headers5(options.headers);
+    if (body !== null && !headers.has("Content-Type")) {
+      const contentType = extractContentType2(body, this);
+      if (contentType) {
+        headers.append("Content-Type", contentType);
+      }
+    }
+    this[INTERNALS3] = {
+      type: "default",
+      url: options.url,
+      status,
+      statusText: options.statusText || "",
+      headers,
+      counter: options.counter,
+      highWaterMark: options.highWaterMark
+    };
+  }
+  get type() {
+    return this[INTERNALS3].type;
+  }
+  get url() {
+    return this[INTERNALS3].url || "";
+  }
+  get status() {
+    return this[INTERNALS3].status;
+  }
+  /**
+   * Convenience property representing if the request ended normally
+   */
+  get ok() {
+    return this[INTERNALS3].status >= 200 && this[INTERNALS3].status < 300;
+  }
+  get redirected() {
+    return this[INTERNALS3].counter > 0;
+  }
+  get statusText() {
+    return this[INTERNALS3].statusText;
+  }
+  get headers() {
+    return this[INTERNALS3].headers;
+  }
+  get highWaterMark() {
+    return this[INTERNALS3].highWaterMark;
+  }
+  /**
+   * Clone this response
+   *
+   * @return  Response
+   */
+  clone() {
+    return new _Response(clone2(this, this.highWaterMark), {
+      type: this.type,
+      url: this.url,
+      status: this.status,
+      statusText: this.statusText,
+      headers: this.headers,
+      ok: this.ok,
+      redirected: this.redirected,
+      size: this.size,
+      highWaterMark: this.highWaterMark
+    });
+  }
+  /**
+   * @param {string} url    The URL that the new response is to originate from.
+   * @param {number} status An optional status code for the response (e.g., 302.)
+   * @returns {Response}    A Response object.
+   */
+  static redirect(url, status = 302) {
+    if (!isRedirect(status)) {
+      throw new RangeError('Failed to execute "redirect" on "response": Invalid status code');
+    }
+    return new _Response(null, {
+      headers: {
+        location: new URL(url).toString()
+      },
+      status
+    });
+  }
+  static error() {
+    const response = new _Response(null, { status: 0, statusText: "" });
+    response[INTERNALS3].type = "error";
+    return response;
+  }
+  static json(data = void 0, init2 = {}) {
+    const body = JSON.stringify(data);
+    if (body === void 0) {
+      throw new TypeError("data is not JSON serializable");
+    }
+    const headers = new Headers5(init2 && init2.headers);
+    if (!headers.has("content-type")) {
+      headers.set("content-type", "application/json");
+    }
+    return new _Response(body, {
+      ...init2,
+      headers
+    });
+  }
+  get [Symbol.toStringTag]() {
+    return "Response";
+  }
+};
+Object.defineProperties(Response5.prototype, {
+  type: { enumerable: true },
+  url: { enumerable: true },
+  status: { enumerable: true },
+  ok: { enumerable: true },
+  redirected: { enumerable: true },
+  statusText: { enumerable: true },
+  headers: { enumerable: true },
+  clone: { enumerable: true }
+});
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/request.js
+init_cjs_shims();
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/get-search.js
+init_cjs_shims();
+var getSearch = /* @__PURE__ */ __name((parsedURL) => {
+  if (parsedURL.search) {
+    return parsedURL.search;
+  }
+  const lastOffset = parsedURL.href.length - 1;
+  const hash = parsedURL.hash || (parsedURL.href[lastOffset] === "#" ? "#" : "");
+  return parsedURL.href[lastOffset - hash.length] === "?" ? "?" : "";
+}, "getSearch");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/utils/referrer.js
+init_cjs_shims();
+function stripURLForUseAsAReferrer(url, originOnly = false) {
+  if (url == null) {
+    return "no-referrer";
+  }
+  url = new URL(url);
+  if (/^(about|blob|data):$/.test(url.protocol)) {
+    return "no-referrer";
+  }
+  url.username = "";
+  url.password = "";
+  url.hash = "";
+  if (originOnly) {
+    url.pathname = "";
+    url.search = "";
+  }
+  return url;
+}
+__name(stripURLForUseAsAReferrer, "stripURLForUseAsAReferrer");
+var ReferrerPolicy = /* @__PURE__ */ new Set([
+  "",
+  "no-referrer",
+  "no-referrer-when-downgrade",
+  "same-origin",
+  "origin",
+  "strict-origin",
+  "origin-when-cross-origin",
+  "strict-origin-when-cross-origin",
+  "unsafe-url"
+]);
+var DEFAULT_REFERRER_POLICY = "strict-origin-when-cross-origin";
+function validateReferrerPolicy(referrerPolicy) {
+  if (!ReferrerPolicy.has(referrerPolicy)) {
+    throw new TypeError(`Invalid referrerPolicy: ${referrerPolicy}`);
+  }
+  return referrerPolicy;
+}
+__name(validateReferrerPolicy, "validateReferrerPolicy");
+function isOriginPotentiallyTrustworthy(url) {
+  if (/^(http|ws)s:$/.test(url.protocol)) {
+    return true;
+  }
+  const hostIp = url.host.replace(/(^\[)|(]$)/g, "");
+  const hostIPVersion = net.isIP(hostIp);
+  if (hostIPVersion === 4 && /^127\./.test(hostIp)) {
+    return true;
+  }
+  if (hostIPVersion === 6 && /^(((0+:){7})|(::(0+:){0,6}))0*1$/.test(hostIp)) {
+    return true;
+  }
+  if (url.host === "localhost" || url.host.endsWith(".localhost")) {
+    return false;
+  }
+  if (url.protocol === "file:") {
+    return true;
+  }
+  return false;
+}
+__name(isOriginPotentiallyTrustworthy, "isOriginPotentiallyTrustworthy");
+function isUrlPotentiallyTrustworthy(url) {
+  if (/^about:(blank|srcdoc)$/.test(url)) {
+    return true;
+  }
+  if (url.protocol === "data:") {
+    return true;
+  }
+  if (/^(blob|filesystem):$/.test(url.protocol)) {
+    return true;
+  }
+  return isOriginPotentiallyTrustworthy(url);
+}
+__name(isUrlPotentiallyTrustworthy, "isUrlPotentiallyTrustworthy");
+function determineRequestsReferrer(request, { referrerURLCallback, referrerOriginCallback } = {}) {
+  if (request.referrer === "no-referrer" || request.referrerPolicy === "") {
+    return null;
+  }
+  const policy = request.referrerPolicy;
+  if (request.referrer === "about:client") {
+    return "no-referrer";
+  }
+  const referrerSource = request.referrer;
+  let referrerURL = stripURLForUseAsAReferrer(referrerSource);
+  let referrerOrigin = stripURLForUseAsAReferrer(referrerSource, true);
+  if (referrerURL.toString().length > 4096) {
+    referrerURL = referrerOrigin;
+  }
+  if (referrerURLCallback) {
+    referrerURL = referrerURLCallback(referrerURL);
+  }
+  if (referrerOriginCallback) {
+    referrerOrigin = referrerOriginCallback(referrerOrigin);
+  }
+  const currentURL = new URL(request.url);
+  switch (policy) {
+    case "no-referrer":
+      return "no-referrer";
+    case "origin":
+      return referrerOrigin;
+    case "unsafe-url":
+      return referrerURL;
+    case "strict-origin":
+      if (isUrlPotentiallyTrustworthy(referrerURL) && !isUrlPotentiallyTrustworthy(currentURL)) {
+        return "no-referrer";
+      }
+      return referrerOrigin.toString();
+    case "strict-origin-when-cross-origin":
+      if (referrerURL.origin === currentURL.origin) {
+        return referrerURL;
+      }
+      if (isUrlPotentiallyTrustworthy(referrerURL) && !isUrlPotentiallyTrustworthy(currentURL)) {
+        return "no-referrer";
+      }
+      return referrerOrigin;
+    case "same-origin":
+      if (referrerURL.origin === currentURL.origin) {
+        return referrerURL;
+      }
+      return "no-referrer";
+    case "origin-when-cross-origin":
+      if (referrerURL.origin === currentURL.origin) {
+        return referrerURL;
+      }
+      return referrerOrigin;
+    case "no-referrer-when-downgrade":
+      if (isUrlPotentiallyTrustworthy(referrerURL) && !isUrlPotentiallyTrustworthy(currentURL)) {
+        return "no-referrer";
+      }
+      return referrerURL;
+    default:
+      throw new TypeError(`Invalid referrerPolicy: ${policy}`);
+  }
+}
+__name(determineRequestsReferrer, "determineRequestsReferrer");
+function parseReferrerPolicyFromHeader(headers) {
+  const policyTokens = (headers.get("referrer-policy") || "").split(/[,\s]+/);
+  let policy = "";
+  for (const token of policyTokens) {
+    if (token && ReferrerPolicy.has(token)) {
+      policy = token;
+    }
+  }
+  return policy;
+}
+__name(parseReferrerPolicyFromHeader, "parseReferrerPolicyFromHeader");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/request.js
+var INTERNALS4 = Symbol("Request internals");
+var isRequest2 = /* @__PURE__ */ __name((object) => {
+  return typeof object === "object" && typeof object[INTERNALS4] === "object";
+}, "isRequest");
+var doBadDataWarn = util.deprecate(
+  () => {
+  },
+  ".data is not a valid RequestInit property, use .body instead",
+  "https://github.com/node-fetch/node-fetch/issues/1000 (request)"
+);
+var Request5 = class _Request extends Body2 {
+  static {
+    __name(this, "Request");
+  }
+  constructor(input, init2 = {}) {
+    let parsedURL;
+    if (isRequest2(input)) {
+      parsedURL = new URL(input.url);
+    } else {
+      parsedURL = new URL(input);
+      input = {};
+    }
+    if (parsedURL.username !== "" || parsedURL.password !== "") {
+      throw new TypeError(`${parsedURL} is an url with embedded credentials.`);
+    }
+    let method = init2.method || input.method || "GET";
+    if (/^(delete|get|head|options|post|put)$/i.test(method)) {
+      method = method.toUpperCase();
+    }
+    if (!isRequest2(init2) && "data" in init2) {
+      doBadDataWarn();
+    }
+    if ((init2.body != null || isRequest2(input) && input.body !== null) && (method === "GET" || method === "HEAD")) {
+      throw new TypeError("Request with GET/HEAD method cannot have body");
+    }
+    const inputBody = init2.body ? init2.body : isRequest2(input) && input.body !== null ? clone2(input) : null;
+    super(inputBody, {
+      size: init2.size || input.size || 0
+    });
+    const headers = new Headers5(init2.headers || input.headers || {});
+    if (inputBody !== null && !headers.has("Content-Type")) {
+      const contentType = extractContentType2(inputBody, this);
+      if (contentType) {
+        headers.set("Content-Type", contentType);
+      }
+    }
+    let signal = isRequest2(input) ? input.signal : null;
+    if ("signal" in init2) {
+      signal = init2.signal;
+    }
+    if (signal != null && !isAbortSignal2(signal)) {
+      throw new TypeError("Expected signal to be an instanceof AbortSignal or EventTarget");
+    }
+    let referrer = init2.referrer == null ? input.referrer : init2.referrer;
+    if (referrer === "") {
+      referrer = "no-referrer";
+    } else if (referrer) {
+      const parsedReferrer = new URL(referrer);
+      referrer = /^about:(\/\/)?client$/.test(parsedReferrer) ? "client" : parsedReferrer;
+    } else {
+      referrer = void 0;
+    }
+    this[INTERNALS4] = {
+      method,
+      redirect: init2.redirect || input.redirect || "follow",
+      headers,
+      parsedURL,
+      signal,
+      referrer
+    };
+    this.follow = init2.follow === void 0 ? input.follow === void 0 ? 20 : input.follow : init2.follow;
+    this.compress = init2.compress === void 0 ? input.compress === void 0 ? true : input.compress : init2.compress;
+    this.counter = init2.counter || input.counter || 0;
+    this.agent = init2.agent || input.agent;
+    this.highWaterMark = init2.highWaterMark || input.highWaterMark || 16384;
+    this.insecureHTTPParser = init2.insecureHTTPParser || input.insecureHTTPParser || false;
+    this.referrerPolicy = init2.referrerPolicy || input.referrerPolicy || "";
+  }
+  /** @returns {string} */
+  get method() {
+    return this[INTERNALS4].method;
+  }
+  /** @returns {string} */
+  get url() {
+    return Url.format(this[INTERNALS4].parsedURL);
+  }
+  /** @returns {Headers} */
+  get headers() {
+    return this[INTERNALS4].headers;
+  }
+  get redirect() {
+    return this[INTERNALS4].redirect;
+  }
+  /** @returns {AbortSignal} */
+  get signal() {
+    return this[INTERNALS4].signal;
+  }
+  // https://fetch.spec.whatwg.org/#dom-request-referrer
+  get referrer() {
+    if (this[INTERNALS4].referrer === "no-referrer") {
+      return "";
+    }
+    if (this[INTERNALS4].referrer === "client") {
+      return "about:client";
+    }
+    if (this[INTERNALS4].referrer) {
+      return this[INTERNALS4].referrer.toString();
+    }
+    return void 0;
+  }
+  get referrerPolicy() {
+    return this[INTERNALS4].referrerPolicy;
+  }
+  set referrerPolicy(referrerPolicy) {
+    this[INTERNALS4].referrerPolicy = validateReferrerPolicy(referrerPolicy);
+  }
+  /**
+   * Clone this request
+   *
+   * @return  Request
+   */
+  clone() {
+    return new _Request(this);
+  }
+  get [Symbol.toStringTag]() {
+    return "Request";
+  }
+};
+Object.defineProperties(Request5.prototype, {
+  method: { enumerable: true },
+  url: { enumerable: true },
+  headers: { enumerable: true },
+  redirect: { enumerable: true },
+  clone: { enumerable: true },
+  signal: { enumerable: true },
+  referrer: { enumerable: true },
+  referrerPolicy: { enumerable: true }
+});
+var getNodeRequestOptions2 = /* @__PURE__ */ __name((request) => {
+  const { parsedURL } = request[INTERNALS4];
+  const headers = new Headers5(request[INTERNALS4].headers);
+  if (!headers.has("Accept")) {
+    headers.set("Accept", "*/*");
+  }
+  let contentLengthValue = null;
+  if (request.body === null && /^(post|put)$/i.test(request.method)) {
+    contentLengthValue = "0";
+  }
+  if (request.body !== null) {
+    const totalBytes = getTotalBytes2(request);
+    if (typeof totalBytes === "number" && !Number.isNaN(totalBytes)) {
+      contentLengthValue = String(totalBytes);
+    }
+  }
+  if (contentLengthValue) {
+    headers.set("Content-Length", contentLengthValue);
+  }
+  if (request.referrerPolicy === "") {
+    request.referrerPolicy = DEFAULT_REFERRER_POLICY;
+  }
+  if (request.referrer && request.referrer !== "no-referrer") {
+    request[INTERNALS4].referrer = determineRequestsReferrer(request);
+  } else {
+    request[INTERNALS4].referrer = "no-referrer";
+  }
+  if (request[INTERNALS4].referrer instanceof URL) {
+    headers.set("Referer", request.referrer);
+  }
+  if (!headers.has("User-Agent")) {
+    headers.set("User-Agent", "node-fetch");
+  }
+  if (request.compress && !headers.has("Accept-Encoding")) {
+    headers.set("Accept-Encoding", "gzip, deflate, br");
+  }
+  let { agent } = request;
+  if (typeof agent === "function") {
+    agent = agent(parsedURL);
+  }
+  const search = getSearch(parsedURL);
+  const options = {
+    // Overwrite search to retain trailing ? (issue #776)
+    path: parsedURL.pathname + search,
+    // The following options are not expressed in the URL
+    method: request.method,
+    headers: headers[Symbol.for("nodejs.util.inspect.custom")](),
+    insecureHTTPParser: request.insecureHTTPParser,
+    agent
+  };
+  return {
+    /** @type {URL} */
+    parsedURL,
+    options
+  };
+}, "getNodeRequestOptions");
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/errors/abort-error.js
+init_cjs_shims();
+var AbortError2 = class extends FetchBaseError {
+  static {
+    __name(this, "AbortError");
+  }
+  constructor(message, type = "aborted") {
+    super(message, type);
+  }
+};
+
+// node_modules/.pnpm/node-fetch@3.3.2/node_modules/node-fetch/src/index.js
+init_esm_min();
+init_from();
+var supportedSchemas = /* @__PURE__ */ new Set(["data:", "http:", "https:"]);
+async function fetch6(url, options_) {
+  return new Promise((resolve, reject) => {
+    const request = new Request5(url, options_);
+    const { parsedURL, options } = getNodeRequestOptions2(request);
+    if (!supportedSchemas.has(parsedURL.protocol)) {
+      throw new TypeError(`node-fetch cannot load ${url}. URL scheme "${parsedURL.protocol.replace(/:$/, "")}" is not supported.`);
+    }
+    if (parsedURL.protocol === "data:") {
+      const data = dist_default(request.url);
+      const response2 = new Response5(data, { headers: { "Content-Type": data.typeFull } });
+      resolve(response2);
+      return;
+    }
+    const send = (parsedURL.protocol === "https:" ? https__default.default : http2__default.default).request;
+    const { signal } = request;
+    let response = null;
+    const abort = /* @__PURE__ */ __name(() => {
+      const error = new AbortError2("The operation was aborted.");
+      reject(error);
+      if (request.body && request.body instanceof Stream__default.default.Readable) {
+        request.body.destroy(error);
+      }
+      if (!response || !response.body) {
+        return;
+      }
+      response.body.emit("error", error);
+    }, "abort");
+    if (signal && signal.aborted) {
+      abort();
+      return;
+    }
+    const abortAndFinalize = /* @__PURE__ */ __name(() => {
+      abort();
+      finalize();
+    }, "abortAndFinalize");
+    const request_ = send(parsedURL.toString(), options);
+    if (signal) {
+      signal.addEventListener("abort", abortAndFinalize);
+    }
+    const finalize = /* @__PURE__ */ __name(() => {
+      request_.abort();
+      if (signal) {
+        signal.removeEventListener("abort", abortAndFinalize);
+      }
+    }, "finalize");
+    request_.on("error", (error) => {
+      reject(new FetchError2(`request to ${request.url} failed, reason: ${error.message}`, "system", error));
+      finalize();
+    });
+    fixResponseChunkedTransferBadEnding2(request_, (error) => {
+      if (response && response.body) {
+        response.body.destroy(error);
+      }
+    });
+    if (process.version < "v14") {
+      request_.on("socket", (s3) => {
+        let endedWithEventsCount;
+        s3.prependListener("end", () => {
+          endedWithEventsCount = s3._eventsCount;
+        });
+        s3.prependListener("close", (hadError) => {
+          if (response && endedWithEventsCount < s3._eventsCount && !hadError) {
+            const error = new Error("Premature close");
+            error.code = "ERR_STREAM_PREMATURE_CLOSE";
+            response.body.emit("error", error);
+          }
+        });
+      });
+    }
+    request_.on("response", (response_) => {
+      request_.setTimeout(0);
+      const headers = fromRawHeaders(response_.rawHeaders);
+      if (isRedirect(response_.statusCode)) {
+        const location = headers.get("Location");
+        let locationURL = null;
+        try {
+          locationURL = location === null ? null : new URL(location, request.url);
+        } catch {
+          if (request.redirect !== "manual") {
+            reject(new FetchError2(`uri requested responds with an invalid redirect URL: ${location}`, "invalid-redirect"));
+            finalize();
+            return;
+          }
+        }
+        switch (request.redirect) {
+          case "error":
+            reject(new FetchError2(`uri requested responds with a redirect, redirect mode is set to error: ${request.url}`, "no-redirect"));
+            finalize();
+            return;
+          case "manual":
+            break;
+          case "follow": {
+            if (locationURL === null) {
+              break;
+            }
+            if (request.counter >= request.follow) {
+              reject(new FetchError2(`maximum redirect reached at: ${request.url}`, "max-redirect"));
+              finalize();
+              return;
+            }
+            const requestOptions = {
+              headers: new Headers5(request.headers),
+              follow: request.follow,
+              counter: request.counter + 1,
+              agent: request.agent,
+              compress: request.compress,
+              method: request.method,
+              body: clone2(request),
+              signal: request.signal,
+              size: request.size,
+              referrer: request.referrer,
+              referrerPolicy: request.referrerPolicy
+            };
+            if (!isDomainOrSubdomain3(request.url, locationURL) || !isSameProtocol3(request.url, locationURL)) {
+              for (const name of ["authorization", "www-authenticate", "cookie", "cookie2"]) {
+                requestOptions.headers.delete(name);
+              }
+            }
+            if (response_.statusCode !== 303 && request.body && options_.body instanceof Stream__default.default.Readable) {
+              reject(new FetchError2("Cannot follow redirect with body being a readable stream", "unsupported-redirect"));
+              finalize();
+              return;
+            }
+            if (response_.statusCode === 303 || (response_.statusCode === 301 || response_.statusCode === 302) && request.method === "POST") {
+              requestOptions.method = "GET";
+              requestOptions.body = void 0;
+              requestOptions.headers.delete("content-length");
+            }
+            const responseReferrerPolicy = parseReferrerPolicyFromHeader(headers);
+            if (responseReferrerPolicy) {
+              requestOptions.referrerPolicy = responseReferrerPolicy;
+            }
+            resolve(fetch6(new Request5(locationURL, requestOptions)));
+            finalize();
+            return;
+          }
+          default:
+            return reject(new TypeError(`Redirect option '${request.redirect}' is not a valid value of RequestRedirect`));
+        }
+      }
+      if (signal) {
+        response_.once("end", () => {
+          signal.removeEventListener("abort", abortAndFinalize);
+        });
+      }
+      let body = Stream.pipeline(response_, new Stream.PassThrough(), (error) => {
+        if (error) {
+          reject(error);
+        }
+      });
+      if (process.version < "v12.10") {
+        response_.on("aborted", abortAndFinalize);
+      }
+      const responseOptions = {
+        url: request.url,
+        status: response_.statusCode,
+        statusText: response_.statusMessage,
+        headers,
+        size: request.size,
+        counter: request.counter,
+        highWaterMark: request.highWaterMark
+      };
+      const codings = headers.get("Content-Encoding");
+      if (!request.compress || request.method === "HEAD" || codings === null || response_.statusCode === 204 || response_.statusCode === 304) {
+        response = new Response5(body, responseOptions);
+        resolve(response);
+        return;
+      }
+      const zlibOptions = {
+        flush: zlib__default.default.Z_SYNC_FLUSH,
+        finishFlush: zlib__default.default.Z_SYNC_FLUSH
+      };
+      if (codings === "gzip" || codings === "x-gzip") {
+        body = Stream.pipeline(body, zlib__default.default.createGunzip(zlibOptions), (error) => {
+          if (error) {
+            reject(error);
+          }
+        });
+        response = new Response5(body, responseOptions);
+        resolve(response);
+        return;
+      }
+      if (codings === "deflate" || codings === "x-deflate") {
+        const raw = Stream.pipeline(response_, new Stream.PassThrough(), (error) => {
+          if (error) {
+            reject(error);
+          }
+        });
+        raw.once("data", (chunk) => {
+          if ((chunk[0] & 15) === 8) {
+            body = Stream.pipeline(body, zlib__default.default.createInflate(), (error) => {
+              if (error) {
+                reject(error);
+              }
+            });
+          } else {
+            body = Stream.pipeline(body, zlib__default.default.createInflateRaw(), (error) => {
+              if (error) {
+                reject(error);
+              }
+            });
+          }
+          response = new Response5(body, responseOptions);
+          resolve(response);
+        });
+        raw.once("end", () => {
+          if (!response) {
+            response = new Response5(body, responseOptions);
+            resolve(response);
+          }
+        });
+        return;
+      }
+      if (codings === "br") {
+        body = Stream.pipeline(body, zlib__default.default.createBrotliDecompress(), (error) => {
+          if (error) {
+            reject(error);
+          }
+        });
+        response = new Response5(body, responseOptions);
+        resolve(response);
+        return;
+      }
+      response = new Response5(body, responseOptions);
+      resolve(response);
+    });
+    writeToStream2(request_, request).catch(reject);
+  });
+}
+__name(fetch6, "fetch");
+function fixResponseChunkedTransferBadEnding2(request, errorCallback) {
+  const LAST_CHUNK = buffer.Buffer.from("0\r\n\r\n");
+  let isChunkedTransfer = false;
+  let properLastChunkReceived = false;
+  let previousChunk;
+  request.on("response", (response) => {
+    const { headers } = response;
+    isChunkedTransfer = headers["transfer-encoding"] === "chunked" && !headers["content-length"];
+  });
+  request.on("socket", (socket) => {
+    const onSocketClose = /* @__PURE__ */ __name(() => {
+      if (isChunkedTransfer && !properLastChunkReceived) {
+        const error = new Error("Premature close");
+        error.code = "ERR_STREAM_PREMATURE_CLOSE";
+        errorCallback(error);
+      }
+    }, "onSocketClose");
+    const onData = /* @__PURE__ */ __name((buf) => {
+      properLastChunkReceived = buffer.Buffer.compare(buf.slice(-5), LAST_CHUNK) === 0;
+      if (!properLastChunkReceived && previousChunk) {
+        properLastChunkReceived = buffer.Buffer.compare(previousChunk.slice(-3), LAST_CHUNK.slice(0, 3)) === 0 && buffer.Buffer.compare(buf.slice(-2), LAST_CHUNK.slice(3)) === 0;
+      }
+      previousChunk = buf;
+    }, "onData");
+    socket.prependListener("close", onSocketClose);
+    socket.on("data", onData);
+    request.on("close", () => {
+      socket.removeListener("close", onSocketClose);
+      socket.removeListener("data", onData);
+    });
+  });
+}
+__name(fixResponseChunkedTransferBadEnding2, "fixResponseChunkedTransferBadEnding");
+
+// src/providers/lmstudio-provider.ts
 var LMStudioProvider = class extends BaseAIProvider {
   static {
     __name(this, "LMStudioProvider");
@@ -31127,7 +31369,7 @@ var LMStudioProvider = class extends BaseAIProvider {
   }
   async checkHealth() {
     try {
-      const response = await fetch4(`${this.apiBase}/models`, {
+      const response = await fetch6(`${this.apiBase}/models`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.apiKey}`
@@ -31144,7 +31386,7 @@ var LMStudioProvider = class extends BaseAIProvider {
   }
   async fetchAvailableModels() {
     try {
-      const response = await fetch4(`${this.apiBase}/models`, {
+      const response = await fetch6(`${this.apiBase}/models`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.apiKey}`
@@ -31187,8 +31429,8 @@ var LMStudioProvider = class extends BaseAIProvider {
       stop: options?.stopSequences,
       stream: false
     };
-    const makeRequest = /* @__PURE__ */ __name(async () => {
-      const response2 = await fetch4(`${this.apiBase}/chat/completions`, {
+    const makeRequest2 = /* @__PURE__ */ __name(async () => {
+      const response2 = await fetch6(`${this.apiBase}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31203,7 +31445,7 @@ var LMStudioProvider = class extends BaseAIProvider {
       }
       return response2;
     }, "makeRequest");
-    const response = await this.retryWithBackoff(makeRequest);
+    const response = await this.retryWithBackoff(makeRequest2);
     const data = await response.json();
     return data.choices[0]?.message?.content || "";
   }
@@ -31222,8 +31464,8 @@ var LMStudioProvider = class extends BaseAIProvider {
       stop: options?.stopSequences,
       stream: true
     };
-    const makeRequest = /* @__PURE__ */ __name(async () => {
-      const response2 = await fetch4(`${this.apiBase}/chat/completions`, {
+    const makeRequest2 = /* @__PURE__ */ __name(async () => {
+      const response2 = await fetch6(`${this.apiBase}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31238,7 +31480,7 @@ var LMStudioProvider = class extends BaseAIProvider {
       }
       return response2;
     }, "makeRequest");
-    const response = await this.retryWithBackoff(makeRequest);
+    const response = await this.retryWithBackoff(makeRequest2);
     const nodeResponse = response;
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error("No response body");
@@ -31257,7 +31499,8 @@ var LMStudioProvider = class extends BaseAIProvider {
             if (data === "[DONE]") return;
             try {
               const parsed = JSON.parse(data);
-              const content = parsed.choices?.[0]?.delta?.content;
+              const choices = parsed["choices"];
+              const content = choices?.[0]?.delta?.content;
               if (content) {
                 yield content;
                 if (options?.streamOptions?.onToken) {
@@ -31342,7 +31585,6 @@ var LMStudioProvider = class extends BaseAIProvider {
 
 // src/providers/ollama-provider.ts
 init_cjs_shims();
-init_src();
 var OllamaProvider = class extends BaseAIProvider {
   static {
     __name(this, "OllamaProvider");
@@ -31386,7 +31628,7 @@ var OllamaProvider = class extends BaseAIProvider {
   }
   async checkHealth() {
     try {
-      const response = await fetch4(`${this.apiBase}/api/version`, {
+      const response = await fetch6(`${this.apiBase}/api/version`, {
         method: "GET",
         signal: AbortSignal.timeout(5e3)
       });
@@ -31400,7 +31642,7 @@ var OllamaProvider = class extends BaseAIProvider {
   }
   async fetchAvailableModels() {
     try {
-      const response = await fetch4(`${this.apiBase}/api/tags`, {
+      const response = await fetch6(`${this.apiBase}/api/tags`, {
         method: "GET"
       });
       if (response.ok) {
@@ -31440,8 +31682,8 @@ var OllamaProvider = class extends BaseAIProvider {
         num_predict: options?.maxTokens || 4096
       }
     };
-    const makeRequest = /* @__PURE__ */ __name(async () => {
-      const response2 = await fetch4(`${this.apiBase}/api/generate`, {
+    const makeRequest2 = /* @__PURE__ */ __name(async () => {
+      const response2 = await fetch6(`${this.apiBase}/api/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -31455,7 +31697,7 @@ var OllamaProvider = class extends BaseAIProvider {
       }
       return response2;
     }, "makeRequest");
-    const response = await this.retryWithBackoff(makeRequest);
+    const response = await this.retryWithBackoff(makeRequest2);
     const data = await response.json();
     return data.response || "";
   }
@@ -31474,8 +31716,8 @@ var OllamaProvider = class extends BaseAIProvider {
         num_predict: options?.maxTokens || 4096
       }
     };
-    const makeRequest = /* @__PURE__ */ __name(async () => {
-      const response2 = await fetch4(`${this.apiBase}/api/generate`, {
+    const makeRequest2 = /* @__PURE__ */ __name(async () => {
+      const response2 = await fetch6(`${this.apiBase}/api/generate`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -31489,7 +31731,7 @@ var OllamaProvider = class extends BaseAIProvider {
       }
       return response2;
     }, "makeRequest");
-    const response = await this.retryWithBackoff(makeRequest);
+    const response = await this.retryWithBackoff(makeRequest2);
     const nodeResponse = response;
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error("No response body");
@@ -31507,14 +31749,14 @@ var OllamaProvider = class extends BaseAIProvider {
           if (line.trim()) {
             try {
               const parsed = JSON.parse(line);
-              const content = parsed.response;
+              const content = parsed["response"];
               if (content) {
                 yield content;
                 if (options?.streamOptions?.onToken) {
                   options.streamOptions.onToken(content);
                 }
               }
-              if (parsed.done) return;
+              if (parsed["done"]) return;
             } catch {
             }
           }
@@ -31603,7 +31845,7 @@ var OllamaProvider = class extends BaseAIProvider {
     return this.availableModels;
   }
   async pullModel(modelName) {
-    const response = await fetch4(`${this.apiBase}/api/pull`, {
+    const response = await fetch6(`${this.apiBase}/api/pull`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -31633,9 +31875,9 @@ var OllamaProvider = class extends BaseAIProvider {
           if (line.trim()) {
             try {
               const parsed = JSON.parse(line);
-              if (parsed.status === "success") return;
-              if (parsed.error) {
-                throw new Error(`Model pull failed: ${parsed.error}`);
+              if (parsed["status"] === "success") return;
+              if (parsed["error"]) {
+                throw new Error(`Model pull failed: ${parsed["error"]}`);
               }
             } catch {
             }
@@ -31647,7 +31889,7 @@ var OllamaProvider = class extends BaseAIProvider {
     }
   }
   async deleteModel(modelName) {
-    const response = await fetch4(`${this.apiBase}/api/delete`, {
+    const response = await fetch6(`${this.apiBase}/api/delete`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
@@ -31663,7 +31905,6 @@ var OllamaProvider = class extends BaseAIProvider {
 
 // src/providers/vllm-provider.ts
 init_cjs_shims();
-init_src();
 var VLLMProvider = class extends BaseAIProvider {
   static {
     __name(this, "VLLMProvider");
@@ -31699,7 +31940,7 @@ var VLLMProvider = class extends BaseAIProvider {
   }
   async checkHealth() {
     try {
-      const response = await fetch4(`${this.apiBase}/models`, {
+      const response = await fetch6(`${this.apiBase}/models`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.apiKey}`
@@ -31716,7 +31957,7 @@ var VLLMProvider = class extends BaseAIProvider {
   }
   async fetchAvailableModels() {
     try {
-      const response = await fetch4(`${this.apiBase}/models`, {
+      const response = await fetch6(`${this.apiBase}/models`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${this.apiKey}`
@@ -31762,8 +32003,8 @@ var VLLMProvider = class extends BaseAIProvider {
       stop: options?.stopSequences || this.vllmConfig.stopSequences,
       stream: false
     };
-    const makeRequest = /* @__PURE__ */ __name(async () => {
-      const response2 = await fetch4(`${this.apiBase}/chat/completions`, {
+    const makeRequest2 = /* @__PURE__ */ __name(async () => {
+      const response2 = await fetch6(`${this.apiBase}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31778,9 +32019,9 @@ var VLLMProvider = class extends BaseAIProvider {
       }
       return response2;
     }, "makeRequest");
-    const response = await this.retryWithBackoff(makeRequest);
+    const response = await this.retryWithBackoff(makeRequest2);
     const data = await response.json();
-    return data.choices[0]?.message?.content || "";
+    return data.choices?.[0]?.message?.content || "";
   }
   async *chatStream(messages, model, options) {
     this.ensureInitialized();
@@ -31800,8 +32041,8 @@ var VLLMProvider = class extends BaseAIProvider {
       stop: options?.stopSequences || this.vllmConfig.stopSequences,
       stream: true
     };
-    const makeRequest = /* @__PURE__ */ __name(async () => {
-      const response2 = await fetch4(`${this.apiBase}/chat/completions`, {
+    const makeRequest2 = /* @__PURE__ */ __name(async () => {
+      const response2 = await fetch6(`${this.apiBase}/chat/completions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31816,7 +32057,7 @@ var VLLMProvider = class extends BaseAIProvider {
       }
       return response2;
     }, "makeRequest");
-    const response = await this.retryWithBackoff(makeRequest);
+    const response = await this.retryWithBackoff(makeRequest2);
     const nodeResponse = response;
     const reader = nodeResponse.body?.getReader();
     if (!reader) throw new Error("No response body");
@@ -31960,41 +32201,49 @@ var AIProviderManager = class {
     await this.checkAvailability();
   }
   async initializeProviders() {
-    const apiKeys = this.config.get("apiKeys", {});
-    const localProviders = this.config.get("localProviders", {});
-    if (apiKeys["OPENAI_API_KEY"]) {
-      this.providers.set("openai", new OpenAIProvider(apiKeys["OPENAI_API_KEY"]));
+    const apiKeys = this.config.get("apiKeys", {}) || {};
+    const localProviders = this.config.get("localProviders", {}) || {};
+    if (apiKeys && apiKeys["OPENAI_API_KEY"]) {
+      const provider = new OpenAIProvider();
+      await provider.initialize(apiKeys["OPENAI_API_KEY"]);
+      this.providers.set("openai", provider);
     }
-    if (apiKeys["ANTHROPIC_API_KEY"]) {
-      this.providers.set("anthropic", new AnthropicProvider(apiKeys["ANTHROPIC_API_KEY"]));
+    if (apiKeys && apiKeys["ANTHROPIC_API_KEY"]) {
+      const provider = new AnthropicProvider();
+      await provider.initialize(apiKeys["ANTHROPIC_API_KEY"]);
+      this.providers.set("anthropic", provider);
     }
-    if (apiKeys["GOOGLE_API_KEY"] || apiKeys["GEMINI_API_KEY"]) {
-      this.providers.set(
-        "google",
-        new GoogleProvider(apiKeys["GOOGLE_API_KEY"] || apiKeys["GEMINI_API_KEY"])
-      );
+    if (apiKeys && (apiKeys["GOOGLE_API_KEY"] || apiKeys["GEMINI_API_KEY"])) {
+      const provider = new GoogleAIProvider();
+      await provider.initialize(apiKeys["GOOGLE_API_KEY"] || apiKeys["GEMINI_API_KEY"] || "");
+      this.providers.set("google", provider);
     }
-    if (apiKeys["GROQ_API_KEY"]) {
-      this.providers.set("groq", new GroqProvider(apiKeys["GROQ_API_KEY"]));
+    if (apiKeys && apiKeys["GROK_API_KEY"]) {
+      const provider = new GrokProvider();
+      await provider.initialize(apiKeys["GROK_API_KEY"]);
+      this.providers.set("grok", provider);
     }
-    if (apiKeys["GROK_API_KEY"]) {
-      this.providers.set("grok", new GrokProvider(apiKeys["GROK_API_KEY"]));
+    if (localProviders && localProviders["lmstudio"] !== false) {
+      const provider = new LMStudioProvider();
+      await provider.initialize("lmstudio");
+      this.providers.set("lmstudio", provider);
     }
-    if (localProviders["lmstudio"] !== false) {
-      this.providers.set("lmstudio", new LMStudioProvider());
+    if (localProviders && localProviders["ollama"] !== false) {
+      const provider = new OllamaProvider();
+      await provider.initialize("ollama");
+      this.providers.set("ollama", provider);
     }
-    if (localProviders["ollama"] !== false) {
-      this.providers.set("ollama", new OllamaProvider());
-    }
-    if (localProviders["vllm"] !== false) {
-      this.providers.set("vllm", new VLLMProvider());
+    if (localProviders && localProviders["vllm"] !== false) {
+      const provider = new VLLMProvider();
+      await provider.initialize("vllm");
+      this.providers.set("vllm", provider);
     }
   }
   async checkAvailability() {
     this.availableProviders.clear();
     const checks = Array.from(this.providers.entries()).map(async ([name, provider]) => {
       try {
-        const isAvailable = await provider.isAvailable();
+        const isAvailable = await (provider.validateConnection?.() ?? Promise.resolve(true));
         if (isAvailable) {
           this.availableProviders.add(name);
         }
@@ -32016,14 +32265,26 @@ var AIProviderManager = class {
       if (provider) {
         try {
           const models = await provider.getModels();
-          allModels.push(...models);
+          const modelInfos = models.map((modelName) => ({
+            id: `${providerName}-${modelName}`,
+            name: modelName,
+            provider: providerName,
+            description: `${modelName} from ${providerName}`,
+            contextLength: 8192,
+            // Default value
+            capabilities: ["text", "code"],
+            // Default capabilities
+            available: true,
+            recommendedFor: ["general"]
+          }));
+          allModels.push(...modelInfos);
         } catch (error) {
         }
       }
     }
     return allModels;
   }
-  selectOptimalProvider(taskType, priorityMode = "auto") {
+  selectOptimalProvider(_taskType, priorityMode = "auto") {
     const available = this.getAvailableProviders();
     if (available.length === 0) return void 0;
     const priorityOrder = this.getPriorityOrder(priorityMode);
@@ -32059,7 +32320,11 @@ var AIProviderManager = class {
     const health = {};
     const checks = Array.from(this.providers.entries()).map(async ([name, provider]) => {
       try {
-        health[name] = await provider.isAvailable();
+        if ("isAvailable" in provider && typeof provider.isAvailable === "function") {
+          health[name] = await provider.isAvailable();
+        } else {
+          health[name] = true;
+        }
       } catch {
         health[name] = false;
       }
@@ -32124,8 +32389,20 @@ var IntelligentRouter = class {
     if (!provider) {
       throw new Error(`Provider ${providerName} not available`);
     }
-    const finalRequest = { ...request, model: modelId };
-    return provider.chat(finalRequest);
+    let response;
+    try {
+      response = await provider.chat(request.messages);
+    } catch {
+      response = await provider.chat(request.messages, modelId);
+    }
+    if (typeof response === "string") {
+      return {
+        content: response,
+        model: modelId,
+        provider: providerName
+      };
+    }
+    return response;
   }
   async routeVision(image, prompt) {
     const availableProviders = this.providerManager.getAvailableProviders();
@@ -32135,7 +32412,12 @@ var IntelligentRouter = class {
         const provider = this.providerManager.getProvider(providerName);
         if (provider?.vision) {
           try {
-            return await provider.vision(image, prompt);
+            const visionResponse = await provider.vision(image, prompt);
+            return {
+              content: visionResponse.description,
+              model: "vision-model",
+              provider: providerName
+            };
           } catch (error) {
             continue;
           }
@@ -32222,6 +32504,9 @@ var IntelligentRouter = class {
     if (!provider) return [];
     try {
       const models = await provider.getModels();
+      if (typeof models[0] === "string") {
+        return models;
+      }
       return models.filter((m3) => m3.available).map((m3) => m3.id);
     } catch {
       return [];
@@ -32555,11 +32840,11 @@ var HealthMonitor = class extends events.EventEmitter {
       const data = await fs.promises.readFile(healthFile, "utf8");
       const parsed = JSON.parse(data);
       return {
-        overall: parsed.overall,
-        providers: parsed.providers,
-        recommendations: parsed.recommendations,
-        lastUpdate: new Date(parsed.lastUpdate),
-        uptime: parsed.uptime
+        overall: parsed["overall"],
+        providers: parsed["providers"],
+        recommendations: parsed["recommendations"],
+        lastUpdate: new Date(parsed["lastUpdate"]),
+        uptime: parsed["uptime"]
       };
     } catch {
       return null;
@@ -32662,7 +32947,8 @@ var ConfigManager = class _ConfigManager {
     }
   }
   get(key, defaultValue) {
-    return this.config[key] ?? defaultValue;
+    const value = this.config[key];
+    return value !== void 0 ? value : defaultValue;
   }
   set(key, value) {
     this.config[key] = value;
@@ -32693,22 +32979,22 @@ var ConfigManager = class _ConfigManager {
   }
   // Save configuration to file (for CLI usage)
   async save(configPath) {
-    const fs4 = await Promise.resolve().then(() => __toESM(require_lib2()));
+    const fs5 = await Promise.resolve().then(() => __toESM(require_lib2()));
     const path = await import('path');
     const os2 = await import('os');
     const targetPath = configPath || path.join(os2.homedir(), ".maria", "config.json");
-    await fs4.ensureDir(path.dirname(targetPath));
-    await fs4.writeJson(targetPath, this.config, { spaces: 2 });
+    await fs5.ensureDir(path.dirname(targetPath));
+    await fs5.writeJson(targetPath, this.config, { spaces: 2 });
   }
   // Load configuration from file
   static async load(configPath) {
-    const fs4 = await Promise.resolve().then(() => __toESM(require_lib2()));
+    const fs5 = await Promise.resolve().then(() => __toESM(require_lib2()));
     const path = await import('path');
     const os2 = await import('os');
     const targetPath = configPath || path.join(os2.homedir(), ".maria", "config.json");
-    if (await fs4.pathExists(targetPath)) {
+    if (await fs5.pathExists(targetPath)) {
       try {
-        const savedConfig = await fs4.readJson(targetPath);
+        const savedConfig = await fs5.readJson(targetPath);
         return new _ConfigManager(savedConfig);
       } catch (error) {
         console.warn("Failed to load config file, using defaults:", error);
@@ -32731,7 +33017,7 @@ var MariaAI = class {
     this.config = new ConfigManager(config);
     this.providerManager = new AIProviderManager(this.config);
     this.router = new IntelligentRouter(this.providerManager, this.config);
-    this.healthMonitor = new HealthMonitor(this.providerManager);
+    this.healthMonitor = new HealthMonitor();
     if (config.autoStart !== false) {
       this.initialize();
     }
@@ -32790,7 +33076,7 @@ var MariaAI = class {
    * Get system health status
    */
   async getHealth() {
-    return this.healthMonitor.getStatus();
+    return this.healthMonitor.getSystemHealth();
   }
   /**
    * Switch provider priority mode
@@ -32921,6 +33207,9 @@ async function handleCommand(command, maria) {
       console.log(source_default.blue("\u{1F916} MARIA Interactive Session"));
       console.log("");
       return true;
+    case "/avatar":
+      await showAvatar();
+      return true;
     default:
       console.log(source_default.red(`Unknown command: ${cmd}. Type /help for available commands.`));
       return true;
@@ -32930,6 +33219,7 @@ __name(handleCommand, "handleCommand");
 function showHelp() {
   console.log(source_default.blue("\n\u{1F4D6} MARIA Commands:\n"));
   console.log(source_default.cyan("/help") + "     - Show this help message");
+  console.log(source_default.cyan("/avatar") + "   - Show ASCII avatar interface");
   console.log(source_default.cyan("/status") + "   - Show system status");
   console.log(source_default.cyan("/models") + "   - List available models");
   console.log(source_default.cyan("/health") + "   - Check system health");
@@ -33013,6 +33303,27 @@ function showConfig(maria) {
   console.log("");
 }
 __name(showConfig, "showConfig");
+async function showAvatar() {
+  console.log(source_default.blue("\n\u{1F3AD} MARIA Avatar Interface\n"));
+  const avatarPath = "/Users/bongin_max/maria_code/face_only_96x96_ramp.txt";
+  try {
+    const avatarData = await fs4__namespace.readFile(avatarPath, "utf-8");
+    const lines = avatarData.split("\n").slice(0, 30);
+    console.log(source_default.white("\u2550".repeat(80)));
+    lines.forEach((line) => {
+      const displayLine = line.length > 80 ? line.substring(0, 80) : line;
+      console.log(source_default.white(displayLine));
+    });
+    console.log(source_default.white("\u2550".repeat(80)));
+    console.log(source_default.yellow("\n\u{1F44B} Hello! I am MARIA, your AI assistant!"));
+    console.log(source_default.gray("This is a preview of the avatar interface."));
+    console.log(source_default.gray("Full interactive avatar with animations is coming soon!\n"));
+  } catch (error) {
+    console.log(source_default.red("\u274C Could not load avatar file"));
+    console.log(source_default.gray("Avatar file should be at: " + avatarPath));
+  }
+}
+__name(showAvatar, "showAvatar");
 
 // src/config/loader.ts
 init_cjs_shims();
@@ -33196,10 +33507,10 @@ async function generateCode(prompt, language, config) {
 __name(generateCode, "generateCode");
 async function processVision(imagePath, prompt, config) {
   const maria = new MariaAI(config);
-  const fs4 = await Promise.resolve().then(() => __toESM(require_lib2()));
+  const fs5 = await Promise.resolve().then(() => __toESM(require_lib2()));
   try {
     console.log(source_default.blue("\u{1F441}\uFE0F  Analyzing image..."));
-    const imageBuffer = await fs4.readFile(imagePath);
+    const imageBuffer = await fs5.readFile(imagePath);
     const response = await maria.vision(imageBuffer, prompt);
     console.log("\n" + source_default.green(response.content));
   } catch (error) {
@@ -33329,6 +33640,25 @@ fetch-blob/index.js:
 
 formdata-polyfill/esm.min.js:
   (*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> *)
+
+@google/generative-ai/dist/index.mjs:
+@google/generative-ai/dist/index.mjs:
+  (**
+   * @license
+   * Copyright 2023 Google LLC
+   *
+   * Licensed under the Apache License, Version 2.0 (the "License");
+   * you may not use this file except in compliance with the License.
+   * You may obtain a copy of the License at
+   *
+   *   http://www.apache.org/licenses/LICENSE-2.0
+   *
+   * Unless required by applicable law or agreed to in writing, software
+   * distributed under the License is distributed on an "AS IS" BASIS,
+   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   * See the License for the specific language governing permissions and
+   * limitations under the License.
+   *)
 */
 
 exports.VERSION = VERSION4;
