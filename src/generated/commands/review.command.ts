@@ -292,7 +292,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     for (const file of files) {
       logger.info(chalk.gray(`Reviewing ${file.path}...`));
       
-      const fileReview: any = {
+      const fileReview: unknown = {
         file: file.path,
         issues: [],
         suggestions: [],
@@ -329,9 +329,9 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
   private async reviewCategory(
     file: { path: string; content: string },
     category: string,
-    config: any,
+    config: unknown,
     options: ReviewOptions
-  ): Promise<any> {
+  ): Promise<unknown> {
     const systemPrompt = `You are an expert code reviewer focusing on ${category} issues.
 ${config.prompt}
 Provide specific, actionable feedback with line numbers where possible.
@@ -357,7 +357,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       // Filter by severity if specified
       if (options.severity !== 'all') {
         parsed.issues = parsed.issues.filter(
-          (issue: any) => issue.severity === options.severity
+          (issue: unknown) => issue.severity === options.severity
         );
       }
 
@@ -372,7 +372,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     }
   }
 
-  private parseReviewResponse(response: string): any {
+  private parseReviewResponse(response: string): unknown {
     try {
       // Try to extract JSON from response
       const jsonMatch = response.match(/\[[\s\S]*\]/);
@@ -425,7 +425,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     return typeMap[extension || ''] || 'code';
   }
 
-  private displayResults(reviews: any[], options: ReviewOptions): void {
+  private displayResults(reviews: unknown[], options: ReviewOptions): void {
     console.log(chalk.bold.blue('\n📋 Code Review Results\n'));
 
     for (const review of reviews) {
@@ -488,7 +488,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     }
   }
 
-  private groupIssuesBySeverity(issues: any[]): Record<string, any[]> {
+  private groupIssuesBySeverity(issues: unknown[]): Record<string, any[]> {
     return issues.reduce((acc, issue) => {
       const severity = issue.severity || 'medium';
       if (!acc[severity]) acc[severity] = [];
@@ -517,13 +517,13 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     return colors[severity] || chalk.white;
   }
 
-  private async applyAutoFixes(reviews: any[]): Promise<void> {
+  private async applyAutoFixes(reviews: unknown[]): Promise<void> {
     logger.info(chalk.blue('\n🔧 Applying auto-fixes...'));
     
     let fixCount = 0;
     
     for (const review of reviews) {
-      const fixableIssues = review.issues.filter((issue: any) => issue.suggestion);
+      const fixableIssues = review.issues.filter((issue: unknown) => issue.suggestion);
       
       if (fixableIssues.length > 0) {
         logger.info(chalk.gray(`Fixing ${review.file}...`));
@@ -541,7 +541,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     }
   }
 
-  private async saveOutput(reviews: any[], outputPath: string): Promise<void> {
+  private async saveOutput(reviews: unknown[], outputPath: string): Promise<void> {
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
@@ -556,7 +556,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     logger.info(chalk.green(`✅ Review report saved to: ${outputPath}`));
   }
 
-  private countIssues(reviews: any[]): any {
+  private countIssues(reviews: unknown[]): unknown {
     const counts = {
       total: 0,
       critical: 0,
@@ -575,7 +575,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     return counts;
   }
 
-  private calculateFileScore(issues: any[]): number {
+  private calculateFileScore(issues: unknown[]): number {
     let score = 100;
     
     for (const issue of issues) {
@@ -598,7 +598,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     return Math.max(0, score);
   }
 
-  private calculateOverallScore(reviews: any[]): number {
+  private calculateOverallScore(reviews: unknown[]): number {
     if (reviews.length === 0) return 100;
     
     const totalScore = reviews.reduce((sum, review) => sum + review.score, 0);

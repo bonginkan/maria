@@ -30,7 +30,7 @@ export interface PredictionModel {
   trainingDataSize: number;
   features: string[];
   weights: Map<string, number>;
-  hyperparameters: Record<string, any>;
+  hyperparameters: Record<string, unknown>;
 }
 
 export interface PredictionRequest {
@@ -82,7 +82,7 @@ export interface TemporalContext {
 export interface Prediction {
   id: string;
   type: string;
-  prediction: any;
+  prediction: unknown;
   confidence: number;
   reasoning: string[];
   alternatives: Alternative[];
@@ -92,7 +92,7 @@ export interface Prediction {
 }
 
 export interface Alternative {
-  prediction: any;
+  prediction: unknown;
   confidence: number;
   reasoning: string;
 }
@@ -179,7 +179,7 @@ export interface CompletionPrediction {
 
 export interface ModelTrainingData {
   features: FeatureVector[];
-  labels: any[];
+  labels: unknown[];
   metadata: TrainingMetadata;
 }
 
@@ -187,7 +187,7 @@ export interface FeatureVector {
   features: Map<string, number>;
   timestamp: Date;
   session_id: string;
-  outcome: any;
+  outcome: unknown;
 }
 
 export interface TrainingMetadata {
@@ -414,7 +414,7 @@ export class AdvancedPredictionEngine extends EventEmitter {
       const features = await this.extractFeatures(request.context, model.features);
 
       // Make prediction based on model type
-      let prediction: any;
+      let prediction: unknown;
       let reasoning: string[] = [];
       let alternatives: Alternative[] = [];
 
@@ -1015,7 +1015,7 @@ export class AdvancedPredictionEngine extends EventEmitter {
     predictionsByType: Map<string, number>;
     averageConfidence: number;
     modelPerformance: Map<string, number>;
-    recentTrends: any[];
+    recentTrends: unknown[];
   } {
     const predictions = Array.from(this.recentPredictions.values());
 

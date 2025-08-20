@@ -191,7 +191,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
     return patterns[type] || patterns.all;
   }
 
-  private async runTests(files: string[], options: TestOptions, framework: string): Promise<any> {
+  private async runTests(files: string[], options: TestOptions, framework: string): Promise<unknown> {
     const command = this.buildTestCommand(files, options, framework);
     logger.info(chalk.gray(`Running: ${command}`));
 
@@ -321,7 +321,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
     return args.join(' ');
   }
 
-  private parseTestOutput(stdout: string, stderr: string, framework: string): any {
+  private parseTestOutput(stdout: string, stderr: string, framework: string): unknown {
     // Framework-specific parsing would go here
     // This is a simplified version
 
@@ -375,7 +375,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
     return errorLines.join('\n');
   }
 
-  private displayTestResults(results: any): void {
+  private displayTestResults(results: unknown): void {
     console.log('\n' + chalk.bold('Test Results:'));
     console.log(chalk.green(`  ✓ Passed: ${results.passed}`));
 
@@ -391,7 +391,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
 
     if (results.failures && results.failures.length > 0) {
       console.log('\n' + chalk.bold.red('Failures:'));
-      results.failures.forEach((failure: any, index: number) => {
+      results.failures.forEach((failure: unknown, index: number) => {
         console.log(chalk.red(`  ${index + 1}. ${failure.test}`));
         if (failure.error) {
           console.log(chalk.gray(`     ${failure.error.replace(/\n/g, '\n     ')}`));
@@ -400,11 +400,11 @@ export class TestCommand extends BaseCommand<TestOptions> {
     }
   }
 
-  private async analyzeCoverage(framework: string): Promise<any> {
+  private async analyzeCoverage(framework: string): Promise<unknown> {
     return await this.coverageAnalyzer.analyze(framework);
   }
 
-  private displayCoverageReport(report: any): void {
+  private displayCoverageReport(report: unknown): void {
     if (!report) return;
 
     console.log('\n' + chalk.bold('Coverage Report:'));
@@ -479,7 +479,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
     return `${name}.test.${extension}`;
   }
 
-  private async suggestFixes(failures: any[], context: CommandContext): Promise<void> {
+  private async suggestFixes(failures: unknown[], context: CommandContext): Promise<void> {
     logger.info(chalk.blue('\n🔧 Analyzing test failures...'));
 
     for (const failure of failures.slice(0, 3)) {

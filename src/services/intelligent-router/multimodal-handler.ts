@@ -8,13 +8,13 @@
 import { EventEmitter } from 'events';
 // import { readFileSync, writeFileSync, existsSync } from 'fs';
 // import { join } from 'path';
-import { _logger } from '../../utils/_logger';
+import { __logger } from '../../utils/__logger';
 import chalk from 'chalk';
 
 export interface VoiceInput {
   id: string;
   timestamp: Date;
-  _audioData: Buffer;
+  __audioData: Buffer;
   sampleRate: number;
   language: string;
   transcript?: string;
@@ -25,7 +25,7 @@ export interface VisualInput {
   id: string;
   timestamp: Date;
   type: 'screenshot' | 'sketch' | 'flowchart' | 'mockup' | 'gesture';
-  _imageData: Buffer;
+  __imageData: Buffer;
   width: number;
   height: number;
   format: string;
@@ -150,7 +150,7 @@ export class MultimodalHandler extends EventEmitter {
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
   async processVoiceInput(
-    _audioData: Buffer,
+    __audioData: Buffer,
     options: {
       sampleRate?: number;
       language?: string;
@@ -159,13 +159,13 @@ export class MultimodalHandler extends EventEmitter {
     const voiceInput: VoiceInput = {
       id: this.generateId(),
       timestamp: new Date(),
-      _audioData,
+      __audioData,
       sampleRate: options.sampleRate || 16000,
       language: options.language || 'ja',
     };
 
     // ウェイクワード検出
-    if (await this.detectWakeWord(_audioData)) {
+    if (await this.detectWakeWord(__audioData)) {
       console.log(chalk.cyan(`🎯 ウェイクワード "${this.wakeWord}" を検出しました`));
       this.emit('wakeword:detected');
     }
@@ -193,7 +193,7 @@ export class MultimodalHandler extends EventEmitter {
    * ウェイクワードを検出
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async detectWakeWord(_audioData: Buffer): Promise<boolean> {
+  private async detectWakeWord(__audioData: Buffer): Promise<boolean> {
     // 実際の実装では、音声認識またはキーワードスポッティングモデルを使用
     // ここでは簡易的な実装
     return Math.random() > 0.7; // デモ用
@@ -203,7 +203,7 @@ export class MultimodalHandler extends EventEmitter {
    * 音声をテキストに変換
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async transcribeAudio(_input: VoiceInput): Promise<{
+  private async transcribeAudio(__input: VoiceInput): Promise<{
     text: string;
     confidence: number;
   }> {
@@ -223,13 +223,13 @@ export class MultimodalHandler extends EventEmitter {
    * ビジュアル入力を処理
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  async processVisualInput(_imageData: Buffer, type: VisualInput['type']): Promise<unknown> {
+  async processVisualInput(__imageData: Buffer, type: VisualInput['type']): Promise<unknown> {
     // Will be used in future for tracking visual inputs
     // const visualInput: VisualInput = {
     //   id: this.generateId(),
     //   timestamp: new Date(),
     //   type,
-    //   _imageData,
+    //   __imageData,
     //   width: 1920, // 実際の実装では画像から取得
     //   height: 1080,
     //   format: 'png',
@@ -237,15 +237,15 @@ export class MultimodalHandler extends EventEmitter {
 
     switch (type) {
       case 'screenshot':
-        return await this.processScreenshot(_imageData);
+        return await this.processScreenshot(__imageData);
       case 'sketch':
-        return await this.processSketch(_imageData);
+        return await this.processSketch(__imageData);
       case 'flowchart':
-        return await this.processFlowchart(_imageData);
+        return await this.processFlowchart(__imageData);
       case 'mockup':
-        return await this.processMockup(_imageData);
+        return await this.processMockup(__imageData);
       case 'gesture':
-        return await this.processVisualGesture(_imageData);
+        return await this.processVisualGesture(__imageData);
       default:
         throw new Error(`Unsupported visual input type: ${type}`);
     }
@@ -255,14 +255,14 @@ export class MultimodalHandler extends EventEmitter {
    * スクリーンショットを処理
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async processScreenshot(_imageData: Buffer): Promise<unknown> {
+  private async processScreenshot(__imageData: Buffer): Promise<unknown> {
     console.log(chalk.blue('📸 スクリーンショットを解析中...'));
 
     // OCRでテキスト抽出（実際の実装ではTesseract.jsなどを使用）
-    const extractedText = await this.extractTextFromImage(_imageData);
+    const extractedText = await this.extractTextFromImage(__imageData);
 
     // UI要素を検出
-    const detectedElements = await this.detectUIElements(_imageData);
+    const detectedElements = await this.detectUIElements(__imageData);
 
     // エラーメッセージやバグの可能性を検出
     const issues = this.detectIssuesInScreenshot(extractedText, detectedElements);
@@ -274,7 +274,7 @@ export class MultimodalHandler extends EventEmitter {
 
     return {
       text: extractedText,
-      _elements: detectedElements,
+      __elements: detectedElements,
       issues,
       suggestedActions: this.suggestActionsForScreenshot(detectedElements, issues),
     };
@@ -284,12 +284,12 @@ export class MultimodalHandler extends EventEmitter {
    * スケッチを処理
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async processSketch(_imageData: Buffer): Promise<unknown> {
+  private async processSketch(__imageData: Buffer): Promise<unknown> {
     console.log(chalk.blue('✏️ 手書きスケッチを解析中...'));
 
     // 手書き認識（実際の実装ではTensorFlow.jsなどを使用）
-    const recognizedShapes = await this.recognizeShapes(_imageData);
-    const recognizedText = await this.recognizeHandwriting(_imageData);
+    const recognizedShapes = await this.recognizeShapes(__imageData);
+    const recognizedText = await this.recognizeHandwriting(__imageData);
 
     // UIコンポーネントを推測
     const suggestedComponents = this.suggestUIComponents(recognizedShapes);
@@ -306,19 +306,19 @@ export class MultimodalHandler extends EventEmitter {
    * フローチャートを処理
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async processFlowchart(_imageData: Buffer): Promise<unknown> {
+  private async processFlowchart(__imageData: Buffer): Promise<unknown> {
     console.log(chalk.blue('📊 フローチャートを解析中...'));
 
     // フローチャート要素を検出
-    const nodes = await this.detectFlowchartNodes(_imageData);
-    const _connections = await this.detectConnections(_imageData);
+    const nodes = await this.detectFlowchartNodes(__imageData);
+    const __connections = await this.detectConnections(__imageData);
 
     // コードに変換
-    const code = this.generateCodeFromFlowchart(nodes, _connections);
+    const code = this.generateCodeFromFlowchart(nodes, __connections);
 
     return {
       nodes,
-      _connections,
+      __connections,
       code,
       language: 'typescript',
     };
@@ -328,21 +328,21 @@ export class MultimodalHandler extends EventEmitter {
    * UIモックアップを処理
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async processMockup(_imageData: Buffer): Promise<unknown> {
+  private async processMockup(__imageData: Buffer): Promise<unknown> {
     console.log(chalk.blue('🎨 UIモックアップを解析中...'));
 
     // UI要素を検出
-    const _elements = await this.detectUIElements(_imageData);
+    const __elements = await this.detectUIElements(__imageData);
 
     // レイアウトを解析
-    const _layout = this.analyzeLayout(_elements);
+    const __layout = this.analyzeLayout(__elements);
 
     // コンポーネントコードを生成
-    const components = this.generateComponentsFromMockup(_elements, _layout);
+    const components = this.generateComponentsFromMockup(__elements, __layout);
 
     return {
-      _elements,
-      _layout,
+      __elements,
+      __layout,
       components,
       framework: 'react', // デフォルトフレームワーク
     };
@@ -352,9 +352,9 @@ export class MultimodalHandler extends EventEmitter {
    * ビジュアルジェスチャーを処理
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async processVisualGesture(_imageData: Buffer): Promise<unknown> {
+  private async processVisualGesture(__imageData: Buffer): Promise<unknown> {
     // ジェスチャー認識（実際の実装では機械学習モデルを使用）
-    const gesture = await this.recognizeGesture(_imageData);
+    const gesture = await this.recognizeGesture(__imageData);
     return this.mapGestureToCommand(gesture);
   }
 
@@ -508,7 +508,7 @@ export class MultimodalHandler extends EventEmitter {
    * 画像からテキストを抽出（OCR）
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async extractTextFromImage(_imageData: Buffer): Promise<string> {
+  private async extractTextFromImage(__imageData: Buffer): Promise<string> {
     // 実際の実装ではTesseract.jsなどを使用
     return 'Error: Cannot connect to database\nPlease check your connection settings';
   }
@@ -517,7 +517,7 @@ export class MultimodalHandler extends EventEmitter {
    * UI要素を検出
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async detectUIElements(_imageData: Buffer): Promise<UIElement[]> {
+  private async detectUIElements(__imageData: Buffer): Promise<UIElement[]> {
     // 実際の実装では機械学習モデルを使用
     return [
       {
@@ -537,7 +537,7 @@ export class MultimodalHandler extends EventEmitter {
    * スクリーンショットから問題を検出
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private detectIssuesInScreenshot(text: string, _elements: UIElement[]): string[] {
+  private detectIssuesInScreenshot(text: string, __elements: UIElement[]): string[] {
     const issues: string[] = [];
 
     // エラーメッセージの検出
@@ -546,7 +546,7 @@ export class MultimodalHandler extends EventEmitter {
     }
 
     // UI問題の検出
-    const buttons = _elements.filter((e) => e.type === 'button');
+    const buttons = __elements.filter((e) => e.type === 'button');
     if (buttons.length > 10) {
       issues.push('ボタンが多すぎる可能性があります');
     }
@@ -558,7 +558,7 @@ export class MultimodalHandler extends EventEmitter {
    * スクリーンショットに基づくアクション提案
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private suggestActionsForScreenshot(_elements: UIElement[], issues: string[]): string[] {
+  private suggestActionsForScreenshot(__elements: UIElement[], issues: string[]): string[] {
     const suggestions: string[] = [];
 
     if (issues.length > 0) {
@@ -566,7 +566,7 @@ export class MultimodalHandler extends EventEmitter {
       suggestions.push('デバッグ情報を確認する');
     }
 
-    if (_elements.some((e) => e.type === 'button')) {
+    if (__elements.some((e) => e.type === 'button')) {
       suggestions.push('ボタンのクリックテストを生成');
     }
 
@@ -577,7 +577,7 @@ export class MultimodalHandler extends EventEmitter {
    * 図形を認識
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async recognizeShapes(_imageData: Buffer): Promise<unknown[]> {
+  private async recognizeShapes(__imageData: Buffer): Promise<unknown[]> {
     // 実際の実装では機械学習モデルを使用
     return [
       { type: 'rectangle', coordinates: { x: 50, y: 50, width: 100, height: 60 } },
@@ -589,7 +589,7 @@ export class MultimodalHandler extends EventEmitter {
    * 手書き文字を認識
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async recognizeHandwriting(_imageData: Buffer): Promise<string> {
+  private async recognizeHandwriting(__imageData: Buffer): Promise<string> {
     // 実際の実装では手書き認識モデルを使用
     return 'Login Form';
   }
@@ -655,7 +655,7 @@ export class MultimodalHandler extends EventEmitter {
    * フローチャートのノードを検出
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async detectFlowchartNodes(_imageData: Buffer): Promise<unknown[]> {
+  private async detectFlowchartNodes(__imageData: Buffer): Promise<unknown[]> {
     // 実際の実装では画像処理アルゴリズムを使用
     return [
       { id: '1', type: 'start', label: 'Start' },
@@ -669,7 +669,7 @@ export class MultimodalHandler extends EventEmitter {
    * フローチャートの接続を検出
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async detectConnections(_imageData: Buffer): Promise<unknown[]> {
+  private async detectConnections(__imageData: Buffer): Promise<unknown[]> {
     // 実際の実装では画像処理アルゴリズムを使用
     return [
       { from: '1', to: '2' },
@@ -683,7 +683,7 @@ export class MultimodalHandler extends EventEmitter {
    * フローチャートからコードを生成
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private generateCodeFromFlowchart(nodes: unknown[], _connections: unknown[]): string {
+  private generateCodeFromFlowchart(nodes: unknown[], __connections: unknown[]): string {
     let code = '// Generated from flowchart\n';
     code += 'async function processFlow() {\n';
 
@@ -716,33 +716,33 @@ export class MultimodalHandler extends EventEmitter {
    * レイアウトを解析
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private analyzeLayout(_elements: UIElement[]): unknown {
+  private analyzeLayout(__elements: UIElement[]): unknown {
     // 簡易的なレイアウト解析
-    const _layout = {
+    const __layout = {
       type: 'vertical',
       sections: [],
       grid: false,
     };
 
     // Y座標でソートして垂直レイアウトを推測
-    // const sortedElements = [..._elements].sort((a, b) => a.coordinates.y - b.coordinates.y);
-    // TODO: Use sortedElements to infer _layout structure
+    // const sortedElements = [...__elements].sort((a, b) => a.coordinates.y - b.coordinates.y);
+    // TODO: Use sortedElements to infer __layout structure
 
-    return _layout;
+    return __layout;
   }
 
   /**
    * モックアップからコンポーネントを生成
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private generateComponentsFromMockup(_elements: UIElement[], _layout: unknown): string {
+  private generateComponentsFromMockup(__elements: UIElement[], __layout: unknown): string {
     let code = '// Generated from mockup\n';
     code += 'import React from "react";\n\n';
     code += 'export const MockupComponent = () => {\n';
     code += '  return (\n';
     code += '    <div className="container">\n';
 
-    _elements.forEach((element) => {
+    __elements.forEach((element) => {
       switch (element.type) {
         case 'button':
           code += `      <button>${element.text || 'Button'}</button>\n`;
@@ -767,7 +767,7 @@ export class MultimodalHandler extends EventEmitter {
    * ジェスチャーを認識
    */
   // @ts-nocheck - Multimodal handler with complex media processing types
-  private async recognizeGesture(_imageData: Buffer): Promise<GestureInput> {
+  private async recognizeGesture(__imageData: Buffer): Promise<GestureInput> {
     // 実際の実装では機械学習モデルを使用
     return {
       type: 'swipe',

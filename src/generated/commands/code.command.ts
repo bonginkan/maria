@@ -147,7 +147,7 @@ export class CodeCommand extends BaseCommand<CodeOptions> {
     }
   }
 
-  private mergeIntentWithOptions(intent: any, options: CodeOptions): CodeOptions {
+  private mergeIntentWithOptions(intent: unknown, options: CodeOptions): CodeOptions {
     return {
       ...options,
       language: options.language || intent.language,
@@ -158,7 +158,7 @@ export class CodeCommand extends BaseCommand<CodeOptions> {
     };
   }
 
-  private applyTemplate(template: any, prompt: string, options: CodeOptions): string {
+  private applyTemplate(template: unknown, prompt: string, options: CodeOptions): string {
     return template.render({
       prompt,
       language: options.language,
@@ -335,8 +335,8 @@ export class CodeCommand extends BaseCommand<CodeOptions> {
     code: string,
     options: CodeOptions,
     context: CommandContext,
-  ): Promise<any> {
-    const result: any = {
+  ): Promise<unknown> {
+    const result: unknown = {
       code,
       timestamp: new Date().toISOString(),
     };

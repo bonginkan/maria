@@ -125,7 +125,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
   private qualityHistory: QualityReport[] = [];
   private activeMonitoring: boolean = false;
   private lastAnalysis?: QualityReport;
-  private watchers: Map<string, any> = new Map();
+  private watchers: Map<string, unknown> = new Map();
 
   private constructor() {
     super();
@@ -447,7 +447,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
   /**
    * Generate quality dashboard data
    */
-  public generateQualityDashboard(): any {
+  public generateQualityDashboard(): unknown {
     const latestReport = this.lastAnalysis;
     if (!latestReport) {
       return null;
@@ -583,8 +583,8 @@ class AutomatedCodeQualitySystem extends EventEmitter {
 
   private async calculateQualityMetrics(
     issues: QualityIssue[],
-    complexityMetrics: any,
-    coverageData: any,
+    complexityMetrics: unknown,
+    coverageData: unknown,
     projectPath: string,
   ): Promise<QualityMetrics> {
     return {
@@ -779,17 +779,20 @@ class AutomatedCodeQualitySystem extends EventEmitter {
   private async calculateComplexityMetrics(
     _projectPath: string,
     _targetFiles?: string[],
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Implementation for complexity calculation
     return { average: 5 };
   }
 
-  private async calculateCoverage(_projectPath: string, _targetFiles?: string[]): Promise<any> {
+  private async calculateCoverage(_projectPath: string, _targetFiles?: string[]): Promise<unknown> {
     // Implementation for coverage calculation
     return { percentage: 75 };
   }
 
-  private calculateMaintainabilityIndex(_issues: QualityIssue[], _complexityMetrics: any): number {
+  private calculateMaintainabilityIndex(
+    _issues: QualityIssue[],
+    _complexityMetrics: unknown,
+  ): number {
     // Implementation for maintainability index calculation
     return 75;
   }
@@ -826,7 +829,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     return 70;
   }
 
-  private calculateTestQualityScore(issues: QualityIssue[], coverageData: any): number {
+  private calculateTestQualityScore(issues: QualityIssue[], coverageData: unknown): number {
     // Implementation for test quality score calculation
     const testIssues = issues.filter((i) => i.category === 'testing');
     const coverageScore = coverageData.percentage || 0;

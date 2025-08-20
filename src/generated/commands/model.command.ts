@@ -167,7 +167,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
     };
   }
 
-  private groupModelsByProvider(models: any[]): Record<string, any[]> {
+  private groupModelsByProvider(models: unknown[]): Record<string, any[]> {
     return models.reduce(
       (acc, model) => {
         if (!acc[model.provider]) {
@@ -203,7 +203,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
     return tokens.toString();
   }
 
-  private async checkModelStatus(model: any): Promise<{ available: boolean; latency?: number }> {
+  private async checkModelStatus(model: unknown): Promise<{ available: boolean; latency?: number }> {
     try {
       const provider = await this.providerManager.getProvider(model.provider);
       const startTime = Date.now();
@@ -407,7 +407,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
     };
   }
 
-  private async testGeneration(model: any, prompt: string): Promise<any> {
+  private async testGeneration(model: unknown, prompt: string): Promise<unknown> {
     const provider = await this.providerManager.getProvider(model.provider);
     const response = await provider.generate({
       model: model.id,

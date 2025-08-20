@@ -58,7 +58,7 @@ export class LogoutCommand extends BaseCommand {
     }
   }
 
-  private async getCurrentSession(): Promise<any> {
+  private async getCurrentSession(): Promise<unknown> {
     try {
       if (!fs.existsSync(this.configPath)) {
         return null;
@@ -81,7 +81,7 @@ export class LogoutCommand extends BaseCommand {
   }
 
   private async performLogout(
-    session: any,
+    session: unknown,
     logoutAll: boolean
   ): Promise<{ success: boolean; clearedSessions: number; error?: string }> {
     try {

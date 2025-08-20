@@ -292,8 +292,8 @@ class AIProjectAnalyzer extends EventEmitter {
   private static instance: AIProjectAnalyzer;
   private analysisHistory: ProjectAnalysisReport[] = [];
   private configuration: AnalysisConfiguration;
-  private knowledgeBase: Map<string, any> = new Map();
-  private patterns: Map<string, any> = new Map();
+  private knowledgeBase: Map<string, unknown> = new Map();
+  private patterns: Map<string, unknown> = new Map();
 
   private constructor() {
     super();
@@ -535,7 +535,7 @@ class AIProjectAnalyzer extends EventEmitter {
   /**
    * Generate project health dashboard with AI insights
    */
-  public generateProjectDashboard(): any {
+  public generateProjectDashboard(): unknown {
     const latestAnalysis = this.analysisHistory[this.analysisHistory.length - 1];
     if (!latestAnalysis) {
       return null;
@@ -726,19 +726,19 @@ class AIProjectAnalyzer extends EventEmitter {
     };
   }
 
-  private async detectContextualPatterns(_context: string, _filePath: string): Promise<any[]> {
+  private async detectContextualPatterns(_context: string, _filePath: string): Promise<unknown[]> {
     return [];
   }
 
   private async generateContextualSuggestions(
     _fileAnalysis: FileAnalysis,
-    _patterns: any[],
+    _patterns: unknown[],
     _userIntent: string,
   ): Promise<CodeSuggestion[]> {
     return [];
   }
 
-  private async identifyBestPractices(_language: string, _patterns: any[]): Promise<string[]> {
+  private async identifyBestPractices(_language: string, _patterns: unknown[]): Promise<string[]> {
     return [];
   }
 

@@ -69,7 +69,7 @@ type TestType =
 interface SystemUnderTest {
   system_name: string;
   version: string;
-  configuration: any;
+  configuration: unknown;
   dependencies: string[];
   health_check_endpoint?: string;
   initialization_scripts: string[];
@@ -89,8 +89,8 @@ interface TestScenario {
 interface TestStep {
   step_number: number;
   action: string;
-  parameters: Record<string, any>;
-  expected_response?: any;
+  parameters: Record<string, unknown>;
+  expected_response?: unknown;
   validation_rules: ValidationRule[];
   timeout_seconds: number;
   retry_attempts: number;
@@ -100,7 +100,7 @@ interface TestStep {
 interface ValidationRule {
   field_path: string;
   validation_type: 'equals' | 'contains' | 'regex' | 'range' | 'type' | 'custom';
-  expected_value: any;
+  expected_value: unknown;
   tolerance?: number;
   custom_validator?: string;
 }
@@ -109,7 +109,7 @@ interface ExpectedOutcome {
   outcome_type: 'response' | 'state_change' | 'side_effect' | 'performance' | 'behavior';
   description: string;
   verification_method: string;
-  success_criteria: any;
+  success_criteria: unknown;
 }
 
 interface AcceptanceCriteria {
@@ -133,7 +133,7 @@ interface PerformanceThreshold {
 interface TestDataRequirement {
   data_type: string;
   data_source: 'generated' | 'fixture' | 'external_api' | 'database' | 'file';
-  data_specification: any;
+  data_specification: unknown;
   cleanup_policy: 'preserve' | 'cleanup' | 'archive';
   sensitive_data: boolean;
 }
@@ -141,7 +141,7 @@ interface TestDataRequirement {
 interface MockConfiguration {
   service_name: string;
   mock_type: 'stub' | 'mock' | 'fake' | 'spy';
-  behavior_specification: any;
+  behavior_specification: unknown;
   response_delays: number[];
   failure_scenarios: FailureScenario[];
 }
@@ -150,7 +150,7 @@ interface FailureScenario {
   scenario_name: string;
   trigger_condition: string;
   failure_type: 'timeout' | 'error_response' | 'network_failure' | 'service_unavailable';
-  failure_details: any;
+  failure_details: unknown;
   recovery_time_seconds: number;
 }
 
@@ -221,7 +221,7 @@ interface StepResult {
   step_number: number;
   status: 'passed' | 'failed' | 'skipped';
   execution_time_ms: number;
-  actual_response: any;
+  actual_response: unknown;
   validation_results: ValidationResult[];
   retry_count: number;
   error_message?: string;
@@ -230,8 +230,8 @@ interface StepResult {
 interface ValidationResult {
   rule_description: string;
   status: 'passed' | 'failed';
-  expected_value: any;
-  actual_value: any;
+  expected_value: unknown;
+  actual_value: unknown;
   error_message?: string;
 }
 
@@ -248,7 +248,7 @@ interface TestLog {
   level: 'debug' | 'info' | 'warn' | 'error';
   timestamp: Date;
   message: string;
-  context: any;
+  context: unknown;
   source: string;
 }
 
@@ -264,7 +264,7 @@ interface ErrorDetails {
   error_type: string;
   error_message: string;
   stack_trace: string;
-  context: any;
+  context: unknown;
   recovery_suggestions: string[];
 }
 
@@ -325,7 +325,7 @@ interface TestIssue {
   reproduction_steps: string[];
   expected_behavior: string;
   actual_behavior: string;
-  environment_context: any;
+  environment_context: unknown;
   suggested_fix: string;
   business_impact: string;
 }
@@ -362,7 +362,7 @@ interface NotificationSettings {
 
 interface NotificationChannel {
   type: 'email' | 'slack' | 'webhook' | 'sms';
-  configuration: any;
+  configuration: unknown;
   filter_criteria: string[];
 }
 

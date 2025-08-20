@@ -518,7 +518,7 @@ class IntelligentDependencyManager extends EventEmitter {
   /**
    * Generate dependency health dashboard
    */
-  public generateDependencyDashboard(): any {
+  public generateDependencyDashboard(): unknown {
     if (!this.lastAnalysis) {
       return null;
     }
@@ -584,13 +584,13 @@ class IntelligentDependencyManager extends EventEmitter {
 
   // Private helper methods (implementation details)
 
-  private async readPackageJson(projectPath: string): Promise<any> {
+  private async readPackageJson(projectPath: string): Promise<unknown> {
     const packageJsonPath = path.join(projectPath, 'package.json');
     const content = await fs.readFile(packageJsonPath, 'utf-8');
     return JSON.parse(content);
   }
 
-  private async readLockFile(projectPath: string): Promise<any> {
+  private async readLockFile(projectPath: string): Promise<unknown> {
     // Try to read the appropriate lock file based on package manager
     const lockFiles = ['pnpm-lock.yaml', 'yarn.lock', 'package-lock.json'];
 
@@ -613,7 +613,7 @@ class IntelligentDependencyManager extends EventEmitter {
     return null;
   }
 
-  private async buildDependencyTree(projectPath: string): Promise<any> {
+  private async buildDependencyTree(projectPath: string): Promise<unknown> {
     try {
       const result = await execPromise(`${this.packageManagerConfig.primary_manager} list --json`, {
         cwd: projectPath,
@@ -625,43 +625,50 @@ class IntelligentDependencyManager extends EventEmitter {
   }
 
   private async analyzeDependencyVersions(
-    packageJson: any,
-    lockFileData: any,
+    _packageJson: unknown,
+    _lockFileData: unknown,
   ): Promise<DependencyInfo[]> {
     // Implementation for version analysis
     return [];
   }
 
   private async analyzeSecurityVulnerabilities(
-    dependencyTree: any,
+    _dependencyTree: unknown,
   ): Promise<SecurityVulnerability[]> {
     // Implementation for security analysis
     return [];
   }
 
-  private async analyzeCompatibilityIssues(dependencyTree: any): Promise<CompatibilityIssue[]> {
+  private async analyzeCompatibilityIssues(
+    _dependencyTree: unknown,
+  ): Promise<CompatibilityIssue[]> {
     // Implementation for compatibility analysis
     return [];
   }
 
-  private async analyzeSizeAndPerformance(dependencyTree: any): Promise<{ total_size_mb: number }> {
+  private async analyzeSizeAndPerformance(
+    _dependencyTree: unknown,
+  ): Promise<{ total_size_mb: number }> {
     // Implementation for size analysis
     return { total_size_mb: 0 };
   }
 
   private async findOptimizationOpportunities(
-    dependencyTree: any,
+    _dependencyTree: unknown,
   ): Promise<DependencyOptimization[]> {
     // Implementation for finding optimizations
     return [];
   }
 
-  private async detectUnusedDependencies(projectPath: string, packageJson: any): Promise<string[]> {
+  private async detectUnusedDependencies(
+    _projectPath: string,
+    _packageJson: unknown,
+  ): Promise<string[]> {
     // Implementation for detecting unused dependencies
     return [];
   }
 
-  private mergeDependencyAnalysis(...analyses: any[]): DependencyInfo[] {
+  private mergeDependencyAnalysis(..._analyses: unknown[]): DependencyInfo[] {
     // Implementation for merging analysis results
     return [];
   }
@@ -692,12 +699,18 @@ class IntelligentDependencyManager extends EventEmitter {
     // Implementation for creating backup
   }
 
-  private async performBatchUpdate(_projectPath: string, _updates: DependencyInfo[]): Promise<any> {
+  private async performBatchUpdate(
+    _projectPath: string,
+    _updates: DependencyInfo[],
+  ): Promise<unknown> {
     // Implementation for batch updates
     return { updated_packages: [], failed_updates: [] };
   }
 
-  private async performSingleUpdate(_projectPath: string, _update: DependencyInfo): Promise<any> {
+  private async performSingleUpdate(
+    _projectPath: string,
+    _update: DependencyInfo,
+  ): Promise<unknown> {
     // Implementation for single update
     return { success: true };
   }
@@ -707,7 +720,7 @@ class IntelligentDependencyManager extends EventEmitter {
     return true;
   }
 
-  private async rollbackUpdates(_projectPath: string, _packages: string[]): Promise<any> {
+  private async rollbackUpdates(_projectPath: string, _packages: string[]): Promise<unknown> {
     // Implementation for rollback
     return { rolledback_packages: [] };
   }
@@ -715,7 +728,7 @@ class IntelligentDependencyManager extends EventEmitter {
   private async applyConflictResolution(
     _projectPath: string,
     _conflict: CompatibilityIssue,
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Implementation for conflict resolution
     return { success: true, changes: [] };
   }
@@ -723,7 +736,7 @@ class IntelligentDependencyManager extends EventEmitter {
   private async applyOptimization(
     _projectPath: string,
     _optimization: DependencyOptimization,
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Implementation for applying optimization
     return { success: true, changes: [] };
   }

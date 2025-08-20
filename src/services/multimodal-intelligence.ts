@@ -26,7 +26,7 @@ export type ModalityType =
 export interface MultimodalInput {
   id: string;
   type: ModalityType;
-  data: any;
+  data: unknown;
   metadata: InputMetadata;
   timestamp: Date;
   priority: number;
@@ -49,7 +49,7 @@ export interface ProcessedOutput {
   id: string;
   inputId: string;
   type: 'analysis' | 'extraction' | 'generation' | 'transformation' | 'summary';
-  data: any;
+  data: unknown;
   confidence: number;
   processingTime: number;
   metadata: OutputMetadata;
@@ -59,8 +59,8 @@ export interface ProcessedOutput {
 export interface OutputMetadata {
   processor: string;
   version: string;
-  parameters: Record<string, any>;
-  alternativeResults: any[];
+  parameters: Record<string, unknown>;
+  alternativeResults: unknown[];
   qualityScore: number;
 }
 
@@ -84,7 +84,7 @@ export interface ProcessingCapability {
 export interface ProcessorConfiguration {
   model: string;
   version: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   requirements: SystemRequirement[];
 }
 
@@ -117,7 +117,7 @@ export interface CrossModalInsight {
 export interface Evidence {
   modalityType: ModalityType;
   inputId: string;
-  relevantSection: any;
+  relevantSection: unknown;
   supportStrength: number;
 }
 
@@ -142,7 +142,7 @@ export interface SynthesizedOutput {
     | 'comprehensive_analysis'
     | 'actionable_insights'
     | 'decision_support';
-  content: any;
+  content: unknown;
   sources: string[];
   confidence: number;
   recommendations: string[];
@@ -176,7 +176,7 @@ export interface SemanticUnderstanding {
   confidence: number;
   context: SemanticContext[];
   relationships: ConceptRelationship[];
-  abstractRepresentation: any;
+  abstractRepresentation: unknown;
 }
 
 export interface SemanticContext {

@@ -6,8 +6,8 @@
  * and performance while preserving functionality and minimizing risk.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+// import * as fs from 'fs/promises';
+// import * as path from 'path';
 import { EventEmitter } from 'events';
 
 // Refactoring types and interfaces
@@ -61,8 +61,8 @@ interface RefactoringTarget {
   type: 'function' | 'class' | 'variable' | 'import' | 'expression' | 'statement' | 'block';
   name: string;
   location: CodeLocation;
-  current_state: any;
-  desired_state: any;
+  current_state: unknown;
+  desired_state: unknown;
   context: RefactoringContext;
 }
 
@@ -171,8 +171,8 @@ interface ValidationStep {
 interface SuccessCriteria {
   criterion: string;
   measurement_method: string;
-  target_value: any;
-  actual_value?: any;
+  target_value: unknown;
+  actual_value?: unknown;
   achieved?: boolean;
 }
 
@@ -320,9 +320,9 @@ class AutomatedRefactoringEngine extends EventEmitter {
   private static instance: AutomatedRefactoringEngine;
   private configuration: RefactoringConfiguration;
   private executionHistory: RefactoringExecution[] = [];
-  private knowledgeBase: Map<string, any> = new Map();
+  private knowledgeBase: Map<string, unknown> = new Map();
   private activeExecution?: RefactoringExecution;
-  private operationRegistry: Map<RefactoringType, any> = new Map();
+  private operationRegistry: Map<RefactoringType, unknown> = new Map();
 
   private constructor() {
     super();
@@ -713,63 +713,67 @@ class AutomatedRefactoringEngine extends EventEmitter {
     // Register handlers for each refactoring operation type
   }
 
-  private async analyzeCodebase(projectPath: string, targetFiles?: string[]): Promise<any> {
+  private async analyzeCodebase(_projectPath: string, _targetFiles?: string[]): Promise<unknown> {
     // Perform comprehensive codebase analysis
     return {};
   }
 
   private async detectExtractMethodOpportunities(
-    codeAnalysis: any,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     // Detect opportunities to extract methods
     return [];
   }
 
   private async detectExtractClassOpportunities(
-    codeAnalysis: any,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     // Detect opportunities to extract classes
     return [];
   }
 
   private async detectDuplicateCodeOpportunities(
-    codeAnalysis: any,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     // Detect duplicate code that can be refactored
     return [];
   }
 
-  private async detectDeadCodeOpportunities(codeAnalysis: any): Promise<RefactoringOperation[]> {
+  private async detectDeadCodeOpportunities(
+    _codeAnalysis: unknown,
+  ): Promise<RefactoringOperation[]> {
     // Detect dead code that can be removed
     return [];
   }
 
   private async detectComplexConditionalOpportunities(
-    codeAnalysis: any,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     // Detect complex conditionals that can be simplified
     return [];
   }
 
-  private async detectNamingImprovements(codeAnalysis: any): Promise<RefactoringOperation[]> {
+  private async detectNamingImprovements(_codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     // Detect naming improvements
     return [];
   }
 
-  private async detectPerformanceOptimizations(codeAnalysis: any): Promise<RefactoringOperation[]> {
+  private async detectPerformanceOptimizations(
+    _codeAnalysis: unknown,
+  ): Promise<RefactoringOperation[]> {
     // Detect performance optimization opportunities
     return [];
   }
 
   private async detectModernizationOpportunities(
-    codeAnalysis: any,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     // Detect modernization opportunities
     return [];
   }
 
   private async detectAccessibilityImprovements(
-    codeAnalysis: any,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     // Detect accessibility improvements
     return [];
@@ -782,7 +786,7 @@ class AutomatedRefactoringEngine extends EventEmitter {
     return opportunities.sort((a, b) => b.confidence_score - a.confidence_score);
   }
 
-  private groupOpportunitiesByType(opportunities: RefactoringOperation[]): Record<string, number> {
+  private groupOpportunitiesByType(_opportunities: RefactoringOperation[]): Record<string, number> {
     // Group opportunities by type for reporting
     return {};
   }
@@ -790,25 +794,27 @@ class AutomatedRefactoringEngine extends EventEmitter {
   // Additional helper methods...
   private filterOperationsByConstraints(
     operations: RefactoringOperation[],
-    constraints?: any,
+    _constraints?: unknown,
   ): RefactoringOperation[] {
     return operations;
   }
 
-  private async buildOperationDependencyGraph(operations: RefactoringOperation[]): Promise<any> {
+  private async buildOperationDependencyGraph(
+    _operations: RefactoringOperation[],
+  ): Promise<unknown> {
     return {};
   }
 
   private async calculateExecutionOrder(
     operations: RefactoringOperation[],
-    dependencyGraph: any,
+    _dependencyGraph: unknown,
   ): Promise<string[]> {
     return operations.map((op) => op.id);
   }
 
   private async createRollbackPlan(
-    operations: RefactoringOperation[],
-    executionOrder: string[],
+    _operations: RefactoringOperation[],
+    _executionOrder: string[],
   ): Promise<RollbackStep[]> {
     return [];
   }
@@ -887,7 +893,7 @@ class AutomatedRefactoringEngine extends EventEmitter {
   }
 
   private async handleExecutionError(
-    error: any,
+    error: unknown,
     operation: RefactoringOperation,
     execution: RefactoringExecution,
     plan: RefactoringPlan,
@@ -935,25 +941,25 @@ class AutomatedRefactoringEngine extends EventEmitter {
   private async analyzeCodeSnippet(
     filePath: string,
     codeSnippet: string,
-    context?: any,
-  ): Promise<any> {
+    context?: unknown,
+  ): Promise<unknown> {
     return {};
   }
 
-  private async generateQuickFixes(codeAnalysis: any): Promise<RefactoringOperation[]> {
+  private async generateQuickFixes(codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     return [];
   }
 
-  private async generateImprovements(codeAnalysis: any): Promise<RefactoringOperation[]> {
+  private async generateImprovements(codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     return [];
   }
 
-  private async generateModernizations(codeAnalysis: any): Promise<RefactoringOperation[]> {
+  private async generateModernizations(codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     return [];
   }
 
   private async generatePerformanceOptimizations(
-    codeAnalysis: any,
+    codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     return [];
   }

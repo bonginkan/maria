@@ -21,7 +21,7 @@ export interface LearningPattern {
   lastObserved: Date;
   contexts: string[]; // Context IDs where this pattern was observed
   outcomes: LearningOutcome[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface LearningOutcome {

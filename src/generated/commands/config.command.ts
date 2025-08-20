@@ -58,25 +58,25 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
       type: 'string',
       description: 'Default AI model',
       default: 'gpt-4',
-      validate: (v: any) => typeof v === 'string'
+      validate: (v: unknown) => typeof v === 'string'
     },
     'temperature': {
       type: 'number',
       description: 'AI temperature (0-2)',
       default: 0.7,
-      validate: (v: any) => typeof v === 'number' && v >= 0 && v <= 2
+      validate: (v: unknown) => typeof v === 'number' && v >= 0 && v <= 2
     },
     'maxTokens': {
       type: 'number',
       description: 'Max tokens per request',
       default: 2000,
-      validate: (v: any) => typeof v === 'number' && v > 0
+      validate: (v: unknown) => typeof v === 'number' && v > 0
     },
     'stream': {
       type: 'boolean',
       description: 'Stream AI responses',
       default: true,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     
     // UI Settings
@@ -84,19 +84,19 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
       type: 'string',
       description: 'UI theme',
       default: 'dark',
-      validate: (v: any) => ['dark', 'light', 'auto'].includes(v)
+      validate: (v: unknown) => ['dark', 'light', 'auto'].includes(v)
     },
     'colors': {
       type: 'boolean',
       description: 'Enable colored output',
       default: true,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     'animations': {
       type: 'boolean',
       description: 'Enable animations',
       default: true,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     
     // Developer Settings
@@ -104,19 +104,19 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
       type: 'boolean',
       description: 'Debug mode',
       default: false,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     'verbose': {
       type: 'boolean',
       description: 'Verbose output',
       default: false,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     'telemetry': {
       type: 'boolean',
       description: 'Send telemetry data',
       default: true,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     
     // Project Settings
@@ -124,19 +124,19 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
       type: 'string',
       description: 'Default project path',
       default: process.cwd(),
-      validate: (v: any) => typeof v === 'string'
+      validate: (v: unknown) => typeof v === 'string'
     },
     'autoSave': {
       type: 'boolean',
       description: 'Auto-save generated code',
       default: false,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     'autoFormat': {
       type: 'boolean',
       description: 'Auto-format code',
       default: true,
-      validate: (v: any) => typeof v === 'boolean'
+      validate: (v: unknown) => typeof v === 'boolean'
     },
     
     // API Keys (sensitive)
@@ -145,21 +145,21 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
       description: 'OpenAI API key',
       default: '',
       sensitive: true,
-      validate: (v: any) => typeof v === 'string'
+      validate: (v: unknown) => typeof v === 'string'
     },
     'anthropicKey': {
       type: 'string',
       description: 'Anthropic API key',
       default: '',
       sensitive: true,
-      validate: (v: any) => typeof v === 'string'
+      validate: (v: unknown) => typeof v === 'string'
     },
     'googleKey': {
       type: 'string',
       description: 'Google AI API key',
       default: '',
       sensitive: true,
-      validate: (v: any) => typeof v === 'string'
+      validate: (v: unknown) => typeof v === 'string'
     }
   };
 
@@ -253,8 +253,8 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
     };
   }
 
-  private groupConfigsByCategory(configs: Record<string, any>): Record<string, Record<string, any>> {
-    const categories: Record<string, Record<string, any>> = {
+  private groupConfigsByCategory(configs: Record<string, unknown>): Record<string, Record<string, unknown>> {
+    const categories: Record<string, Record<string, unknown>> = {
       'AI Settings': {},
       'UI Settings': {},
       'Developer Settings': {},
@@ -314,7 +314,7 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
     };
   }
 
-  private async setConfig(key: string, value: any, options: ConfigOptions): Promise<CommandResult> {
+  private async setConfig(key: string, value: unknown, options: ConfigOptions): Promise<CommandResult> {
     const configDef = this.configKeys[key];
     
     if (!configDef) {
@@ -353,7 +353,7 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
     };
   }
 
-  private parseValue(value: any, type: string): any {
+  private parseValue(value: unknown, type: string): unknown {
     switch (type) {
       case 'boolean':
         return value === 'true' || value === true;
@@ -404,7 +404,7 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
     const editor = process.env.EDITOR || 'nano';
     
     return new Promise((resolve) => {
-      exec(`${editor} ${configPath}`, (error: any) => {
+      exec(`${editor} ${configPath}`, (error: unknown) => {
         if (error) {
           logger.error(chalk.red(`Failed to open editor: ${error.message}`));
           resolve({
@@ -454,7 +454,7 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
       throw new Error(`Could not read file: ${importPath}`);
     }
 
-    let configs: Record<string, any>;
+    let configs: Record<string, unknown>;
     try {
       configs = JSON.parse(content);
     } catch (error) {
