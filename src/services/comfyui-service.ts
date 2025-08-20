@@ -83,6 +83,7 @@ export class ComfyUIService {
       return true;
     } catch {
       // Ignore error
+      // Ignore error
       return false;
     }
   }
@@ -207,6 +208,7 @@ export class ComfyUIService {
         return; // Server is ready
       } catch {
         // Ignore error
+        // Ignore error
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     }
@@ -223,6 +225,7 @@ export class ComfyUIService {
       await axios.get(`${baseUrl}/system_stats`, { timeout: 5000 });
       return true;
     } catch {
+      // Ignore error
       // Ignore error
       return false;
     }
@@ -526,6 +529,7 @@ export class ComfyUIService {
           continue; // Skip if already exists
         } catch {
           // Ignore error
+          // Ignore error
         }
 
         // Clone repository
@@ -539,6 +543,7 @@ export class ComfyUIService {
             `cd "${targetDir}" && ${this.config.pythonPath} -m pip install -r requirements.txt`,
           );
         } catch {
+          // Ignore error
           // Ignore error
         }
       } catch (error: unknown) {
@@ -563,6 +568,7 @@ export class ComfyUIService {
       const response = await axios.get(`${baseUrl}/system_stats`);
       return response.data;
     } catch {
+      // Ignore error
       // Ignore error
       return null;
     }

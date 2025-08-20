@@ -229,7 +229,7 @@ export class TestGenerationService {
   // @ts-nocheck - Complex async type handling
   private async generateTestsForFiles(
     files: string[],
-    _framework: string,
+    __framework: string,
     existingTests: Map<string, TestInfo>,
   ): Promise<GeneratedTest[]> {
     const tests: GeneratedTest[] = [];
@@ -285,7 +285,7 @@ export class TestGenerationService {
   private buildTestPrompt(
     code: string,
     file: string,
-    _framework: string,
+    __framework: string,
     language: string,
     existingTest?: TestInfo,
   ): string {
@@ -476,7 +476,7 @@ BEGIN TEST GENERATION:
    * Write test files
    */
   // @ts-nocheck - Complex async type handling
-  private async writeTestFiles(tests: GeneratedTest[], __framework: string): Promise<void> {
+  private async writeTestFiles(tests: GeneratedTest[], ___framework: string): Promise<void> {
     for (const test of tests) {
       try {
         // Create test directory if it doesn't exist
@@ -496,7 +496,10 @@ BEGIN TEST GENERATION:
    * Run tests
    */
   // @ts-nocheck - Complex async type handling
-  private async runTests(_framework: string, request: TestGenerationRequest): Promise<TestResults> {
+  private async runTests(
+    __framework: string,
+    request: TestGenerationRequest,
+  ): Promise<TestResults> {
     const runner = this.getTestRunner(framework);
     const command = this.buildTestCommand(runner, request);
 
@@ -516,7 +519,7 @@ BEGIN TEST GENERATION:
    * Get test runner for framework
    */
   // @ts-nocheck - Complex async type handling
-  private getTestRunner(_framework: string): TestRunner {
+  private getTestRunner(__framework: string): TestRunner {
     const runners: Record<string, TestRunner> = {
       Jest: { command: 'npx jest', configFile: 'jest.config.js' },
       Vitest: { command: 'npx vitest run', configFile: 'vitest.config.ts' },
@@ -564,7 +567,7 @@ BEGIN TEST GENERATION:
    * Parse test results
    */
   // @ts-nocheck - Complex async type handling
-  private parseTestResults(stdout: string, _stderr: string, __framework: string): TestResults {
+  private parseTestResults(stdout: string, _stderr: string, ___framework: string): TestResults {
     // Framework-specific parsing
     // This is a simplified version - real implementation would parse based on framework
     const lines = stdout.split('\n');
@@ -606,7 +609,7 @@ BEGIN TEST GENERATION:
    * Get test file name
    */
   // @ts-nocheck - Complex async type handling
-  private getTestFileName(file: string, _framework: string): string {
+  private getTestFileName(file: string, __framework: string): string {
     const dir = path.dirname(file);
     const base = path.basename(file, path.extname(file));
     const ext = path.extname(file);
@@ -761,7 +764,7 @@ class TestAnalyzer {
 }
 
 class CoverageAnalyzer {
-  async generateReport(_framework: string): Promise<CoverageReport> {
+  async generateReport(__framework: string): Promise<CoverageReport> {
     // TODO: Parse actual coverage reports based on framework
     // For now, return mock data
 
@@ -786,7 +789,7 @@ interface GeneratedTest {
   file: string;
   testFile: string;
   content: string;
-  _framework: string;
+  __framework: string;
 }
 
 interface TestRunner {

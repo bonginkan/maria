@@ -3,7 +3,7 @@
  * 自然言語からコマンドへの自動変換とリアルタイム処理を提供
  */
 
-export { IntentClassifier, type InferredCommand, type CommandPattern } from './intent-classifier';
+export { _IntentClassifier, type InferredCommand, type CommandPattern } from './intent-classifier';
 export {
   CommandDispatcher,
   type CommandResult,

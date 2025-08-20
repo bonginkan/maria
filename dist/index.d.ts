@@ -6,6 +6,6 @@ import 'commander';
  * Entry point for the library
  */
 
-declare const VERSION = "1.0.0-alpha.1";
+declare const VERSION = "1.0.7";
 
 export { VERSION };

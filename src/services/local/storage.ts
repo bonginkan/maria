@@ -4,7 +4,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as crypto from 'crypto';
-// import { promisify } from 'util'; // Not used
+// import { _promisify } from 'util'; // Not used
 
 interface StorageOptions {
   basePath?: string;

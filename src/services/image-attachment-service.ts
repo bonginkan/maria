@@ -46,9 +46,9 @@ export class ImageAttachmentService {
       // Absolute paths
       /(?:^|\s)([/~][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
       // Relative paths
-      /(?:^|\s)(\.?\.?\/[^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
-      // Windows paths
-      /(?:^|\s)([a-zA-Z]:[\\/][^\s]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
+      new RegExp('(?:^|\\s)(\\.?\\.?\\/[^\\s]+\\.(?:jpg|jpeg|png|gif|bmp|webp|svg))', 'gi'),
+      // Windows paths  
+      new RegExp('(?:^|\\s)([a-zA-Z]:[/\\\\][^\\s]+\\.(?:jpg|jpeg|png|gif|bmp|webp|svg))', 'gi'),
       // Just filename if in current directory
       /(?:^|\s)([^\s/\\]+\.(?:jpg|jpeg|png|gif|bmp|webp|svg))/gi,
     ];

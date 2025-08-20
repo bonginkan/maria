@@ -15,7 +15,6 @@ const binDir = __dirname;
 const projectRoot = path.dirname(binDir);
 const mariaFile = path.join(projectRoot, 'dist', 'bin', 'maria.js');
 const cliFile = path.join(projectRoot, 'dist', 'cli.js');
-const interactiveFile = path.join(projectRoot, 'maria-interactive-cli.mjs');
 
 // Check if running with arguments or in interactive mode
 const hasArgs = process.argv.length > 2;
@@ -48,38 +47,28 @@ if (hasArgs) {
   });
   
 } else {
-  // If no arguments, launch the beautiful interactive mode
+  // If no arguments, launch chat mode (interactive mode)
   
-  // Check if interactive file exists
-  if (!fs.existsSync(interactiveFile)) {
-    console.error('❌ Interactive CLI not found:', interactiveFile);
-    console.error('💡 Falling back to command mode...');
-    
-    // Fallback to regular CLI
-    const child = spawn('node', ['--no-deprecation', cliFile], {
-      stdio: 'inherit',
-      cwd: process.cwd(),
-      env: { ...process.env, NODE_NO_WARNINGS: '1' }
-    });
-    
-    child.on('exit', (code) => {
-      process.exit(code || 0);
-    });
-  } else {
-    // Launch the beautiful interactive CLI with ASCII art
-    const child = spawn('node', [interactiveFile], {
-      stdio: 'inherit',
-      cwd: process.cwd(),
-      env: process.env
-    });
-    
-    child.on('error', (err) => {
-      console.error('❌ Error:', err.message);
-      process.exit(1);
-    });
-    
-    child.on('exit', (code) => {
-      process.exit(code || 0);
-    });
+  // Check if CLI file exists
+  if (!fs.existsSync(cliFile)) {
+    console.error('❌ CLI file not found:', cliFile);
+    console.error('💡 Please run: pnpm build');
+    process.exit(1);
   }
+  
+  // Launch the chat command for interactive mode
+  const child = spawn('node', ['--no-deprecation', cliFile, 'chat'], {
+    stdio: 'inherit',
+    cwd: process.cwd(),
+    env: { ...process.env, NODE_NO_WARNINGS: '1' }
+  });
+  
+  child.on('error', (err) => {
+    console.error('❌ Error:', err.message);
+    process.exit(1);
+  });
+  
+  child.on('exit', (code) => {
+    process.exit(code || 0);
+  });
 }

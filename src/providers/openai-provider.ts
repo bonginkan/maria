@@ -32,13 +32,17 @@ export class OpenAIProvider extends BaseAIProvider {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
 
+    // o1 and gpt-5 models only support temperature=1
+    const isRestrictedModel = selectedModel.includes('o1') || selectedModel.includes('gpt-5');
+    const temperature = isRestrictedModel ? 1.0 : options?.temperature || 0.7;
+
     const completion = await this.client!.chat.completions.create({
       model: selectedModel,
       messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature: options?.temperature || 0.7,
+      temperature: temperature,
       max_tokens: options?.maxTokens,
       top_p: options?.topP,
       stop: options?.stopSequences,
@@ -55,13 +59,17 @@ export class OpenAIProvider extends BaseAIProvider {
     this.ensureInitialized();
     const selectedModel = this.validateModel(model);
 
+    // o1 and gpt-5 models only support temperature=1
+    const isRestrictedModel = selectedModel.includes('o1') || selectedModel.includes('gpt-5');
+    const temperature = isRestrictedModel ? 1.0 : options?.temperature || 0.7;
+
     const stream = await this.client!.chat.completions.create({
       model: selectedModel,
       messages: messages.map((m) => ({
         role: m.role,
         content: m.content,
       })),
-      temperature: options?.temperature || 0.7,
+      temperature: temperature,
       max_tokens: options?.maxTokens,
       top_p: options?.topP,
       stop: options?.stopSequences,
