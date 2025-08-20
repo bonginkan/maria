@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * MARIA CODE - OSS Distribution Entry Point
- * Launches the beautiful interactive CLI interface
+ * MARIA CODE - Smart Entry Point
+ * Launches either command mode or beautiful interactive CLI
  * Bonginkan Inc.
  */
 
@@ -15,28 +15,52 @@ const binDir = __dirname;
 const projectRoot = path.dirname(binDir);
 const cliFile = path.join(projectRoot, 'dist', 'cli.js');
 
-console.log('🚀 MARIA CODE CLI Starting...');
+// Check if running with arguments or in interactive mode
+const hasArgs = process.argv.length > 2;
 
 // Check if CLI file exists
 if (!fs.existsSync(cliFile)) {
   console.error('❌ CLI file not found:', cliFile);
-  console.error('💡 Please ensure MARIA is properly installed.');
+  console.error('💡 Please run: pnpm build');
   process.exit(1);
 }
 
-console.log('✅ Launching MARIA Interactive CLI...\n');
-
-// Launch the CLI directly with node
-const child = spawn('node', [cliFile], {
-  stdio: 'inherit',
-  cwd: process.cwd()
-});
-
-child.on('error', (err) => {
-  console.error('❌ Error:', err.message);
-  process.exit(1);
-});
-
-child.on('exit', (code) => {
-  process.exit(code || 0);
-});
+if (hasArgs) {
+  // If arguments provided, use the built CLI for commands
+  console.log('🚀 MARIA OSS CLI - Command Mode');
+  
+  // Launch the CLI with arguments
+  const child = spawn('node', ['--no-deprecation', cliFile, ...process.argv.slice(2)], {
+    stdio: 'inherit',
+    cwd: process.cwd(),
+    env: { ...process.env, NODE_NO_WARNINGS: '1' }
+  });
+  
+  child.on('error', (err) => {
+    console.error('❌ Error:', err.message);
+    process.exit(1);
+  });
+  
+  child.on('exit', (code) => {
+    process.exit(code || 0);
+  });
+  
+} else {
+  // If no arguments, launch chat mode (interactive mode)
+  
+  // Launch the chat command for interactive mode
+  const child = spawn('node', ['--no-deprecation', cliFile, 'chat'], {
+    stdio: 'inherit',
+    cwd: process.cwd(),
+    env: { ...process.env, NODE_NO_WARNINGS: '1' }
+  });
+  
+  child.on('error', (err) => {
+    console.error('❌ Error:', err.message);
+    process.exit(1);
+  });
+  
+  child.on('exit', (code) => {
+    process.exit(code || 0);
+  });
+}

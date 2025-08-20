@@ -18,50 +18,25 @@ export function createCLI(): Command {
 
   program
     .name('maria')
-    .description('MARIA - Intelligent CLI Assistant with Multi-Model AI Support')
-    .version('1.0.3');
+    .description('MARIA - AI-Powered Development Platform')
+    .version('1.0.7');
 
-  // Interactive chat mode (default)
+  // Chat command
   program
-    .command('chat', { isDefault: true })
-    .description('Start interactive chat session')
-    .option('--model <name>', 'Specify AI model to use')
-    .option('--debug', 'Enable debug output')
-    .action(async (options: CLIOptions) => {
-      console.log(chalk.blue.bold('🤖 MARIA CLI v1.0.3'));
-      console.log(chalk.gray('Intelligent CLI Assistant with Multi-Model AI Support'));
-      console.log('');
-      
-      if (options.debug) {
-        console.log(chalk.yellow('Debug mode enabled'));
-      }
-      
-      console.log(chalk.green('✨ Welcome to MARIA!'));
-      console.log(chalk.gray('Type /help for available commands or start chatting...'));
-      console.log('');
-      
-      // Start interactive session
-      await startInteractiveSession(options);
-    });
-
-  // Help command
-  program
-    .command('help')
-    .description('Show help information')
+    .command('chat')
+    .description('Start interactive chat mode')
     .action(() => {
-      console.log(chalk.blue.bold('🤖 MARIA CLI v1.0.3'));
-      console.log(chalk.gray('Intelligent CLI Assistant with Multi-Model AI Support'));
-      console.log('');
-      console.log(chalk.green('Available Commands:'));
-      console.log('  maria chat     Start interactive chat session (default)');
-      console.log('  maria help     Show this help message');
-      console.log('  maria version  Show version information');
-      console.log('');
-      console.log(chalk.yellow('Options:'));
-      console.log('  --model <name>  Specify AI model to use');
-      console.log('  --debug         Enable debug output');
-      console.log('');
-      console.log(chalk.blue('Visit: https://github.com/bonginkan/maria'));
+      console.log(chalk.blue('🤖 MARIA AI-Powered Development Platform v1.0.7'));
+      console.log(chalk.gray('Enterprise-Grade CLI with Advanced Intelligence'));
+      console.log(chalk.yellow('\n💡 This is the OSS distribution of MARIA.'));
+      console.log(chalk.yellow('   Full features available at: https://maria-code.vercel.app'));
+      console.log(chalk.cyan('\n✨ Key Features:'));
+      console.log(chalk.cyan('   • 22+ AI Models (GPT, Claude, Gemini, Local LLMs)'));
+      console.log(chalk.cyan('   • Advanced Code Quality Systems'));
+      console.log(chalk.cyan('   • Intelligent Dependency Management'));
+      console.log(chalk.cyan('   • AI-Driven Project Analysis'));
+      console.log(chalk.cyan('   • Automated Refactoring Engine'));
+      console.log(chalk.cyan('   • Phase 5: Enterprise-Grade Infrastructure'));
     });
 
   // Version command
@@ -69,35 +44,26 @@ export function createCLI(): Command {
     .command('version')
     .description('Show version information')
     .action(() => {
-      console.log('1.0.2');
+      console.log(chalk.bold('MARIA CLI v1.0.7'));
+      console.log(chalk.gray('AI-Powered Development Platform'));
+      console.log(chalk.gray('© 2025 Bonginkan Inc.'));
+    });
+
+  // Status command
+  program
+    .command('status')
+    .description('Show system status')
+    .action(() => {
+      console.log(chalk.green('✅ MARIA OSS Distribution'));
+      console.log(chalk.blue('📦 Version: 1.0.7'));
+      console.log(chalk.yellow('🔗 Full Platform: https://maria-code.vercel.app'));
     });
 
   return program;
 }
 
-async function startInteractiveSession(options: CLIOptions): Promise<void> {
-  console.log(chalk.cyan('🚀 Starting interactive session...'));
-  
-  if (options.debug) {
-    console.log(chalk.yellow(`Debug: Options passed: ${JSON.stringify(options)}`));
-  }
-  
-  // For now, show setup message
-  console.log('');
-  console.log(chalk.yellow.bold('⚙️  Setup Required'));
-  console.log('');
-  console.log('To use MARIA CLI, you need to:');
-  console.log('1. Set up your AI provider API keys');
-  console.log('2. Configure your preferred models');
-  console.log('');
-  console.log(chalk.blue('For full setup instructions, visit:'));
-  console.log(chalk.underline('https://github.com/bonginkan/maria#setup'));
-  console.log('');
-  console.log(chalk.green('Coming soon: Full interactive chat functionality!'));
-}
-
-// CLI entry point
+// CLI execution
 if (require.main === module) {
-  const program = createCLI();
-  program.parse();
+  const cli = createCLI();
+  cli.parse();
 }

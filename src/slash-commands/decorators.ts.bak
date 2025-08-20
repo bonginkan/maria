@@ -1,0 +1,364 @@
+/**
+ * Decorator System for Slash Commands
+ * Provides decorators for declarative command configuration
+ */
+
+import 'reflect-metadata';
+import {
+  CommandConfig,
+  CommandCategory,
+  CommandPermission,
+  CommandExample,
+  IMiddleware,
+} from './types';
+import { BaseCommand } from './base-command';
+
+// Metadata keys
+const COMMAND_METADATA_KEY = Symbol('command:metadata');
+const MIDDLEWARE_METADATA_KEY = Symbol('command:middleware');
+const RATE_LIMIT_METADATA_KEY = Symbol('command:rateLimit');
+const PERMISSION_METADATA_KEY = Symbol('command:permission');
+
+/**
+ * Main command decorator
+ * @example
+ * @Command({
+ *   name: 'test',
+ *   category: 'development',
+ *   description: 'Run tests'
+ * })
+ */
+export function Command(config: CommandConfig) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    // Store metadata
+    Reflect.defineMetadata(COMMAND_METADATA_KEY, config, constructor);
+    
+    // Create a new class that extends the original
+    return class extends constructor {
+      name = config.name;
+      category = config.category;
+      description = config.description;
+      aliases = config.aliases || this.aliases;
+      usage = config.usage || this.usage;
+      examples = config.examples || this.examples;
+      permissions = config.permissions || this.permissions;
+      middleware = config.middleware || this.middleware;
+      rateLimit = config.rateLimit || this.rateLimit;
+      metadata = {
+        ...this.metadata,
+        ...config.metadata,
+      };
+    };
+  };
+}
+
+/**
+ * Middleware decorator
+ * @example
+ * @UseMiddleware('auth', 'validation')
+ */
+export function UseMiddleware(...middlewares: string[]) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    const existing = Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, constructor) || [];
+    Reflect.defineMetadata(
+      MIDDLEWARE_METADATA_KEY,
+      [...existing, ...middlewares],
+      constructor
+    );
+    
+    return class extends constructor {
+      middleware = [...(this.middleware || []), ...middlewares];
+    };
+  };
+}
+
+/**
+ * Rate limiting decorator
+ * @example
+ * @RateLimit(10, '1m') // 10 requests per minute
+ */
+export function RateLimit(requests: number, window: string) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    Reflect.defineMetadata(
+      RATE_LIMIT_METADATA_KEY,
+      { requests, window },
+      constructor
+    );
+    
+    return class extends constructor {
+      rateLimit = { requests, window };
+    };
+  };
+}
+
+/**
+ * Permission decorator
+ * @example
+ * @RequireAuth()
+ * @RequireRole('admin')
+ * @RequirePremium()
+ */
+export function RequireAuth() {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    const existing = Reflect.getMetadata(PERMISSION_METADATA_KEY, constructor) || {};
+    const permissions: CommandPermission = {
+      ...existing,
+      requiresAuth: true,
+    };
+    
+    Reflect.defineMetadata(PERMISSION_METADATA_KEY, permissions, constructor);
+    
+    return class extends constructor {
+      permissions = permissions;
+    };
+  };
+}
+
+export function RequireRole(role: string) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    const existing = Reflect.getMetadata(PERMISSION_METADATA_KEY, constructor) || {};
+    const permissions: CommandPermission = {
+      ...existing,
+      role,
+      requiresAuth: true, // Role implies auth required
+    };
+    
+    Reflect.defineMetadata(PERMISSION_METADATA_KEY, permissions, constructor);
+    
+    return class extends constructor {
+      permissions = permissions;
+    };
+  };
+}
+
+export function RequirePremium() {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    const existing = Reflect.getMetadata(PERMISSION_METADATA_KEY, constructor) || {};
+    const permissions: CommandPermission = {
+      ...existing,
+      requiresPremium: true,
+      requiresAuth: true, // Premium implies auth required
+    };
+    
+    Reflect.defineMetadata(PERMISSION_METADATA_KEY, permissions, constructor);
+    
+    return class extends constructor {
+      permissions = permissions;
+    };
+  };
+}
+
+/**
+ * Deprecated decorator
+ * @example
+ * @Deprecated('Use /new-command instead')
+ */
+export function Deprecated(replacedBy?: string) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    return class extends constructor {
+      metadata = {
+        ...this.metadata,
+        deprecated: true,
+        replacedBy,
+      };
+    };
+  };
+}
+
+/**
+ * Experimental decorator
+ * @example
+ * @Experimental()
+ */
+export function Experimental() {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    return class extends constructor {
+      metadata = {
+        ...this.metadata,
+        experimental: true,
+      };
+    };
+  };
+}
+
+/**
+ * Alias decorator
+ * @example
+ * @Alias('t', 'tst')
+ */
+export function Alias(...aliases: string[]) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    return class extends constructor {
+      aliases = [...(this.aliases || []), ...aliases];
+    };
+  };
+}
+
+/**
+ * Usage decorator
+ * @example
+ * @Usage('[options] <file>')
+ */
+export function Usage(usage: string) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    return class extends constructor {
+      usage = usage;
+    };
+  };
+}
+
+/**
+ * Example decorator
+ * @example
+ * @Example('/test unit', 'Run unit tests')
+ * @Example('/test e2e', 'Run end-to-end tests')
+ */
+export function Example(input: string, description: string, output?: string) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    const example: CommandExample = { input, description, output };
+    
+    return class extends constructor {
+      examples = [...(this.examples || []), example];
+    };
+  };
+}
+
+/**
+ * Category decorator (alternative to setting in @Command)
+ * @example
+ * @Category('development')
+ */
+export function Category(category: CommandCategory) {
+  return function <T extends { new (...args: unknown[]): BaseCommand }>(constructor: T) {
+    return class extends constructor {
+      category = category;
+    };
+  };
+}
+
+/**
+ * Method decorator for command handlers
+ * @example
+ * class MyCommand extends BaseCommand {
+ *   @Validate()
+ *   async validateArgs(args: CommandArgs) { ... }
+ * }
+ */
+export function Validate() {
+  return function (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const originalMethod = descriptor.value;
+    
+    descriptor.value = async function (...args: unknown[]) {
+      console.log(`Validating ${propertyKey} with args:`, args);
+      const result = await originalMethod.apply(this, args);
+      console.log(`Validation result:`, result);
+      return result;
+    };
+    
+    return descriptor;
+  };
+}
+
+/**
+ * Method decorator for logging
+ * @example
+ * @Log()
+ * async execute(args, context) { ... }
+ */
+export function Log() {
+  return function (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const originalMethod = descriptor.value;
+    
+    descriptor.value = async function (...args: unknown[]) {
+      const className = target?.constructor?.name || 'Unknown';
+      console.log(`[${className}] Executing ${propertyKey}`);
+      const start = Date.now();
+      
+      try {
+        const result = await originalMethod.apply(this, args);
+        console.log(`[${className}] ${propertyKey} completed in ${Date.now() - start}ms`);
+        return result;
+      } catch (error) {
+        console.error(`[${className}] ${propertyKey} failed:`, error);
+        throw error;
+      }
+    };
+    
+    return descriptor;
+  };
+}
+
+/**
+ * Method decorator for caching
+ * @example
+ * @Cache(60) // Cache for 60 seconds
+ * async fetchData() { ... }
+ */
+export function Cache(ttlSeconds: number = 60) {
+  return function (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
+    const originalMethod = descriptor.value;
+    const cacheKey = `${propertyKey}_cache`;
+    
+    descriptor.value = async function (...args: unknown[]) {
+      // Try to get from cache
+      const cached = (this as BaseCommand).getCache(cacheKey);
+      if (cached !== null) {
+        return cached;
+      }
+      
+      // Execute and cache
+      const result = await originalMethod.apply(this, args);
+      (this as BaseCommand).setCache(cacheKey, result, ttlSeconds);
+      
+      return result;
+    };
+    
+    return descriptor;
+  };
+}
+
+/**
+ * Create a middleware from a decorator
+ */
+export function createMiddlewareFromDecorator(
+  name: string,
+  handler: IMiddleware['execute']
+): IMiddleware {
+  return {
+    name,
+    execute: handler,
+  };
+}
+
+/**
+ * Helper to get all metadata from a command class
+ */
+export function getCommandMetadata(constructor: Function): CommandConfig | undefined {
+  return Reflect.getMetadata(COMMAND_METADATA_KEY, constructor);
+}
+
+export function getMiddlewareMetadata(constructor: Function): string[] | undefined {
+  return Reflect.getMetadata(MIDDLEWARE_METADATA_KEY, constructor);
+}
+
+export function getRateLimitMetadata(
+  constructor: Function
+): { requests: number; window: string } | undefined {
+  return Reflect.getMetadata(RATE_LIMIT_METADATA_KEY, constructor);
+}
+
+export function getPermissionMetadata(constructor: Function): CommandPermission | undefined {
+  return Reflect.getMetadata(PERMISSION_METADATA_KEY, constructor);
+}

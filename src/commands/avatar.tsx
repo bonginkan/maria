@@ -43,7 +43,9 @@ const AvatarDisplay: React.FC<{ lines: string[]; isTalking: boolean; expression?
           frameIndex = 0;
         }
         const frame = talkingSequence[frameIndex];
-        setAnimatedLines(frame.lines);
+        if (frame) {
+          setAnimatedLines(frame.lines);
+        }
         frameIndex++;
       };
 
@@ -230,7 +232,8 @@ const AvatarInterface: React.FC<AvatarCommandProps> = ({ onExit }) => {
           "I'm here to assist you. Let me process that...",
           "Thanks for sharing that with me. Here's my take...",
         ];
-        response = responses[Math.floor(Math.random() * responses.length)];
+        response =
+          responses[Math.floor(Math.random() * responses.length)] || "I'm here to help you!";
         avatarExpression = 'talking';
       }
 

@@ -90,9 +90,10 @@ export class ConfigManager {
 
   // Save configuration to file (for CLI usage)
   async save(configPath?: string): Promise<void> {
-    const fs = await import('fs-extra');
-    const path = await import('path');
-    const os = await import('os');
+    const { importNodeBuiltin, safeDynamicImport } = await import('../utils/import-helper.js');
+    const fs = await safeDynamicImport('fs-extra').catch(() => importNodeBuiltin('fs'));
+    const path = await importNodeBuiltin('path');
+    const os = await importNodeBuiltin('os');
 
     const targetPath = configPath || path.join(os.homedir(), '.maria', 'config.json');
 
@@ -105,9 +106,10 @@ export class ConfigManager {
 
   // Load configuration from file
   static async load(configPath?: string): Promise<ConfigManager> {
-    const fs = await import('fs-extra');
-    const path = await import('path');
-    const os = await import('os');
+    const { importNodeBuiltin, safeDynamicImport } = await import('../utils/import-helper.js');
+    const fs = await safeDynamicImport('fs-extra').catch(() => importNodeBuiltin('fs'));
+    const path = await importNodeBuiltin('path');
+    const os = await importNodeBuiltin('os');
 
     const targetPath = configPath || path.join(os.homedir(), '.maria', 'config.json');
 
