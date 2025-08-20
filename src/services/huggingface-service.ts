@@ -76,9 +76,11 @@ export class HuggingFaceService {
         return { installed: true, authenticated, version };
       } catch {
         // Ignore error
+        // Ignore error
         return { installed: true, authenticated: false, version };
       }
     } catch {
+      // Ignore error
       // Ignore error
       return { installed: false, authenticated: false };
     }
@@ -146,6 +148,7 @@ export class HuggingFaceService {
       return files.length > 0;
     } catch {
       // Ignore error
+      // Ignore error
       return false;
     }
   }
@@ -195,6 +198,7 @@ export class HuggingFaceService {
         await fs.rm(modelPath, { recursive: true, force: true });
       } catch {
         // Ignore error
+        // Ignore error
       }
 
       throw new Error(
@@ -212,6 +216,7 @@ export class HuggingFaceService {
       const entries = await fs.readdir(this.config.modelDir, { withFileTypes: true });
       return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
     } catch {
+      // Ignore error
       // Ignore error
       return [];
     }
@@ -276,6 +281,7 @@ export class HuggingFaceService {
         sizes[modelId] = size;
       } catch {
         // Ignore error
+        // Ignore error
         sizes[modelId] = 0;
       }
     }
@@ -319,6 +325,7 @@ export class HuggingFaceService {
       await execAsync('huggingface-cli whoami', { timeout: 10000 });
       return true;
     } catch {
+      // Ignore error
       // Ignore error
       return false;
     }

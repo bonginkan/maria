@@ -78,7 +78,8 @@ module.exports = {
     '**/*.test.ts',
     '**/*.test.tsx',
     '**/*.spec.ts',
-    '**/*.spec.tsx'
+    '**/*.spec.tsx',
+    'src/generated/**/*'
   ],
   overrides: [
     {

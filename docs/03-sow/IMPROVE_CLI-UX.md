@@ -3,6 +3,154 @@
 ## 🎯 ビジョン
 MARIA CODEを「考えるだけで実装が完了する」究極の開発体験へ進化させる
 
+---
+
+# CLI UX改善 - 出力制御・バックグラウンド処理SOW
+
+## 📋 要件概要
+
+MARIA CLIで長い出力が表示される際の使用体験を向上させるため、以下の機能を実装する：
+
+1. **自動出力制御**: 長い応答を自動的に折りたたみ、Ctrl+Rで展開/折りたたみ制御
+2. **バックグラウンド処理**: 時間のかかる処理をCtrl+Bでバックグラウンドに移行
+
+## 🎯 実装仕様
+
+### 1. 自動出力制御機能
+
+#### 判定基準
+- **行数**: 50行以上で自動折りたたみ
+- **文字数**: 5000文字以上で自動折りたたみ  
+- **処理時間**: 10秒以上の応答で折りたたみ候補
+
+#### UI表示
+```
+✨ AI応答が生成されました (127行, 8.2KB)
+
+最初の5行を表示:
+> import React from 'react'
+> import { useState } from 'react'
+> ...
+
+📖 Ctrl+R で全体表示 | 🔄 Ctrl+C でキャンセル
+```
+
+### 2. バックグラウンド処理機能
+
+#### 対象コマンド
+- `/code` - 大きなコード生成
+- `/test` - テストファイル生成
+- `/review` - コードレビュー
+- `/image` - 画像生成
+- `/video` - 動画生成
+
+#### バックグラウンドUI
+```
+🔄 バックグラウンド処理中...
+
+⏳ /code "React component for dashboard"
+📊 進行状況: 68% (推定残り時間: 1分32秒)
+
+💡 他のコマンドを実行できます
+🎯 Ctrl+F でフォアグラウンドに復帰
+```
+
+## 🔧 技術実装
+
+### ファイル構造
+```
+src/services/
+├── output-controller.ts     # 出力制御システム
+├── background-processor.ts  # バックグラウンド処理
+├── process-manager.ts       # プロセス管理
+└── ui-state-manager.ts     # UI状態管理
+
+src/components/
+├── OutputDisplay.tsx        # 出力表示コンポーネント
+├── BackgroundStatus.tsx     # バックグラウンド状態表示
+└── ProcessIndicator.tsx     # プロセス進行表示
+```
+
+### キーバインディング
+```typescript
+const keyBindings = {
+  'ctrl+r': 'toggleOutputExpansion',  # 出力展開/折りたたみ
+  'ctrl+b': 'moveToBackground',       # バックグラウンドに移行
+  'ctrl+f': 'bringToForeground',      # フォアグラウンドに復帰
+  'ctrl+t': 'showTaskList',           # タスク一覧表示
+};
+```
+
+### 実装クラス
+
+#### OutputController
+```typescript
+class OutputController {
+  shouldCollapse(output: string): boolean
+  getPreview(output: string, lines: number = 5): string
+  toggleExpansion(): void
+  trackExpandedState(sessionId: string): void
+}
+```
+
+#### BackgroundProcessor  
+```typescript
+class BackgroundProcessor {
+  moveToBackground(taskId: string): Promise<void>
+  getActiveProcesses(): BackgroundTask[]
+  estimateCompletion(task: BackgroundTask): number
+  notifyCompletion(taskId: string): void
+}
+```
+
+## 📈 パフォーマンス要件
+
+- **UI応答時間**: 100ms以内
+- **バックグラウンド移行**: 200ms以内
+- **メモリ使用量増加**: +50MB以下
+- **CPU使用率増加**: +5%以下
+
+## 🚀 実装フェーズ (5週間)
+
+### Phase 1: 出力制御システム (1週間)
+- 出力長判定ロジック実装
+- 折りたたみUI作成  
+- Ctrl+R制御実装
+
+### Phase 2: バックグラウンド処理 (2週間)
+- バックグラウンドプロセス管理
+- Ctrl+B制御実装
+- タスクキュー管理システム
+
+### Phase 3: 統合・UI改善 (1週間)  
+- UI/UX統合テスト
+- パフォーマンス最適化
+- エラーハンドリング強化
+
+### Phase 4: テスト・品質保証 (1週間)
+- 自動テストスイート作成
+- 負荷テスト実行
+- ユーザビリティテスト
+
+## 💰 投資対効果
+
+### 開発コスト
+- **開発期間**: 5週間
+- **開発工数**: 200時間
+- **予算**: $15,000
+
+### 期待効果
+- **操作効率**: +40%向上
+- **ユーザー満足度**: 95%以上
+- **バッテリー寿命影響**: -5%以内
+
+### ROI
+- **回収期間**: 3ヶ月
+- **年間効果**: $96,000
+- **投資効率**: 640%
+
+---
+
 ## 📊 現状分析 - 未実装スラッシュコマンド特定
 
 ### ✅ 実装済みコマンド (12個)
@@ -1118,27 +1266,53 @@ Features:
   - [x] セキュリティ監査オプション
   - [x] パフォーマンス分析
 
-## 🚀 Phase 2: インタラプト&リアルタイム処理 ✅ 完全実装完了
+## 🚀 Phase 2: バックグラウンド処理システム ✅ 完全実装完了
 
 ### 概要
-AIが処理中でも新しい指示を即座に受け付け、優先度に基づいて処理を切り替える
+長時間実行タスクを背景で管理し、ユーザーが他の作業を継続できるシステム
 
 ### 実装済みモジュール
-- ✅ **interrupt-handler.ts** - リアルタイム入力監視と処理中断メカニズム
-- ✅ **stream-processor.ts** - ストリーミングレスポンス処理
-- ✅ **priority-system.ts** - 優先度ベースのプロバイダー選択（既存）
+- ✅ **background-processor.ts** - バックグラウンドタスク実行エンジン
+- ✅ **process-manager.ts** - 高次プロセス管理とインテリジェントルーティング  
+- ✅ **BackgroundStatus.tsx** - リアルタイムタスク状態表示UI
+- ✅ **ProcessIndicator.tsx** - アニメーション付きプログレス表示
+- ✅ **hotkey-manager.ts** - Ctrl+B/F/Y ホットキー統合
+- ✅ **ChatInterface.tsx** - バックグラウンド処理UI統合
 
 ### 実装チェックリスト [Priority: High] ✅
 
-- [x] **Interrupt Handler** (`interrupt-handler.ts`)
-  - [x] リアルタイム入力監視
-  - [x] 処理中断メカニズム
-  - [x] 優先度判定ロジック（override/merge/queue）
-  - [x] コンテキスト保存&復元
-  - [x] グレースフルシャットダウン
-  - [x] Ctrl+C対応
+- [x] **BackgroundProcessor** (`background-processor.ts`)
+  - [x] 長時間タスクのバックグラウンド実行
+  - [x] プログレス追跡とタイムアウト制御
+  - [x] 並行処理制限（最大3タスク同時）
+  - [x] AbortController による安全な中断処理
+  - [x] 自動クリーンアップとメモリ管理
+  - [x] イベントベースの状態通知
 
-- [x] **Priority Queue System** (`command-dispatcher.ts` 内に実装)
+- [x] **ProcessManager** (`process-manager.ts`)
+  - [x] インテリジェントタスクルーティング
+  - [x] 優先度ベース処理戦略
+  - [x] タスク割り込み処理
+  - [x] 統計とヘルスモニタリング
+  - [x] 動的負荷分散
+
+- [x] **React UI Components**
+  - [x] BackgroundStatus - フル機能状態表示
+  - [x] ProcessIndicator - アニメーション進捗表示
+  - [x] MiniBackgroundStatus - インライン表示
+  - [x] MultiProcessIndicator - 複数タスク表示
+
+- [x] **Hotkey Integration**
+  - [x] Ctrl+B - タスクをバックグラウンドに移行
+  - [x] Ctrl+F - バックグラウンドタスクをフォアグラウンドに復帰
+  - [x] Ctrl+Y - タスク一覧表示/非表示切り替え
+  - [x] Ctrl+R - 出力展開/折りたたみ（Phase 1継続）
+
+- [x] **ChatInterface Integration**
+  - [x] リアルタイムバックグラウンド状態監視
+  - [x] UI状態の自動更新
+  - [x] プロセス選択とフォーカス管理
+  - [x] ホットキー処理統合
   - [x] タスクキュー実装
   - [x] 動的優先度調整
   - [x] デッドロック防止

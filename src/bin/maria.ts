@@ -4,14 +4,21 @@
 
 import { createCLI } from '../cli';
 import { checkNodeVersion } from '../utils/version-check';
+import { loadEnvironmentConfig } from '../config/loader';
 
-// Check Node.js version before starting
-checkNodeVersion();
+// Main async function to handle initialization
+async function main() {
+  // Load environment variables from .env.local file
+  await loadEnvironmentConfig();
 
-const program = createCLI();
+  // Check Node.js version before starting
+  checkNodeVersion();
 
-// Parse command line arguments
-program.parse(process.argv);
+  const program = createCLI();
+
+  // Parse command line arguments
+  program.parse(process.argv);
+}
 
 // Handle uncaught errors gracefully
 process.on('uncaughtException', (error) => {
@@ -33,4 +40,10 @@ process.on('SIGINT', () => {
 process.on('SIGTERM', () => {
   console.log('\n👋 Goodbye!');
   process.exit(0);
+});
+
+// Start the main function
+main().catch((error) => {
+  console.error('❌ Failed to start:', error);
+  process.exit(1);
 });

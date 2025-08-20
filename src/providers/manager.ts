@@ -149,9 +149,18 @@ export class AIProviderManager {
 
     const priorityOrder = this.getPriorityOrder(priorityMode);
 
+    // Debug logging
+    if (process.env['DEBUG']) {
+      console.log('Available providers:', available);
+      console.log('Priority order:', priorityOrder);
+    }
+
     // Find the first available provider in priority order
     for (const providerName of priorityOrder) {
       if (available.includes(providerName)) {
+        if (process.env['DEBUG']) {
+          console.log('Selected provider:', providerName);
+        }
         return providerName;
       }
     }
@@ -166,14 +175,15 @@ export class AIProviderManager {
         return ['lmstudio', 'ollama', 'vllm', 'anthropic', 'openai', 'google', 'groq', 'grok'];
 
       case 'performance':
-        return ['groq', 'grok', 'ollama', 'lmstudio', 'google', 'openai', 'anthropic', 'vllm'];
+        return ['groq', 'grok', 'openai', 'anthropic', 'google', 'ollama', 'lmstudio', 'vllm'];
 
       case 'cost-effective':
-        return ['ollama', 'vllm', 'google', 'groq', 'openai', 'anthropic', 'grok', 'lmstudio'];
+        return ['google', 'groq', 'openai', 'anthropic', 'grok', 'ollama', 'vllm', 'lmstudio'];
 
       case 'auto':
       default:
-        return ['lmstudio', 'ollama', 'google', 'groq', 'openai', 'anthropic', 'grok', 'vllm'];
+        // Cloud providers first for better reliability
+        return ['openai', 'anthropic', 'google', 'groq', 'grok', 'lmstudio', 'ollama', 'vllm'];
     }
   }
 

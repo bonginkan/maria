@@ -29,9 +29,9 @@ export const TASK_ROUTING: Record<TaskType, string[]> = {
 
 export const PROVIDER_PRIORITY_MODES = {
   'privacy-first': ['lmstudio', 'ollama', 'vllm', 'anthropic', 'openai', 'google', 'groq', 'grok'],
-  performance: ['groq', 'grok', 'ollama', 'lmstudio', 'google', 'openai', 'anthropic', 'vllm'],
-  'cost-effective': ['ollama', 'vllm', 'google', 'groq', 'openai', 'anthropic', 'grok', 'lmstudio'],
-  balanced: ['lmstudio', 'ollama', 'google', 'groq', 'openai', 'anthropic', 'grok', 'vllm'],
+  performance: ['groq', 'grok', 'openai', 'anthropic', 'google', 'ollama', 'lmstudio', 'vllm'],
+  'cost-effective': ['google', 'groq', 'openai', 'anthropic', 'grok', 'ollama', 'vllm', 'lmstudio'],
+  balanced: ['openai', 'anthropic', 'google', 'groq', 'grok', 'lmstudio', 'ollama', 'vllm'],
 };
 
 export function getRecommendedModel(

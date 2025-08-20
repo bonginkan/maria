@@ -39,7 +39,7 @@ export class MariaAI {
     }
   }
 
-  private async initialize(): Promise<void> {
+  async initialize(): Promise<void> {
     await this.providerManager.initialize();
 
     if (this.config.get('healthMonitoring', true)) {

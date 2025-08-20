@@ -1,7 +1,7 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.0.5",
-  "description": "Intelligent CLI Assistant with Multi-Model AI Support - Zero Configuration, Privacy First",
+  "version": "1.0.7",
+  "description": "Enterprise-Grade AI Development Platform - Intelligent CLI with Advanced Code Quality, Dependency Management, Project Analysis, and Automated Refactoring",
   "keywords": [
     "ai",
     "cli",
@@ -16,7 +16,16 @@
     "code-assistant",
     "ai-cli",
     "command-line",
-    "typescript"
+    "typescript",
+    "code-quality",
+    "dependency-management",
+    "project-analysis",
+    "automated-refactoring",
+    "enterprise-ai",
+    "intelligent-development",
+    "context-preservation",
+    "multimodal-intelligence",
+    "prediction-engine"
   ],
   "author": "Bonginkan Inc.",
   "license": "MIT",

@@ -25,7 +25,7 @@ export function createCLI(): Command {
   program
     .name('maria')
     .description('MARIA - Intelligent CLI Assistant with Multi-Model AI Support')
-    .version('1.0.0');
+    .version('1.0.7');
 
   // Interactive chat mode (default)
   program
@@ -122,6 +122,9 @@ async function startInteractiveChat(config: MariaAIConfig): Promise<void> {
 async function askSingle(message: string, config: MariaAIConfig): Promise<void> {
   const maria = new MariaAI(config);
 
+  // Ensure Maria is initialized before using
+  await maria.initialize();
+
   try {
     console.log(chalk.blue('🤖 Thinking...'));
     const response = await maria.chat(message);
@@ -141,6 +144,9 @@ async function generateCode(
 ): Promise<void> {
   const maria = new MariaAI(config);
 
+  // Ensure Maria is initialized before using
+  await maria.initialize();
+
   try {
     console.log(chalk.blue('🔧 Generating code...'));
     const response = await maria.generateCode(prompt, language);
@@ -159,7 +165,18 @@ async function processVision(
   config: MariaAIConfig,
 ): Promise<void> {
   const maria = new MariaAI(config);
-  const fs = await import('fs-extra');
+
+  // Ensure Maria is initialized before using
+  await maria.initialize();
+
+  const fs = await (async () => {
+    try {
+      return await import('fs-extra');
+    } catch {
+      const { importNodeBuiltin } = await import('./utils/import-helper.js');
+      return importNodeBuiltin('fs');
+    }
+  })();
 
   try {
     console.log(chalk.blue('👁️  Analyzing image...'));
@@ -216,13 +233,16 @@ async function listModels(provider?: string): Promise<void> {
 async function runSetup(): Promise<void> {
   console.log(chalk.blue('🚀 Running MARIA setup wizard...'));
 
-  const { spawn } = await import('child_process');
+  const { spawn } = await (async () => {
+    const { importNodeBuiltin } = await import('./utils/import-helper.js');
+    return importNodeBuiltin('child_process');
+  })();
   const setupProcess = spawn('./scripts/setup-wizard.sh', [], {
     stdio: 'inherit',
     cwd: process.cwd(),
   });
 
-  setupProcess.on('close', (code) => {
+  setupProcess.on('close', (code: number | null) => {
     if (code === 0) {
       console.log(chalk.green('✅ Setup completed successfully!'));
     } else {
@@ -236,7 +256,10 @@ async function checkHealth(options: { json?: boolean; watch?: boolean }): Promis
   if (options.watch) {
     console.log(chalk.blue('🔄 Starting health monitoring... Press Ctrl+C to stop'));
 
-    const { spawn } = await import('child_process');
+    const { spawn } = await (async () => {
+      const { importNodeBuiltin } = await import('./utils/import-helper.js');
+      return importNodeBuiltin('child_process');
+    })();
     const healthProcess = spawn('./scripts/health-monitor.sh', ['monitor'], {
       stdio: 'inherit',
       cwd: process.cwd(),
@@ -247,14 +270,17 @@ async function checkHealth(options: { json?: boolean; watch?: boolean }): Promis
       process.exit(0);
     });
   } else {
-    const { spawn } = await import('child_process');
+    const { spawn } = await (async () => {
+      const { importNodeBuiltin } = await import('./utils/import-helper.js');
+      return importNodeBuiltin('child_process');
+    })();
     const args = options.json ? ['json'] : ['status'];
     const healthProcess = spawn('./scripts/health-monitor.sh', args, {
       stdio: 'inherit',
       cwd: process.cwd(),
     });
 
-    healthProcess.on('close', (code) => {
+    healthProcess.on('close', (code: number | null) => {
       process.exit(code || 0);
     });
   }

@@ -40,63 +40,39 @@ var import_commander = require("commander");
 var import_chalk = __toESM(require("chalk"));
 function createCLI() {
   const program = new import_commander.Command();
-  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version("1.0.3");
-  program.command("chat", { isDefault: true }).description("Start interactive chat session").option("--model <name>", "Specify AI model to use").option("--debug", "Enable debug output").action(async (options) => {
-    console.log(import_chalk.default.blue.bold("\u{1F916} MARIA CLI v1.0.3"));
-    console.log(import_chalk.default.gray("Intelligent CLI Assistant with Multi-Model AI Support"));
-    console.log("");
-    if (options.debug) {
-      console.log(import_chalk.default.yellow("Debug mode enabled"));
-    }
-    console.log(import_chalk.default.green("\u2728 Welcome to MARIA!"));
-    console.log(import_chalk.default.gray("Type /help for available commands or start chatting..."));
-    console.log("");
-    await startInteractiveSession(options);
-  });
-  program.command("help").description("Show help information").action(() => {
-    console.log(import_chalk.default.blue.bold("\u{1F916} MARIA CLI v1.0.3"));
-    console.log(import_chalk.default.gray("Intelligent CLI Assistant with Multi-Model AI Support"));
-    console.log("");
-    console.log(import_chalk.default.green("Available Commands:"));
-    console.log("  maria chat     Start interactive chat session (default)");
-    console.log("  maria help     Show this help message");
-    console.log("  maria version  Show version information");
-    console.log("");
-    console.log(import_chalk.default.yellow("Options:"));
-    console.log("  --model <name>  Specify AI model to use");
-    console.log("  --debug         Enable debug output");
-    console.log("");
-    console.log(import_chalk.default.blue("Visit: https://github.com/bonginkan/maria"));
+  program.name("maria").description("MARIA - AI-Powered Development Platform").version("1.0.7");
+  program.command("chat").description("Start interactive chat mode").action(() => {
+    console.log(import_chalk.default.blue("\u{1F916} MARIA AI-Powered Development Platform v1.0.7"));
+    console.log(import_chalk.default.gray("Enterprise-Grade CLI with Advanced Intelligence"));
+    console.log(import_chalk.default.yellow("\n\u{1F4A1} This is the OSS distribution of MARIA."));
+    console.log(import_chalk.default.yellow("   Full features available at: https://maria-code.vercel.app"));
+    console.log(import_chalk.default.cyan("\n\u2728 Key Features:"));
+    console.log(import_chalk.default.cyan("   \u2022 22+ AI Models (GPT, Claude, Gemini, Local LLMs)"));
+    console.log(import_chalk.default.cyan("   \u2022 Advanced Code Quality Systems"));
+    console.log(import_chalk.default.cyan("   \u2022 Intelligent Dependency Management"));
+    console.log(import_chalk.default.cyan("   \u2022 AI-Driven Project Analysis"));
+    console.log(import_chalk.default.cyan("   \u2022 Automated Refactoring Engine"));
+    console.log(import_chalk.default.cyan("   \u2022 Phase 5: Enterprise-Grade Infrastructure"));
   });
   program.command("version").description("Show version information").action(() => {
-    console.log("1.0.2");
+    console.log(import_chalk.default.bold("MARIA CLI v1.0.7"));
+    console.log(import_chalk.default.gray("AI-Powered Development Platform"));
+    console.log(import_chalk.default.gray("\xA9 2025 Bonginkan Inc."));
+  });
+  program.command("status").description("Show system status").action(() => {
+    console.log(import_chalk.default.green("\u2705 MARIA OSS Distribution"));
+    console.log(import_chalk.default.blue("\u{1F4E6} Version: 1.0.7"));
+    console.log(import_chalk.default.yellow("\u{1F517} Full Platform: https://maria-code.vercel.app"));
   });
   return program;
 }
-async function startInteractiveSession(options) {
-  console.log(import_chalk.default.cyan("\u{1F680} Starting interactive session..."));
-  if (options.debug) {
-    console.log(import_chalk.default.yellow(`Debug: Options passed: ${JSON.stringify(options)}`));
-  }
-  console.log("");
-  console.log(import_chalk.default.yellow.bold("\u2699\uFE0F  Setup Required"));
-  console.log("");
-  console.log("To use MARIA CLI, you need to:");
-  console.log("1. Set up your AI provider API keys");
-  console.log("2. Configure your preferred models");
-  console.log("");
-  console.log(import_chalk.default.blue("For full setup instructions, visit:"));
-  console.log(import_chalk.default.underline("https://github.com/bonginkan/maria#setup"));
-  console.log("");
-  console.log(import_chalk.default.green("Coming soon: Full interactive chat functionality!"));
-}
 if (require.main === module) {
-  const program = createCLI();
-  program.parse();
+  const cli = createCLI();
+  cli.parse();
 }
 
 // src/index.ts
-var VERSION = "1.0.3";
+var VERSION = "1.0.7";
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   VERSION,

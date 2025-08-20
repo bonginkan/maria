@@ -330,6 +330,7 @@ export class SlashCommandHandler {
       );
     } catch {
       // Ignore error
+      // Ignore error
       return false;
     }
   }
@@ -1175,7 +1176,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     };
   }
 
-  private async handleCompact(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleCompact(_context: ConversationContext): Promise<SlashCommandResult> {
     if (!context.history?.length) {
       return {
         success: false,
@@ -1232,7 +1233,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     };
   }
 
-  private async handleResume(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleResume(_context: ConversationContext): Promise<SlashCommandResult> {
     const resumeFile = `${process.cwd()}/.maria-session.json`;
 
     try {
@@ -1320,7 +1321,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     }
   }
 
-  private async handleCost(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleCost(_context: ConversationContext): Promise<SlashCommandResult> {
     const cost = (context.metadata?.['cost'] as number) || 0;
     const tokens = (context.metadata?.['totalTokens'] as number) || 0;
     const sessionStart = (context.metadata?.['startTime'] as Date) || new Date();
@@ -1374,6 +1375,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
           const parsed = JSON.parse(prInfo) as Record<string, unknown>;
           prNumber = parsed['number'] as string;
         } catch {
+          // Ignore error
           // Ignore error
           return {
             success: false,
@@ -1442,6 +1444,7 @@ Use 'gh pr comment ${prNumber} --body "<comment>"' to add feedback.`;
           const parsed = JSON.parse(prInfo) as Record<string, unknown>;
           prNumber = parsed['number'] as string;
         } catch {
+          // Ignore error
           // Ignore error
           return {
             success: false,
@@ -1705,7 +1708,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
   }
 
-  private async handleVim(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleVim(_context: ConversationContext): Promise<SlashCommandResult> {
     const config = await readConfig();
 
     // Vim モードの現在の状態を取得
@@ -1772,6 +1775,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         message: `MARIA CODE CLI v${packageData['version'] || '1.0.0'}\n\nAI-Powered Development Platform\n© 2025 Bonginkan Inc.\n\nTypeScript Monorepo`,
       };
     } catch {
+      // Ignore error
       // Ignore error
       // Fallback if package.json can't be read
       return {
@@ -1908,7 +1912,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     };
   }
 
-  private async handleSuggest(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleSuggest(_context: ConversationContext): Promise<SlashCommandResult> {
     const suggestionContext: SuggestionContext = {
       projectInitialized: await this.checkProjectInitialized(),
       userLoggedIn: this.userSession.isAuthenticated,
@@ -2664,7 +2668,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
   }
 
-  private async handleExit(context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleExit(_context: ConversationContext): Promise<SlashCommandResult> {
     // 会話セッションを保存（オプション）
     const shouldSave = context.history && context.history.length > 0;
 
@@ -2736,6 +2740,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         globalInstallCheck.npm = npmList.includes('@maria/code-cli');
       } catch {
         // Ignore error
+        // Ignore error
       }
 
       try {
@@ -2743,12 +2748,14 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         globalInstallCheck.yarn = yarnList.includes('@maria/code-cli');
       } catch {
         // Ignore error
+        // Ignore error
       }
 
       try {
         const pnpmList = execSync('pnpm list -g @maria/code-cli', { encoding: 'utf-8' });
         globalInstallCheck.pnpm = pnpmList.includes('@maria/code-cli');
       } catch {
+        // Ignore error
         // Ignore error
       }
 
@@ -2767,6 +2774,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
           (typedPackage['devDependencies'] as Record<string, unknown>)?.['@maria/code-cli']
         );
       } catch {
+        // Ignore error
         // Ignore error
       }
 
@@ -3136,6 +3144,7 @@ Run the steps above to complete your migration!`;
       }
     } catch {
       // Ignore error
+      // Ignore error
       // ディレクトリアクセスエラーは無視
     }
   }
@@ -3239,6 +3248,7 @@ Run the steps above to complete your migration!`;
         if (allDeps.includes('typescript')) analysis.techStack.push('TypeScript');
       }
     } catch {
+      // Ignore error
       // Ignore error
       // package.json読み込みエラーは無視
     }
@@ -3841,6 +3851,7 @@ Usage: /test [target] [options]
       if (files.includes('pom.xml') || files.includes('build.gradle')) return 'Java';
     } catch {
       // Ignore error
+      // Ignore error
       // Ignore errors
     }
     return undefined;
@@ -3856,6 +3867,7 @@ Usage: /test [target] [options]
         ...Object.keys((pkg['devDependencies'] as Record<string, unknown>) || {}),
       ];
     } catch {
+      // Ignore error
       // Ignore error
       return [];
     }
@@ -3875,6 +3887,7 @@ Usage: /test [target] [options]
         return 'Mocha';
     } catch {
       // Ignore error
+      // Ignore error
       // Not a Node.js project
     }
 
@@ -3885,6 +3898,7 @@ Usage: /test [target] [options]
       return 'pytest';
     } catch {
       // Ignore error
+      // Ignore error
     }
 
     try {
@@ -3893,6 +3907,7 @@ Usage: /test [target] [options]
       return 'go test';
     } catch {
       // Ignore error
+      // Ignore error
     }
 
     try {
@@ -3900,6 +3915,7 @@ Usage: /test [target] [options]
       await fsPromises.access('Cargo.toml');
       return 'cargo test';
     } catch {
+      // Ignore error
       // Ignore error
     }
 
