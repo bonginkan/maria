@@ -18277,13 +18277,15 @@ var init_openai_provider = __esm({
       async chat(messages, model, options) {
         this.ensureInitialized();
         const selectedModel = this.validateModel(model);
+        const isRestrictedModel = selectedModel.includes("o1") || selectedModel.includes("gpt-5");
+        const temperature = isRestrictedModel ? 1 : options?.temperature || 0.7;
         const completion = await this.client.chat.completions.create({
           model: selectedModel,
           messages: messages.map((m3) => ({
             role: m3.role,
             content: m3.content
           })),
-          temperature: options?.temperature || 0.7,
+          temperature,
           max_tokens: options?.maxTokens,
           top_p: options?.topP,
           stop: options?.stopSequences
@@ -18293,13 +18295,15 @@ var init_openai_provider = __esm({
       async *chatStream(messages, model, options) {
         this.ensureInitialized();
         const selectedModel = this.validateModel(model);
+        const isRestrictedModel = selectedModel.includes("o1") || selectedModel.includes("gpt-5");
+        const temperature = isRestrictedModel ? 1 : options?.temperature || 0.7;
         const stream = await this.client.chat.completions.create({
           model: selectedModel,
           messages: messages.map((m3) => ({
             role: m3.role,
             content: m3.content
           })),
-          temperature: options?.temperature || 0.7,
+          temperature,
           max_tokens: options?.maxTokens,
           top_p: options?.topP,
           stop: options?.stopSequences,
@@ -31014,8 +31018,15 @@ var init_manager = __esm({
         const available = this.getAvailableProviders();
         if (available.length === 0) return void 0;
         const priorityOrder = this.getPriorityOrder(priorityMode);
+        if (process.env["DEBUG"]) {
+          console.log("Available providers:", available);
+          console.log("Priority order:", priorityOrder);
+        }
         for (const providerName of priorityOrder) {
           if (available.includes(providerName)) {
+            if (process.env["DEBUG"]) {
+              console.log("Selected provider:", providerName);
+            }
             return providerName;
           }
         }
@@ -31026,12 +31037,12 @@ var init_manager = __esm({
           case "privacy-first":
             return ["lmstudio", "ollama", "vllm", "anthropic", "openai", "google", "groq", "grok"];
           case "performance":
-            return ["groq", "grok", "ollama", "lmstudio", "google", "openai", "anthropic", "vllm"];
+            return ["groq", "grok", "openai", "anthropic", "google", "ollama", "lmstudio", "vllm"];
           case "cost-effective":
-            return ["ollama", "vllm", "google", "groq", "openai", "anthropic", "grok", "lmstudio"];
+            return ["google", "groq", "openai", "anthropic", "grok", "ollama", "vllm", "lmstudio"];
           case "auto":
           default:
-            return ["lmstudio", "ollama", "google", "groq", "openai", "anthropic", "grok", "vllm"];
+            return ["openai", "anthropic", "google", "groq", "grok", "lmstudio", "ollama", "vllm"];
         }
       }
       async refreshAvailability() {
@@ -34324,6 +34335,7 @@ var init_interactive_session = __esm({
 
 // src/config/loader.ts
 async function loadConfig(options = {}) {
+  await loadEnvironmentConfig();
   const configManager = await ConfigManager.load(options.config);
   const baseConfig = configManager.getAll();
   const config = {
@@ -34335,7 +34347,8 @@ async function loadConfig(options = {}) {
   config["apiKeys"] = {
     OPENAI_API_KEY: process.env["OPENAI_API_KEY"] || "",
     ANTHROPIC_API_KEY: process.env["ANTHROPIC_API_KEY"] || "",
-    GOOGLE_API_KEY: process.env["GOOGLE_API_KEY"] || process.env["GEMINI_API_KEY"] || "",
+    GOOGLE_API_KEY: process.env["GOOGLE_AI_API_KEY"] || process.env["GEMINI_API_KEY"] || "",
+    GEMINI_API_KEY: process.env["GEMINI_API_KEY"] || "",
     GROQ_API_KEY: process.env["GROQ_API_KEY"] || "",
     GROK_API_KEY: process.env["GROK_API_KEY"] || ""
   };
@@ -34357,11 +34370,41 @@ async function loadConfig(options = {}) {
   }
   return config;
 }
+async function loadEnvironmentConfig() {
+  try {
+    const fs5 = await Promise.resolve().then(() => __toESM(require_lib2()));
+    const path = await import('path');
+    const envPath = path.join(process.cwd(), ".env.local");
+    if (await fs5.pathExists(envPath)) {
+      const envContent = await fs5.readFile(envPath, "utf-8");
+      if (process.env["DEBUG"]) {
+        console.log("Loading environment from:", envPath);
+      }
+      const lines = envContent.split("\n");
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith("#")) {
+          const equalIndex = trimmed.indexOf("=");
+          if (equalIndex > 0) {
+            const key = trimmed.substring(0, equalIndex).trim();
+            const value = trimmed.substring(equalIndex + 1).trim();
+            if (key && value && !process.env[key]) {
+              const cleanValue = value.replace(/^["']|["']$/g, "");
+              process.env[key] = cleanValue;
+            }
+          }
+        }
+      }
+    }
+  } catch (error) {
+  }
+}
 var init_loader = __esm({
   "src/config/loader.ts"() {
     init_cjs_shims();
     init_config_manager();
     __name(loadConfig, "loadConfig");
+    __name(loadEnvironmentConfig, "loadEnvironmentConfig");
   }
 });
 
@@ -34484,6 +34527,7 @@ async function startInteractiveChat(config) {
 }
 async function askSingle(message, config) {
   const maria = new MariaAI(config);
+  await maria.initialize();
   try {
     console.log(source_default.blue("\u{1F916} Thinking..."));
     const response = await maria.chat(message);
@@ -34497,6 +34541,7 @@ async function askSingle(message, config) {
 }
 async function generateCode(prompt, language, config) {
   const maria = new MariaAI(config);
+  await maria.initialize();
   try {
     console.log(source_default.blue("\u{1F527} Generating code..."));
     const response = await maria.generateCode(prompt, language);
@@ -34510,6 +34555,7 @@ async function generateCode(prompt, language, config) {
 }
 async function processVision(imagePath, prompt, config) {
   const maria = new MariaAI(config);
+  await maria.initialize();
   const fs5 = await Promise.resolve().then(() => __toESM(require_lib2()));
   try {
     console.log(source_default.blue("\u{1F441}\uFE0F  Analyzing image..."));
@@ -36585,9 +36631,14 @@ var require_maria = __commonJS({
     init_cjs_shims();
     init_cli();
     init_version_check();
-    checkNodeVersion();
-    var program2 = createCLI();
-    program2.parse(process.argv);
+    init_loader();
+    async function main() {
+      await loadEnvironmentConfig();
+      checkNodeVersion();
+      const program2 = createCLI();
+      program2.parse(process.argv);
+    }
+    __name(main, "main");
     process.on("uncaughtException", (error) => {
       console.error("\u274C Uncaught Exception:", error.message);
       process.exit(1);
@@ -36603,6 +36654,10 @@ var require_maria = __commonJS({
     process.on("SIGTERM", () => {
       console.log("\n\u{1F44B} Goodbye!");
       process.exit(0);
+    });
+    main().catch((error) => {
+      console.error("\u274C Failed to start:", error);
+      process.exit(1);
     });
   }
 });

@@ -3448,7 +3448,7 @@
       "format": "esm"
     },
     "src/providers/openai-provider.ts": {
-      "bytes": 4014,
+      "bytes": 4444,
       "imports": [
         {
           "path": "node_modules/.pnpm/openai@4.104.0_ws@8.18.3_zod@3.25.76/node_modules/openai/index.mjs",
@@ -4939,7 +4939,7 @@
       "format": "esm"
     },
     "src/providers/manager.ts": {
-      "bytes": 7003,
+      "bytes": 7335,
       "imports": [
         { "path": "./ai-provider", "kind": "import-statement", "external": true },
         { "path": "../types/index", "kind": "import-statement", "external": true },
@@ -5964,7 +5964,7 @@
       "format": "esm"
     },
     "src/maria-ai.ts": {
-      "bytes": 3304,
+      "bytes": 3296,
       "imports": [
         { "path": "./types", "kind": "import-statement", "external": true },
         {
@@ -6007,7 +6007,6 @@
         },
         { "path": "readline", "kind": "import-statement", "external": true },
         { "path": "fs/promises", "kind": "import-statement", "external": true },
-        { "path": "path", "kind": "import-statement", "external": true },
         {
           "path": "/Users/bongin_max/maria_code/node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3_yaml@2.8.1/node_modules/tsup/assets/cjs_shims.js",
           "kind": "import-statement",
@@ -6018,7 +6017,7 @@
       "format": "esm"
     },
     "src/config/loader.ts": {
-      "bytes": 2632,
+      "bytes": 3166,
       "imports": [
         {
           "path": "src/config/config-manager.ts",
@@ -6061,7 +6060,7 @@
       "format": "esm"
     },
     "src/cli.ts": {
-      "bytes": 7767,
+      "bytes": 8001,
       "imports": [
         {
           "path": "node_modules/.pnpm/commander@12.1.0/node_modules/commander/esm.mjs",
@@ -7264,7 +7263,7 @@
       "format": "esm"
     },
     "src/bin/maria.ts": {
-      "bytes": 807,
+      "bytes": 1161,
       "imports": [
         { "path": "src/cli.ts", "kind": "import-statement", "original": "../cli" },
         {
@@ -7273,16 +7272,22 @@
           "original": "../utils/version-check"
         },
         {
+          "path": "src/config/loader.ts",
+          "kind": "import-statement",
+          "original": "../config/loader"
+        },
+        {
           "path": "/Users/bongin_max/maria_code/node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3_yaml@2.8.1/node_modules/tsup/assets/cjs_shims.js",
           "kind": "import-statement",
           "external": true
-        }
+        },
+        { "path": "<runtime>", "kind": "import-statement", "external": true }
       ],
       "format": "cjs"
     }
   },
   "outputs": {
-    "dist/cli.js.map": { "imports": [], "exports": [], "inputs": {}, "bytes": 3679875 },
+    "dist/cli.js.map": { "imports": [], "exports": [], "inputs": {}, "bytes": 3682645 },
     "dist/cli.js": {
       "imports": [
         { "path": "events", "kind": "require-call", "external": true },
@@ -7363,6 +7368,7 @@
         { "path": "os", "kind": "dynamic-import", "external": true },
         { "path": "readline", "kind": "import-statement", "external": true },
         { "path": "fs/promises", "kind": "import-statement", "external": true },
+        { "path": "path", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true }
@@ -7588,7 +7594,7 @@
         "node_modules/.pnpm/fs-extra@11.3.1/node_modules/fs-extra/lib/index.js": {
           "bytesInOutput": 546
         },
-        "src/cli.ts": { "bytesInOutput": 6888 },
+        "src/cli.ts": { "bytesInOutput": 6972 },
         "node_modules/.pnpm/commander@12.1.0/node_modules/commander/esm.mjs": {
           "bytesInOutput": 301
         },
@@ -7605,8 +7611,8 @@
           "bytesInOutput": 1076
         },
         "src/maria-ai.ts": { "bytesInOutput": 2157 },
-        "src/providers/manager.ts": { "bytesInOutput": 5056 },
-        "src/providers/openai-provider.ts": { "bytesInOutput": 3411 },
+        "src/providers/manager.ts": { "bytesInOutput": 5306 },
+        "src/providers/openai-provider.ts": { "bytesInOutput": 3697 },
         "node_modules/.pnpm/openai@4.104.0_ws@8.18.3_zod@3.25.76/node_modules/openai/index.mjs": {
           "bytesInOutput": 5613
         },
@@ -8060,12 +8066,12 @@
         "src/services/health-monitor.ts": { "bytesInOutput": 12196 },
         "src/config/config-manager.ts": { "bytesInOutput": 3292 },
         "src/services/interactive-session.ts": { "bytesInOutput": 8493 },
-        "src/config/loader.ts": { "bytesInOutput": 1271 },
+        "src/config/loader.ts": { "bytesInOutput": 2474 },
         "src/utils/ui.ts": { "bytesInOutput": 4803 }
       },
-      "bytes": 1556830
+      "bytes": 1558653
     },
-    "dist/index.js.map": { "imports": [], "exports": [], "inputs": {}, "bytes": 3680128 },
+    "dist/index.js.map": { "imports": [], "exports": [], "inputs": {}, "bytes": 3682898 },
     "dist/index.js": {
       "imports": [
         { "path": "events", "kind": "require-call", "external": true },
@@ -8146,6 +8152,7 @@
         { "path": "os", "kind": "dynamic-import", "external": true },
         { "path": "readline", "kind": "import-statement", "external": true },
         { "path": "fs/promises", "kind": "import-statement", "external": true },
+        { "path": "path", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true }
@@ -8372,7 +8379,7 @@
           "bytesInOutput": 546
         },
         "src/index.ts": { "bytesInOutput": 50 },
-        "src/cli.ts": { "bytesInOutput": 6888 },
+        "src/cli.ts": { "bytesInOutput": 6972 },
         "node_modules/.pnpm/commander@12.1.0/node_modules/commander/esm.mjs": {
           "bytesInOutput": 301
         },
@@ -8389,8 +8396,8 @@
           "bytesInOutput": 1076
         },
         "src/maria-ai.ts": { "bytesInOutput": 2157 },
-        "src/providers/manager.ts": { "bytesInOutput": 5056 },
-        "src/providers/openai-provider.ts": { "bytesInOutput": 3411 },
+        "src/providers/manager.ts": { "bytesInOutput": 5306 },
+        "src/providers/openai-provider.ts": { "bytesInOutput": 3697 },
         "node_modules/.pnpm/openai@4.104.0_ws@8.18.3_zod@3.25.76/node_modules/openai/index.mjs": {
           "bytesInOutput": 5613
         },
@@ -8844,12 +8851,12 @@
         "src/services/health-monitor.ts": { "bytesInOutput": 12196 },
         "src/config/config-manager.ts": { "bytesInOutput": 3292 },
         "src/services/interactive-session.ts": { "bytesInOutput": 8493 },
-        "src/config/loader.ts": { "bytesInOutput": 1271 },
+        "src/config/loader.ts": { "bytesInOutput": 2474 },
         "src/utils/ui.ts": { "bytesInOutput": 4803 }
       },
-      "bytes": 1556937
+      "bytes": 1558760
     },
-    "dist/bin/maria.js.map": { "imports": [], "exports": [], "inputs": {}, "bytes": 3816139 },
+    "dist/bin/maria.js.map": { "imports": [], "exports": [], "inputs": {}, "bytes": 3819428 },
     "dist/bin/maria.js": {
       "imports": [
         { "path": "events", "kind": "require-call", "external": true },
@@ -8930,6 +8937,7 @@
         { "path": "os", "kind": "dynamic-import", "external": true },
         { "path": "readline", "kind": "import-statement", "external": true },
         { "path": "fs/promises", "kind": "import-statement", "external": true },
+        { "path": "path", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true },
         { "path": "child_process", "kind": "dynamic-import", "external": true }
@@ -9345,7 +9353,7 @@
           "bytesInOutput": 6747
         },
         "src/providers/ai-provider.ts": { "bytesInOutput": 1383 },
-        "src/providers/openai-provider.ts": { "bytesInOutput": 4000 },
+        "src/providers/openai-provider.ts": { "bytesInOutput": 4302 },
         "node_modules/.pnpm/@anthropic-ai+sdk@0.20.9/node_modules/@anthropic-ai/sdk/version.mjs": {
           "bytesInOutput": 210
         },
@@ -9529,7 +9537,7 @@
         "src/providers/lmstudio-provider.ts": { "bytesInOutput": 8970 },
         "src/providers/ollama-provider.ts": { "bytesInOutput": 11093 },
         "src/providers/vllm-provider.ts": { "bytesInOutput": 10480 },
-        "src/providers/manager.ts": { "bytesInOutput": 5953 },
+        "src/providers/manager.ts": { "bytesInOutput": 6231 },
         "src/config/models.ts": { "bytesInOutput": 1444 },
         "src/services/intelligent-router.ts": { "bytesInOutput": 5701 },
         "src/services/health-monitor.ts": { "bytesInOutput": 13838 },
@@ -9638,9 +9646,9 @@
         "src/config/config-manager.ts": { "bytesInOutput": 3792 },
         "src/maria-ai.ts": { "bytesInOutput": 2729 },
         "src/services/interactive-session.ts": { "bytesInOutput": 8661 },
-        "src/config/loader.ts": { "bytesInOutput": 1387 },
+        "src/config/loader.ts": { "bytesInOutput": 2594 },
         "src/utils/ui.ts": { "bytesInOutput": 4910 },
-        "src/cli.ts": { "bytesInOutput": 7118 },
+        "src/cli.ts": { "bytesInOutput": 7202 },
         "node_modules/.pnpm/semver@7.7.2/node_modules/semver/internal/constants.js": {
           "bytesInOutput": 826
         },
@@ -9775,9 +9783,9 @@
         },
         "node_modules/.pnpm/semver@7.7.2/node_modules/semver/index.js": { "bytesInOutput": 2557 },
         "src/utils/version-check.ts": { "bytesInOutput": 1887 },
-        "src/bin/maria.ts": { "bytesInOutput": 755 }
+        "src/bin/maria.ts": { "bytesInOutput": 995 }
       },
-      "bytes": 1717300
+      "bytes": 1719411
     }
   }
 }

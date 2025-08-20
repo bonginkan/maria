@@ -122,6 +122,9 @@ async function startInteractiveChat(config: MariaAIConfig): Promise<void> {
 async function askSingle(message: string, config: MariaAIConfig): Promise<void> {
   const maria = new MariaAI(config);
 
+  // Ensure Maria is initialized before using
+  await maria.initialize();
+
   try {
     console.log(chalk.blue('🤖 Thinking...'));
     const response = await maria.chat(message);
@@ -141,6 +144,9 @@ async function generateCode(
 ): Promise<void> {
   const maria = new MariaAI(config);
 
+  // Ensure Maria is initialized before using
+  await maria.initialize();
+
   try {
     console.log(chalk.blue('🔧 Generating code...'));
     const response = await maria.generateCode(prompt, language);
@@ -159,6 +165,10 @@ async function processVision(
   config: MariaAIConfig,
 ): Promise<void> {
   const maria = new MariaAI(config);
+
+  // Ensure Maria is initialized before using
+  await maria.initialize();
+
   const fs = await import('fs-extra');
 
   try {
