@@ -22,6 +22,8 @@ export interface ConversationContext {
   preferences?: UserPreferences;
   history?: ConversationHistory[];
   currentTask?: string;
+  isUrgent?: boolean;
+  isInteractive?: boolean;
   metadata?: Record<string, unknown>;
 }
 

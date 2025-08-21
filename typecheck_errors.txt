@@ -1,0 +1,426 @@
+
+> @bonginkan/maria@1.0.7 type-check /Users/bongin_max/maria_code
+> tsc --noEmit
+
+src/commands/avatar.tsx(34,13): error TS7030: Not all code paths return a value.
+src/components/BackgroundStatus.tsx(148,57): error TS2339: Property '_onSelect' does not exist on type 'TaskItemProps'.
+src/components/BackgroundStatus.tsx(148,57): error TS6133: '_onSelect' is declared but its value is never read.
+src/components/BackgroundStatus.tsx(149,9): error TS6133: '_backgroundColor' is declared but its value is never read.
+src/components/ProcessIndicator.tsx(142,7): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+src/components/ProcessIndicator.tsx(230,46): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/ProcessIndicator.tsx(239,43): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/ProcessIndicator.tsx(271,5): error TS2349: This expression is not callable.
+  Not all constituents of type 'ChalkInstance | ((color: string) => ChalkInstance) | ColorSupportLevel | ((red: number, green: number, blue: number) => ChalkInstance) | ((index: number) => ChalkInstance) | ((red: number, green: number, blue: number) => ChalkInstance) | ((color: string) => ChalkInstance) | ((index: number) => ChalkInstance)' are callable.
+    Type '0' has no call signatures.
+src/components/ProcessIndicator.tsx(328,5): error TS2349: This expression is not callable.
+  Not all constituents of type 'ChalkInstance | ((color: string) => ChalkInstance) | ColorSupportLevel | ((red: number, green: number, blue: number) => ChalkInstance) | ((index: number) => ChalkInstance) | ((red: number, green: number, blue: number) => ChalkInstance) | ((color: string) => ChalkInstance) | ((index: number) => ChalkInstance)' are callable.
+    Type '0' has no call signatures.
+src/services/ab-testing-framework.ts(340,5): error TS2322: Type 'ABTestVariant | undefined' is not assignable to type 'ABTestVariant | null'.
+  Type 'undefined' is not assignable to type 'ABTestVariant | null'.
+src/services/ab-testing-framework.ts(433,66): error TS4111: Property 'conversion' comes from an index signature, so it must be accessed with ['conversion'].
+src/services/ab-testing-framework.ts(437,34): error TS4111: Property 'conversion' comes from an index signature, so it must be accessed with ['conversion'].
+src/services/ab-testing-framework.ts(438,38): error TS4111: Property 'conversionValue' comes from an index signature, so it must be accessed with ['conversionValue'].
+src/services/ab-testing-framework.ts(460,36): error TS2538: Type 'undefined' cannot be used as an index type.
+src/services/ab-testing-framework.ts(461,36): error TS2538: Type 'undefined' cannot be used as an index type.
+src/services/adaptive-learning-engine.ts(408,13): error TS6133: '_mostUsedCommands' is declared but its value is never read.
+src/services/advanced-prediction-engine.ts(422,14): error TS2678: Type '"user-intent"' is not comparable to type '"next-action" | "response-style" | "user-satisfaction" | "error-likelihood" | "optimal-model" | "workflow-step"'.
+src/services/advanced-prediction-engine.ts(621,23): error TS18048: 'primaryIntent' is possibly 'undefined'.
+src/services/advanced-prediction-engine.ts(622,19): error TS18048: 'primaryIntent' is possibly 'undefined'.
+src/services/advanced-prediction-engine.ts(630,27): error TS18048: 'primaryIntent' is possibly 'undefined'.
+src/services/advanced-prediction-engine.ts(631,35): error TS18048: 'primaryIntent' is possibly 'undefined'.
+src/services/advanced-prediction-engine.ts(638,39): error TS18048: 'primaryIntent' is possibly 'undefined'.
+src/services/advanced-prediction-engine.ts(638,65): error TS18048: 'primaryIntent' is possibly 'undefined'.
+src/services/advanced-prediction-engine.ts(756,11): error TS6133: '_currentTaskType' is declared but its value is never read.
+src/services/advanced-prediction-engine.ts(757,11): error TS6133: '_projectPhase' is declared but its value is never read.
+src/services/agent-mode/AgentModeService.ts(61,5): error TS2322: Type 'InternalMode | undefined' is not assignable to type 'InternalMode'.
+  Type 'undefined' is not assignable to type 'InternalMode'.
+src/services/agent-mode/AgentModeService.ts(61,43): error TS4111: Property 'thinking' comes from an index signature, so it must be accessed with ['thinking'].
+src/services/agent-mode/AgentModeService.ts(116,31): error TS18048: 'op' is possibly 'undefined'.
+src/services/agent-mode/AgentModeService.ts(116,43): error TS18048: 'op' is possibly 'undefined'.
+src/services/agent-mode/AgentModeService.ts(215,69): error TS4111: Property 'thinking' comes from an index signature, so it must be accessed with ['thinking'].
+src/services/agent-mode/AgentModeService.ts(216,5): error TS2322: Type 'InternalMode | undefined' is not assignable to type 'InternalMode'.
+  Type 'undefined' is not assignable to type 'InternalMode'.
+src/services/agent-mode/AgentModeService.ts(360,29): error TS6133: 'index' is declared but its value is never read.
+src/services/agent-mode/AgentModeService.ts(361,22): error TS2304: Cannot find name '_index'.
+src/services/ai-driven-project-analysis.ts(294,11): error TS6133: 'configuration' is declared but its value is never read.
+src/services/ai-driven-project-analysis.ts(295,11): error TS6133: 'knowledgeBase' is declared but its value is never read.
+src/services/ai-driven-project-analysis.ts(462,58): error TS18046: 'p' is of type 'unknown'.
+src/services/ai-driven-project-analysis.ts(488,64): error TS2345: Argument of type 'ProjectAnalysisReport | undefined' is not assignable to parameter of type 'ProjectAnalysisReport'.
+  Type 'undefined' is not assignable to type 'ProjectAnalysisReport'.
+src/services/ai-driven-project-analysis.ts(489,71): error TS2345: Argument of type 'ProjectAnalysisReport | undefined' is not assignable to parameter of type 'ProjectAnalysisReport'.
+  Type 'undefined' is not assignable to type 'ProjectAnalysisReport'.
+src/services/ai-driven-project-analysis.ts(490,72): error TS2345: Argument of type 'ProjectAnalysisReport | undefined' is not assignable to parameter of type 'ProjectAnalysisReport'.
+  Type 'undefined' is not assignable to type 'ProjectAnalysisReport'.
+src/services/ai-driven-project-analysis.ts(491,71): error TS2345: Argument of type 'ProjectAnalysisReport | undefined' is not assignable to parameter of type 'ProjectAnalysisReport'.
+  Type 'undefined' is not assignable to type 'ProjectAnalysisReport'.
+src/services/ai-driven-project-analysis.ts(903,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(904,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(905,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(906,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(907,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(908,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(909,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/ai-driven-project-analysis.ts(910,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-code-quality.ts(196,52): error TS18004: No value exists in scope for the shorthand property 'targetFiles'. Either declare one or provide an initializer.
+src/services/automated-code-quality.ts(209,41): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(210,40): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(211,46): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(212,43): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(213,42): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(214,48): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(215,54): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(216,45): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(327,13): error TS6133: '_lines' is declared but its value is never read.
+src/services/automated-code-quality.ts(417,23): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | number | Timeout | undefined'.
+src/services/automated-code-quality.ts(419,9): error TS18046: 'watcher' is of type 'unknown'.
+src/services/automated-code-quality.ts(444,33): error TS18048: 'latest' is possibly 'undefined'.
+src/services/automated-code-quality.ts(444,49): error TS18048: 'previous' is possibly 'undefined'.
+src/services/automated-code-quality.ts(487,59): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(523,59): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(540,59): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(574,59): error TS2304: Cannot find name 'targetFiles'.
+src/services/automated-code-quality.ts(591,30): error TS18046: 'complexityMetrics' is of type 'unknown'.
+src/services/automated-code-quality.ts(593,22): error TS18046: 'coverageData' is of type 'unknown'.
+src/services/automated-code-quality.ts(835,27): error TS18046: 'coverageData' is of type 'unknown'.
+src/services/automated-code-quality.ts(858,5): error TS6133: 'issue' is declared but its value is never read.
+src/services/automated-code-quality.ts(885,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-code-quality.ts(886,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-code-quality.ts(887,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-code-quality.ts(888,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-code-quality.ts(889,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-code-quality.ts(890,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-refactoring-engine.ts(321,11): error TS6133: 'configuration' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(323,11): error TS6133: 'knowledgeBase' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(324,11): error TS6133: 'activeExecution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(325,11): error TS6133: 'operationRegistry' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(823,5): error TS6133: 'operations' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(829,5): error TS6133: 'operations' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(835,5): error TS6133: 'operations' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(868,39): error TS6133: 'plan' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(874,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(888,5): error TS6133: 'operation' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(889,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(890,5): error TS6133: 'plan' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(896,5): error TS6133: 'error' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(897,5): error TS6133: 'operation' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(898,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(899,5): error TS6133: 'plan' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(904,40): error TS6133: 'plan' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(909,32): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(915,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(916,5): error TS6133: 'plan' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(927,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(928,5): error TS6133: 'rollbackToOperation' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(933,35): error TS6133: 'operation' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(937,37): error TS6133: 'execution' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(942,5): error TS6133: 'filePath' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(943,5): error TS6133: 'codeSnippet' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(944,5): error TS6133: 'context' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(949,36): error TS6133: 'codeAnalysis' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(953,38): error TS6133: 'codeAnalysis' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(957,40): error TS6133: 'codeAnalysis' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(962,5): error TS6133: 'codeAnalysis' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(967,28): error TS6133: 'operations' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(975,32): error TS6133: 'executions' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(980,5): error TS6133: 'executions' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(985,40): error TS6133: 'executions' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(989,30): error TS6133: 'executions' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(993,36): error TS6133: 'executions' is declared but its value is never read.
+src/services/automated-refactoring-engine.ts(1000,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-refactoring-engine.ts(1001,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-refactoring-engine.ts(1002,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-refactoring-engine.ts(1003,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-refactoring-engine.ts(1004,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/automated-refactoring-engine.ts(1005,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/autonomous-coding-agent/core/ActiveReportingIntegration.ts(15,3): error TS6133: 'Achievement' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/ActiveReportingIntegration.ts(16,3): error TS6133: 'CurrentWork' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/ActiveReportingIntegration.ts(17,3): error TS6133: 'PlannedWork' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/ActiveReportingIntegration.ts(210,11): error TS6133: 'elapsed' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(10,40): error TS6133: 'AutonomousDecision' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(14,24): error TS6133: 'task' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(14,30): error TS2552: Cannot find name 'Task'. Did you mean '_Task'?
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(17,19): error TS6133: 'category' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(20,25): error TS6133: 'mode' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(23,25): error TS6133: 'mode' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(147,30): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error'.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(193,7): error TS2322: Type 'Task | undefined' is not assignable to type 'Task | null'.
+  Type 'undefined' is not assignable to type 'Task | null'.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(204,58): error TS18048: 'task' is possibly 'undefined'.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(221,11): error TS2322: Type 'Task | undefined' is not assignable to type 'Task'.
+  Type 'undefined' is not assignable to type 'Task'.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(256,40): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'Error'.
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(287,39): error TS2552: Cannot find name 'error'. Did you mean '_error'?
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(290,68): error TS2552: Cannot find name 'error'. Did you mean '_error'?
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(302,51): error TS2552: Cannot find name 'error'. Did you mean '_error'?
+src/services/autonomous-coding-agent/core/AutonomousCodingAgentService.ts(349,7): error TS2322: Type 'CodingMode | null' is not assignable to type 'CodingMode | undefined'.
+  Type 'null' is not assignable to type 'CodingMode | undefined'.
+src/services/autonomous-coding-agent/core/SelfEvolutionEngine.ts(435,38): error TS6133: 'task' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/SelfEvolutionEngine.ts(487,60): error TS6133: 'context' is declared but its value is never read.
+src/services/autonomous-coding-agent/core/VisualModeDisplayEngine.ts(190,39): error TS18048: 'task' is possibly 'undefined'.
+src/services/autonomous-coding-agent/core/VisualModeDisplayEngine.ts(317,29): error TS6133: 'error' is declared but its value is never read.
+src/services/avatar-animator.ts(103,9): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/avatar-animator.ts(121,28): error TS2532: Object is possibly 'undefined'.
+src/services/avatar-animator.ts(172,53): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/avatar-animator.ts(199,43): error TS2345: Argument of type 'keyof MouthPattern | undefined' is not assignable to parameter of type 'keyof MouthPattern'.
+  Type 'undefined' is not assignable to type 'keyof MouthPattern'.
+src/services/avatar-dialogue.ts(7,10): error TS2724: '"../providers/base-provider"' has no exported member named 'AIProvider'. Did you mean 'BaseProvider'?
+src/services/avatar-dialogue.ts(187,5): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/avatar-dialogue.ts(441,60): error TS4111: Property 'general' comes from an index signature, so it must be accessed with ['general'].
+src/services/avatar-dialogue.ts(442,27): error TS18048: 'intentResponses' is possibly 'undefined'.
+src/services/avatar-dialogue.ts(442,60): error TS18048: 'intentResponses' is possibly 'undefined'.
+src/services/avatar-dialogue.ts(444,5): error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/background-processor.ts(333,48): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/background-processor.ts(435,34): error TS4111: Property 'running' comes from an index signature, so it must be accessed with ['running'].
+src/services/background-processor.ts(436,36): error TS4111: Property 'completed' comes from an index signature, so it must be accessed with ['completed'].
+src/services/background-processor.ts(437,32): error TS4111: Property 'error' comes from an index signature, so it must be accessed with ['error'].
+src/services/background-processor.ts(438,33): error TS4111: Property 'paused' comes from an index signature, so it must be accessed with ['paused'].
+src/services/cross-session-learning.ts(202,11): error TS6133: 'learningPatterns' is declared but its value is never read.
+src/services/cross-session-learning.ts(294,57): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(294,67): error TS2304: Cannot find name 'metrics'.
+src/services/cross-session-learning.ts(298,64): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(302,60): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(302,70): error TS2304: Cannot find name 'metrics'.
+src/services/cross-session-learning.ts(306,65): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(306,75): error TS2304: Cannot find name 'metrics'.
+src/services/cross-session-learning.ts(323,5): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(323,23): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(325,64): error TS7006: Parameter 't' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(363,23): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(363,35): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(363,52): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(497,57): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(511,67): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(539,5): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(539,23): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(595,75): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(630,5): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(630,23): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(631,74): error TS7006: Parameter 'i' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(675,5): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(675,23): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(676,51): error TS7006: Parameter 'cluster' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(702,5): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(702,23): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(753,5): error TS2304: Cannot find name 'contexts'.
+src/services/cross-session-learning.ts(753,23): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/services/cross-session-learning.ts(970,35): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1071,59): error TS2339: Property 'contextId' does not exist on type 'LearningTrajectoryPoint'.
+src/services/cross-session-learning.ts(1086,59): error TS2339: Property 'contextId' does not exist on type 'LearningTrajectoryPoint'.
+src/services/cross-session-learning.ts(1112,60): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1112,74): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1118,61): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1118,81): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1124,38): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1124,63): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1224,21): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1234,57): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1253,27): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1264,32): error TS2532: Object is possibly 'undefined'.
+src/services/cross-session-learning.ts(1324,35): error TS6133: 'skill' is declared but its value is never read.
+src/services/enhanced-context-preservation.ts(30,21): error TS2304: Cannot find name 'EmotionalContextState'.
+src/services/enhanced-context-preservation.ts(71,17): error TS2304: Cannot find name 'CodePatternKnowledge'.
+src/services/enhanced-context-preservation.ts(290,11): error TS6133: 'crossSessionMemory' is declared but its value is never read.
+src/services/enhanced-context-preservation.ts(294,11): error TS6133: 'maxCrossSessionEntries' is declared but its value is never read.
+src/services/enhanced-context-preservation.ts(716,17): error TS2532: Object is possibly 'undefined'.
+src/services/enhanced-context-preservation.ts(758,5): error TS6133: 'intention' is declared but its value is never read.
+src/services/enhanced-context-preservation.ts(779,54): error TS2532: Object is possibly 'undefined'.
+src/services/enhanced-context-preservation.ts(862,14): error TS2304: Cannot find name 'EmotionalContextState'.
+src/services/enhanced-context-preservation.ts(880,40): error TS2304: Cannot find name 'context'.
+src/services/enhanced-context-preservation.ts(895,34): error TS2304: Cannot find name 'context'.
+src/services/enhanced-context-preservation.ts(898,27): error TS2304: Cannot find name 'context'.
+src/services/enhanced-context-preservation.ts(900,41): error TS2304: Cannot find name 'context'.
+src/services/integration-test-system.ts(10,1): error TS6133: 'fs' is declared but its value is never read.
+src/services/integration-test-system.ts(11,1): error TS6133: 'path' is declared but its value is never read.
+src/services/integration-test-system.ts(373,11): error TS2740: Type 'Map<any, any>' is missing the following properties from type 'TestExecution[]': length, pop, push, concat, and 30 more.
+src/services/integration-test-system.ts(374,11): error TS6133: 'activeExecution' is declared but its value is never read.
+src/services/integration-test-system.ts(375,11): error TS6133: 'testDataCache' is declared but its value is never read.
+src/services/integration-test-system.ts(583,11): error TS6133: 'recentExecution' is declared but its value is never read.
+src/services/integration-test-system.ts(651,7): error TS2322: Type 'ProcessEnv' is not assignable to type 'Record<string, string>'.
+  'string' index signatures are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/services/integration-test-system.ts(701,5): error TS6133: 'testSuite' is declared but its value is never read.
+src/services/integration-test-system.ts(702,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/integration-test-system.ts(732,5): error TS6133: 'testSuite' is declared but its value is never read.
+src/services/integration-test-system.ts(733,5): error TS6133: 'execution' is declared but its value is never read.
+src/services/integration-test-system.ts(738,42): error TS6133: 'execution' is declared but its value is never read.
+src/services/integration-test-system.ts(743,40): error TS6133: 'execution' is declared but its value is never read.
+src/services/integration-test-system.ts(918,5): error TS6133: 'baseline' is declared but its value is never read.
+src/services/integration-test-system.ts(919,5): error TS6133: 'current' is declared but its value is never read.
+src/services/integration-test-system.ts(925,5): error TS6133: 'baseline' is declared but its value is never read.
+src/services/integration-test-system.ts(926,5): error TS6133: 'current' is declared but its value is never read.
+src/services/integration-test-system.ts(932,5): error TS6133: 'current' is declared but its value is never read.
+src/services/integration-test-system.ts(933,5): error TS6133: 'baseline' is declared but its value is never read.
+src/services/integration-test-system.ts(1054,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/integration-test-system.ts(1055,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/integration-test-system.ts(1056,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/integration-test-system.ts(1057,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/integration-test-system.ts(1058,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(146,11): error TS6133: 'dependencyCache' is declared but its value is never read.
+src/services/intelligent-dependency-management.ts(147,11): error TS6133: 'securityDatabase' is declared but its value is never read.
+src/services/intelligent-dependency-management.ts(337,15): error TS18046: 'updateResult' is of type 'unknown'.
+src/services/intelligent-dependency-management.ts(351,31): error TS18046: 'rollbackResult' is of type 'unknown'.
+src/services/intelligent-dependency-management.ts(386,15): error TS18046: 'resolution' is of type 'unknown'.
+src/services/intelligent-dependency-management.ts(388,42): error TS18046: 'resolution' is of type 'unknown'.
+src/services/intelligent-dependency-management.ts(435,13): error TS18046: 'optimizationResult' is of type 'unknown'.
+src/services/intelligent-dependency-management.ts(443,40): error TS18046: 'optimizationResult' is of type 'unknown'.
+src/services/intelligent-dependency-management.ts(466,11): error TS6133: 'monitoringInterval' is declared but its value is never read.
+src/services/intelligent-dependency-management.ts(489,31): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(489,55): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(562,27): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(562,51): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(567,59): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(567,83): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(575,22): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(575,49): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/services/intelligent-dependency-management.ts(766,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(767,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(768,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(769,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(770,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(771,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(772,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-dependency-management.ts(773,3): error TS1205: Re-exporting a type when 'isolatedModules' is enabled requires using 'export type'.
+src/services/intelligent-router/index.ts(6,10): error TS2724: '"./intent-classifier"' has no exported member named '_IntentClassifier'. Did you mean 'IntentClassifier'?
+src/services/interactive/CommandFrequencyTracker.ts(370,45): error TS2345: Argument of type '{ lastUsed: Date; firstUsed: Date; count: number; successCount: number; averageDuration: number; errorCount: number; }' is not assignable to parameter of type 'CommandUsage'.
+  Type '{ lastUsed: Date; firstUsed: Date; count: number; successCount: number; averageDuration: number; errorCount: number; }' is missing the following properties from type 'CommandUsage': commandName, averageInterval, contexts, successRate
+src/services/interactive/KeyboardNavigationHandler.ts(131,16): error TS2352: Conversion of type 'ReadStream' to type '{ fd: number; }' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property 'fd' is missing in type 'ReadStream' but required in type '{ fd: number; }'.
+src/services/interactive/KeyboardNavigationHandler.ts(195,5): error TS2322: Type 'NavigationMode | undefined' is not assignable to type 'NavigationMode'.
+  Type 'undefined' is not assignable to type 'NavigationMode'.
+src/services/interactive/KeyboardNavigationHandler.ts(321,39): error TS2322: Type 'null' is not assignable to type 'KeyEvent'.
+src/services/interactive/SlashCompletionService.ts(418,7): error TS2739: Type '{ totalCommands: number; indexedTerms: number; averageTermsPerCommand: number; }' is missing the following properties from type '{ totalSearches: number; averageSearchTime: number; }': totalSearches, averageSearchTime
+src/services/multimodal-intelligence.ts(408,11): error TS2345: Argument of type 'MultimodalInput | undefined' is not assignable to parameter of type 'MultimodalInput'.
+  Type 'undefined' is not assignable to type 'MultimodalInput'.
+src/services/multimodal-intelligence.ts(569,26): error TS2532: Object is possibly 'undefined'.
+src/services/multimodal-intelligence.ts(570,26): error TS2532: Object is possibly 'undefined'.
+src/services/multimodal-intelligence.ts(581,5): error TS6133: 'outputs' is declared but its value is never read.
+src/services/multimodal-intelligence.ts(829,5): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(835,24): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(868,5): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(874,9): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(880,9): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(1067,13): error TS6133: '_inputModality' is declared but its value is never read.
+src/services/multimodal-intelligence.ts(1171,26): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(1174,7): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(1175,9): error TS1213: Identifier expected. 'interface' is a reserved word in strict mode. Class definitions are automatically in strict mode.
+src/services/multimodal-intelligence.ts(1251,52): error TS18046: 'input.data' is of type 'unknown'.
+src/services/performance-optimizer.ts(206,11): error TS2322: Type 'string' is not assignable to type '"stable" | "increasing" | "decreasing"'.
+src/services/performance-optimizer.ts(213,9): error TS2322: Type 'string' is not assignable to type '"stable" | "increasing" | "decreasing"'.
+src/services/performance-optimizer.ts(228,11): error TS2322: Type 'string' is not assignable to type '"stable" | "improving" | "degrading"'.
+src/services/performance-optimizer.ts(237,9): error TS2322: Type 'string' is not assignable to type '"stable" | "increasing" | "decreasing"'.
+src/services/performance-optimizer.ts(256,60): error TS2339: Property 'runningProcesses' does not exist on type 'ProcessingStats'.
+src/services/performance-optimizer.ts(290,19): error TS2532: Object is possibly 'undefined'.
+src/services/performance-optimizer.ts(290,31): error TS2532: Object is possibly 'undefined'.
+src/services/performance-optimizer.ts(408,31): error TS2339: Property 'cleanupCompletedProcesses' does not exist on type 'ProcessManager'.
+src/services/performance-optimizer.ts(431,61): error TS2339: Property 'maxConcurrentProcesses' does not exist on type 'ProcessingStats'.
+src/services/performance-optimizer.ts(435,33): error TS2339: Property 'setMaxConcurrentProcesses' does not exist on type 'ProcessManager'.
+src/services/personalization-system.ts(516,35): error TS18048: 'key' is possibly 'undefined'.
+src/services/personalization-system.ts(517,8): error TS2352: Conversion of type 'PersonalizationSettings' to type 'Record<string, unknown>' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Index signature for type 'string' is missing in type 'PersonalizationSettings'.
+src/services/personalization-system.ts(517,50): error TS2538: Type 'undefined' cannot be used as an index type.
+src/services/process-manager.ts(120,44): error TS6133: 'args' is declared but its value is never read.
+src/services/process-manager.ts(157,34): error TS2304: Cannot find name 'event'.
+src/services/process-manager.ts(206,13): error TS6133: '__sessionId' is declared but its value is never read.
+src/services/process-manager.ts(206,35): error TS2551: Property '_sessionId' does not exist on type 'ConversationContext'. Did you mean 'sessionId'?
+src/services/process-manager.ts(215,18): error TS2339: Property 'forceInline' does not exist on type 'ConversationContext'.
+src/services/process-manager.ts(224,72): error TS2304: Cannot find name '_sessionId'.
+src/services/process-manager.ts(226,11): error TS2322: Type '"low" | "high" | "normal" | "urgent"' is not assignable to type '"low" | "high" | "normal" | undefined'.
+  Type '"urgent"' is not assignable to type '"low" | "high" | "normal" | undefined'.
+src/services/process-manager.ts(232,13): error TS18004: No value exists in scope for the shorthand property '_sessionId'. Either declare one or provide an initializer.
+src/services/process-manager.ts(269,9): error TS18004: No value exists in scope for the shorthand property '_sessionId'. Either declare one or provide an initializer.
+src/services/process-manager.ts(273,9): error TS18004: No value exists in scope for the shorthand property '_sessionId'. Either declare one or provide an initializer.
+src/services/process-manager.ts(291,29): error TS2551: Property '_sessionId' does not exist on type 'ConversationContext'. Did you mean 'sessionId'?
+src/services/process-manager.ts(333,17): error TS6133: '_processResult' is declared but its value is never read.
+src/services/slash-command-handler.ts(1180,10): error TS2552: Cannot find name 'context'. Did you mean '_context'?
+src/services/slash-command-handler.ts(1187,27): error TS2552: Cannot find name 'context'. Did you mean '_context'?
+src/services/slash-command-handler.ts(1188,35): error TS2552: Cannot find name 'context'. Did you mean '_context'?
+src/services/slash-command-handler.ts(1191,31): error TS2552: Cannot find name 'context'. Did you mean '_context'?
+src/services/slash-command-handler.ts(1192,8): error TS7006: Parameter 'msg' implicitly has an 'any' type.
+src/services/slash-command-handler.ts(1195,28): error TS2552: Cannot find name 'context'. Did you mean '_context'?
+src/services/slash-command-handler.ts(1212,5): error TS2552: Cannot find name 'context'. Did you mean '_context'?
+src/services/slash-command-handler.ts(1219,9): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1220,7): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1221,7): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1256,9): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1271,9): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1275,9): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1282,9): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1283,14): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1301,43): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1301,86): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1301,119): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1303,29): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1304,27): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1305,25): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1325,19): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1326,21): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1327,27): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1329,26): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1719,9): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1720,8): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(1919,20): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2673,24): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2673,43): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2681,22): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2682,20): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2683,24): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2684,21): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2691,21): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2692,18): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2693,21): error TS2304: Cannot find name 'context'.
+src/services/slash-command-handler.ts(2694,41): error TS2304: Cannot find name 'context'.
+src/services/ux-optimizer.ts(59,11): error TS6133: 'personalization' is declared but its value is never read.
+src/services/ux-optimizer.ts(225,9): error TS18047: 'userProfile' is possibly 'null'.
+src/services/ux-optimizer.ts(226,27): error TS18047: 'userProfile' is possibly 'null'.
+src/services/ux-optimizer.ts(292,44): error TS2339: Property 'getUsagePatterns' does not exist on type 'AdaptiveLearningEngine'.
+src/services/ux-optimizer.ts(296,8): error TS7006: Parameter 'p' implicitly has an 'any' type.
+src/services/ux-optimizer.ts(340,49): error TS2339: Property 'getSystemMetrics' does not exist on type 'PerformanceOptimizer'.
+src/services/ux-optimizer.ts(409,9): error TS18047: 'userProfile' is possibly 'null'.
+src/services/ux-optimizer.ts(410,24): error TS18047: 'userProfile' is possibly 'null'.
+src/services/ux-optimizer.ts(413,34): error TS18048: 'peakHour' is possibly 'undefined'.
+src/services/ux-optimizer.ts(464,12): error TS2532: Object is possibly 'undefined'.
+src/services/ux-optimizer.ts(499,51): error TS2339: Property 'getSystemMetrics' does not exist on type 'PerformanceOptimizer'.
+src/services/ux-optimizer.ts(564,16): error TS2531: Object is possibly 'null'.
+src/services/ux-optimizer.ts(570,33): error TS2339: Property 'getSystemMetrics' does not exist on type 'PerformanceOptimizer'.
+src/services/ux-optimizer.ts(572,33): error TS2339: Property 'getSystemMetrics' does not exist on type 'PerformanceOptimizer'.
+src/services/ux-optimizer.ts(574,27): error TS2531: Object is possibly 'null'.
+src/services/ux-optimizer.ts(605,7): error TS2561: Object literal may only specify known properties, but 'variations' does not exist in type 'ExperimentConfig'. Did you mean to write 'variants'?
+src/services/ux-optimizer.ts(615,26): error TS2339: Property 'assignUserToVariation' does not exist on type 'ABTestingFramework'.
+src/services/ux-optimizer.ts(655,33): error TS4111: Property 'features' comes from an index signature, so it must be accessed with ['features'].
+src/services/ux-optimizer.ts(661,34): error TS4111: Property 'component' comes from an index signature, so it must be accessed with ['component'].
+src/services/ux-optimizer.ts(662,32): error TS4111: Property 'visible' comes from an index signature, so it must be accessed with ['visible'].
+src/services/ux-optimizer.ts(668,33): error TS4111: Property 'sequence' comes from an index signature, so it must be accessed with ['sequence'].
+src/services/ux-optimizer.ts(669,29): error TS4111: Property 'name' comes from an index signature, so it must be accessed with ['name'].
+src/services/ux-optimizer.ts(675,39): error TS4111: Property 'aggressiveness' comes from an index signature, so it must be accessed with ['aggressiveness'].
+src/services/ux-optimizer.ts(681,35): error TS4111: Property 'techniques' comes from an index signature, so it must be accessed with ['techniques'].
+src/services/ux-optimizer.ts(687,34): error TS4111: Property 'focusMode' comes from an index signature, so it must be accessed with ['focusMode'].
+src/services/ux-optimizer.ts(701,17): error TS4111: Property 'accessTime' comes from an index signature, so it must be accessed with ['accessTime'].
+src/services/ux-optimizer.ts(702,17): error TS4111: Property 'clicksRequired' comes from an index signature, so it must be accessed with ['clicksRequired'].
+src/services/ux-optimizer.ts(705,17): error TS4111: Property 'commandsRequired' comes from an index signature, so it must be accessed with ['commandsRequired'].
+src/services/ux-optimizer.ts(706,17): error TS4111: Property 'timeRequired' comes from an index signature, so it must be accessed with ['timeRequired'].
+src/services/ux-optimizer.ts(709,46): error TS2339: Property 'getSystemMetrics' does not exist on type 'PerformanceOptimizer'.
+src/services/ux-optimizer.ts(710,17): error TS4111: Property 'memoryUsage' comes from an index signature, so it must be accessed with ['memoryUsage'].
+src/services/ux-optimizer.ts(711,17): error TS4111: Property 'responseTime' comes from an index signature, so it must be accessed with ['responseTime'].
+src/services/ux-optimizer.ts(715,17): error TS4111: Property 'distractionLevel' comes from an index signature, so it must be accessed with ['distractionLevel'].
+src/services/ux-optimizer.ts(716,17): error TS4111: Property 'focusScore' comes from an index signature, so it must be accessed with ['focusScore'].
+src/services/ux-optimizer.ts(778,11): error TS18048: 'before' is possibly 'undefined'.
+src/services/ux-optimizer.ts(779,31): error TS18048: 'after' is possibly 'undefined'.
+src/services/ux-optimizer.ts(779,39): error TS18048: 'before' is possibly 'undefined'.
+src/services/ux-optimizer.ts(779,49): error TS18048: 'before' is possibly 'undefined'.
+ ELIFECYCLE  Command failed with exit code 2.

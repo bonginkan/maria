@@ -145,8 +145,8 @@ interface TaskItemProps {
   onSelect?: (taskId: string) => void;
 }
 
-function TaskItem({ task, isSelected, isCurrent, index, _onSelect }: TaskItemProps) {
-  const _backgroundColor = isSelected ? 'blue' : undefined;
+function TaskItem({ task, isSelected, isCurrent, index, onSelect }: TaskItemProps) {
+  const backgroundColor = isSelected ? 'blue' : undefined;
   const textColor = isSelected ? 'white' : undefined;
 
   const prefix = isCurrent ? '▶ ' : `${index}. `;

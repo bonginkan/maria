@@ -1,0 +1,26 @@
+{
+  "name": "sort-cli",
+  "version": "1.0.0",
+  "description": "Advanced command-line sorting tool with multiple algorithms",
+  "main": "sort-cli.js",
+  "bin": {
+    "sort-cli": "./sort-cli.js"
+  },
+  "scripts": {
+    "test": "node test-cli.js"
+  },
+  "keywords": [
+    "sort",
+    "quicksort",
+    "mergesort",
+    "heapsort",
+    "cli",
+    "command-line",
+    "algorithm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
