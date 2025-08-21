@@ -24,6 +24,10 @@ jobs:
   sync-to-oss:
     name: 📤 Sync to OSS Repository
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: write
+      packages: write
     
     steps:
       - name: 📦 Checkout maria_code (source)
@@ -183,22 +187,21 @@ jobs:
 
       - name: 🔄 Clone OSS repository
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OSS_SYNC_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
         run: |
           echo "📥 Cloning maria OSS repository..."
           
-          # Try OSS_SYNC_TOKEN first, fallback to GITHUB_TOKEN
+          # Use OSS_SYNC_TOKEN for authentication to access bonginkan/maria repo
           if [ -n "$OSS_SYNC_TOKEN" ]; then
             echo "🔑 Using OSS_SYNC_TOKEN for authentication"
             AUTH_TOKEN="$OSS_SYNC_TOKEN"
           else
-            echo "🔑 Using GITHUB_TOKEN for authentication (public repos only)"
-            AUTH_TOKEN="$GITHUB_TOKEN"
+            echo "❌ OSS_SYNC_TOKEN not available - cannot clone private repository"
+            exit 1
           fi
           
           # Clone with authentication
-          git clone https://x-access-token:${AUTH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
+          git clone https://${AUTH_TOKEN}@github.com/bonginkan/maria.git /tmp/maria-repo
           
           cd /tmp/maria-repo
           
@@ -244,7 +247,7 @@ jobs:
                   with:
                     node-version: 20
                     registry-url: 'https://registry.npmjs.org'
-                - run: npm ci
+                - run: npm install
                 - run: npm run build
                 - run: npm publish
                   env:
@@ -270,22 +273,21 @@ jobs:
       - name: 📝 Commit and push changes
         if: steps.check_changes.outputs.changes == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OSS_SYNC_TOKEN: ${{ secrets.OSS_SYNC_TOKEN }}
         run: |
           cd /tmp/maria-repo
           
-          # Use same authentication token as clone
+          # Use OSS_SYNC_TOKEN for authentication
           if [ -n "$OSS_SYNC_TOKEN" ]; then
             echo "🔑 Using OSS_SYNC_TOKEN for push"
             AUTH_TOKEN="$OSS_SYNC_TOKEN"
           else
-            echo "🔑 Using GITHUB_TOKEN for push"
-            AUTH_TOKEN="$GITHUB_TOKEN"
+            echo "❌ OSS_SYNC_TOKEN not available - cannot push to repository"
+            exit 1
           fi
           
           # Update remote URL with authentication
-          git remote set-url origin https://x-access-token:${AUTH_TOKEN}@github.com/bonginkan/maria.git
+          git remote set-url origin https://${AUTH_TOKEN}@github.com/bonginkan/maria.git
           
           # Stage all changes
           git add -A
