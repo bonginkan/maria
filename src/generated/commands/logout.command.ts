@@ -1,7 +1,7 @@
 /**
  * Logout Command Module
  * 認証系コマンド - ユーザーログアウト処理
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: Authentication
  */
@@ -19,17 +19,17 @@ export class LogoutCommand extends BaseCommand {
   description = 'Sign out from MARIA platform';
   usage = '/logout [--all]';
   aliases = ['signout', 'exit-session'];
-  
+
   private configPath = path.join(os.homedir(), '.maria', 'auth.json');
   private sessionsPath = path.join(os.homedir(), '.maria', 'sessions');
 
   async execute(args: string[]): Promise<SlashCommandResult> {
     try {
       const logoutAll = args.includes('--all');
-      
+
       // Check if user is logged in
       const session = await this.getCurrentSession();
-      
+
       if (!session) {
         return {
           success: false,
@@ -39,16 +39,15 @@ export class LogoutCommand extends BaseCommand {
 
       // Perform logout
       const result = await this.performLogout(session, logoutAll);
-      
+
       if (result.success) {
         return this.formatSuccessResponse(result.clearedSessions);
       }
-      
+
       return {
         success: false,
         message: `❌ Logout failed: ${result.error}`,
       };
-      
     } catch (error) {
       logger.error('Logout command error:', error);
       return {
@@ -63,16 +62,16 @@ export class LogoutCommand extends BaseCommand {
       if (!fs.existsSync(this.configPath)) {
         return null;
       }
-      
+
       const sessionData = fs.readFileSync(this.configPath, 'utf-8');
       const session = JSON.parse(sessionData);
-      
+
       // Check if session is expired
       if (session.expiresAt && new Date(session.expiresAt) < new Date()) {
         await this.clearSession();
         return null;
       }
-      
+
       return session;
     } catch (error) {
       logger.error('Failed to read session:', error);
@@ -82,7 +81,7 @@ export class LogoutCommand extends BaseCommand {
 
   private async performLogout(
     session: unknown,
-    logoutAll: boolean
+    logoutAll: boolean,
   ): Promise<{ success: boolean; clearedSessions: number; error?: string }> {
     try {
       let clearedSessions = 0;
@@ -128,11 +127,11 @@ export class LogoutCommand extends BaseCommand {
 
   private async clearAllSessions(): Promise<number> {
     let cleared = 0;
-    
+
     try {
       if (fs.existsSync(this.sessionsPath)) {
         const files = fs.readdirSync(this.sessionsPath);
-        
+
         for (const file of files) {
           if (file.endsWith('.json')) {
             const filePath = path.join(this.sessionsPath, file);
@@ -144,7 +143,7 @@ export class LogoutCommand extends BaseCommand {
     } catch (error) {
       logger.error('Failed to clear all sessions:', error);
     }
-    
+
     return cleared;
   }
 
@@ -175,7 +174,7 @@ export class LogoutCommand extends BaseCommand {
 
   private formatSuccessResponse(clearedSessions: number): SlashCommandResult {
     const sessionText = clearedSessions === 1 ? 'session' : 'sessions';
-    
+
     return {
       success: true,
       message: `✅ **Successfully logged out!**

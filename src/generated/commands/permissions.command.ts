@@ -1,7 +1,7 @@
 /**
  * Permissions Command Module
  * 権限管理コマンド - セキュリティとアクセス制御
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: Security
  */
@@ -43,9 +43,9 @@ export class PermissionsCommand extends BaseCommand {
   description = 'Manage MARIA access permissions and security settings';
   usage = '/permissions [list|grant|revoke|audit] [permission-id]';
   aliases = ['perms', 'security', 'access'];
-  
+
   private configPath = path.join(os.homedir(), '.maria', 'permissions.json');
-  
+
   private defaultPermissions: Permission[] = [
     {
       id: 'file_read',
@@ -132,32 +132,32 @@ export class PermissionsCommand extends BaseCommand {
   async execute(args: string[]): Promise<SlashCommandResult> {
     try {
       const action = args[0]?.toLowerCase() || 'list';
-      
+
       switch (action) {
         case 'list':
           return this.listPermissions();
-        
+
         case 'grant':
           return this.grantPermission(args.slice(1));
-        
+
         case 'revoke':
           return this.revokePermission(args.slice(1));
-        
+
         case 'audit':
           return this.showAuditLog();
-        
+
         case 'reset':
           return this.resetPermissions();
-        
+
         case 'export':
           return this.exportPermissions();
-        
+
         case 'policy':
           return this.managePolicies(args.slice(1));
-        
+
         case 'domains':
           return this.manageDomains(args.slice(1));
-        
+
         default:
           return this.showHelp();
       }
@@ -179,7 +179,7 @@ export class PermissionsCommand extends BaseCommand {
     } catch (error) {
       logger.error('Failed to read permissions config:', error);
     }
-    
+
     // Return default config
     return {
       version: '1.0.0',
@@ -190,12 +190,7 @@ export class PermissionsCommand extends BaseCommand {
         notifyOnGrant: true,
         auditLog: true,
       },
-      trustedDomains: [
-        'github.com',
-        'googleapis.com',
-        'openai.com',
-        'anthropic.com',
-      ],
+      trustedDomains: ['github.com', 'googleapis.com', 'openai.com', 'anthropic.com'],
       blockedDomains: [],
     };
   }
@@ -206,12 +201,8 @@ export class PermissionsCommand extends BaseCommand {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      
-      fs.writeFileSync(
-        this.configPath,
-        JSON.stringify(config, null, 2),
-        'utf-8'
-      );
+
+      fs.writeFileSync(this.configPath, JSON.stringify(config, null, 2), 'utf-8');
     } catch (error) {
       logger.error('Failed to save permissions config:', error);
       throw error;
@@ -220,53 +211,53 @@ export class PermissionsCommand extends BaseCommand {
 
   private async listPermissions(): Promise<SlashCommandResult> {
     const config = await this.getConfig();
-    
+
     const categories = ['file', 'network', 'system', 'ai', 'data'];
     const riskEmoji = {
       low: '🟢',
       medium: '🟡',
       high: '🔴',
     };
-    
+
     let message = '# 🔐 MARIA Permissions\n\n';
-    
+
     for (const category of categories) {
-      const perms = config.permissions.filter(p => p.category === category);
+      const perms = config.permissions.filter((p) => p.category === category);
       if (perms.length === 0) continue;
-      
+
       message += `## ${this.getCategoryEmoji(category)} ${category.toUpperCase()}\n\n`;
-      
+
       for (const perm of perms) {
         const status = perm.granted ? '✅' : '❌';
         const risk = riskEmoji[perm.risk];
-        
+
         message += `**${status} ${perm.name}** ${risk}\n`;
         message += `   ID: \`${perm.id}\`\n`;
         message += `   ${perm.description}\n`;
-        
+
         if (perm.expiresAt) {
           message += `   ⏰ Expires: ${new Date(perm.expiresAt).toLocaleString()}\n`;
         }
-        
+
         message += '\n';
       }
     }
-    
+
     message += `## 📋 Security Policies\n\n`;
     message += `• Auto-grant: ${config.policies.autoGrant ? '✅' : '❌'}\n`;
     message += `• Require confirmation: ${config.policies.requireConfirmation ? '✅' : '❌'}\n`;
     message += `• Notify on grant: ${config.policies.notifyOnGrant ? '✅' : '❌'}\n`;
     message += `• Audit logging: ${config.policies.auditLog ? '✅' : '❌'}\n`;
-    
+
     message += `\n## 🌐 Domain Settings\n\n`;
     message += `**Trusted Domains:** ${config.trustedDomains.length}\n`;
     message += `**Blocked Domains:** ${config.blockedDomains.length}\n`;
-    
+
     message += `\n---\n`;
     message += `*Use \`/permissions grant [id]\` to grant permission*\n`;
     message += `*Use \`/permissions revoke [id]\` to revoke permission*\n`;
     message += `*Use \`/permissions audit\` to view activity log*`;
-    
+
     return {
       success: true,
       message,
@@ -280,29 +271,29 @@ export class PermissionsCommand extends BaseCommand {
         message: '❌ Please specify a permission ID to grant',
       };
     }
-    
+
     const permissionId = args[0];
     const config = await this.getConfig();
-    const permission = config.permissions.find(p => p.id === permissionId);
-    
+    const permission = config.permissions.find((p) => p.id === permissionId);
+
     if (!permission) {
       return {
         success: false,
         message: `❌ Unknown permission ID: "${permissionId}"\n\nUse \`/permissions list\` to see available permissions`,
       };
     }
-    
+
     if (permission.granted) {
       return {
         success: false,
         message: `⚠️ Permission "${permission.name}" is already granted`,
       };
     }
-    
+
     // Update permission
     permission.granted = true;
     permission.grantedAt = new Date();
-    
+
     // Add expiry if specified
     if (args.includes('--expire')) {
       const expireIndex = args.indexOf('--expire');
@@ -311,16 +302,17 @@ export class PermissionsCommand extends BaseCommand {
         permission.expiresAt = new Date(Date.now() + hours * 60 * 60 * 1000);
       }
     }
-    
+
     await this.saveConfig(config);
-    
+
     // Log the action
     await this.logAction('grant', permission);
-    
-    const riskWarning = permission.risk === 'high'
-      ? '\n\n⚠️ **Warning:** This is a high-risk permission. Please ensure you trust the operations that will use this permission.'
-      : '';
-    
+
+    const riskWarning =
+      permission.risk === 'high'
+        ? '\n\n⚠️ **Warning:** This is a high-risk permission. Please ensure you trust the operations that will use this permission.'
+        : '';
+
     return {
       success: true,
       message: `✅ **Permission Granted**
@@ -341,35 +333,35 @@ The permission has been granted and is now active.`,
         message: '❌ Please specify a permission ID to revoke',
       };
     }
-    
+
     const permissionId = args[0];
     const config = await this.getConfig();
-    const permission = config.permissions.find(p => p.id === permissionId);
-    
+    const permission = config.permissions.find((p) => p.id === permissionId);
+
     if (!permission) {
       return {
         success: false,
         message: `❌ Unknown permission ID: "${permissionId}"`,
       };
     }
-    
+
     if (!permission.granted) {
       return {
         success: false,
         message: `⚠️ Permission "${permission.name}" is already revoked`,
       };
     }
-    
+
     // Update permission
     permission.granted = false;
     delete permission.grantedAt;
     delete permission.expiresAt;
-    
+
     await this.saveConfig(config);
-    
+
     // Log the action
     await this.logAction('revoke', permission);
-    
+
     return {
       success: true,
       message: `✅ **Permission Revoked**
@@ -383,17 +375,20 @@ The permission has been revoked and is no longer active.`,
 
   private async showAuditLog(): Promise<SlashCommandResult> {
     const auditPath = path.join(os.homedir(), '.maria', 'audit.log');
-    
+
     if (!fs.existsSync(auditPath)) {
       return {
         success: true,
         message: '📋 **Audit Log**\n\nNo audit entries found.',
       };
     }
-    
+
     const log = fs.readFileSync(auditPath, 'utf-8');
-    const entries = log.split('\n').filter(line => line).slice(-20); // Last 20 entries
-    
+    const entries = log
+      .split('\n')
+      .filter((line) => line)
+      .slice(-20); // Last 20 entries
+
     return {
       success: true,
       message: `📋 **Permission Audit Log** (Last 20 entries)
@@ -410,7 +405,7 @@ ${entries.join('\n')}
     const config = await this.getConfig();
     config.permissions = this.defaultPermissions;
     await this.saveConfig(config);
-    
+
     return {
       success: true,
       message: `✅ **Permissions Reset**
@@ -428,9 +423,9 @@ Use \`/permissions list\` to review current permissions.`,
   private async exportPermissions(): Promise<SlashCommandResult> {
     const config = await this.getConfig();
     const exportPath = path.join(os.homedir(), 'maria-permissions-export.json');
-    
+
     fs.writeFileSync(exportPath, JSON.stringify(config, null, 2), 'utf-8');
-    
+
     return {
       success: true,
       message: `✅ **Permissions Exported**
@@ -451,7 +446,7 @@ You can import this file on another system or keep it as a backup.`,
   private async managePolicies(args: string[]): Promise<SlashCommandResult> {
     if (args.length === 0) {
       const config = await this.getConfig();
-      
+
       return {
         success: true,
         message: `# 🛡️ Security Policies
@@ -469,12 +464,12 @@ You can import this file on another system or keep it as a backup.`,
 • \`/permissions policy audit [on/off]\``,
       };
     }
-    
+
     const policy = args[0];
     const value = args[1] === 'on';
-    
+
     const config = await this.getConfig();
-    
+
     switch (policy) {
       case 'auto-grant':
         config.policies.autoGrant = value;
@@ -494,9 +489,9 @@ You can import this file on another system or keep it as a backup.`,
           message: `❌ Unknown policy: "${policy}"`,
         };
     }
-    
+
     await this.saveConfig(config);
-    
+
     return {
       success: true,
       message: `✅ Policy "${policy}" set to: ${value ? 'ON' : 'OFF'}`,
@@ -506,18 +501,20 @@ You can import this file on another system or keep it as a backup.`,
   private async manageDomains(args: string[]): Promise<SlashCommandResult> {
     if (args.length === 0) {
       const config = await this.getConfig();
-      
+
       return {
         success: true,
         message: `# 🌐 Domain Management
 
 **Trusted Domains (${config.trustedDomains.length}):**
-${config.trustedDomains.map(d => `• ${d}`).join('\n')}
+${config.trustedDomains.map((d) => `• ${d}`).join('\n')}
 
 **Blocked Domains (${config.blockedDomains.length}):**
-${config.blockedDomains.length > 0 
-  ? config.blockedDomains.map(d => `• ${d}`).join('\n')
-  : '• None'}
+${
+  config.blockedDomains.length > 0
+    ? config.blockedDomains.map((d) => `• ${d}`).join('\n')
+    : '• None'
+}
 
 **Commands:**
 • \`/permissions domains trust [domain]\`
@@ -525,19 +522,19 @@ ${config.blockedDomains.length > 0
 • \`/permissions domains remove [domain]\``,
       };
     }
-    
+
     const action = args[0];
     const domain = args[1];
-    
+
     if (!domain) {
       return {
         success: false,
         message: '❌ Please specify a domain',
       };
     }
-    
+
     const config = await this.getConfig();
-    
+
     switch (action) {
       case 'trust':
         if (!config.trustedDomains.includes(domain)) {
@@ -549,11 +546,11 @@ ${config.blockedDomains.length > 0
           config.blockedDomains.push(domain);
         }
         // Remove from trusted if present
-        config.trustedDomains = config.trustedDomains.filter(d => d !== domain);
+        config.trustedDomains = config.trustedDomains.filter((d) => d !== domain);
         break;
       case 'remove':
-        config.trustedDomains = config.trustedDomains.filter(d => d !== domain);
-        config.blockedDomains = config.blockedDomains.filter(d => d !== domain);
+        config.trustedDomains = config.trustedDomains.filter((d) => d !== domain);
+        config.blockedDomains = config.blockedDomains.filter((d) => d !== domain);
         break;
       default:
         return {
@@ -561,9 +558,9 @@ ${config.blockedDomains.length > 0
           message: `❌ Unknown action: "${action}"`,
         };
     }
-    
+
     await this.saveConfig(config);
-    
+
     return {
       success: true,
       message: `✅ Domain "${domain}" ${action}ed successfully`,
@@ -612,20 +609,20 @@ ${config.blockedDomains.length > 0
       ai: '🤖',
       data: '💾',
     };
-    
+
     return emojis[category] || '📋';
   }
 
   private async logAction(action: string, permission: Permission): Promise<void> {
     const auditPath = path.join(os.homedir(), '.maria', 'audit.log');
     const entry = `[${new Date().toISOString()}] ${action.toUpperCase()}: ${permission.id} (${permission.name})\n`;
-    
+
     try {
       const dir = path.dirname(auditPath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      
+
       fs.appendFileSync(auditPath, entry);
     } catch (error) {
       logger.error('Failed to write audit log:', error);

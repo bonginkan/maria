@@ -11,6 +11,9 @@ import { readConfig, writeConfig } from '../utils/config';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
 import * as path from 'path';
+import chalk from 'chalk';
+import { getInternalModeService } from './internal-mode/index';
+import type { ModeDefinition } from './internal-mode/types';
 import {
   commandCategories,
   getCommandsByCategory,
@@ -28,6 +31,8 @@ import { BatchExecutionEngine } from './batch-execution';
 import { HotkeyManager } from './hotkey-manager';
 import { runInteractiveModelSelector } from '../commands/model-interactive.js';
 import { ChatContextService } from './chat-context.service';
+// import { getInternalModeService } from './internal-mode/InternalModeService';
+// import chalk from 'chalk';
 import { CodeGenerationService, CodeGenerationRequest } from './code-generation.service';
 import { TestGenerationService, TestGenerationRequest } from './test-generation.service';
 
@@ -270,6 +275,11 @@ export class SlashCommandHandler {
           result = await this.handleTest(args, context);
           break;
 
+        // 論文処理・DeepCode統合 (Phase 1)
+        case '/paper':
+          result = await this.handlePaper(args, context);
+          break;
+
         default:
           result = {
             success: false,
@@ -406,14 +416,32 @@ export class SlashCommandHandler {
     args: string[],
     context: ConversationContext,
   ): Promise<SlashCommandResult> {
+    const modeService = getInternalModeService();
+
+    // Handle internal mode commands
+    if (args[0] === 'internal') {
+      return await this.handleInternalModeCommand(args.slice(1), context);
+    }
+
+    // Handle operation modes (legacy support)
     const availableModes = ['chat', 'command', 'research', 'creative'];
     const currentMode = context.preferences?.defaultModel || 'chat';
 
     if (args.length === 0) {
+      const currentInternalMode = modeService.getCurrentMode();
+      let message = `📋 Operation Mode: ${currentMode}\n`;
+
+      if (currentInternalMode) {
+        message += `🧠 Internal Mode: ✽ ${currentInternalMode.displayName} - ${currentInternalMode.description}\n`;
+      }
+
+      message += `\nOperation modes: ${availableModes.join(', ')}\n`;
+      message += `Internal modes: Use /mode internal list to see all 50 cognitive modes`;
+
       return {
         success: true,
-        message: `Current mode: ${currentMode}\\nAvailable modes: ${availableModes.join(', ')}`,
-        data: { currentMode, availableModes },
+        message,
+        data: { currentMode, availableModes, currentInternalMode },
       };
     }
 
@@ -421,7 +449,7 @@ export class SlashCommandHandler {
     if (!newMode || !availableModes.includes(newMode)) {
       return {
         success: false,
-        message: `Invalid mode: ${newMode || 'undefined'}. Available: ${availableModes.join(', ')}`,
+        message: `Invalid operation mode: ${newMode || 'undefined'}. Available: ${availableModes.join(', ')}\nFor internal modes, use: /mode internal <mode_name>`,
       };
     }
 
@@ -437,9 +465,187 @@ export class SlashCommandHandler {
 
     return {
       success: true,
-      message: `Mode switched to ${newMode}`,
+      message: `Operation mode switched to ${newMode}`,
       data: { mode: newMode },
     };
+  }
+
+  private async handleInternalModeCommand(
+    args: string[],
+    _context: ConversationContext,
+  ): Promise<SlashCommandResult> {
+    const modeService = getInternalModeService();
+
+    if (!modeService) {
+      return {
+        success: false,
+        message: 'Internal Mode Service not available',
+      };
+    }
+
+    // Initialize if needed
+    try {
+      await modeService.initialize();
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to initialize Internal Mode Service: ${error}`,
+      };
+    }
+
+    if (args.length === 0 || args[0] === 'current') {
+      const currentMode = modeService.getCurrentMode();
+      if (currentMode) {
+        return {
+          success: true,
+          message: `🧠 Current Internal Mode: ✽ ${currentMode.displayName}\n${currentMode.description}\nCategory: ${currentMode.category}`,
+          data: { currentMode },
+        };
+      } else {
+        return {
+          success: true,
+          message: '🧠 No internal mode currently active',
+          data: { currentMode: null },
+        };
+      }
+    }
+
+    const subCommand = args[0]?.toLowerCase();
+
+    switch (subCommand) {
+      case 'list': {
+        const allModes = modeService.getAllModes();
+        const categories = new Map<string, typeof allModes>();
+
+        // Group modes by category
+        allModes.forEach((mode: ModeDefinition) => {
+          if (!categories.has(mode.category)) {
+            categories.set(mode.category, []);
+          }
+          categories.get(mode.category)!.push(mode);
+        });
+
+        let message = `🧠 ${chalk.bold('Internal Cognitive Modes')} (${allModes.length} total)\n\n`;
+
+        for (const [category, modes] of categories) {
+          message += `${chalk.cyan(`📋 ${category.toUpperCase()}`)} (${modes.length} modes)\n`;
+          modes.forEach((mode: ModeDefinition) => {
+            const symbol = mode.symbol || '✽';
+            message += `  ${chalk.gray(symbol)} ${chalk.white(mode.displayName)} - ${mode.description}\n`;
+          });
+          message += '\n';
+        }
+
+        message += `${chalk.gray('Usage: /mode internal <mode_name> to switch manually')}`;
+
+        return {
+          success: true,
+          message,
+          data: { modes: allModes, categories: Object.fromEntries(categories) },
+        };
+      }
+
+      case 'history': {
+        const history = modeService.getModeHistory();
+        const recent = history.slice(-10); // Last 10 entries
+
+        if (recent.length === 0) {
+          return {
+            success: true,
+            message: '📋 No mode history available',
+            data: { history: [] },
+          };
+        }
+
+        let message = `📋 ${chalk.bold('Recent Internal Mode History')}\n\n`;
+        recent.reverse().forEach((entry: unknown, index: number) => {
+          const timeStr = entry.timestamp.toLocaleTimeString();
+          message += `${chalk.gray(`${index + 1}.`)} ${chalk.white(entry.mode.displayName)} ${chalk.gray(`(${timeStr})`)}\n`;
+        });
+
+        return {
+          success: true,
+          message,
+          data: { history: recent },
+        };
+      }
+
+      case 'stats': {
+        const stats = modeService.getStatistics();
+
+        let message = `📊 ${chalk.bold('Internal Mode Statistics')}\n\n`;
+        message += `${chalk.cyan('Total Modes:')} ${stats.totalModes}\n`;
+        message += `${chalk.cyan('Current Mode:')} ${stats.currentMode || 'None'}\n`;
+        message += `${chalk.cyan('Mode Changes:')} ${stats.modeChanges}\n`;
+        message += `${chalk.cyan('Avg Confidence:')} ${(stats.averageConfidence * 100).toFixed(1)}%\n\n`;
+
+        if (stats.mostUsedModes.length > 0) {
+          message += `${chalk.cyan('Most Used Modes:')}\n`;
+          stats.mostUsedModes.forEach((item: unknown, index: number) => {
+            message += `  ${index + 1}. ${item.mode} (${item.count} times)\n`;
+          });
+        }
+
+        return {
+          success: true,
+          message,
+          data: { stats },
+        };
+      }
+
+      case 'auto': {
+        modeService.updateConfig({ autoSwitchEnabled: true });
+        return {
+          success: true,
+          message: '🤖 Automatic mode switching enabled',
+          data: { autoSwitch: true },
+        };
+      }
+
+      case 'manual': {
+        modeService.updateConfig({ autoSwitchEnabled: false });
+        return {
+          success: true,
+          message: '👤 Manual mode switching enabled',
+          data: { autoSwitch: false },
+        };
+      }
+
+      default: {
+        // Try to switch to the specified mode
+        const modeName = args.join(' ').toLowerCase();
+        const targetMode = modeService
+          .getAllModes()
+          .find(
+            (mode: ModeDefinition) =>
+              mode.id.toLowerCase() === modeName ||
+              mode.displayName.toLowerCase() === modeName ||
+              mode.displayName.toLowerCase().includes(modeName),
+          );
+
+        if (!targetMode) {
+          return {
+            success: false,
+            message: `🧠 Internal mode '${modeName}' not found. Use '/mode internal list' to see available modes.`,
+          };
+        }
+
+        const success = await modeService.setMode(targetMode, 'manual');
+
+        if (success) {
+          return {
+            success: true,
+            message: `🧠 Switched to internal mode: ✽ ${targetMode.displayName}\n${targetMode.description}`,
+            data: { mode: targetMode },
+          };
+        } else {
+          return {
+            success: false,
+            message: `Failed to switch to internal mode: ${targetMode.displayName}`,
+          };
+        }
+      }
+    }
   }
 
   private async handleUpgrade(args: string[]): Promise<SlashCommandResult> {
@@ -1177,22 +1383,23 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
   }
 
   private async handleCompact(_context: ConversationContext): Promise<SlashCommandResult> {
-    if (!context.history?.length) {
+    if (!_context.history?.length) {
       return {
         success: false,
         message: 'No conversation history to compact',
       };
     }
 
-    const originalCount = context.history.length;
-    const originalTokens = Number(context.metadata?.['totalTokens']) || 0;
+    const originalCount = _context.history.length;
+    const originalTokens = Number(_context.metadata?.['totalTokens']) || 0;
 
     // 重要なメッセージのみを保持（エラー、重要なシステムメッセージ、最後の5つの交換）
-    const importantMessages = context.history.filter(
-      (msg) => msg.data?.['error'] || msg.action === 'system' || msg.data?.['command'],
+    const importantMessages = _context.history.filter(
+      (msg: ConversationHistory) =>
+        msg.data?.['error'] || msg.action === 'system' || msg.data?.['command'],
     );
 
-    const recentMessages = context.history.slice(-10); // 最新10メッセージを保持
+    const recentMessages = _context.history.slice(-10); // 最新10メッセージを保持
     const compactedHistory: ConversationHistory[] = [
       ...importantMessages.slice(0, 5), // 重要メッセージの最初の5つ
       {
@@ -1209,16 +1416,16 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     // 重複を除去
     const uniqueMessages = compactedHistory;
 
-    context.history = uniqueMessages;
+    _context.history = uniqueMessages;
 
     // トークン数を推定 (簡易計算: 文字数 ÷ 4)
     const newTokenCount = Math.ceil(
       uniqueMessages.reduce((sum, msg) => sum + JSON.stringify(msg.data || '').length, 0) / 4,
     );
 
-    if (context.metadata) {
-      context.metadata['totalTokens'] = newTokenCount;
-      context.metadata['cost'] = newTokenCount * 0.000002; // 簡易計算
+    if (_context.metadata) {
+      _context.metadata['totalTokens'] = newTokenCount;
+      _context.metadata['cost'] = newTokenCount * 0.000002; // 簡易計算
     }
 
     return {
@@ -1253,7 +1460,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
 
       // 保存された会話を現在のコンテキストにマージ
       if (isArray(savedContext.history)) {
-        context.history = savedContext.history.map((msg: unknown): ConversationHistory => {
+        _context.history = savedContext.history.map((msg: unknown): ConversationHistory => {
           if (isObject(msg)) {
             return {
               timestamp: new Date(getStringProperty(msg, 'timestamp', new Date().toISOString())),
@@ -1268,19 +1475,19 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
           };
         });
       } else {
-        context.history = [];
+        _context.history = [];
       }
 
       if (savedContext.currentTask) {
-        context.currentTask =
+        _context.currentTask =
           typeof savedContext.currentTask === 'string'
             ? savedContext.currentTask
             : String(savedContext.currentTask);
       }
 
       if (savedContext.metadata) {
-        context.metadata = {
-          ...context.metadata,
+        _context.metadata = {
+          ..._context.metadata,
           ...savedContext.metadata,
           startTime: new Date(
             ((savedContext.metadata as Record<string, unknown>)['startTime'] as string) ||
@@ -1298,11 +1505,11 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
 
       return {
         success: true,
-        message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${context.currentTask})` : ''}`,
+        message: `Conversation resumed: ${_context.history.length} messages restored${_context.currentTask ? ` (task: ${_context.currentTask})` : ''}`,
         data: {
-          messagesRestored: context.history.length,
-          taskRestored: !!context.currentTask,
-          lastActivity: context.metadata?.['lastActivity'],
+          messagesRestored: _context.history.length,
+          taskRestored: !!_context.currentTask,
+          lastActivity: _context.metadata?.['lastActivity'],
         },
       };
     } catch (error: unknown) {
@@ -1322,11 +1529,11 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
   }
 
   private async handleCost(_context: ConversationContext): Promise<SlashCommandResult> {
-    const cost = (context.metadata?.['cost'] as number) || 0;
-    const tokens = (context.metadata?.['totalTokens'] as number) || 0;
-    const sessionStart = (context.metadata?.['startTime'] as Date) || new Date();
+    const cost = (_context.metadata?.['cost'] as number) || 0;
+    const tokens = (_context.metadata?.['totalTokens'] as number) || 0;
+    const sessionStart = (_context.metadata?.['startTime'] as Date) || new Date();
     const duration = Math.round((Date.now() - sessionStart.getTime()) / 1000);
-    const messageCount = context.history?.length || 0;
+    const messageCount = _context.history?.length || 0;
 
     // ユーザープランに基づくコスト制限を取得
     const dailyLimit =
@@ -1716,8 +1923,8 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     const newVimMode = !currentVimMode;
 
     // Vim モード設定を更新
-    if (context.preferences) {
-      (context.preferences as Record<string, unknown>)['vimMode'] = newVimMode;
+    if (_context.preferences) {
+      (_context.preferences as Record<string, unknown>)['vimMode'] = newVimMode;
     }
 
     // 設定ファイルに保存
@@ -1916,7 +2123,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     const suggestionContext: SuggestionContext = {
       projectInitialized: await this.checkProjectInitialized(),
       userLoggedIn: this.userSession.isAuthenticated,
-      currentMode: context.preferences?.defaultModel || 'chat',
+      currentMode: _context.preferences?.defaultModel || 'chat',
       sessionDuration: Date.now() - this.sessionStartTime,
       commandHistory: this.suggestionService.getCommandHistory(),
     };
@@ -2670,7 +2877,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
 
   private async handleExit(_context: ConversationContext): Promise<SlashCommandResult> {
     // 会話セッションを保存（オプション）
-    const shouldSave = context.history && context.history.length > 0;
+    const shouldSave = _context.history && _context.history.length > 0;
 
     if (shouldSave) {
       try {
@@ -2678,20 +2885,20 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         const sessionFile = `${process.cwd()}/.maria-session.json`;
 
         const sessionData = {
-          sessionId: context.sessionId,
-          history: context.history,
-          currentTask: context.currentTask,
-          metadata: context.metadata,
+          sessionId: _context.sessionId,
+          history: _context.history,
+          currentTask: _context.currentTask,
+          metadata: _context.metadata,
           savedAt: new Date().toISOString(),
         };
 
         await fs.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
 
         const stats = {
-          messages: context.history?.length || 0,
-          cost: (context.metadata?.['cost'] as number) || 0,
-          duration: context.metadata?.['startTime']
-            ? Math.round((Date.now() - (context.metadata['startTime'] as Date).getTime()) / 1000)
+          messages: _context.history?.length || 0,
+          cost: (_context.metadata?.['cost'] as number) || 0,
+          duration: _context.metadata?.['startTime']
+            ? Math.round((Date.now() - (_context.metadata['startTime'] as Date).getTime()) / 1000)
             : 0,
         };
 
@@ -3821,6 +4028,145 @@ Usage: /test [target] [options]
       return {
         success: false,
         message: `❌ Unexpected error during test operation: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      };
+    }
+  }
+
+  // === PAPER PROCESSING COMMAND (DeepCode Integration - Phase 1) ===
+  private async handlePaper(
+    args: string[],
+    _context: ConversationContext,
+  ): Promise<SlashCommandResult> {
+    const { MultiAgentSystem } = await import('../agents/multi-agent-system');
+    const multiAgentSystem = MultiAgentSystem.getInstance();
+
+    // Parse arguments
+    const options: Record<string, unknown> = {
+      source: 'text',
+      language: 'typescript',
+      framework: 'none',
+      generateTests: true,
+      includeDocumentation: true,
+    };
+    let content = '';
+
+    for (let i = 0; i < args.length; i++) {
+      const arg = args[i];
+      if (arg?.startsWith('--')) {
+        const key = arg.slice(2);
+        const value = args[i + 1] && !args[i + 1]?.startsWith('--') ? args[i + 1] : true;
+
+        switch (key) {
+          case 'source':
+            options['source'] = value;
+            i++; // Skip next argument as it's the value
+            break;
+          case 'language':
+          case 'lang':
+            options['language'] = value;
+            i++;
+            break;
+          case 'framework':
+            options['framework'] = value;
+            i++;
+            break;
+          case 'no-tests':
+            options['generateTests'] = false;
+            break;
+          case 'no-docs':
+            options['includeDocumentation'] = false;
+            break;
+        }
+      } else {
+        content += arg + ' ';
+      }
+    }
+
+    content = content.trim();
+
+    // Validate input
+    if (!content) {
+      return {
+        success: false,
+        message: `❌ Please provide paper content or file path
+
+📖 **Usage Examples:**
+\`/paper "Your research paper text here"\`
+\`/paper --source pdf paper.pdf\`
+\`/paper --source arxiv 2301.12345\`
+\`/paper --language python --framework django "Algorithm description"\`
+
+🔧 **Options:**
+  --source <type>     Source type: text, pdf, arxiv, url, docx
+  --language <lang>   Target language: typescript, python, java, etc.
+  --framework <fw>    Framework: react, express, django, flask, etc.
+  --no-tests         Skip test generation
+  --no-docs          Skip documentation generation`,
+      };
+    }
+
+    try {
+      logger.info(`📄 Processing paper with multi-agent system`);
+
+      // Create paper processing request
+      const request = {
+        source: options['source'] as 'text' | 'pdf' | 'arxiv' | 'url' | 'docx',
+        content,
+        options: {
+          extractAlgorithms: true,
+          generateTests: options['generateTests'] as boolean,
+          includeDocumentation: options['includeDocumentation'] as boolean,
+          targetLanguage: options['language'] as string,
+          framework: options['framework'] as string,
+        },
+      };
+
+      // Process paper with streaming updates
+      let message = `🚀 **Paper Processing Started**\n\n`;
+      message += `📋 **Configuration:**\n`;
+      message += `  • Source: ${request.source}\n`;
+      message += `  • Language: ${request.options.targetLanguage}\n`;
+      message += `  • Framework: ${request.options.framework}\n`;
+      message += `  • Generate Tests: ${request.options.generateTests ? '✅' : '❌'}\n`;
+      message += `  • Include Docs: ${request.options.includeDocumentation ? '✅' : '❌'}\n\n`;
+
+      message += `🔄 **Processing Stages:**\n`;
+
+      // Use async generator for streaming updates
+      for await (const update of multiAgentSystem.processPaperWithStreaming(request)) {
+        if (update.error) {
+          return {
+            success: false,
+            message: `❌ Paper processing failed: ${update.error}`,
+          };
+        }
+
+        message += `  ${update.progress}% - ${update.stage}\n`;
+
+        if (update.result) {
+          message += `    ✅ ${JSON.stringify(update.result)}\n`;
+        }
+      }
+
+      message += `\n✨ **Paper Processing Complete!**\n`;
+      message += `\n💡 The multi-agent system has analyzed your paper and extracted algorithms.`;
+      message += `\n🔧 Generated code and tests are ready for review.`;
+      message += `\n📚 Documentation has been generated based on the paper content.`;
+
+      return {
+        success: true,
+        message,
+        data: {
+          source: request.source,
+          language: request.options.targetLanguage,
+          multiAgentProcessing: true,
+        },
+      };
+    } catch (error: unknown) {
+      logger.error('Paper processing error:', error);
+      return {
+        success: false,
+        message: `❌ Paper processing failed: ${error instanceof Error ? error.message : 'Unknown error'}\n\n💡 Try:\n- Checking your input format\n- Using simpler text input first\n- Running /agents to check system status`,
       };
     }
   }

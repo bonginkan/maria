@@ -199,7 +199,7 @@ export interface CrossSessionInsight {
 export class CrossSessionLearning extends EventEmitter {
   private static instance: CrossSessionLearning;
   private userProfiles: Map<string, UserKnowledgeProfile> = new Map();
-  private learningPatterns: Map<string, LearningPattern> = new Map();
+  // private _learningPatterns: Map<string, LearningPattern> = new Map();
   private sessionLearnings: Map<string, SessionTransferableLearning> = new Map();
   private crossSessionInsights: Map<string, CrossSessionInsight> = new Map();
   private dataDir: string;
@@ -285,8 +285,8 @@ export class CrossSessionLearning extends EventEmitter {
    * Extract key learnings from context states
    */
   private async extractKeyLearnings(
-    _contexts: DeepContextState[],
-    _metrics: SessionMetrics,
+    contexts: DeepContextState[],
+    metrics: SessionMetrics,
   ): Promise<KeyLearning[]> {
     const learnings: KeyLearning[] = [];
 
@@ -315,14 +315,16 @@ export class CrossSessionLearning extends EventEmitter {
    * Analyze skill development from conversation patterns
    */
   private analyzeSkillDevelopment(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
     _metrics: SessionMetrics,
   ): KeyLearning[] {
     const learnings: KeyLearning[] = [];
 
     contexts.forEach((context) => {
       // Analyze technical depth progression
-      const topicDepths = context.conversationFlow.topics.map((t) => t.depth);
+      const topicDepths = context.conversationFlow.topics
+        .map((t: unknown) => (t as Record<string, number>)['depth'] || 0)
+        .filter((depth) => typeof depth === 'number') as number[];
       if (topicDepths.length > 1) {
         const depthProgression = this.calculateProgression(topicDepths);
         if (depthProgression > 0.2) {
@@ -360,7 +362,7 @@ export class CrossSessionLearning extends EventEmitter {
 
     let progression = 0;
     for (let i = 1; i < values.length; i++) {
-      progression += (values[i] - values[i - 1]) / values[i - 1];
+      progression += (values[i]! - values[i - 1]!) / values[i - 1]!;
     }
 
     return progression / (values.length - 1);
@@ -488,13 +490,13 @@ export class CrossSessionLearning extends EventEmitter {
    * Analyze workflow patterns
    */
   private analyzeWorkflowPatterns(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
     _metrics: SessionMetrics,
   ): KeyLearning[] {
     const learnings: KeyLearning[] = [];
 
     // Analyze task sequencing patterns
-    const sequencePatterns = this.analyzeTaskSequencing(contexts);
+    const sequencePatterns = this.analyzeTaskSequencing(contexts || []);
     sequencePatterns.forEach((pattern) => {
       if (pattern.efficiency > 0.8) {
         learnings.push({
@@ -535,6 +537,7 @@ export class CrossSessionLearning extends EventEmitter {
       frequency: number;
     }> = [];
 
+    const contexts: DeepContextState[] = [];
     // Analyze goal transitions and their effectiveness
     contexts.forEach((context) => {
       if (context.taskContext.progressTracking.overall > 0.8) {
@@ -586,7 +589,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Analyze strategy effectiveness
    */
   private analyzeStrategyEffectiveness(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
     _metrics: SessionMetrics,
   ): KeyLearning[] {
     const learnings: KeyLearning[] = [];
@@ -627,6 +630,7 @@ export class CrossSessionLearning extends EventEmitter {
     let clarifyingSuccesses = 0;
     let directSuccesses = 0;
 
+    const contexts: DeepContextState[] = [];
     contexts.forEach((context) => {
       const hasQuestions = context.conversationFlow.intentionChain.some((i) =>
         i.intention.includes('?'),
@@ -671,6 +675,7 @@ export class CrossSessionLearning extends EventEmitter {
   ): Promise<TransferablePattern[]> {
     const patterns: TransferablePattern[] = [];
 
+    const contexts: DeepContextState[] = [];
     // Identify knowledge graph patterns that could transfer
     contexts.forEach((context) => {
       context.knowledgeGraph.clusterings.forEach((cluster) => {
@@ -698,9 +703,13 @@ export class CrossSessionLearning extends EventEmitter {
   ): Promise<ImprovementOpportunity[]> {
     const opportunities: ImprovementOpportunity[] = [];
 
+    const contexts: DeepContextState[] = [];
     // Identify areas where user struggled
     contexts.forEach((context) => {
-      if (context.emotionalContext.frustrationLevel > 0.6) {
+      if (
+        context.emotionalContext?.frustrationLevel &&
+        context.emotionalContext.frustrationLevel > 0.6
+      ) {
         opportunities.push({
           area: 'frustration-management',
           currentState: 'High frustration during complex tasks',
@@ -719,7 +728,7 @@ export class CrossSessionLearning extends EventEmitter {
       if (context.userBehavior.skillLevel.confidenceLevel < 0.5) {
         const domains = Object.keys(context.userBehavior.skillLevel.domainSkills);
         domains.forEach((domain) => {
-          if (context.userBehavior.skillLevel.domainSkills[domain] < 0.6) {
+          if ((context.userBehavior.skillLevel.domainSkills[domain] ?? 0) < 0.6) {
             opportunities.push({
               area: `skill-development-${domain}`,
               currentState: `Beginner level in ${domain}`,
@@ -749,9 +758,13 @@ export class CrossSessionLearning extends EventEmitter {
   ): Promise<SuccessFactor[]> {
     const factors: SuccessFactor[] = [];
 
+    const contexts: DeepContextState[] = [];
     // Identify what led to high engagement
     contexts.forEach((context) => {
-      if (context.emotionalContext.engagementLevel > 0.8) {
+      if (
+        context.emotionalContext?.engagementLevel &&
+        context.emotionalContext.engagementLevel > 0.8
+      ) {
         factors.push({
           factor: 'high-momentum-conversation',
           importance: 0.9,
@@ -967,7 +980,7 @@ export class CrossSessionLearning extends EventEmitter {
     if (recentPoints.length < 2) return 0;
 
     const momentum = recentPoints.slice(1).reduce((sum, point, index) => {
-      return sum + (point.level - recentPoints[index].level);
+      return sum + (point.level - recentPoints[index]!.level);
     }, 0);
 
     return momentum / (recentPoints.length - 1);
@@ -1068,7 +1081,7 @@ export class CrossSessionLearning extends EventEmitter {
           insight: 'Learning velocity is accelerating - user is building momentum',
           confidence: 0.8,
           impact: 0.9,
-          evidenceSessions: recentTrajectory.map((p) => p.contextId),
+          evidenceSessions: recentTrajectory.map((p) => p.learningEvent.contextId),
           actionable: true,
           recommendations: [
             'Maintain current pace and gradually increase complexity',
@@ -1083,7 +1096,7 @@ export class CrossSessionLearning extends EventEmitter {
           insight: 'Learning appears to be plateauing - consider new approaches',
           confidence: 0.7,
           impact: 0.8,
-          evidenceSessions: recentTrajectory.map((p) => p.contextId),
+          evidenceSessions: recentTrajectory.map((p) => p.learningEvent.contextId),
           actionable: true,
           recommendations: [
             'Introduce new problem types or domains',
@@ -1109,19 +1122,19 @@ export class CrossSessionLearning extends EventEmitter {
     // Find skills that tend to improve together
     for (let i = 0; i < skills.length; i++) {
       for (let j = i + 1; j < skills.length; j++) {
-        const correlation = this.calculateSkillCorrelation(skills[i][1], skills[j][1], profile);
+        const correlation = this.calculateSkillCorrelation(skills[i]![1], skills[j]![1], profile);
 
         if (correlation > 0.7) {
           insights.push({
             id: `correlation-${Date.now()}-${i}-${j}`,
             type: 'correlation',
-            insight: `Strong positive correlation between ${skills[i][0]} and ${skills[j][0]} skills`,
+            insight: `Strong positive correlation between ${skills[i]![0]} and ${skills[j]![0]} skills`,
             confidence: correlation,
             impact: 0.7,
             evidenceSessions: [],
             actionable: true,
             recommendations: [
-              `Focus on developing ${skills[i][0]} to boost ${skills[j][0]}`,
+              `Focus on developing ${skills[i]![0]} to boost ${skills[j]![0]}`,
               'Leverage this connection for accelerated learning',
             ],
             timestamp: new Date(),
@@ -1221,7 +1234,7 @@ export class CrossSessionLearning extends EventEmitter {
 
     if (highVelocitySkills.length > 0) {
       recommendations.push(
-        `Focus on ${highVelocitySkills[0].domain} - you're learning this rapidly`,
+        `Focus on ${highVelocitySkills[0]?.domain} - you're learning this rapidly`,
       );
     }
 
@@ -1231,7 +1244,7 @@ export class CrossSessionLearning extends EventEmitter {
     );
 
     if (skillsWithGaps.length > 0) {
-      recommendations.push(`Address knowledge gaps in ${skillsWithGaps[0].domain}`);
+      recommendations.push(`Address knowledge gaps in ${skillsWithGaps[0]?.domain}`);
     }
 
     return recommendations;
@@ -1250,7 +1263,7 @@ export class CrossSessionLearning extends EventEmitter {
 
     if (efficientPatterns.length > 0) {
       recommendations.push(
-        `Continue using ${efficientPatterns[0].pattern} - it's highly effective for you`,
+        `Continue using ${efficientPatterns[0]?.pattern} - it's highly effective for you`,
       );
     }
 
@@ -1261,7 +1274,7 @@ export class CrossSessionLearning extends EventEmitter {
 
     if (inefficientPatterns.length > 0) {
       recommendations.push(
-        `Consider optimizing ${inefficientPatterns[0].pattern} - it's frequently used but inefficient`,
+        `Consider optimizing ${inefficientPatterns[0]?.pattern} - it's frequently used but inefficient`,
       );
     }
 
@@ -1321,7 +1334,7 @@ export class CrossSessionLearning extends EventEmitter {
     }
 
     const skillProgression = new Map<string, number[]>();
-    profile.skillDomains.forEach((skill, domain) => {
+    profile.skillDomains.forEach((_skill, domain) => {
       // Get progression from learning trajectory
       const skillPoints = profile.learningTrajectory
         .filter(
@@ -1446,23 +1459,59 @@ export class CrossSessionLearning extends EventEmitter {
       const profilesFile = join(this.dataDir, 'user-profiles.json');
       if (existsSync(profilesFile)) {
         const profilesData = JSON.parse(readFileSync(profilesFile, 'utf-8'));
-        Object.entries(profilesData).forEach(([id, profileData]: [string, any]) => {
+        Object.entries(profilesData).forEach(([id, profileData]: [string, unknown]) => {
+          const data = profileData as Record<string, unknown>; // Type assertion for complex nested object
           const profile: UserKnowledgeProfile = {
-            ...profileData,
-            skillDomains: new Map(Object.entries(profileData.skillDomains)),
-            preferences: new Map(Object.entries(profileData.preferences)),
-            workflowPatterns: new Map(Object.entries(profileData.workflowPatterns)),
+            userId: id,
+            learningTrajectory: Array.isArray(data['learningTrajectory'])
+              ? (data['learningTrajectory'] as LearningTrajectoryPoint[])
+              : [],
+            skillDomains: new Map(
+              Object.entries(data['skillDomains'] || {}).map(([k, v]) => [k, v as SkillDomain]),
+            ),
+            preferences: new Map(
+              Object.entries(data['preferences'] || {}).map(([k, v]) => [k, v as PreferenceWeight]),
+            ),
+            workflowPatterns: new Map(
+              Object.entries(data['workflowPatterns'] || {}).map(([k, v]) => [
+                k,
+                v as WorkflowPattern,
+              ]),
+            ),
             personalityTraits: {
-              ...profileData.personalityTraits,
-              traits: new Map(Object.entries(profileData.personalityTraits.traits)),
+              ...((data['personalityTraits'] as Record<string, unknown>) || {}),
+              traits: new Map(
+                Object.entries(
+                  ((data['personalityTraits'] as Record<string, unknown>)?.['traits'] as Record<
+                    string,
+                    unknown
+                  >) || {},
+                ).map(([k, v]) => [k, v as number]),
+              ),
               learningStyle: {
-                ...profileData.personalityTraits.learningStyle,
                 modalityPreferences: new Map(
-                  Object.entries(profileData.personalityTraits.learningStyle.modalityPreferences),
+                  Object.entries(
+                    (
+                      (data['personalityTraits'] as Record<string, unknown>)?.[
+                        'learningStyle'
+                      ] as Record<string, unknown>
+                    )?.['modalityPreferences'] || {},
+                  ).map(([k, v]) => [k, v as number]),
                 ),
-              },
+                pacePreference: 'adaptive' as const,
+                structurePreference: 0.5,
+                depthVsBreadth: 0,
+                ...(((data['personalityTraits'] as Record<string, unknown>)?.[
+                  'learningStyle'
+                ] as Record<string, unknown>) || {}),
+              } as LearningStyle,
             },
-            adaptationStrategies: new Map(Object.entries(profileData.adaptationStrategies)),
+            adaptationStrategies: new Map(
+              Object.entries(data['adaptationStrategies'] || {}).map(([k, v]) => [
+                k,
+                v as AdaptationStrategy,
+              ]),
+            ),
           };
           this.userProfiles.set(id, profile);
         });

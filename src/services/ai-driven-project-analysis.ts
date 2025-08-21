@@ -291,13 +291,13 @@ interface AnalysisConfiguration {
 class AIProjectAnalyzer extends EventEmitter {
   private static instance: AIProjectAnalyzer;
   private analysisHistory: ProjectAnalysisReport[] = [];
-  private configuration: AnalysisConfiguration;
-  private knowledgeBase: Map<string, unknown> = new Map();
+  // private _configuration: AnalysisConfiguration; // Future configuration settings
+  // private _knowledgeBase: Map<string, unknown> = new Map(); // Project knowledge database
   private patterns: Map<string, unknown> = new Map();
 
   private constructor() {
     super();
-    this.configuration = this.getDefaultConfiguration();
+    // this._configuration = this.getDefaultConfiguration();
     this.initializeKnowledgeBase();
   }
 
@@ -308,20 +308,20 @@ class AIProjectAnalyzer extends EventEmitter {
     return AIProjectAnalyzer.instance;
   }
 
-  private getDefaultConfiguration(): AnalysisConfiguration {
-    return {
-      depth_level: 'comprehensive',
-      include_external_dependencies: true,
-      include_test_files: true,
-      include_generated_files: false,
-      file_size_limit_mb: 10,
-      language_specific_analysis: true,
-      ai_insights_enabled: true,
-      performance_analysis_enabled: true,
-      security_scan_enabled: true,
-      ignore_patterns: ['node_modules/**', '.git/**', 'dist/**', 'build/**', '*.log', '*.tmp'],
-    };
-  }
+  // private _getDefaultConfiguration(): AnalysisConfiguration {
+  //   return {
+  //     depth_level: 'comprehensive',
+  //     include_external_dependencies: true,
+  //     include_test_files: true,
+  //     include_generated_files: false,
+  //     file_size_limit_mb: 10,
+  //     language_specific_analysis: true,
+  //     ai_insights_enabled: true,
+  //     performance_analysis_enabled: true,
+  //     security_scan_enabled: true,
+  //     ignore_patterns: ['node_modules/**', '.git/**', 'dist/**', 'build/**', '*.log', '*.tmp'],
+  //   };
+  // }
 
   private async initializeKnowledgeBase(): Promise<void> {
     // Initialize patterns and knowledge base for AI analysis
@@ -459,7 +459,9 @@ class AIProjectAnalyzer extends EventEmitter {
 
       return {
         suggestions,
-        patterns_detected: contextualPatterns.map((p) => p.name),
+        patterns_detected: contextualPatterns.map(
+          (p) => (p as { name?: string })?.name || 'unknown',
+        ),
         best_practices: bestPractices,
         potential_issues: potentialIssues,
       };
@@ -485,10 +487,14 @@ class AIProjectAnalyzer extends EventEmitter {
 
     const latestAnalysis = this.analysisHistory[this.analysisHistory.length - 1];
 
-    const growthPredictions = await this.predictGrowthPatterns(latestAnalysis);
-    const technicalChallenges = await this.predictTechnicalChallenges(latestAnalysis);
-    const scalabilityConcerns = await this.identifyScalabilityConcerns(latestAnalysis);
-    const maintenanceProjections = await this.projectMaintenanceNeeds(latestAnalysis);
+    if (!latestAnalysis) {
+      throw new Error('No analysis history available for future predictions');
+    }
+
+    const growthPredictions = await this.predictGrowthPatterns(latestAnalysis!);
+    const technicalChallenges = await this.predictTechnicalChallenges(latestAnalysis!);
+    const scalabilityConcerns = await this.identifyScalabilityConcerns(latestAnalysis!);
+    const maintenanceProjections = await this.projectMaintenanceNeeds(latestAnalysis!);
     const recommendedPreparations = await this.generatePreparationRecommendations(
       growthPredictions,
       technicalChallenges,
@@ -900,12 +906,12 @@ interface Risk {
 
 export {
   AIProjectAnalyzer,
-  ProjectAnalysisReport,
-  ProjectStructure,
-  ProjectInsight,
-  ProjectRecommendation,
-  TechnicalDebtAnalysis,
-  DependencyGraph,
-  ArchitectureInsight,
-  CodeQualityMetrics,
+  type ProjectAnalysisReport,
+  type ProjectStructure,
+  type ProjectInsight,
+  type ProjectRecommendation,
+  type TechnicalDebtAnalysis,
+  type DependencyGraph,
+  type ArchitectureInsight,
+  type CodeQualityMetrics,
 };

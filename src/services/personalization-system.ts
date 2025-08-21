@@ -513,8 +513,8 @@ export class PersonalizationSystem extends EventEmitter {
     // Parse setting path like "settings.autoSuggestions"
     const [section, key] = settingPath.split('.');
 
-    if (section === 'settings' && key in this.settings) {
-      (this.settings as Record<string, unknown>)[key] = value;
+    if (section === 'settings' && key && key in this.settings) {
+      (this.settings as unknown as Record<string, unknown>)[key] = value;
       this.emit('settingUpdated', { key, value });
     }
   }

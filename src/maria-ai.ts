@@ -27,6 +27,7 @@ export class MariaAI {
   private router: IntelligentRouter;
   private healthMonitor: HealthMonitor;
   private config: ConfigManager;
+  private isInitialized: boolean = false;
 
   constructor(config: MariaAIConfig = {}) {
     this.config = new ConfigManager(config);
@@ -40,11 +41,17 @@ export class MariaAI {
   }
 
   async initialize(): Promise<void> {
+    if (this.isInitialized) {
+      return; // Already initialized
+    }
+
     await this.providerManager.initialize();
 
     if (this.config.get('healthMonitoring', true)) {
       this.healthMonitor.start();
     }
+
+    this.isInitialized = true;
   }
 
   /**
@@ -95,6 +102,10 @@ export class MariaAI {
    * Get available models
    */
   async getModels(): Promise<ModelInfo[]> {
+    // Ensure provider manager is initialized
+    if (!this.isInitialized) {
+      await this.initialize();
+    }
     return this.providerManager.getAvailableModels();
   }
 

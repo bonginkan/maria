@@ -199,8 +199,8 @@ export class TerminalSetupCommand extends BaseCommand {
           ll: 'ls -la',
           la: 'ls -A',
           l: 'ls -CF',
-          ...: 'cd ..',
-          ....: 'cd ../..',
+          '..': 'cd ..',
+          '...': 'cd ../..',
           tree: 'find . -type d | sed -e "s/[^-][^\/]*\//  |/g" -e "s/|\([^ ]\)/|-\1/"'
         },
         environment: {

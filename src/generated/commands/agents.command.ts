@@ -1,7 +1,7 @@
 /**
  * Agents Command Module
  * エージェント管理コマンド - AI エージェントとワークフローの管理
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: Advanced
  */
@@ -33,9 +33,9 @@ export interface Agent {
   };
 }
 
-export type AgentType = 
+export type AgentType =
   | 'code-generator'
-  | 'code-reviewer' 
+  | 'code-reviewer'
   | 'test-generator'
   | 'bug-detector'
   | 'performance-optimizer'
@@ -82,13 +82,13 @@ export class AgentsCommand extends BaseCommand {
   description = 'Manage AI agents and automated workflows';
   usage = '/agents [list|create|edit|delete|run|status|logs|templates] [options]';
   category = 'advanced';
-  
+
   examples = [
     '/agents list',
     '/agents create code-reviewer --template standard',
     '/agents run security-auditor --file src/auth.ts',
     '/agents status --agent my-agent',
-    '/agents logs --limit 10'
+    '/agents logs --limit 10',
   ];
 
   private agentsDir = path.join(process.cwd(), '.maria', 'agents');
@@ -105,60 +105,60 @@ export class AgentsCommand extends BaseCommand {
         case 'list':
         case 'ls':
           return await this.listAgents(actionArgs, args.flags);
-        
+
         case 'create':
         case 'new':
           return await this.createAgent(actionArgs, args.flags);
-        
+
         case 'edit':
         case 'update':
           return await this.editAgent(actionArgs, args.flags);
-        
+
         case 'delete':
         case 'remove':
         case 'rm':
           return await this.deleteAgent(actionArgs);
-        
+
         case 'run':
         case 'execute':
           return await this.runAgent(actionArgs, args.flags);
-        
+
         case 'status':
           return await this.showAgentStatus(actionArgs, args.flags);
-        
+
         case 'logs':
         case 'history':
           return await this.showExecutionLogs(actionArgs, args.flags);
-        
+
         case 'templates':
           return await this.listTemplates();
-        
+
         case 'export':
           return await this.exportAgent(actionArgs);
-        
+
         case 'import':
           return await this.importAgent(actionArgs);
-        
+
         case 'enable':
           return await this.toggleAgent(actionArgs[0], 'active');
-        
+
         case 'disable':
           return await this.toggleAgent(actionArgs[0], 'inactive');
-        
+
         case 'stats':
         case 'statistics':
           return await this.showStatistics(actionArgs);
-        
+
         default:
           return {
             success: false,
-            message: `Unknown agents action: ${action}. Use: list, create, edit, delete, run, status, logs, templates, export, import, enable, disable, stats`
+            message: `Unknown agents action: ${action}. Use: list, create, edit, delete, run, status, logs, templates, export, import, enable, disable, stats`,
           };
       }
     } catch (error) {
       return {
         success: false,
-        message: `Agents command error: ${error instanceof Error ? error.message : String(error)}`
+        message: `Agents command error: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -173,15 +173,18 @@ export class AgentsCommand extends BaseCommand {
     }
   }
 
-  private async listAgents(args: string[], flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async listAgents(
+    args: string[],
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     try {
       const files = await fs.readdir(this.agentsDir);
-      const agentFiles = files.filter(f => f.endsWith('.json'));
-      
+      const agentFiles = files.filter((f) => f.endsWith('.json'));
+
       if (agentFiles.length === 0) {
         return {
           success: true,
-          message: 'No agents found. Use `/agents create` to create your first agent.'
+          message: 'No agents found. Use `/agents create` to create your first agent.',
         };
       }
 
@@ -197,9 +200,7 @@ export class AgentsCommand extends BaseCommand {
 
       // Filter agents if type specified
       const filterType = flags.type as string;
-      const filteredAgents = filterType ? 
-        agents.filter(a => a.type === filterType) : 
-        agents;
+      const filteredAgents = filterType ? agents.filter((a) => a.type === filterType) : agents;
 
       // Sort by last used or creation date
       filteredAgents.sort((a, b) => {
@@ -213,25 +214,28 @@ export class AgentsCommand extends BaseCommand {
           active: chalk.green,
           inactive: chalk.gray,
           error: chalk.red,
-          updating: chalk.yellow
+          updating: chalk.yellow,
         }[agent.status];
 
         const status = statusColor(`●`);
         const name = chalk.bold(agent.name);
         const type = chalk.blue(agent.type);
         const successRate = agent.statistics.successRate;
-        const successColor = successRate >= 0.9 ? chalk.green : successRate >= 0.7 ? chalk.yellow : chalk.red;
-        const stats = chalk.gray(`(${agent.statistics.executionCount} runs, ${successColor(Math.round(successRate * 100))}% success)`);
-        
+        const successColor =
+          successRate >= 0.9 ? chalk.green : successRate >= 0.7 ? chalk.yellow : chalk.red;
+        const stats = chalk.gray(
+          `(${agent.statistics.executionCount} runs, ${successColor(Math.round(successRate * 100))}% success)`,
+        );
+
         return `  ${status} ${name.padEnd(20)} ${type.padEnd(18)} ${stats}`;
       };
 
       let message = `\n${chalk.bold('🤖 AI Agents')}\n`;
-      
+
       if (filterType) {
         message += chalk.gray(`Filtered by type: ${filterType}\n`);
       }
-      
+
       message += chalk.gray(`Total: ${filteredAgents.length} agents\n\n`);
       message += chalk.gray('Status Name                 Type               Statistics\n');
       message += chalk.gray('─'.repeat(70)) + '\n';
@@ -244,21 +248,24 @@ export class AgentsCommand extends BaseCommand {
 
       return {
         success: true,
-        message
+        message,
       };
     } catch (error) {
       return {
         success: false,
-        message: `Failed to list agents: ${error instanceof Error ? error.message : String(error)}`
+        message: `Failed to list agents: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
 
-  private async createAgent(args: string[], flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async createAgent(
+    args: string[],
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     if (args.length === 0) {
       return {
         success: false,
-        message: 'Usage: /agents create <agent-name> [--type=<type>] [--template=<template>]'
+        message: 'Usage: /agents create <agent-name> [--type=<type>] [--template=<template>]',
       };
     }
 
@@ -272,7 +279,7 @@ export class AgentsCommand extends BaseCommand {
       await fs.access(agentPath);
       return {
         success: false,
-        message: `Agent '${agentName}' already exists. Use a different name or delete the existing agent.`
+        message: `Agent '${agentName}' already exists. Use a different name or delete the existing agent.`,
       };
     } catch {
       // Agent doesn't exist, continue
@@ -293,26 +300,36 @@ export class AgentsCommand extends BaseCommand {
 
     return {
       success: true,
-      message: `✅ Created agent '${agentName}' (${agentType})\n` +
-               `Configuration saved to: ${agentPath}\n\n` +
-               `${chalk.blue('Next steps:')}\n` +
-               `1. Edit configuration: \`/agents edit ${agentName}\`\n` +
-               `2. Test the agent: \`/agents run ${agentName}\`\n` +
-               `3. View templates: \`/agents templates\``
+      message:
+        `✅ Created agent '${agentName}' (${agentType})\n` +
+        `Configuration saved to: ${agentPath}\n\n` +
+        `${chalk.blue('Next steps:')}\n` +
+        `1. Edit configuration: \`/agents edit ${agentName}\`\n` +
+        `2. Test the agent: \`/agents run ${agentName}\`\n` +
+        `3. View templates: \`/agents templates\``,
     };
   }
 
   private createBasicAgent(name: string, type: AgentType): Agent {
     const systemPrompts: Record<AgentType, string> = {
-      'code-generator': 'You are a code generation assistant. Generate clean, well-documented code based on requirements.',
-      'code-reviewer': 'You are a code reviewer. Analyze code for bugs, performance issues, and best practices.',
-      'test-generator': 'You are a test generation assistant. Create comprehensive unit tests for the provided code.',
-      'bug-detector': 'You are a bug detection specialist. Identify potential bugs and security vulnerabilities.',
-      'performance-optimizer': 'You are a performance optimization expert. Suggest improvements for better performance.',
-      'security-auditor': 'You are a security auditor. Review code for security vulnerabilities and compliance.',
-      'documentation-generator': 'You are a documentation generator. Create clear, comprehensive documentation.',
-      'refactoring-assistant': 'You are a refactoring assistant. Suggest code improvements and modernization.',
-      'custom': 'You are a helpful AI assistant. Adapt your behavior based on the specific task requirements.'
+      'code-generator':
+        'You are a code generation assistant. Generate clean, well-documented code based on requirements.',
+      'code-reviewer':
+        'You are a code reviewer. Analyze code for bugs, performance issues, and best practices.',
+      'test-generator':
+        'You are a test generation assistant. Create comprehensive unit tests for the provided code.',
+      'bug-detector':
+        'You are a bug detection specialist. Identify potential bugs and security vulnerabilities.',
+      'performance-optimizer':
+        'You are a performance optimization expert. Suggest improvements for better performance.',
+      'security-auditor':
+        'You are a security auditor. Review code for security vulnerabilities and compliance.',
+      'documentation-generator':
+        'You are a documentation generator. Create clear, comprehensive documentation.',
+      'refactoring-assistant':
+        'You are a refactoring assistant. Suggest code improvements and modernization.',
+      custom:
+        'You are a helpful AI assistant. Adapt your behavior based on the specific task requirements.',
     };
 
     return {
@@ -326,32 +343,39 @@ export class AgentsCommand extends BaseCommand {
         temperature: 0.3,
         maxTokens: 2048,
         systemPrompt: systemPrompts[type],
-        tools: []
+        tools: [],
       },
       metadata: {
         created: new Date().toISOString(),
         version: '1.0.0',
-        author: 'user'
+        author: 'user',
       },
       statistics: {
         executionCount: 0,
         successRate: 0,
-        averageExecutionTime: 0
-      }
+        averageExecutionTime: 0,
+      },
     };
   }
 
-  private async loadAgentTemplate(templateName: string, agentName: string, agentType: AgentType): Promise<Agent> {
+  private async loadAgentTemplate(
+    templateName: string,
+    agentName: string,
+    agentType: AgentType,
+  ): Promise<Agent> {
     // For now, return a basic agent
     // In a full implementation, this would load from template files
     return this.createBasicAgent(agentName, agentType);
   }
 
-  private async runAgent(args: string[], flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async runAgent(
+    args: string[],
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     if (args.length === 0) {
       return {
         success: false,
-        message: 'Usage: /agents run <agent-name> [--input="<input>"] [--file=<file>]'
+        message: 'Usage: /agents run <agent-name> [--input="<input>"] [--file=<file>]',
       };
     }
 
@@ -365,7 +389,7 @@ export class AgentsCommand extends BaseCommand {
       if (agent.status !== 'active') {
         return {
           success: false,
-          message: `Agent '${agentName}' is ${agent.status}. Enable it first with: /agents enable ${agentName}`
+          message: `Agent '${agentName}' is ${agent.status}. Enable it first with: /agents enable ${agentName}`,
         };
       }
 
@@ -379,7 +403,7 @@ export class AgentsCommand extends BaseCommand {
         } catch (error) {
           return {
             success: false,
-            message: `Failed to read input file: ${error instanceof Error ? error.message : String(error)}`
+            message: `Failed to read input file: ${error instanceof Error ? error.message : String(error)}`,
           };
         }
       }
@@ -387,7 +411,7 @@ export class AgentsCommand extends BaseCommand {
       if (!input) {
         return {
           success: false,
-          message: 'No input provided. Use --input="text" or --file=path/to/file'
+          message: 'No input provided. Use --input="text" or --file=path/to/file',
         };
       }
 
@@ -397,7 +421,7 @@ export class AgentsCommand extends BaseCommand {
         agentId: agent.id,
         startTime: new Date().toISOString(),
         status: 'running',
-        input
+        input,
       };
 
       const executionPath = path.join(this.executionsDir, `${execution.id}.json`);
@@ -407,10 +431,10 @@ export class AgentsCommand extends BaseCommand {
         // Simulate agent execution
         // In a real implementation, this would call the AI service
         const startTime = Date.now();
-        
+
         // Mock response based on agent type
         const mockResponse = await this.simulateAgentExecution(agent, input);
-        
+
         const duration = Date.now() - startTime;
 
         // Update execution record
@@ -423,20 +447,25 @@ export class AgentsCommand extends BaseCommand {
 
         // Update agent statistics
         agent.statistics.executionCount++;
-        agent.statistics.successRate = (agent.statistics.successRate * (agent.statistics.executionCount - 1) + 1) / agent.statistics.executionCount;
-        agent.statistics.averageExecutionTime = (agent.statistics.averageExecutionTime * (agent.statistics.executionCount - 1) + duration) / agent.statistics.executionCount;
+        agent.statistics.successRate =
+          (agent.statistics.successRate * (agent.statistics.executionCount - 1) + 1) /
+          agent.statistics.executionCount;
+        agent.statistics.averageExecutionTime =
+          (agent.statistics.averageExecutionTime * (agent.statistics.executionCount - 1) +
+            duration) /
+          agent.statistics.executionCount;
         agent.metadata.lastUsed = new Date().toISOString();
 
         await fs.writeFile(agentPath, JSON.stringify(agent, null, 2));
 
         return {
           success: true,
-          message: `✅ Agent '${agentName}' executed successfully!\n\n` +
-                   `Execution ID: ${execution.id}\n` +
-                   `Duration: ${duration}ms\n` +
-                   `Output:\n${mockResponse}`
+          message:
+            `✅ Agent '${agentName}' executed successfully!\n\n` +
+            `Execution ID: ${execution.id}\n` +
+            `Duration: ${duration}ms\n` +
+            `Output:\n${mockResponse}`,
         };
-
       } catch (error) {
         // Update execution record with error
         execution.status = 'failed';
@@ -447,14 +476,13 @@ export class AgentsCommand extends BaseCommand {
 
         return {
           success: false,
-          message: `❌ Agent execution failed: ${execution.error}`
+          message: `❌ Agent execution failed: ${execution.error}`,
         };
       }
-
     } catch (error) {
       return {
         success: false,
-        message: `Agent '${agentName}' not found or invalid: ${error instanceof Error ? error.message : String(error)}`
+        message: `Agent '${agentName}' not found or invalid: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -470,20 +498,23 @@ export class AgentsCommand extends BaseCommand {
       'security-auditor': `Security Audit:\n🔒 No critical vulnerabilities found\n⚠️  Recommendation: Add input validation\n✅ No hardcoded secrets detected`,
       'documentation-generator': `# Documentation\n\n## Overview\nThis component handles ${input.substring(0, 100)}...\n\n## Usage\n\`\`\`typescript\n// Example usage\n\`\`\``,
       'refactoring-assistant': `Refactoring Suggestions:\n🔧 Extract common patterns into utility functions\n📁 Consider separating concerns into different modules\n🎯 Optimize for readability and maintainability`,
-      'custom': `Agent Response:\nProcessed input: ${input.substring(0, 100)}...\n\nBased on the configuration, here's the analysis and recommendations.`
+      custom: `Agent Response:\nProcessed input: ${input.substring(0, 100)}...\n\nBased on the configuration, here's the analysis and recommendations.`,
     };
 
     // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
+    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000));
 
     return responses[agent.type] || responses['custom'];
   }
 
-  private async showAgentStatus(args: string[], flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async showAgentStatus(
+    args: string[],
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     if (args.length === 0) {
       return {
         success: false,
-        message: 'Usage: /agents status <agent-name>'
+        message: 'Usage: /agents status <agent-name>',
       };
     }
 
@@ -495,13 +526,13 @@ export class AgentsCommand extends BaseCommand {
       const agent: Agent = JSON.parse(content);
 
       let message = `\n${chalk.bold(`🤖 Agent: ${agent.name}`)}\n\n`;
-      
+
       // Basic info
       message += `${chalk.blue('ID:')} ${agent.id}\n`;
       message += `${chalk.blue('Type:')} ${agent.type}\n`;
       message += `${chalk.blue('Status:')} ${this.getStatusDisplay(agent.status)}\n`;
       message += `${chalk.blue('Description:')} ${agent.description}\n\n`;
-      
+
       // Configuration
       message += `${chalk.bold('Configuration:')}\n`;
       message += `  Model: ${agent.config.model}\n`;
@@ -511,13 +542,13 @@ export class AgentsCommand extends BaseCommand {
         message += `  Tools: ${agent.config.tools.join(', ')}\n`;
       }
       message += '\n';
-      
+
       // Statistics
       message += `${chalk.bold('Statistics:')}\n`;
       message += `  Executions: ${agent.statistics.executionCount}\n`;
       message += `  Success Rate: ${Math.round(agent.statistics.successRate * 100)}%\n`;
       message += `  Avg Execution Time: ${Math.round(agent.statistics.averageExecutionTime)}ms\n\n`;
-      
+
       // Metadata
       message += `${chalk.bold('Metadata:')}\n`;
       message += `  Created: ${new Date(agent.metadata.created).toLocaleString()}\n`;
@@ -529,13 +560,12 @@ export class AgentsCommand extends BaseCommand {
 
       return {
         success: true,
-        message
+        message,
       };
-
     } catch (error) {
       return {
         success: false,
-        message: `Agent '${agentName}' not found: ${error instanceof Error ? error.message : String(error)}`
+        message: `Agent '${agentName}' not found: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -545,20 +575,23 @@ export class AgentsCommand extends BaseCommand {
       active: chalk.green('● Active'),
       inactive: chalk.gray('○ Inactive'),
       error: chalk.red('● Error'),
-      updating: chalk.yellow('● Updating')
+      updating: chalk.yellow('● Updating'),
     };
     return colors[status];
   }
 
-  private async showExecutionLogs(args: string[], flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async showExecutionLogs(
+    args: string[],
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     try {
       const files = await fs.readdir(this.executionsDir);
-      const executionFiles = files.filter(f => f.endsWith('.json')).slice(0, 10);
-      
+      const executionFiles = files.filter((f) => f.endsWith('.json')).slice(0, 10);
+
       if (executionFiles.length === 0) {
         return {
           success: true,
-          message: 'No execution logs found.'
+          message: 'No execution logs found.',
         };
       }
 
@@ -586,33 +619,32 @@ export class AgentsCommand extends BaseCommand {
           running: chalk.yellow('●'),
           completed: chalk.green('✓'),
           failed: chalk.red('✗'),
-          cancelled: chalk.gray('○')
+          cancelled: chalk.gray('○'),
         }[exec.status];
 
         const startTime = new Date(exec.startTime).toLocaleString();
         const duration = exec.duration ? `${exec.duration}ms` : 'N/A';
-        
+
         message += `${statusIcon} ${exec.id} (${startTime})\n`;
         message += `  Agent: ${exec.agentId}\n`;
         message += `  Status: ${exec.status}\n`;
         message += `  Duration: ${duration}\n`;
-        
+
         if (exec.error) {
           message += `  Error: ${exec.error}\n`;
         }
-        
+
         message += '\n';
       }
 
       return {
         success: true,
-        message
+        message,
       };
-
     } catch (error) {
       return {
         success: false,
-        message: `Failed to load execution logs: ${error instanceof Error ? error.message : String(error)}`
+        message: `Failed to load execution logs: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -622,33 +654,33 @@ export class AgentsCommand extends BaseCommand {
       {
         name: 'standard-reviewer',
         description: 'Standard code review agent with security and performance checks',
-        type: 'code-reviewer'
+        type: 'code-reviewer',
       },
       {
         name: 'test-master',
         description: 'Comprehensive test generation with multiple test types',
-        type: 'test-generator'
+        type: 'test-generator',
       },
       {
         name: 'security-guardian',
         description: 'Security-focused audit agent with vulnerability detection',
-        type: 'security-auditor'
+        type: 'security-auditor',
       },
       {
         name: 'perf-optimizer',
         description: 'Performance optimization specialist',
-        type: 'performance-optimizer'
+        type: 'performance-optimizer',
       },
       {
         name: 'doc-generator',
         description: 'Documentation generator with multiple formats',
-        type: 'documentation-generator'
-      }
+        type: 'documentation-generator',
+      },
     ];
 
     let message = `\n${chalk.bold('🎭 Agent Templates')}\n\n`;
-    
-    templates.forEach(template => {
+
+    templates.forEach((template) => {
       message += `${chalk.bold(template.name)} (${chalk.blue(template.type)})\n`;
       message += `  ${template.description}\n\n`;
     });
@@ -657,7 +689,7 @@ export class AgentsCommand extends BaseCommand {
 
     return {
       success: true,
-      message
+      message,
     };
   }
 
@@ -665,7 +697,7 @@ export class AgentsCommand extends BaseCommand {
     if (!agentName) {
       return {
         success: false,
-        message: `Usage: /agents ${status === 'active' ? 'enable' : 'disable'} <agent-name>`
+        message: `Usage: /agents ${status === 'active' ? 'enable' : 'disable'} <agent-name>`,
       };
     }
 
@@ -674,20 +706,19 @@ export class AgentsCommand extends BaseCommand {
     try {
       const content = await fs.readFile(agentPath, 'utf-8');
       const agent: Agent = JSON.parse(content);
-      
+
       agent.status = status;
       await fs.writeFile(agentPath, JSON.stringify(agent, null, 2));
 
       const action = status === 'active' ? 'enabled' : 'disabled';
       return {
         success: true,
-        message: `✅ Agent '${agentName}' ${action} successfully!`
+        message: `✅ Agent '${agentName}' ${action} successfully!`,
       };
-
     } catch (error) {
       return {
         success: false,
-        message: `Agent '${agentName}' not found: ${error instanceof Error ? error.message : String(error)}`
+        message: `Agent '${agentName}' not found: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -696,7 +727,7 @@ export class AgentsCommand extends BaseCommand {
     if (args.length === 0) {
       return {
         success: false,
-        message: 'Usage: /agents delete <agent-name>'
+        message: 'Usage: /agents delete <agent-name>',
       };
     }
 
@@ -707,41 +738,45 @@ export class AgentsCommand extends BaseCommand {
       await fs.unlink(agentPath);
       return {
         success: true,
-        message: `✅ Agent '${agentName}' deleted successfully!`
+        message: `✅ Agent '${agentName}' deleted successfully!`,
       };
     } catch (error) {
       return {
         success: false,
-        message: `Failed to delete agent '${agentName}': ${error instanceof Error ? error.message : String(error)}`
+        message: `Failed to delete agent '${agentName}': ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
 
-  private async editAgent(args: string[], flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async editAgent(
+    args: string[],
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     return {
       success: false,
-      message: 'Agent editing is not yet implemented. You can manually edit the JSON files in .maria/agents/'
+      message:
+        'Agent editing is not yet implemented. You can manually edit the JSON files in .maria/agents/',
     };
   }
 
   private async exportAgent(args: string[]): Promise<SlashCommandResult> {
     return {
       success: false,
-      message: 'Agent export is not yet implemented.'
+      message: 'Agent export is not yet implemented.',
     };
   }
 
   private async importAgent(args: string[]): Promise<SlashCommandResult> {
     return {
       success: false,
-      message: 'Agent import is not yet implemented.'
+      message: 'Agent import is not yet implemented.',
     };
   }
 
   private async showStatistics(args: string[]): Promise<SlashCommandResult> {
     return {
       success: false,
-      message: 'Agent statistics view is not yet implemented.'
+      message: 'Agent statistics view is not yet implemented.',
     };
   }
 }

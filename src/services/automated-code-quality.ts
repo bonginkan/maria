@@ -193,7 +193,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     _targetFiles?: string[],
   ): Promise<QualityReport> {
     try {
-      this.emit('analysis_started', { projectPath, targetFiles });
+      this.emit('analysis_started', { projectPath, targetFiles: _targetFiles });
 
       // Run multiple analysis tools in parallel
       const [
@@ -206,14 +206,14 @@ class AutomatedCodeQualitySystem extends EventEmitter {
         complexityMetrics,
         coverageData,
       ] = await Promise.all([
-        this.analyzeSyntax(projectPath, targetFiles),
-        this.analyzeStyle(projectPath, targetFiles),
-        this.analyzePerformance(projectPath, targetFiles),
-        this.analyzeSecurity(projectPath, targetFiles),
-        this.analyzeTesting(projectPath, targetFiles),
-        this.analyzeDocumentation(projectPath, targetFiles),
-        this.calculateComplexityMetrics(projectPath, targetFiles),
-        this.calculateCoverage(projectPath, targetFiles),
+        this.analyzeSyntax(projectPath, _targetFiles),
+        this.analyzeStyle(projectPath, _targetFiles),
+        this.analyzePerformance(projectPath, _targetFiles),
+        this.analyzeSecurity(projectPath, _targetFiles),
+        this.analyzeTesting(projectPath, _targetFiles),
+        this.analyzeDocumentation(projectPath, _targetFiles),
+        this.calculateComplexityMetrics(projectPath, _targetFiles),
+        this.calculateCoverage(projectPath, _targetFiles),
       ]);
 
       // Combine all issues
@@ -324,7 +324,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     try {
       // Read the file content
       const fileContent = await fs.readFile(issue.file, 'utf-8');
-      const _lines = fileContent.split('\n');
+      // const _lines = fileContent.split('\n'); // Reserved for line-specific fixes
 
       // Apply the fix based on the issue type
       let modifiedContent = fileContent;
@@ -414,9 +414,9 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     // Clear all watchers
     this.watchers.forEach((watcher, key) => {
       if (key === 'interval') {
-        clearInterval(watcher);
+        clearInterval(watcher as NodeJS.Timeout);
       } else {
-        watcher.close();
+        (watcher as { close: () => void }).close();
       }
     });
     this.watchers.clear();
@@ -441,7 +441,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     const latest = reports[reports.length - 1];
     const previous = reports[reports.length - 2];
 
-    return this.calculateTrends(latest.metrics, previous.metrics);
+    return this.calculateTrends(latest!.metrics, previous!.metrics);
   }
 
   /**
@@ -484,7 +484,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     const issues: QualityIssue[] = [];
 
     // Simulate syntax analysis
-    const files = await this.getProjectFiles(projectPath, targetFiles);
+    const files = await this.getProjectFiles(projectPath, _targetFiles);
 
     for (const file of files) {
       if (file.endsWith('.ts') || file.endsWith('.tsx')) {
@@ -497,12 +497,15 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     return issues;
   }
 
-  private async analyzeStyle(projectPath: string, targetFiles?: string[]): Promise<QualityIssue[]> {
+  private async analyzeStyle(
+    projectPath: string,
+    _targetFiles?: string[],
+  ): Promise<QualityIssue[]> {
     // Implementation for style analysis using ESLint, Prettier, etc.
     const issues: QualityIssue[] = [];
 
     // Simulate style analysis
-    const files = await this.getProjectFiles(projectPath, targetFiles);
+    const files = await this.getProjectFiles(projectPath, _targetFiles);
 
     for (const file of files) {
       const styleIssues = await this.analyzeFileStyle(file);
@@ -520,7 +523,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     const issues: QualityIssue[] = [];
 
     // Analyze for performance anti-patterns
-    const files = await this.getProjectFiles(projectPath, targetFiles);
+    const files = await this.getProjectFiles(projectPath, _targetFiles);
 
     for (const file of files) {
       const perfIssues = await this.analyzeFilePerformance(file);
@@ -537,7 +540,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     // Implementation for security analysis
     const issues: QualityIssue[] = [];
 
-    const files = await this.getProjectFiles(projectPath, targetFiles);
+    const files = await this.getProjectFiles(projectPath, _targetFiles);
 
     for (const file of files) {
       const secIssues = await this.analyzeFileSecurity(file);
@@ -571,7 +574,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     // Implementation for documentation analysis
     const issues: QualityIssue[] = [];
 
-    const files = await this.getProjectFiles(projectPath, targetFiles);
+    const files = await this.getProjectFiles(projectPath, _targetFiles);
 
     for (const file of files) {
       const docIssues = await this.analyzeFileDocumentation(file);
@@ -588,9 +591,9 @@ class AutomatedCodeQualitySystem extends EventEmitter {
     projectPath: string,
   ): Promise<QualityMetrics> {
     return {
-      cyclomatic_complexity: complexityMetrics.average || 5,
+      cyclomatic_complexity: (complexityMetrics as { average?: number }).average || 5,
       maintainability_index: this.calculateMaintainabilityIndex(issues, complexityMetrics),
-      code_coverage: coverageData.percentage || 0,
+      code_coverage: (coverageData as { percentage?: number }).percentage || 0,
       duplication_percentage: await this.calculateDuplication(projectPath),
       technical_debt_ratio: this.calculateTechnicalDebt(issues),
       security_score: this.calculateSecurityScore(issues),
@@ -832,7 +835,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
   private calculateTestQualityScore(issues: QualityIssue[], coverageData: unknown): number {
     // Implementation for test quality score calculation
     const testIssues = issues.filter((i) => i.category === 'testing');
-    const coverageScore = coverageData.percentage || 0;
+    const coverageScore = (coverageData as { percentage?: number }).percentage || 0;
     const testQualityScore = Math.max(0, 100 - testIssues.length * 5);
 
     return (coverageScore + testQualityScore) / 2;
@@ -855,7 +858,7 @@ class AutomatedCodeQualitySystem extends EventEmitter {
   }
 
   private async applyPerformanceFix(
-    issue: QualityIssue,
+    _issue: QualityIssue,
     content: string,
   ): Promise<{ content: string; changes: string[]; confidence: number }> {
     // Implementation for performance fixes
@@ -880,8 +883,8 @@ class AutomatedCodeQualitySystem extends EventEmitter {
   }
 }
 
-export {
-  AutomatedCodeQualitySystem,
+export { AutomatedCodeQualitySystem };
+export type {
   QualityMetrics,
   QualityIssue,
   QualityReport,

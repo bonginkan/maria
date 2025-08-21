@@ -1,7 +1,7 @@
 /**
  * Login Command Module
  * 認証系コマンド - ユーザーログイン処理
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: Authentication
  */
@@ -37,7 +37,7 @@ export class LoginCommand extends BaseCommand {
   description = 'Authenticate with MARIA platform';
   usage = '/login [provider] [credentials]';
   aliases = ['signin', 'auth'];
-  
+
   private configPath = path.join(os.homedir(), '.maria', 'auth.json');
   private sessionTimeout = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -45,21 +45,20 @@ export class LoginCommand extends BaseCommand {
     try {
       // Parse authentication method
       const provider = this.parseProvider(args);
-      
+
       if (!provider) {
         return this.showLoginOptions();
       }
 
       // Perform authentication based on provider
       const result = await this.authenticate(provider, args);
-      
+
       if (result.success) {
         await this.saveSession(result.session!);
         return this.formatSuccessResponse(result.session!);
       }
-      
+
       return this.formatErrorResponse(result.error || 'Authentication failed');
-      
     } catch (error) {
       logger.error('Login command error:', error);
       return {
@@ -73,23 +72,23 @@ export class LoginCommand extends BaseCommand {
     if (args.length === 0) {
       return null;
     }
-    
+
     const provider = args[0].toLowerCase();
     const validProviders = ['google', 'github', 'email', 'token'];
-    
+
     if (validProviders.includes(provider)) {
       return provider;
     }
-    
+
     // Check if it's an email or token directly
     if (args[0].includes('@')) {
       return 'email';
     }
-    
+
     if (args[0].startsWith('mk_') || args[0].startsWith('sk_')) {
       return 'token';
     }
-    
+
     return null;
   }
 
@@ -135,21 +134,21 @@ Visit: https://maria-code.bonginkan.ai/signup
 
   private async authenticate(
     provider: string,
-    args: string[]
+    args: string[],
   ): Promise<{ success: boolean; session?: UserSession; error?: string }> {
     switch (provider) {
       case 'google':
         return this.authenticateOAuth('google');
-      
+
       case 'github':
         return this.authenticateOAuth('github');
-      
+
       case 'email':
         return this.authenticateEmail(args.slice(1));
-      
+
       case 'token':
         return this.authenticateToken(args.slice(1));
-      
+
       default:
         return {
           success: false,
@@ -159,13 +158,13 @@ Visit: https://maria-code.bonginkan.ai/signup
   }
 
   private async authenticateOAuth(
-    provider: 'google' | 'github'
+    provider: 'google' | 'github',
   ): Promise<{ success: boolean; session?: UserSession; error?: string }> {
     // In a real implementation, this would open a browser for OAuth flow
     // For now, we'll simulate the process
-    
+
     const authUrl = `https://maria-code.bonginkan.ai/auth/${provider}`;
-    
+
     return {
       success: false,
       error: `🌐 Please visit the following URL to authenticate:\n${authUrl}\n\nThen run: /login token YOUR_AUTH_TOKEN`,
@@ -173,7 +172,7 @@ Visit: https://maria-code.bonginkan.ai/signup
   }
 
   private async authenticateEmail(
-    args: string[]
+    args: string[],
   ): Promise<{ success: boolean; session?: UserSession; error?: string }> {
     if (args.length === 0) {
       return {
@@ -181,9 +180,9 @@ Visit: https://maria-code.bonginkan.ai/signup
         error: 'Please provide your email address',
       };
     }
-    
+
     const email = args[0];
-    
+
     // Validate email format
     if (!this.isValidEmail(email)) {
       return {
@@ -191,10 +190,10 @@ Visit: https://maria-code.bonginkan.ai/signup
         error: 'Invalid email format',
       };
     }
-    
+
     // In a real implementation, this would prompt for password securely
     // and make an API call to authenticate
-    
+
     return {
       success: false,
       error: `📧 Password authentication required.\nPlease use: /login token YOUR_API_TOKEN\n\nGet your token at: https://maria-code.bonginkan.ai/settings/api`,
@@ -202,7 +201,7 @@ Visit: https://maria-code.bonginkan.ai/signup
   }
 
   private async authenticateToken(
-    args: string[]
+    args: string[],
   ): Promise<{ success: boolean; session?: UserSession; error?: string }> {
     if (args.length === 0) {
       return {
@@ -210,9 +209,9 @@ Visit: https://maria-code.bonginkan.ai/signup
         error: 'Please provide your API token',
       };
     }
-    
+
     const token = args[0];
-    
+
     // Validate token format
     if (!this.isValidToken(token)) {
       return {
@@ -220,7 +219,7 @@ Visit: https://maria-code.bonginkan.ai/signup
         error: 'Invalid token format. Tokens should start with mk_ or sk_',
       };
     }
-    
+
     // Simulate API call to validate token
     // In production, this would make an actual API request
     const mockSession: UserSession = {
@@ -233,7 +232,7 @@ Visit: https://maria-code.bonginkan.ai/signup
       provider: 'token',
       expiresAt: new Date(Date.now() + this.sessionTimeout),
     };
-    
+
     return {
       success: true,
       session: mockSession,
@@ -256,14 +255,10 @@ Visit: https://maria-code.bonginkan.ai/signup
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      
+
       // Save session to file
-      fs.writeFileSync(
-        this.configPath,
-        JSON.stringify(session, null, 2),
-        'utf-8'
-      );
-      
+      fs.writeFileSync(this.configPath, JSON.stringify(session, null, 2), 'utf-8');
+
       logger.info('Session saved successfully');
     } catch (error) {
       logger.error('Failed to save session:', error);
@@ -276,7 +271,7 @@ Visit: https://maria-code.bonginkan.ai/signup
       pro: '⭐',
       max: '🚀',
     };
-    
+
     return {
       success: true,
       message: `✅ **Successfully logged in!**
@@ -317,7 +312,7 @@ ${this.getPlanFeatures(session.plan)}
 • Enterprise features
 • SLA guarantee`,
     };
-    
+
     return features[plan as keyof typeof features] || features.free;
   }
 

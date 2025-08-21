@@ -4,7 +4,7 @@
  * Integrates with various AI providers for natural dialogue
  */
 
-import { AIProvider } from '../providers/base-provider';
+import { BaseProvider } from '../providers/base-provider';
 
 export interface DialogueContext {
   history: Array<{ role: 'user' | 'assistant'; content: string }>;
@@ -32,6 +32,11 @@ export interface DialogueResponse {
   mood: AvatarMood;
   duration: number; // Estimated speaking duration in ms
   keywords?: string[];
+}
+
+interface AIProvider {
+  generateResponse(prompt: string, context?: unknown): Promise<string>;
+  isAvailable(): boolean | Promise<boolean>;
 }
 
 export class AvatarDialogueService {
@@ -70,8 +75,17 @@ export class AvatarDialogueService {
   /**
    * Set AI provider for generating responses
    */
-  public setAIProvider(provider: AIProvider): void {
-    this.aiProvider = provider;
+  public setAIProvider(provider: BaseProvider): void {
+    // Adapt BaseProvider to AIProvider interface
+    this.aiProvider = {
+      generateResponse: async (prompt: string) => {
+        const response = await provider.chat({
+          messages: [{ role: 'user', content: prompt }],
+        });
+        return response.content || '';
+      },
+      isAvailable: () => provider.isAvailable(),
+    };
   }
 
   /**
@@ -184,7 +198,7 @@ export class AvatarDialogueService {
     };
 
     const expressions = expressionMap[mood.current];
-    return expressions[Math.floor(Math.random() * expressions.length)];
+    return expressions ? expressions[Math.floor(Math.random() * expressions.length)]! : 'neutral';
   }
 
   /**
@@ -220,13 +234,8 @@ export class AvatarDialogueService {
           ...this.context.history,
         ];
 
-        const aiResponse = await this.aiProvider.generateCompletion({
-          messages,
-          temperature: 0.8,
-          maxTokens: 200,
-        });
-
-        responseText = aiResponse.content;
+        const fullPrompt = messages.map((m) => `${m.role}: ${m.content}`).join('\n');
+        responseText = await this.aiProvider.generateResponse(fullPrompt);
       } catch (error) {
         // Fallback to template responses
         responseText = this.getTemplateResponse(intent, detectedMood);
@@ -438,10 +447,10 @@ Keep responses concise (1-3 sentences), friendly, and helpful. Match the user's 
       },
     };
 
-    const intentResponses = responses[intent] || responses.general;
-    const moodResponses = intentResponses[mood.current] || intentResponses.neutral;
+    const intentResponses = responses[intent] || responses['general'];
+    const moodResponses = intentResponses?.[mood.current] || intentResponses?.['neutral'];
 
-    return moodResponses[Math.floor(Math.random() * moodResponses.length)];
+    return moodResponses?.[Math.floor(Math.random() * moodResponses.length)] || '';
   }
 
   /**
