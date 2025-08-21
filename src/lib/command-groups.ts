@@ -70,6 +70,18 @@ export const commandInfo: Record<string, CommandInfo> = {
     usage: '/code [prompt]',
     examples: ['/code Create a React component', '/code Write a Python function to sort arrays'],
   },
+  paper: {
+    name: 'paper',
+    description: 'Process research papers and generate code from algorithms',
+    category: 'generation',
+    usage: '/paper [content] [--source type] [--language lang] [--framework fw]',
+    examples: [
+      '/paper "Implement QuickSort algorithm from the paper"',
+      '/paper --source pdf paper.pdf --language python',
+      '/paper --source arxiv 2301.12345 --framework react',
+      '/paper "Dynamic programming solution" --no-tests --no-docs',
+    ],
+  },
   image: {
     name: 'image',
     description: 'Generate images with AI',
@@ -160,7 +172,9 @@ export function getCommandsByCategory(category: CommandCategory): CommandInfo[] 
 }
 
 export function getCommandInfo(commandName: string): CommandInfo | undefined {
-  return commandInfo[commandName];
+  // Remove leading slash if present for lookup
+  const normalizedName = commandName.startsWith('/') ? commandName.slice(1) : commandName;
+  return commandInfo[normalizedName];
 }
 
 export function getRelatedCommands(commandName: string): CommandInfo[] {
@@ -197,6 +211,12 @@ export const commandChains: CommandChain[] = [
     name: 'Media Generation',
     description: 'Create visual content',
     commands: ['image', 'video'],
+  },
+  {
+    id: 'paper-to-code',
+    name: 'Paper to Code',
+    description: 'Convert research papers to production code',
+    commands: ['paper', 'review', 'test'],
   },
 ];
 

@@ -337,7 +337,7 @@ export class ABTestingFramework extends EventEmitter {
     }
 
     // Fallback to first variant
-    return enabledVariants[0];
+    return enabledVariants[0] || null;
   }
 
   /**
@@ -430,12 +430,12 @@ export class ABTestingFramework extends EventEmitter {
       const variantResults = testResults.filter((r) => r.variantId === variant.id);
       const participants = new Set(variantResults.map((r) => r.userId)).size;
 
-      const conversions = variantResults.filter((r) => r.metrics.conversion === true).length;
+      const conversions = variantResults.filter((r) => r.metrics['conversion'] === true).length;
       const conversionRate = participants > 0 ? conversions / participants : 0;
 
       const conversionValues = variantResults
-        .filter((r) => r.metrics.conversion === true)
-        .map((r) => Number(r.metrics.conversionValue) || 1);
+        .filter((r) => r.metrics['conversion'] === true)
+        .map((r) => Number(r.metrics['conversionValue']) || 1);
       const averageValue =
         conversionValues.length > 0
           ? conversionValues.reduce((a, b) => a + b, 0) / conversionValues.length
@@ -457,10 +457,10 @@ export class ABTestingFramework extends EventEmitter {
     const variantIds = Object.keys(analytics.variants);
     if (variantIds.length === 2) {
       const [variantA, variantB] = variantIds;
-      const a = analytics.variants[variantA];
-      const b = analytics.variants[variantB];
+      const a = variantA ? analytics.variants[variantA] : undefined;
+      const b = variantB ? analytics.variants[variantB] : undefined;
 
-      if (a.participants > 30 && b.participants > 30) {
+      if (a && b && a.participants > 30 && b.participants > 30) {
         const { zScore: _zScore, pValue } = this.calculateZTest(
           a.conversions,
           a.participants,

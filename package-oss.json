@@ -1,7 +1,7 @@
 {
   "name": "@maria/cli",
-  "version": "1.0.6-alpha.2",
-  "description": "Intelligent CLI Assistant with Multi-Model AI Support - Zero Configuration, Privacy First",
+  "version": "1.3.0",
+  "description": "Intelligent CLI Assistant with Complete Local AI Integration (Ollama + vLLM + LM Studio) - Zero Configuration, Privacy First, Offline Development",
   "keywords": [
     "ai",
     "cli",
@@ -12,6 +12,10 @@
     "local-llm",
     "lm-studio",
     "ollama",
+    "vllm",
+    "local-ai",
+    "privacy-first",
+    "offline-development",
     "developer-tools",
     "code-assistant",
     "ai-cli",

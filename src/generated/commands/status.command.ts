@@ -1,7 +1,7 @@
 /**
  * Status Command Module
  * システム状態表示コマンド - 包括的なステータス情報
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: System
  */
@@ -85,17 +85,17 @@ export class StatusCommand extends BaseCommand {
   description = 'Display comprehensive system and account status';
   usage = '/status [--detailed] [--json]';
   aliases = ['info', 'stats', 'whoami'];
-  
+
   private configPath = path.join(os.homedir(), '.maria');
 
   async execute(args: string[]): Promise<SlashCommandResult> {
     try {
       const detailed = args.includes('--detailed');
       const jsonOutput = args.includes('--json');
-      
+
       // Gather all status information
       const status = await this.gatherStatus(detailed);
-      
+
       if (jsonOutput) {
         return {
           success: true,
@@ -103,9 +103,8 @@ export class StatusCommand extends BaseCommand {
           data: status,
         };
       }
-      
+
       return this.formatStatusDisplay(status, detailed);
-      
     } catch (error) {
       logger.error('Status command error:', error);
       return {
@@ -116,13 +115,7 @@ export class StatusCommand extends BaseCommand {
   }
 
   private async gatherStatus(detailed: boolean): Promise<SystemStatus> {
-    const [
-      userStatus,
-      systemStatus,
-      aiStatus,
-      projectStatus,
-      servicesStatus,
-    ] = await Promise.all([
+    const [userStatus, systemStatus, aiStatus, projectStatus, servicesStatus] = await Promise.all([
       this.getUserStatus(),
       this.getSystemStatus(),
       this.getAIStatus(),
@@ -142,7 +135,7 @@ export class StatusCommand extends BaseCommand {
   private async getUserStatus(): Promise<SystemStatus['user']> {
     try {
       const authPath = path.join(this.configPath, 'auth.json');
-      
+
       if (!fs.existsSync(authPath)) {
         return {
           isAuthenticated: false,
@@ -155,18 +148,18 @@ export class StatusCommand extends BaseCommand {
           },
         };
       }
-      
+
       const authData = JSON.parse(fs.readFileSync(authPath, 'utf-8'));
-      
+
       // Get usage data
       const usagePath = path.join(this.configPath, 'usage.json');
       let usage = { daily: 0, monthly: 0, limit: 100 };
-      
+
       if (fs.existsSync(usagePath)) {
         const usageData = JSON.parse(fs.readFileSync(usagePath, 'utf-8'));
         usage = usageData;
       }
-      
+
       return {
         isAuthenticated: true,
         userId: authData.userId,
@@ -191,10 +184,10 @@ export class StatusCommand extends BaseCommand {
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
-    
+
     // Get Node version
     const nodeVersion = process.version;
-    
+
     // Get MARIA version
     let mariaVersion = 'unknown';
     try {
@@ -206,7 +199,7 @@ export class StatusCommand extends BaseCommand {
     } catch (error) {
       logger.error('Failed to get MARIA version:', error);
     }
-    
+
     return {
       version: mariaVersion,
       node: nodeVersion,
@@ -231,12 +224,7 @@ export class StatusCommand extends BaseCommand {
     // Mock AI status - in production, this would check actual providers
     return {
       currentModel: 'gpt-4-turbo-preview',
-      availableModels: [
-        'gpt-4-turbo-preview',
-        'gpt-5',
-        'claude-opus-4.1',
-        'gemini-2.5-pro',
-      ],
+      availableModels: ['gpt-4-turbo-preview', 'gpt-5', 'claude-opus-4.1', 'gemini-2.5-pro'],
       providerStatus: {
         openai: true,
         anthropic: true,
@@ -254,38 +242,38 @@ export class StatusCommand extends BaseCommand {
   private async getProjectStatus(): Promise<SystemStatus['project']> {
     const projectPath = process.cwd();
     const projectName = path.basename(projectPath);
-    
+
     let gitInfo = {
       branch: 'unknown',
       status: 'unknown',
       uncommitted: 0,
     };
-    
+
     try {
       // Check git status
       const { stdout: branch } = await execAsync('git branch --show-current', { cwd: projectPath });
       const { stdout: status } = await execAsync('git status --porcelain', { cwd: projectPath });
-      
+
       gitInfo = {
         branch: branch.trim() || 'main',
         status: status ? 'modified' : 'clean',
-        uncommitted: status ? status.split('\n').filter(line => line).length : 0,
+        uncommitted: status ? status.split('\n').filter((line) => line).length : 0,
       };
     } catch (error) {
       // Not a git repo or git not available
     }
-    
+
     // Get project size and file count
     let fileCount = 0;
     let totalSize = 0;
-    
+
     try {
       const countFiles = (dir: string): void => {
         const files = fs.readdirSync(dir);
         for (const file of files) {
           const filePath = path.join(dir, file);
           const stat = fs.statSync(filePath);
-          
+
           if (stat.isFile()) {
             fileCount++;
             totalSize += stat.size;
@@ -294,12 +282,12 @@ export class StatusCommand extends BaseCommand {
           }
         }
       };
-      
+
       countFiles(projectPath);
     } catch (error) {
       logger.error('Failed to count project files:', error);
     }
-    
+
     return {
       name: projectName,
       path: projectPath,
@@ -313,19 +301,19 @@ export class StatusCommand extends BaseCommand {
   private detectProjectType(projectPath: string): string {
     if (fs.existsSync(path.join(projectPath, 'package.json'))) {
       const pkg = JSON.parse(fs.readFileSync(path.join(projectPath, 'package.json'), 'utf-8'));
-      
+
       if (pkg.dependencies?.next || pkg.devDependencies?.next) return 'Next.js';
       if (pkg.dependencies?.react || pkg.devDependencies?.react) return 'React';
       if (pkg.dependencies?.vue || pkg.devDependencies?.vue) return 'Vue';
       if (pkg.dependencies?.express) return 'Express';
-      
+
       return 'Node.js';
     }
-    
+
     if (fs.existsSync(path.join(projectPath, 'requirements.txt'))) return 'Python';
     if (fs.existsSync(path.join(projectPath, 'Cargo.toml'))) return 'Rust';
     if (fs.existsSync(path.join(projectPath, 'go.mod'))) return 'Go';
-    
+
     return 'Unknown';
   }
 
@@ -338,23 +326,21 @@ export class StatusCommand extends BaseCommand {
       firebase: false,
       neo4j: false,
     };
-    
+
     // Check each service
     await Promise.all([
       this.checkService('lmstudio', 'http://localhost:1234/v1/models').then(
-        status => services.lmstudio = status
+        (status) => (services.lmstudio = status),
       ),
       this.checkService('ollama', 'http://localhost:11434/api/tags').then(
-        status => services.ollama = status
+        (status) => (services.ollama = status),
       ),
       this.checkService('comfyui', 'http://localhost:8188').then(
-        status => services.comfyui = status
+        (status) => (services.comfyui = status),
       ),
-      this.checkCommand('docker', 'docker --version').then(
-        status => services.docker = status
-      ),
+      this.checkCommand('docker', 'docker --version').then((status) => (services.docker = status)),
     ]);
-    
+
     return services;
   }
 
@@ -383,12 +369,12 @@ export class StatusCommand extends BaseCommand {
     const units = ['B', 'KB', 'MB', 'GB'];
     let size = bytes;
     let unitIndex = 0;
-    
+
     while (size >= 1024 && unitIndex < units.length - 1) {
       size /= 1024;
       unitIndex++;
     }
-    
+
     return `${size.toFixed(2)} ${units[unitIndex]}`;
   }
 
@@ -396,7 +382,7 @@ export class StatusCommand extends BaseCommand {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
-    
+
     if (days > 0) return `${days}d ${hours}h`;
     if (hours > 0) return `${hours}h ${mins}m`;
     return `${mins}m`;
@@ -408,9 +394,9 @@ export class StatusCommand extends BaseCommand {
       pro: '⭐',
       max: '🚀',
     };
-    
-    const serviceStatus = (active: boolean) => active ? '🟢' : '🔴';
-    
+
+    const serviceStatus = (active: boolean) => (active ? '🟢' : '🔴');
+
     let message = `# 📊 MARIA System Status
 
 ## 👤 User Account

@@ -318,15 +318,15 @@ interface RefactoringConfiguration {
 
 class AutomatedRefactoringEngine extends EventEmitter {
   private static instance: AutomatedRefactoringEngine;
-  private configuration: RefactoringConfiguration;
+  // private _configuration: RefactoringConfiguration;
   private executionHistory: RefactoringExecution[] = [];
-  private knowledgeBase: Map<string, unknown> = new Map();
-  private activeExecution?: RefactoringExecution;
-  private operationRegistry: Map<RefactoringType, unknown> = new Map();
+  // private _knowledgeBase: Map<string, unknown> = new Map();
+  // private _activeExecution?: RefactoringExecution;
+  // private _operationRegistry: Map<RefactoringType, unknown> = new Map();
 
   private constructor() {
     super();
-    this.configuration = this.getDefaultConfiguration();
+    // this._configuration = this.getDefaultConfiguration();
     this.initializeEngine();
   }
 
@@ -337,20 +337,20 @@ class AutomatedRefactoringEngine extends EventEmitter {
     return AutomatedRefactoringEngine.instance;
   }
 
-  private getDefaultConfiguration(): RefactoringConfiguration {
-    return {
-      automation_level: 'moderate',
-      risk_tolerance: 'medium',
-      validation_strictness: 'standard',
-      rollback_policy: 'automatic',
-      backup_strategy: 'git_based',
-      execution_mode: 'batch',
-      parallel_execution: false,
-      max_operations_per_session: 50,
-      excluded_patterns: ['node_modules/**', '.git/**', 'dist/**'],
-      included_patterns: ['src/**', 'lib/**', 'app/**'],
-    };
-  }
+  // private _getDefaultConfiguration(): RefactoringConfiguration {
+  //   return {
+  //     automation_level: 'moderate',
+  //     risk_tolerance: 'medium',
+  //     validation_strictness: 'standard',
+  //     rollback_policy: 'automatic',
+  //     backup_strategy: 'git_based',
+  //     execution_mode: 'batch',
+  //     parallel_execution: false,
+  //     max_operations_per_session: 50,
+  //     excluded_patterns: ['node_modules/**', '.git/**', 'dist/**'],
+  //     included_patterns: ['src/**', 'lib/**', 'app/**'],
+  //   };
+  // }
 
   private async initializeEngine(): Promise<void> {
     await this.loadRefactoringOperations();
@@ -487,7 +487,7 @@ class AutomatedRefactoringEngine extends EventEmitter {
         performance_metrics: this.initializeMetrics(),
       };
 
-      this.activeExecution = execution;
+      // this._activeExecution = execution;
       this.emit('execution_started', { execution_id: execution.execution_id });
 
       // Create backup before starting
@@ -542,7 +542,7 @@ class AutomatedRefactoringEngine extends EventEmitter {
       });
 
       this.executionHistory.push(execution);
-      this.activeExecution = undefined;
+      // this._activeExecution = undefined;
 
       return execution;
     } catch (error) {
@@ -820,19 +820,19 @@ class AutomatedRefactoringEngine extends EventEmitter {
   }
 
   private async defineValidationSteps(
-    operations: RefactoringOperation[],
+    _operations: RefactoringOperation[],
   ): Promise<ValidationStep[]> {
     return [];
   }
 
   private async establishSuccessCriteria(
-    operations: RefactoringOperation[],
+    _operations: RefactoringOperation[],
   ): Promise<SuccessCriteria[]> {
     return [];
   }
 
   private async calculateResourceRequirements(
-    operations: RefactoringOperation[],
+    _operations: RefactoringOperation[],
   ): Promise<ResourceRequirement[]> {
     return [];
   }
@@ -865,13 +865,13 @@ class AutomatedRefactoringEngine extends EventEmitter {
     };
   }
 
-  private async createExecutionBackup(plan: RefactoringPlan): Promise<void> {
+  private async createExecutionBackup(_plan: RefactoringPlan): Promise<void> {
     // Create backup based on backup strategy
   }
 
   private async executeOperation(
     operation: RefactoringOperation,
-    execution: RefactoringExecution,
+    _execution: RefactoringExecution,
   ): Promise<CompletedOperation> {
     // Execute a single refactoring operation
     return {
@@ -885,35 +885,35 @@ class AutomatedRefactoringEngine extends EventEmitter {
   }
 
   private async handleOperationFailure(
-    operation: RefactoringOperation,
-    execution: RefactoringExecution,
-    plan: RefactoringPlan,
+    _operation: RefactoringOperation,
+    _execution: RefactoringExecution,
+    _plan: RefactoringPlan,
   ): Promise<void> {
     // Handle operation failure
   }
 
   private async handleExecutionError(
-    error: unknown,
-    operation: RefactoringOperation,
-    execution: RefactoringExecution,
-    plan: RefactoringPlan,
+    _error: unknown,
+    _operation: RefactoringOperation,
+    _execution: RefactoringExecution,
+    _plan: RefactoringPlan,
   ): Promise<void> {
     // Handle execution error
   }
 
-  private async performFinalValidation(plan: RefactoringPlan): Promise<ValidationResult[]> {
+  private async performFinalValidation(_plan: RefactoringPlan): Promise<ValidationResult[]> {
     // Perform final validation
     return [];
   }
 
-  private determineFinalStatus(execution: RefactoringExecution): RefactoringExecution['status'] {
+  private determineFinalStatus(_execution: RefactoringExecution): RefactoringExecution['status'] {
     // Determine final execution status
     return 'completed';
   }
 
   private async generateExecutionReport(
-    execution: RefactoringExecution,
-    plan: RefactoringPlan,
+    _execution: RefactoringExecution,
+    _plan: RefactoringPlan,
   ): Promise<RefactoringReport> {
     // Generate comprehensive execution report
     return {} as RefactoringReport;
@@ -924,47 +924,47 @@ class AutomatedRefactoringEngine extends EventEmitter {
   }
 
   private getOperationsToRollback(
-    execution: RefactoringExecution,
-    rollbackToOperation: string,
+    _execution: RefactoringExecution,
+    _rollbackToOperation: string,
   ): CompletedOperation[] {
     return [];
   }
 
-  private async rollbackOperation(operation: CompletedOperation): Promise<boolean> {
+  private async rollbackOperation(_operation: CompletedOperation): Promise<boolean> {
     return true;
   }
 
-  private async verifyRollbackState(execution: RefactoringExecution): Promise<string> {
+  private async verifyRollbackState(_execution: RefactoringExecution): Promise<string> {
     return 'verified';
   }
 
   private async analyzeCodeSnippet(
-    filePath: string,
-    codeSnippet: string,
-    context?: unknown,
+    _filePath: string,
+    _codeSnippet: string,
+    _context?: unknown,
   ): Promise<unknown> {
     return {};
   }
 
-  private async generateQuickFixes(codeAnalysis: unknown): Promise<RefactoringOperation[]> {
+  private async generateQuickFixes(_codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     return [];
   }
 
-  private async generateImprovements(codeAnalysis: unknown): Promise<RefactoringOperation[]> {
+  private async generateImprovements(_codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     return [];
   }
 
-  private async generateModernizations(codeAnalysis: unknown): Promise<RefactoringOperation[]> {
+  private async generateModernizations(_codeAnalysis: unknown): Promise<RefactoringOperation[]> {
     return [];
   }
 
   private async generatePerformanceOptimizations(
-    codeAnalysis: unknown,
+    _codeAnalysis: unknown,
   ): Promise<RefactoringOperation[]> {
     return [];
   }
 
-  private countUniqueFiles(operations: CompletedOperation[]): number {
+  private countUniqueFiles(_operations: CompletedOperation[]): number {
     return 0;
   }
 
@@ -972,31 +972,31 @@ class AutomatedRefactoringEngine extends EventEmitter {
     return `${Math.floor(seconds / 60)}m ${seconds % 60}s`;
   }
 
-  private calculateSuccessRate(executions: RefactoringExecution[]): number {
+  private calculateSuccessRate(_executions: RefactoringExecution[]): number {
     return 0;
   }
 
   private getCommonOperations(
-    executions: RefactoringExecution[],
+    _executions: RefactoringExecution[],
   ): { type: RefactoringType; count: number }[] {
     return [];
   }
 
-  private aggregateQualityImprovements(executions: RefactoringExecution[]): QualityImprovement[] {
+  private aggregateQualityImprovements(_executions: RefactoringExecution[]): QualityImprovement[] {
     return [];
   }
 
-  private calculateTimeSaved(executions: RefactoringExecution[]): number {
+  private calculateTimeSaved(_executions: RefactoringExecution[]): number {
     return 0;
   }
 
-  private calculateIssuesPrevented(executions: RefactoringExecution[]): number {
+  private calculateIssuesPrevented(_executions: RefactoringExecution[]): number {
     return 0;
   }
 }
 
-export {
-  AutomatedRefactoringEngine,
+export { AutomatedRefactoringEngine };
+export type {
   RefactoringOperation,
   RefactoringPlan,
   RefactoringExecution,

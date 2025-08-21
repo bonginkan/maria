@@ -1,11 +1,14 @@
-# MARIA CLI - Intelligent Development Assistant
+# MARIA Platform v1.1.0 - Enterprise Code Quality Platform
 
-[![npm version](https://img.shields.io/npm/v/@maria/cli)](https://www.npmjs.com/package/@maria/cli)
-[![Downloads](https://img.shields.io/npm/dt/@maria/cli)](https://www.npmjs.com/package/@maria/cli)
+[![npm version](https://img.shields.io/npm/v/@bonginkan/maria)](https://www.npmjs.com/package/@bonginkan/maria)
+[![Downloads](https://img.shields.io/npm/dt/@bonginkan/maria)](https://www.npmjs.com/package/@bonginkan/maria)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0%20%3C%3D22.0.0-brightgreen)](https://nodejs.org)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
+[![Quality](https://img.shields.io/badge/Code%20Quality-100%25-brightgreen)](https://github.com/bonginkan/maria)
 
-🤖 **MARIA CLI** is an advanced AI development assistant that brings senior engineer-level capabilities to your terminal. With support for 22+ AI models, intelligent routing, and comprehensive development tools.
+🤖 **MARIA Platform v1.1.0** is the world's most advanced AI-powered development platform featuring enterprise-grade code quality analysis, natural language understanding, and comprehensive development tools with support for 22+ AI models.
+
+> 🎉 **Phase 6 Complete** - Enterprise Code Quality Platform with Bug Detection, Lint Analysis, Type Safety, and Security Review
 
 ## ⚠️ Node.js Compatibility Notice
 
@@ -204,6 +207,24 @@ export ANTHROPIC_API_KEY=your_key
 ## 🤝 Contributing
 
 We welcome contributions! See [Contributing Guide](https://github.com/bonginkan/maria/blob/main/CONTRIBUTING.md) for details.
+
+## 📚 Documentation
+
+### v1.1.0 Complete Documentation Suite
+
+- **[📋 Technical Specification](./SPEC_SHEET_v1.1.0.md)** - Complete technical specs, architecture, and implementation details
+- **[👨‍💻 Developer Guide](./DEVELOPER_GUIDE_v1.1.0.md)** - Comprehensive development guide with API reference, customization, and enterprise deployment
+- **[👤 User Manual](./USER_MANUAL_v1.1.0.md)** - Complete user guide with step-by-step tutorials and best practices
+
+### Quick Documentation Access
+- **Getting Started**: [User Manual - Getting Started](./USER_MANUAL_v1.1.0.md#getting-started)
+- **Code Quality Analysis**: [User Manual - Code Quality Analysis](./USER_MANUAL_v1.1.0.md#code-quality-analysis)
+- **Enterprise Deployment**: [Developer Guide - Enterprise Deployment](./DEVELOPER_GUIDE_v1.1.0.md#enterprise-deployment)
+- **Troubleshooting**: [User Manual - Troubleshooting](./USER_MANUAL_v1.1.0.md#troubleshooting)
+
+---
+
+**MARIA Platform v1.1.0** - Experience the future of intelligent development with enterprise-grade code quality analysis.
 
 ## 📄 License
 

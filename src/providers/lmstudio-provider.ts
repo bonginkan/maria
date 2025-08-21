@@ -65,7 +65,6 @@ export class LMStudioProvider extends BaseAIProvider {
       this.isHealthy = response.ok;
       return this.isHealthy;
     } catch {
-      console.warn('LM Studio server not reachable');
       this.isHealthy = false;
       return false;
     }

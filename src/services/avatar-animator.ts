@@ -100,7 +100,7 @@ export class AvatarAnimator {
     for (let i = 0; i < mouthPattern.length; i++) {
       const lineIndex = this.mouthLineIndices.start + i;
       if (lineIndex < animatedLines.length && i < mouthPattern.length) {
-        animatedLines[lineIndex] = mouthPattern[i];
+        animatedLines[lineIndex] = mouthPattern[i] || '';
       }
     }
 
@@ -118,7 +118,7 @@ export class AvatarAnimator {
     for (let i = this.eyeLineIndices.start; i <= this.eyeLineIndices.end; i++) {
       if (i < animatedLines.length) {
         // Replace 'I' and 'l' with '-' for closed eyes effect
-        animatedLines[i] = animatedLines[i].replace(/[Il]/g, '-');
+        animatedLines[i] = animatedLines[i]!.replace(/[Il]/g, '-');
       }
     }
 
@@ -169,7 +169,7 @@ export class AvatarAnimator {
     if (expression.eyeModifier) {
       for (let i = this.eyeLineIndices.start; i <= this.eyeLineIndices.end; i++) {
         if (i < animatedLines.length) {
-          animatedLines[i] = expression.eyeModifier(animatedLines[i]);
+          animatedLines[i] = expression.eyeModifier(animatedLines[i] || '');
         }
       }
     }
@@ -196,7 +196,7 @@ export class AvatarAnimator {
       const intermediateStates: Array<keyof MouthPattern> = ['slightlyOpen', 'halfOpen'];
       for (let i = 0; i < Math.min(steps - 2, intermediateStates.length); i++) {
         frames.push({
-          lines: this.applyMouthAnimation(intermediateStates[i]),
+          lines: this.applyMouthAnimation(intermediateStates[i]!),
           duration,
         });
       }

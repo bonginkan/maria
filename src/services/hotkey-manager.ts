@@ -59,6 +59,7 @@ export class HotkeyManager {
    */
   private initializeDefaultBindings(): void {
     const defaults: HotkeyBinding[] = [
+      // System shortcuts
       {
         key: 's',
         modifiers: ['ctrl'],
@@ -129,6 +130,64 @@ export class HotkeyManager {
         command: '/mode',
         args: ['research'],
         description: 'Switch to research mode',
+        enabled: true,
+      },
+
+      // Human-in-the-Loop Approval Shortcuts
+      {
+        key: 'tab',
+        modifiers: ['shift'],
+        command: '/approve',
+        args: ['--quick', '--action=approve'],
+        description: 'Quick approve current request (いいよ)',
+        enabled: true,
+      },
+      {
+        key: 'y',
+        modifiers: ['ctrl'],
+        command: '/approve',
+        args: ['--action=approve'],
+        description: 'Approve current request (はい、承認)',
+        enabled: true,
+      },
+      {
+        key: 'n',
+        modifiers: ['ctrl'],
+        command: '/approve',
+        args: ['--action=reject'],
+        description: 'Reject current request (いいえ、拒否)',
+        enabled: true,
+      },
+      {
+        key: 't',
+        modifiers: ['ctrl', 'alt'],
+        command: '/approve',
+        args: ['--action=trust'],
+        description: 'Trust & auto-approve similar requests (任せる)',
+        enabled: true,
+      },
+      {
+        key: 'r',
+        modifiers: ['ctrl'],
+        command: '/approve',
+        args: ['--action=review'],
+        description: 'Request additional review (レビュー要求)',
+        enabled: true,
+      },
+      {
+        key: 'a',
+        modifiers: ['ctrl', 'shift'],
+        command: '/approve',
+        args: ['--show'],
+        description: 'Show current approval request',
+        enabled: true,
+      },
+      {
+        key: 'q',
+        modifiers: ['ctrl'],
+        command: '/approve',
+        args: ['--queue'],
+        description: 'Show approval queue',
         enabled: true,
       },
     ];

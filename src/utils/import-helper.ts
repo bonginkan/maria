@@ -8,7 +8,7 @@
  * @param specifier Module specifier to import
  * @returns Promise that resolves to the imported module
  */
-export async function safeDynamicImport<T = any>(specifier: string): Promise<T> {
+export async function safeDynamicImport<T = unknown>(specifier: string): Promise<T> {
   try {
     // First try dynamic import (ESM)
     const module = await import(specifier);
@@ -17,9 +17,9 @@ export async function safeDynamicImport<T = any>(specifier: string): Promise<T> 
     try {
       // Fallback to require for CJS modules
       const require =
-        (global as any).__require ||
-        (globalThis as any).require ||
-        (process as any).mainModule?.require;
+        (global as unknown & { __require?: NodeRequire }).__require ||
+        (globalThis as unknown & { require?: NodeRequire }).require ||
+        (process as unknown & { mainModule?: { require?: NodeRequire } }).mainModule?.require;
       if (!require) {
         throw new Error('CommonJS require not available');
       }
@@ -36,8 +36,8 @@ export async function safeDynamicImport<T = any>(specifier: string): Promise<T> 
  * @param moduleName Node.js built-in module name (e.g., 'fs', 'path')
  * @returns Promise that resolves to the module
  */
-export async function importNodeBuiltin<T = any>(moduleName: string): Promise<T> {
-  return safeDynamicImport(`node:${moduleName}`).catch(() => safeDynamicImport(moduleName));
+export async function importNodeBuiltin<T = unknown>(moduleName: string): Promise<T> {
+  return safeDynamicImport<T>(`node:${moduleName}`).catch(() => safeDynamicImport<T>(moduleName));
 }
 
 /**
@@ -45,10 +45,10 @@ export async function importNodeBuiltin<T = any>(moduleName: string): Promise<T>
  * @param specifier Module specifier
  * @returns Promise that resolves to the module
  */
-export async function importReactComponent<T = any>(specifier: string): Promise<T> {
+export async function importReactComponent<T = unknown>(specifier: string): Promise<T> {
   try {
-    const module = await safeDynamicImport(specifier);
-    return module;
+    const module = await safeDynamicImport<T>(specifier);
+    return module as T;
   } catch (error) {
     console.warn(`Failed to load React component ${specifier}:`, error);
     throw new Error(`React component ${specifier} is not available in this environment`);

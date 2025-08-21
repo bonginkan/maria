@@ -143,7 +143,7 @@ export class FirstTimeUserDetector {
       await fs.access(envPath);
       status.hasEnvFile = true;
 
-      // Check if it has any provider keys
+      // Check if it has unknown provider keys
       const envContent = await fs.readFile(envPath, 'utf-8');
       const hasOpenAI =
         envContent.includes('OPENAI_API_KEY=') && !envContent.includes('OPENAI_API_KEY=your_');

@@ -124,38 +124,52 @@ check_vllm() {
 
 # Function to start vLLM
 start_vllm() {
-    local venv_dir="$HOME/.maria/vllm/venv"
+    local venv_path="${VLLM_VENV_PATH:-$HOME/vllm-env}"
+    local model_dir="${VLLM_MODEL_DIR:-$HOME/vllm-models}"
+    local default_model="${VLLM_DEFAULT_MODEL:-DialoGPT-medium}"
     
-    if [ ! -d "$venv_dir" ]; then
-        print_color "$YELLOW" "⚠️  vLLM environment not found"
+    if [ ! -d "$venv_path" ]; then
+        print_color "$YELLOW" "⚠️  vLLM environment not found - run 'maria setup-vllm' first"
         return 1
     fi
     
     print_color "$BLUE" "🚀 Starting vLLM..."
     
+    # Check if vLLM is already running
+    if pgrep -f "vllm.entrypoints" >/dev/null 2>&1; then
+        print_color "$YELLOW" "⚠️  vLLM already running"
+        return 0
+    fi
+    
+    # Find the model path
+    local model_path="$model_dir/${default_model/\//_}"
+    if [ ! -d "$model_path" ]; then
+        print_color "$YELLOW" "⚠️  Model not found: $model_path"
+        print_color "$CYAN" "Available models:"
+        ls -1 "$model_dir" 2>/dev/null | head -5
+        return 1
+    fi
+    
     # Activate virtual environment and start server
     (
-        source "$venv_dir/bin/activate"
+        source "$venv_path/bin/activate"
         
-        # Check for Japanese model
-        if [ -d "$HOME/.maria/vllm/models" ]; then
-            nohup python -m vllm.entrypoints.openai.api_server \
-                --model stabilityai/japanese-stablelm-2-instruct-1_6b \
-                --host 0.0.0.0 \
-                --port 8000 \
-                --download-dir "$HOME/.maria/vllm/models" \
-                --gpu-memory-utilization 0.5 \
-                --max-model-len 4096 \
-                --trust-remote-code \
-                > "$CONFIG_DIR/vllm.log" 2>&1 &
-            
-            echo $! > "$CONFIG_DIR/vllm.pid"
-        fi
+        nohup python -m vllm.entrypoints.openai.api_server \
+            --model "$model_path" \
+            --host 0.0.0.0 \
+            --port 8000 \
+            --served-model-name "$default_model" \
+            --gpu-memory-utilization 0.8 \
+            --tensor-parallel-size 1 \
+            --max-num-batched-tokens 2048 \
+            > "$CONFIG_DIR/vllm.log" 2>&1 &
+        
+        echo $! > "$CONFIG_DIR/vllm.pid"
     ) 2>/dev/null
     
     # Wait for server to start
     if wait_for_port 8000; then
-        print_color "$GREEN" "✅ vLLM server started"
+        print_color "$GREEN" "✅ vLLM server started on port 8000"
         return 0
     else
         print_color "$RED" "❌ Failed to start vLLM server"
@@ -179,29 +193,48 @@ check_ollama() {
 # Function to start Ollama
 start_ollama() {
     if ! command_exists ollama; then
-        print_color "$YELLOW" "⚠️  Ollama not found"
+        print_color "$YELLOW" "⚠️  Ollama not found - run 'maria setup-ollama' first"
         return 1
     fi
     
-    print_color "$BLUE" "🚀 Starting Ollama..."
+    print_color "$BLUE" "🦙 Starting Ollama..."
     
     # Start Ollama daemon if not running
     if ! pgrep -f "ollama serve" >/dev/null 2>&1; then
         ollama serve > "$CONFIG_DIR/ollama.log" 2>&1 &
         echo $! > "$CONFIG_DIR/ollama.pid"
-        sleep 3
+        sleep 5
+        print_color "$GREEN" "✅ Ollama started on port 11434"
+    else
+        print_color "$YELLOW" "⚠️  Ollama already running"
     fi
     
-    # Check if Qwen models are available
-    if ! ollama list 2>/dev/null | grep -q "qwen"; then
-        print_color "$BLUE" "📦 Pulling Qwen2.5-VL model..."
-        ollama pull qwen2.5-vl:7b >/dev/null 2>&1 &
-        print_color "$GREEN" "✅ Qwen2.5-VL model is being downloaded"
+    # Set environment variables
+    export OLLAMA_NUM_PARALLEL=${OLLAMA_NUM_PARALLEL:-2}
+    export OLLAMA_MAX_LOADED_MODELS=${OLLAMA_MAX_LOADED_MODELS:-3}
+    
+    # Check if required models are available
+    local required_models=("llama3.2:3b" "mistral:7b" "codellama:13b")
+    local missing_models=()
+    
+    for model in "${required_models[@]}"; do
+        if ! ollama list 2>/dev/null | grep -q "$model"; then
+            missing_models+=("$model")
+        fi
+    done
+    
+    if [ ${#missing_models[@]} -gt 0 ]; then
+        print_color "$BLUE" "📦 Downloading missing models: ${missing_models[*]}"
+        for model in "${missing_models[@]}"; do
+            print_color "$CYAN" "  Pulling $model..."
+            ollama pull "$model" >/dev/null 2>&1 &
+        done
+        print_color "$GREEN" "✅ Models are being downloaded in background"
     fi
     
     # Verify server is running
     if wait_for_port 11434; then
-        print_color "$GREEN" "✅ Ollama server started"
+        print_color "$GREEN" "✅ Ollama server ready"
         return 0
     else
         print_color "$RED" "❌ Failed to start Ollama server"

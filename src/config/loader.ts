@@ -62,8 +62,10 @@ export async function loadEnvironmentConfig(): Promise<void> {
   // Try to load .env file if available
   try {
     const { importNodeBuiltin, safeDynamicImport } = await import('../utils/import-helper.js');
-    const fs = await safeDynamicImport('fs-extra').catch(() => importNodeBuiltin('fs'));
-    const path = await importNodeBuiltin('path');
+    const fs = (await safeDynamicImport('fs-extra').catch(() =>
+      importNodeBuiltin('fs'),
+    )) as typeof import('fs-extra');
+    const path = (await importNodeBuiltin('path')) as typeof import('path');
 
     const envPath = path.join(process.cwd(), '.env.local');
     if (await fs.pathExists(envPath)) {

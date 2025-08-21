@@ -1,7 +1,7 @@
 /**
  * Migrate Installer Command Module
  * インストール移行コマンド - インストール方法の移行支援
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: Migration
  */
@@ -46,15 +46,16 @@ export interface MigrationReport {
 export class MigrateInstallerCommand extends BaseCommand {
   name = 'migrate-installer';
   description = 'Migrate MARIA installation methods (npm → homebrew → binary → source)';
-  usage = '/migrate-installer [detect|to-npm|to-homebrew|to-binary|to-source|status|rollback] [options]';
+  usage =
+    '/migrate-installer [detect|to-npm|to-homebrew|to-binary|to-source|status|rollback] [options]';
   category = 'migration';
-  
+
   examples = [
     '/migrate-installer detect',
     '/migrate-installer to-npm --backup',
     '/migrate-installer to-homebrew',
     '/migrate-installer status',
-    '/migrate-installer rollback --confirm'
+    '/migrate-installer rollback --confirm',
   ];
 
   private backupDir = path.join(os.homedir(), '.maria', 'migration-backups');
@@ -70,43 +71,43 @@ export class MigrateInstallerCommand extends BaseCommand {
         case 'detect':
         case 'status':
           return await this.detectCurrentInstallation();
-        
+
         case 'to-npm':
           return await this.migrateToNpm(args.flags);
-        
+
         case 'to-homebrew':
         case 'to-brew':
           return await this.migrateToHomebrew(args.flags);
-        
+
         case 'to-binary':
           return await this.migrateToBinary(args.flags);
-        
+
         case 'to-source':
           return await this.migrateToSource(args.flags);
-        
+
         case 'rollback':
         case 'revert':
           return await this.rollbackMigration(args.flags);
-        
+
         case 'cleanup':
           return await this.cleanupOldInstallations(args.flags);
-        
+
         case 'verify':
           return await this.verifyInstallation();
-        
+
         case 'report':
           return await this.showMigrationReport();
-        
+
         default:
           return {
             success: false,
-            message: `Unknown migration action: ${action}. Use: detect, to-npm, to-homebrew, to-binary, to-source, rollback, cleanup, verify, report`
+            message: `Unknown migration action: ${action}. Use: detect, to-npm, to-homebrew, to-binary, to-source, rollback, cleanup, verify, report`,
           };
       }
     } catch (error) {
       return {
         success: false,
-        message: `Migration command error: ${error instanceof Error ? error.message : String(error)}`
+        message: `Migration command error: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -126,15 +127,9 @@ export class MigrateInstallerCommand extends BaseCommand {
         description: 'NPM global package installation',
         platforms: ['darwin', 'linux', 'win32'],
         requirements: ['node', 'npm'],
-        commands: [
-          'npm uninstall -g @bonginkan/maria || true',
-          'npm install -g @bonginkan/maria'
-        ],
-        verification: [
-          'maria --version',
-          'which maria || where maria'
-        ],
-        priority: 1
+        commands: ['npm uninstall -g @bonginkan/maria || true', 'npm install -g @bonginkan/maria'],
+        verification: ['maria --version', 'which maria || where maria'],
+        priority: 1,
       },
       {
         name: 'homebrew',
@@ -144,13 +139,10 @@ export class MigrateInstallerCommand extends BaseCommand {
         commands: [
           'brew uninstall maria-cli || true',
           'brew tap bonginkan/maria',
-          'brew install maria-cli'
+          'brew install maria-cli',
         ],
-        verification: [
-          'maria --version',
-          'brew list maria-cli'
-        ],
-        priority: 2
+        verification: ['maria --version', 'brew list maria-cli'],
+        priority: 2,
       },
       {
         name: 'binary',
@@ -159,13 +151,10 @@ export class MigrateInstallerCommand extends BaseCommand {
         requirements: [],
         commands: [
           'curl -L https://github.com/bonginkan/maria/releases/latest/download/maria-$(uname -s)-$(uname -m) -o /usr/local/bin/maria',
-          'chmod +x /usr/local/bin/maria'
+          'chmod +x /usr/local/bin/maria',
         ],
-        verification: [
-          'maria --version',
-          'ls -la /usr/local/bin/maria'
-        ],
-        priority: 3
+        verification: ['maria --version', 'ls -la /usr/local/bin/maria'],
+        priority: 3,
       },
       {
         name: 'source',
@@ -176,21 +165,22 @@ export class MigrateInstallerCommand extends BaseCommand {
           'git clone https://github.com/bonginkan/maria.git /tmp/maria-source',
           'cd /tmp/maria-source && pnpm install',
           'cd /tmp/maria-source && pnpm build',
-          'cd /tmp/maria-source && npm link'
+          'cd /tmp/maria-source && npm link',
         ],
-        verification: [
-          'maria --version',
-          'npm list -g @bonginkan/maria'
-        ],
-        priority: 4
-      }
+        verification: ['maria --version', 'npm list -g @bonginkan/maria'],
+        priority: 4,
+      },
     ];
   }
 
   private async detectCurrentInstallation(): Promise<SlashCommandResult> {
     const platform = process.platform;
     const methods = this.getInstallationMethods();
-    const detectedMethods: Array<{ method: InstallationMethod; location: string; version?: string }> = [];
+    const detectedMethods: Array<{
+      method: InstallationMethod;
+      location: string;
+      version?: string;
+    }> = [];
 
     let message = `\n${chalk.bold('🔍 MARIA Installation Detection')}\n`;
     message += `Platform: ${platform}\n\n`;
@@ -208,7 +198,9 @@ export class MigrateInstallerCommand extends BaseCommand {
 
         // Try to find MARIA executable
         try {
-          const { stdout: whichOutput } = await execAsync('which maria 2>/dev/null || where maria 2>nul || echo ""');
+          const { stdout: whichOutput } = await execAsync(
+            'which maria 2>/dev/null || where maria 2>nul || echo ""',
+          );
           if (whichOutput.trim()) {
             location = whichOutput.trim();
           }
@@ -218,7 +210,9 @@ export class MigrateInstallerCommand extends BaseCommand {
 
         // Try to get version
         try {
-          const { stdout: versionOutput } = await execAsync('maria --version 2>/dev/null || echo ""');
+          const { stdout: versionOutput } = await execAsync(
+            'maria --version 2>/dev/null || echo ""',
+          );
           if (versionOutput.trim()) {
             version = versionOutput.trim();
           }
@@ -228,11 +222,13 @@ export class MigrateInstallerCommand extends BaseCommand {
 
         // Method-specific detection
         let detected = false;
-        
+
         switch (method.name) {
           case 'npm':
             try {
-              const { stdout } = await execAsync('npm list -g @bonginkan/maria --depth=0 2>/dev/null || echo ""');
+              const { stdout } = await execAsync(
+                'npm list -g @bonginkan/maria --depth=0 2>/dev/null || echo ""',
+              );
               if (stdout.includes('@bonginkan/maria')) {
                 detected = true;
                 if (!location) location = 'npm global';
@@ -241,7 +237,7 @@ export class MigrateInstallerCommand extends BaseCommand {
               // Not installed via npm
             }
             break;
-            
+
           case 'homebrew':
             try {
               const { stdout } = await execAsync('brew list maria-cli 2>/dev/null || echo ""');
@@ -253,7 +249,7 @@ export class MigrateInstallerCommand extends BaseCommand {
               // Not installed via homebrew
             }
             break;
-            
+
           case 'binary':
             try {
               const binaryPaths = ['/usr/local/bin/maria', '/usr/bin/maria'];
@@ -271,7 +267,7 @@ export class MigrateInstallerCommand extends BaseCommand {
               // Binary not found
             }
             break;
-            
+
           case 'source':
             // Check if it's linked from a local build
             if (location && (location.includes('node_modules') || location.includes('src'))) {
@@ -297,7 +293,7 @@ export class MigrateInstallerCommand extends BaseCommand {
       message += `  curl -L https://install.maria-code.dev | sh`;
     } else {
       message += `${chalk.green('✅ Detected MARIA installations:')}\n\n`;
-      
+
       detectedMethods.forEach(({ method, location, version }) => {
         message += `${chalk.bold(method.name)} (${method.description})\n`;
         message += `  Location: ${location}\n`;
@@ -310,9 +306,9 @@ export class MigrateInstallerCommand extends BaseCommand {
       if (detectedMethods.length > 1) {
         message += `${chalk.yellow('⚠️  Multiple installations detected!')}\n`;
         message += `${chalk.blue('💡 Consider:')} Use \`/migrate-installer cleanup\` to remove duplicates\n`;
-        
-        const recommended = detectedMethods.reduce((prev, current) => 
-          prev.method.priority < current.method.priority ? prev : current
+
+        const recommended = detectedMethods.reduce((prev, current) =>
+          prev.method.priority < current.method.priority ? prev : current,
         );
         message += `${chalk.blue('🎯 Recommended:')} Use ${recommended.method.name} installation`;
       }
@@ -320,13 +316,13 @@ export class MigrateInstallerCommand extends BaseCommand {
 
     return {
       success: detectedMethods.length > 0,
-      message
+      message,
     };
   }
 
   private async migrateToNpm(flags: Record<string, unknown>): Promise<SlashCommandResult> {
     const backup = flags.backup;
-    
+
     const report: MigrationReport = {
       timestamp: new Date().toISOString(),
       fromMethod: 'unknown',
@@ -334,7 +330,7 @@ export class MigrateInstallerCommand extends BaseCommand {
       platform: process.platform,
       success: false,
       steps: [],
-      duration: 0
+      duration: 0,
     };
 
     const startTime = Date.now();
@@ -342,7 +338,7 @@ export class MigrateInstallerCommand extends BaseCommand {
     try {
       // Step 1: Detect current installation
       const currentInstallation = await this.detectCurrentInstallation();
-      
+
       // Step 2: Backup if requested
       if (backup) {
         report.steps.push({ step: 'Backup current installation', status: 'running' });
@@ -357,14 +353,15 @@ export class MigrateInstallerCommand extends BaseCommand {
 
       // Step 4: Install via npm
       report.steps.push({ step: 'Install via npm', status: 'running' });
-      
+
       try {
         const { stdout, stderr } = await execAsync('npm install -g @bonginkan/maria');
         report.steps[report.steps.length - 1].status = 'completed';
         report.steps[report.steps.length - 1].output = stdout;
       } catch (error) {
         report.steps[report.steps.length - 1].status = 'failed';
-        report.steps[report.steps.length - 1].error = error instanceof Error ? error.message : String(error);
+        report.steps[report.steps.length - 1].error =
+          error instanceof Error ? error.message : String(error);
         throw error;
       }
 
@@ -385,29 +382,29 @@ export class MigrateInstallerCommand extends BaseCommand {
       if (report.success) {
         return {
           success: true,
-          message: `✅ Successfully migrated to npm installation!\n\n` +
-                   `Duration: ${report.duration}ms\n` +
-                   `Version: ${await this.getCurrentVersion()}\n\n` +
-                   `${chalk.blue('💡 Next steps:')}\n` +
-                   `• Restart your terminal\n` +
-                   `• Test with: maria --version\n` +
-                   `• Use: maria chat`
+          message:
+            `✅ Successfully migrated to npm installation!\n\n` +
+            `Duration: ${report.duration}ms\n` +
+            `Version: ${await this.getCurrentVersion()}\n\n` +
+            `${chalk.blue('💡 Next steps:')}\n` +
+            `• Restart your terminal\n` +
+            `• Test with: maria --version\n` +
+            `• Use: maria chat`,
         };
       } else {
         return {
           success: false,
-          message: `❌ Migration to npm failed. See report with: /migrate-installer report`
+          message: `❌ Migration to npm failed. See report with: /migrate-installer report`,
         };
       }
-
     } catch (error) {
       report.success = false;
       report.duration = Date.now() - startTime;
       await this.saveReport(report);
-      
+
       return {
         success: false,
-        message: `Migration failed: ${error instanceof Error ? error.message : String(error)}`
+        message: `Migration failed: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -416,7 +413,7 @@ export class MigrateInstallerCommand extends BaseCommand {
     if (process.platform !== 'darwin' && process.platform !== 'linux') {
       return {
         success: false,
-        message: 'Homebrew is only available on macOS and Linux'
+        message: 'Homebrew is only available on macOS and Linux',
       };
     }
 
@@ -426,27 +423,28 @@ export class MigrateInstallerCommand extends BaseCommand {
     } catch {
       return {
         success: false,
-        message: 'Homebrew not found. Install it first: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+        message:
+          'Homebrew not found. Install it first: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"',
       };
     }
 
     return {
       success: false,
-      message: 'Homebrew migration is not yet implemented. Use npm installation for now.'
+      message: 'Homebrew migration is not yet implemented. Use npm installation for now.',
     };
   }
 
   private async migrateToBinary(flags: Record<string, unknown>): Promise<SlashCommandResult> {
     return {
       success: false,
-      message: 'Binary migration is not yet implemented. Use npm installation for now.'
+      message: 'Binary migration is not yet implemented. Use npm installation for now.',
     };
   }
 
   private async migrateToSource(flags: Record<string, unknown>): Promise<SlashCommandResult> {
     return {
       success: false,
-      message: 'Source migration is not yet implemented. Use npm installation for now.'
+      message: 'Source migration is not yet implemented. Use npm installation for now.',
     };
   }
 
@@ -479,9 +477,9 @@ export class MigrateInstallerCommand extends BaseCommand {
   private async createBackup(): Promise<void> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const backupPath = path.join(this.backupDir, `maria-backup-${timestamp}`);
-    
+
     await fs.mkdir(backupPath, { recursive: true });
-    
+
     // Backup configuration
     try {
       const mariaDir = path.join(os.homedir(), '.maria');
@@ -489,7 +487,7 @@ export class MigrateInstallerCommand extends BaseCommand {
     } catch {
       // Ignore if .maria directory doesn't exist
     }
-    
+
     // Backup current executable
     try {
       const { stdout } = await execAsync('which maria');
@@ -506,18 +504,18 @@ export class MigrateInstallerCommand extends BaseCommand {
     try {
       // Test version command
       const { stdout } = await execAsync('maria --version');
-      
+
       // Test basic functionality
       await execAsync('maria --help');
-      
+
       return {
         success: true,
-        message: `Installation verified successfully. Version: ${stdout.trim()}`
+        message: `Installation verified successfully. Version: ${stdout.trim()}`,
       };
     } catch (error) {
       return {
         success: false,
-        message: `Verification failed: ${error instanceof Error ? error.message : String(error)}`
+        message: `Verification failed: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -539,14 +537,14 @@ export class MigrateInstallerCommand extends BaseCommand {
     try {
       const content = await fs.readFile(this.reportPath, 'utf-8');
       const report: MigrationReport = JSON.parse(content);
-      
+
       let message = `\n${chalk.bold('📋 Migration Report')}\n\n`;
       message += `${chalk.blue('Timestamp:')} ${new Date(report.timestamp).toLocaleString()}\n`;
       message += `${chalk.blue('Migration:')} ${report.fromMethod} → ${report.toMethod}\n`;
       message += `${chalk.blue('Platform:')} ${report.platform}\n`;
       message += `${chalk.blue('Duration:')} ${report.duration}ms\n`;
       message += `${chalk.blue('Success:')} ${report.success ? chalk.green('✅ Yes') : chalk.red('❌ No')}\n\n`;
-      
+
       message += `${chalk.bold('Steps:')}\n`;
       report.steps.forEach((step, index) => {
         const statusIcon = {
@@ -554,15 +552,15 @@ export class MigrateInstallerCommand extends BaseCommand {
           running: chalk.yellow('●'),
           completed: chalk.green('✓'),
           failed: chalk.red('✗'),
-          skipped: chalk.gray('○')
+          skipped: chalk.gray('○'),
         }[step.status];
-        
+
         message += `${index + 1}. ${statusIcon} ${step.step}\n`;
-        
+
         if (step.output) {
           message += `   ${chalk.gray('Output:')} ${step.output.substring(0, 100)}...\n`;
         }
-        
+
         if (step.error) {
           message += `   ${chalk.red('Error:')} ${step.error}\n`;
         }
@@ -572,32 +570,34 @@ export class MigrateInstallerCommand extends BaseCommand {
     } catch {
       return {
         success: false,
-        message: 'No migration report found.'
+        message: 'No migration report found.',
       };
     }
   }
 
   private async rollbackMigration(flags: Record<string, unknown>): Promise<SlashCommandResult> {
     const confirm = flags.confirm;
-    
+
     if (!confirm) {
       return {
         success: false,
-        message: 'Rollback requires confirmation. Use --confirm flag to proceed.'
+        message: 'Rollback requires confirmation. Use --confirm flag to proceed.',
       };
     }
 
     return {
       success: false,
-      message: 'Rollback is not yet implemented. Manually reinstall your preferred method.'
+      message: 'Rollback is not yet implemented. Manually reinstall your preferred method.',
     };
   }
 
-  private async cleanupOldInstallations(flags: Record<string, unknown>): Promise<SlashCommandResult> {
+  private async cleanupOldInstallations(
+    flags: Record<string, unknown>,
+  ): Promise<SlashCommandResult> {
     const dryRun = !flags.execute;
-    
+
     let message = `\n${chalk.bold('🧹 Installation Cleanup')}\n`;
-    
+
     if (dryRun) {
       message += `${chalk.yellow('DRY RUN MODE')} - No changes will be made\n`;
       message += `Use --execute to actually perform cleanup\n\n`;
@@ -610,11 +610,11 @@ export class MigrateInstallerCommand extends BaseCommand {
       'npm global @bonginkan/maria',
       'homebrew maria-cli',
       '/usr/local/bin/maria binary',
-      'Old configuration backups'
+      'Old configuration backups',
     ];
 
     message += `${chalk.bold('Items to clean:')}\n`;
-    cleanupItems.forEach(item => {
+    cleanupItems.forEach((item) => {
       message += `  • ${item}\n`;
     });
 
