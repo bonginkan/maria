@@ -1667,7 +1667,7 @@ var init_coderag_system = __esm({
           const mockAnalysis = analysisResult;
           const analysis = {
             codebase: {
-              totalFiles: mockAnalysis.codebase?.total_files || 0,
+              totalFiles: mockAnalysis.codebase?.totalfiles || 0,
               totalChunks: mockAnalysis.codebase?.total_chunks || 0,
               languages: mockAnalysis.codebase?.languages || [],
               complexityDistribution: mockAnalysis.codebase?.complexity_distribution || {}
@@ -1971,7 +1971,7 @@ var init_document_processor = __esm({
       /**
        * Build document from processing result
        */
-      buildDocumentFromResult(source, result, _options) {
+      buildDocumentFromResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         const document2 = {
           id: documentId,
@@ -2018,7 +2018,7 @@ var init_document_processor = __esm({
       /**
        * Build document from arXiv result
        */
-      buildDocumentFromArXivResult(source, result, _options) {
+      buildDocumentFromArXivResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -2062,7 +2062,7 @@ var init_document_processor = __esm({
       /**
        * Build document from web content result
        */
-      buildDocumentFromWebResult(source, result, _options) {
+      buildDocumentFromWebResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -2110,7 +2110,7 @@ var init_document_processor = __esm({
       /**
        * Build document from office document result
        */
-      buildDocumentFromOfficeResult(source, result, _options) {
+      buildDocumentFromOfficeResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -2151,7 +2151,7 @@ var init_document_processor = __esm({
       /**
        * Build document from text result
        */
-      buildDocumentFromTextResult(source, result, _options) {
+      buildDocumentFromTextResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -6035,7 +6035,7 @@ var TASK_ROUTING = {
     "mistral-7b-instruct"
   ],
   multilingual: ["qwen2.5:32b", "qwen2.5-vl:7b", "gemini-2.5-pro", "mixtral-8x7b-32768"],
-  current_events: ["grok-2", "gemini-2.5-pro", "gpt-5", "claude-opus-4-1-20250805"],
+  currentevents: ["grok-2", "gemini-2.5-pro", "gpt-5", "claude-opus-4-1-20250805"],
   chat: ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini-2.5-flash", "mixtral-8x7b-32768"]
 };
 function getRecommendedModel(taskType, availableModels) {
@@ -6147,7 +6147,7 @@ var IntelligentRouter = class {
       return "multilingual";
     }
     if (this.containsKeywords(content, ["news", "current", "today", "recent", "latest"])) {
-      return "current_events";
+      return "currentevents";
     }
     return "chat";
   }
@@ -7881,13 +7881,13 @@ var IntentRecognizer = class {
   }
   config;
   intentPatterns;
-  __contextClues;
+  _contextClues;
   commandHistory = [];
   initialized = false;
   constructor(config) {
     this.config = config;
     this.intentPatterns = /* @__PURE__ */ new Map();
-    this.__contextClues = /* @__PURE__ */ new Map();
+    this._contextClues = /* @__PURE__ */ new Map();
     this.initializePatterns();
   }
   async initialize() {
@@ -10065,7 +10065,7 @@ var ModeRecognitionEngine = class extends events.EventEmitter {
     }
     return null;
   }
-  generateReasoning(modeScore, _context) {
+  generateReasoning(modeScore, context) {
     const reasons = [];
     if (modeScore.scores.intent > 0.5) {
       reasons.push(`Strong intent match (${(modeScore.scores.intent * 100).toFixed(0)}%)`);
@@ -11104,18 +11104,7 @@ var CORE_ICONS = {
     usage: ["\u30D5\u30ED\u30FC\u8868\u793A", "\u30CA\u30D3\u30B2\u30FC\u30B7\u30E7\u30F3", "\u6B21\u306E\u30B9\u30C6\u30C3\u30D7"]
   }
 };
-var SPINNER_FRAMES = [
-  "\u280B",
-  "\u2819",
-  "\u2839",
-  "\u2838",
-  "\u283C",
-  "\u2834",
-  "\u2826",
-  "\u2827",
-  "\u2807",
-  "\u280F"
-];
+var SPINNER_FRAMES = ["\u280B", "\u2819", "\u2839", "\u2838", "\u283C", "\u2834", "\u2826", "\u2827", "\u2807", "\u280F"];
 var FORBIDDEN_ICONS = [
   // 絵文字系（レンダリング不安定）
   "\u{1F680}",
@@ -11373,16 +11362,8 @@ var LayoutManager = class {
     const maxLines = Math.max(leftContent.length, rightContent.length);
     const result = [];
     for (let i = 0; i < maxLines; i++) {
-      const left = this.alignText(
-        leftContent[i] || "",
-        layout.mainContentWidth,
-        "left"
-      );
-      const right = this.alignText(
-        rightContent[i] || "",
-        layout.sidebarWidth,
-        "left"
-      );
+      const left = this.alignText(leftContent[i] || "", layout.mainContentWidth, "left");
+      const right = this.alignText(rightContent[i] || "", layout.sidebarWidth, "left");
       const gap = " ".repeat(layout.columnGap);
       result.push(left + gap + right);
     }
@@ -11497,7 +11478,9 @@ var LayoutManager = class {
     }
     const totalWidth = config.mainContentWidth + config.sidebarWidth + config.columnGap;
     if (totalWidth > config.contentWidth) {
-      errors.push(`\u30AB\u30E9\u30E0\u5E45\u306E\u5408\u8A08\u304C content width \u3092\u8D85\u3048\u3066\u3044\u307E\u3059: ${totalWidth} > ${config.contentWidth}`);
+      errors.push(
+        `\u30AB\u30E9\u30E0\u5E45\u306E\u5408\u8A08\u304C content width \u3092\u8D85\u3048\u3066\u3044\u307E\u3059: ${totalWidth} > ${config.contentWidth}`
+      );
     }
     return {
       isValid: errors.length === 0,
@@ -11626,7 +11609,9 @@ var OptimizedBox = class _OptimizedBox {
       console.log(colorFn(border.vertical) + paddedLine + colorFn(border.vertical));
     });
     this.renderPaddingLines(padding, width, colorFn, border.vertical);
-    console.log(colorFn(border.bottomLeft + border.horizontal.repeat(width - 2) + border.bottomRight));
+    console.log(
+      colorFn(border.bottomLeft + border.horizontal.repeat(width - 2) + border.bottomRight)
+    );
     if (this.options.shadow) {
       this.renderShadow(width);
     }
@@ -11642,13 +11627,11 @@ var OptimizedBox = class _OptimizedBox {
         titleWidth,
         this.options.titleAlignment
       );
-      console.log(colorFn(
-        border.topLeft + border.horizontal + title + border.horizontal + border.topRight
-      ));
+      console.log(
+        colorFn(border.topLeft + border.horizontal + title + border.horizontal + border.topRight)
+      );
     } else {
-      console.log(colorFn(
-        border.topLeft + border.horizontal.repeat(width - 2) + border.topRight
-      ));
+      console.log(colorFn(border.topLeft + border.horizontal.repeat(width - 2) + border.topRight));
     }
   }
   /**
@@ -11945,15 +11928,18 @@ var ResponsiveRenderer = class {
         console.log(TEXT_HIERARCHY.CAPTION(data.subtitle));
       }
     } else {
-      OptimizedBox.brand([
-        LayoutManager.alignText(data.title, width - 4, "center"),
-        data.subtitle ? LayoutManager.alignText(data.subtitle, width - 4, "center") : "",
-        data.copyright ? LayoutManager.alignText(data.copyright, width - 4, "center") : ""
-      ].filter(Boolean), {
-        width,
-        padding: "large",
-        titleAlignment: "center"
-      });
+      OptimizedBox.brand(
+        [
+          LayoutManager.alignText(data.title, width - 4, "center"),
+          data.subtitle ? LayoutManager.alignText(data.subtitle, width - 4, "center") : "",
+          data.copyright ? LayoutManager.alignText(data.copyright, width - 4, "center") : ""
+        ].filter(Boolean),
+        {
+          width,
+          padding: "large",
+          titleAlignment: "center"
+        }
+      );
     }
     console.log();
   }
@@ -11961,19 +11947,21 @@ var ResponsiveRenderer = class {
    * ステータス描画
    */
   static renderStatus(data) {
-    const icon = IconRegistry.get(data.status === "healthy" ? "SUCCESS" : data.status === "degraded" ? "WARNING" : "ERROR");
+    const icon = IconRegistry.get(
+      data.status === "healthy" ? "SUCCESS" : data.status === "degraded" ? "WARNING" : "ERROR"
+    );
     const color = ColorPalette.status(
       data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error"
     );
     const statusLine = `${color(icon)} ${TEXT_HIERARCHY.BODY(data.message)}`;
     if (this.context.mode !== "compact" && data.details) {
-      OptimizedBox.simple([
-        statusLine,
-        ...data.details.map((detail) => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)
-      ], {
-        theme: data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error",
-        padding: "small"
-      });
+      OptimizedBox.simple(
+        [statusLine, ...data.details.map((detail) => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)],
+        {
+          theme: data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error",
+          padding: "small"
+        }
+      );
     } else {
       console.log(statusLine);
     }
@@ -11983,9 +11971,7 @@ var ResponsiveRenderer = class {
    */
   static renderNavigation(data) {
     if (this.context.mode === "compact") {
-      const items = data.items.slice(0, 3).map(
-        (item) => TEXT_HIERARCHY.BODY(item.label)
-      ).join(TEXT_HIERARCHY.CAPTION(" \u2022 "));
+      const items = data.items.slice(0, 3).map((item) => TEXT_HIERARCHY.BODY(item.label)).join(TEXT_HIERARCHY.CAPTION(" \u2022 "));
       console.log(items);
     } else {
       const grid = LayoutManager.createGrid(
@@ -12003,9 +11989,7 @@ var ResponsiveRenderer = class {
     const maxWidth = this.context.layout.contentWidth;
     const columnCount = data.headers.length;
     const columnWidth = Math.floor((maxWidth - (columnCount - 1) * 2) / columnCount);
-    const headerRow = data.headers.map(
-      (header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))
-    ).join("  ");
+    const headerRow = data.headers.map((header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))).join("  ");
     console.log(headerRow);
     console.log(SEMANTIC_COLORS.MUTED("\u2500".repeat(maxWidth)));
     data.rows.forEach((row) => {
@@ -12083,14 +12067,15 @@ ResponsiveRenderer.initialize;
 // src/utils/ui.ts
 function printStatus(health) {
   const layout = LayoutManager.getOptimalLayout();
-  OptimizedBox.withTitle("System Status", [
-    renderOverallStatus(health),
-    ...renderHealthSections(health)
-  ], {
-    theme: getHealthTheme(health.overall),
-    width: layout.contentWidth,
-    responsive: true
-  });
+  OptimizedBox.withTitle(
+    "System Status",
+    [renderOverallStatus(health), ...renderHealthSections(health)],
+    {
+      theme: getHealthTheme(health.overall),
+      width: layout.contentWidth,
+      responsive: true
+    }
+  );
   if (health.timestamp || health.lastUpdate) {
     const timestamp = health.timestamp || health.lastUpdate;
     const timeStr = timestamp instanceof Date ? timestamp.toLocaleString() : new Date(timestamp).toLocaleString();
@@ -12706,7 +12691,7 @@ var ApprovalContextAnalyzer = class {
   /**
    * Identify specific approval points
    */
-  static identifyApprovalPoints(input, category, _context) {
+  static identifyApprovalPoints(input, category, context) {
     const points = [];
     if (input.includes("database") || input.includes("migration") || input.includes("schema")) {
       points.push({
@@ -13357,7 +13342,7 @@ var ApprovalEngine = class _ApprovalEngine extends events.EventEmitter {
   /**
    * Create approval request object
    */
-  createApprovalRequest(context, proposedActions, primaryTheme, riskAssessment, _options) {
+  createApprovalRequest(context, proposedActions, primaryTheme, riskAssessment, options) {
     return {
       id: uuid.v4(),
       themeId: primaryTheme?.id || "unknown",
@@ -14795,7 +14780,9 @@ function createInteractiveSession(maria) {
         historySize: 100
       });
       rl.on("SIGINT", () => {
-        console.log(SEMANTIC_COLORS.WARNING(IconRegistry.get("WARNING")) + TEXT_HIERARCHY.BODY("\n\nReceived SIGINT. Use /exit to quit gracefully."));
+        console.log(
+          SEMANTIC_COLORS.WARNING(IconRegistry.get("WARNING")) + TEXT_HIERARCHY.BODY("\n\nReceived SIGINT. Use /exit to quit gracefully.")
+        );
         rl?.prompt();
       });
       while (running) {

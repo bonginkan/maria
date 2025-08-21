@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { Command, RequireAuth, RateLimit, Validate, Cache } from '../decorators';
-import { CommandContext, CommandOptions, CommandResult } from '../types';
+import { _Command, RequireAuth, RateLimit, Validate, _Cache } from '../decorators';
+import { _CommandContext, CommandOptions, _CommandResult } from '../types';
 import { z } from 'zod';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger';
@@ -164,7 +164,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
       for (const file of options.files) {
         const content = await this.fileSystem.readFile(file);
         if (content) {
-          files.push({ path: file, content });
+          files.push({ path: file, _content });
         }
       }
     }
@@ -174,7 +174,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
       for (const file of args) {
         const content = await this.fileSystem.readFile(file);
         if (content) {
-          files.push({ path: file, content });
+          files.push({ path: file, _content });
         }
       }
     }
@@ -215,7 +215,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
         if (content) {
-          files.push({ path: fileName, content });
+          files.push({ path: fileName, _content });
         }
       }
 
@@ -237,7 +237,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
         if (content) {
-          files.push({ path: fileName, content });
+          files.push({ path: fileName, _content });
         }
       }
 
@@ -259,7 +259,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
         if (content) {
-          files.push({ path: fileName, content });
+          files.push({ path: fileName, _content });
         }
       }
 
@@ -279,7 +279,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
         if (content) {
-          files.push({ path: fileName, content });
+          files.push({ path: fileName, _content });
         }
       }
 
@@ -293,7 +293,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
   private async performReview(
     files: Array<{ path: string; content: string }>,
     options: ReviewOptions,
-  ): Promise<any[]> {
+  ): Promise<unknown[]> {
     const reviews = [];
 
     for (const file of files) {
@@ -336,7 +336,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     const systemPrompt = `You are an expert code reviewer focusing on ${category} issues.
 ${config.prompt}
 Provide specific, actionable feedback with line numbers where possible.
-Format issues as JSON array with: { line, severity, message, suggestion }`;
+Format issues as JSON array with: { line, severity, message, _suggestion }`;
 
     const response = await this.aiRouter.generate({
       model: 'gpt-4',

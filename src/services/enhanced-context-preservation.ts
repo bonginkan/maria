@@ -808,7 +808,7 @@ export class EnhancedContextPreservation extends EventEmitter {
   }
 
   // Placeholder methods for other analysis functions
-  private async analyzeProjectContext(_context: ConversationContext): Promise<ProjectContextState> {
+  private async analyzeProjectContext(context: ConversationContext): Promise<ProjectContextState> {
     // Implementation would analyze project structure, dependencies, etc.
     return {
       architecture: { patterns: [], components: [], dataFlow: [], designPrinciples: [] },
@@ -824,7 +824,7 @@ export class EnhancedContextPreservation extends EventEmitter {
     };
   }
 
-  private async analyzeUserBehavior(_context: ConversationContext): Promise<UserBehaviorState> {
+  private async analyzeUserBehavior(context: ConversationContext): Promise<UserBehaviorState> {
     // Implementation would analyze user patterns, preferences, etc.
     return {
       preferenceProfile: {
@@ -855,7 +855,7 @@ export class EnhancedContextPreservation extends EventEmitter {
     };
   }
 
-  private async buildKnowledgeGraph(_context: ConversationContext): Promise<KnowledgeGraphState> {
+  private async buildKnowledgeGraph(context: ConversationContext): Promise<KnowledgeGraphState> {
     // Implementation would build knowledge graph from conversation
     return {
       concepts: [],
@@ -865,7 +865,7 @@ export class EnhancedContextPreservation extends EventEmitter {
     };
   }
 
-  private async analyzeTaskContext(_context: ConversationContext): Promise<TaskContextState> {
+  private async analyzeTaskContext(context: ConversationContext): Promise<TaskContextState> {
     // Implementation would analyze current tasks and goals
     return {
       currentGoal: { primary: '', secondary: [], implicit: [], timeHorizon: 'immediate' },
@@ -876,7 +876,7 @@ export class EnhancedContextPreservation extends EventEmitter {
   }
 
   private async analyzeEmotionalContext(
-    _context: ConversationContext,
+    context: ConversationContext,
   ): Promise<EmotionalContextState> {
     // Implementation would analyze emotional indicators
     return {
@@ -893,9 +893,9 @@ export class EnhancedContextPreservation extends EventEmitter {
    */
   private determineCompressionLevel(
     importance: number,
-    _context: DeepContextState,
+    context: DeepContextState,
   ): 'none' | 'light' | 'medium' | 'heavy' {
-    const contextSize = JSON.stringify(_context).length;
+    const contextSize = JSON.stringify(context).length;
 
     if (importance > 0.8) return 'none';
     if (importance > 0.6 && contextSize < 50000) return 'light';
@@ -907,15 +907,15 @@ export class EnhancedContextPreservation extends EventEmitter {
    * Compress context using specified strategy
    */
   private async compressContext(
-    _context: DeepContextState,
+    context: DeepContextState,
     level: 'none' | 'light' | 'medium' | 'heavy',
   ): Promise<DeepContextState> {
-    if (level === 'none') return _context;
+    if (level === 'none') return context;
 
     const strategy = this.compressionStrategies.get(level);
-    if (!strategy) return _context;
+    if (!strategy) return context;
 
-    return strategy.compressionFunction(_context);
+    return strategy.compressionFunction(context);
   }
 
   /**

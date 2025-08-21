@@ -753,7 +753,7 @@ class TestFrameworkDetector {
 }
 
 class TestAnalyzer {
-  async analyzeExistingTests(_files: string[]): Promise<Map<string, TestInfo>> {
+  async analyzeExistingTests(files: string[]): Promise<Map<string, TestInfo>> {
     const tests = new Map<string, TestInfo>();
 
     // TODO: Implement actual test analysis

@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { CommandContext, CommandResult, CommandArgs } from './types';
+import { _CommandContext, CommandResult, _CommandArgs } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
@@ -166,7 +166,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
     
     // React-specific Type Issues
     {
-      pattern: /React\.FC<any>/g,
+      pattern: /React\.FC<unknown>/g,
       category: 'react-types',
       severity: 'warning' as const,
       message: 'React component with any props type',
@@ -174,7 +174,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
       suggestion: 'Define proper props interface'
     },
     {
-      pattern: /useState<any>/g,
+      pattern: /useState<unknown>/g,
       category: 'react-types',
       severity: 'warning' as const,
       message: 'useState hook with any type',
@@ -332,7 +332,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
         ? 'npx tsc --noEmit --strict --pretty false'
         : 'npx tsc --noEmit --pretty false';
         
-      const { stdout, stderr } = await execAsync(command, { 
+      const { stdout, _stderr } = await execAsync(command, { 
         cwd: targetPath,
         maxBuffer: 10 * 1024 * 1024 
       });
@@ -555,14 +555,14 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
     }
     
     // Check for complex any usage
-    lines.forEach((line, index) => {
+    lines.forEach((line, _index) => {
       if (line.includes('any') && !line.trim().startsWith('//')) {
         const contexts = [
           'Record<string, any>',
           'any[]',
-          'Promise<any>',
-          'Observable<any>',
-          'Subject<any>'
+          'Promise<unknown>',
+          'Observable<unknown>',
+          'Subject<unknown>'
         ];
         
         for (const context of contexts) {
@@ -618,7 +618,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
     return totalLines > 0 ? Math.round((typedLines / totalLines) * 100) : 0;
   }
   
-  private async getCompilerOptions(tsConfigPath: string): Promise<any> {
+  private async getCompilerOptions(tsConfigPath: string): Promise<unknown> {
     try {
       const content = await fs.readFile(tsConfigPath, 'utf-8');
       const config = JSON.parse(content);

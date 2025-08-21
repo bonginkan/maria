@@ -1,6 +1,6 @@
 /**
  * MARIA Memory System - Memory Coordinator
- * 
+ *
  * Cross-layer coordination and optimization between System 1 and System 2 memory
  * Manages synchronization, performance optimization, and adaptive learning
  */
@@ -17,7 +17,7 @@ import type {
   UserPreferenceSet,
   QualityMetrics,
   Enhancement,
-  MemorySystemConfig
+  MemorySystemConfig,
 } from './types/memory-interfaces';
 
 export interface CoordinationMetrics {
@@ -81,7 +81,11 @@ export interface SyncPoint {
 export interface ConflictResolution {
   id: string;
   timestamp: Date;
-  conflictType: 'data_inconsistency' | 'preference_mismatch' | 'quality_threshold' | 'performance_tradeoff';
+  conflictType:
+    | 'data_inconsistency'
+    | 'preference_mismatch'
+    | 'quality_threshold'
+    | 'performance_tradeoff';
   description: string;
   resolution: string;
   confidence: number;
@@ -104,14 +108,14 @@ export class MemoryCoordinator {
     system1: System1MemoryManager,
     system2: System2MemoryManager,
     dualEngine: DualMemoryEngine,
-    config: CoordinatorConfig
+    config: CoordinatorConfig,
   ) {
     this.system1 = system1;
     this.system2 = system2;
     this.dualEngine = dualEngine;
     this.config = config;
     this.metrics = this.initializeMetrics();
-    
+
     this.startCoordination();
   }
 
@@ -119,7 +123,7 @@ export class MemoryCoordinator {
 
   async synchronizeSystems(): Promise<SynchronizationReport> {
     const startTime = Date.now();
-    
+
     try {
       // Generate synchronization report
       const report: SynchronizationReport = {
@@ -127,17 +131,16 @@ export class MemoryCoordinator {
         system2State: await this.getSystem2State(),
         synchronizationPoints: this.getRecentSyncPoints(),
         conflictResolutions: this.getRecentConflicts(),
-        recommendations: await this.generateOptimizationRecommendations()
+        recommendations: await this.generateOptimizationRecommendations(),
       };
 
       // Perform cross-layer synchronization
       await this.performCrossLayerSync();
-      
+
       // Update metrics
       this.metrics.syncOperations++;
-      this.metrics.averageSyncTime = 
-        (this.metrics.averageSyncTime + (Date.now() - startTime)) / 2;
-      
+      this.metrics.averageSyncTime = (this.metrics.averageSyncTime + (Date.now() - startTime)) / 2;
+
       return report;
     } catch (error) {
       console.error('System synchronization failed:', error);
@@ -147,22 +150,22 @@ export class MemoryCoordinator {
 
   async optimizePerformance(): Promise<OptimizationRecommendation[]> {
     const startTime = Date.now();
-    
+
     try {
       // Analyze current performance
       const performanceAnalysis = await this.analyzePerformance();
-      
+
       // Generate optimization recommendations
       const recommendations = await this.generateOptimizationRecommendations();
-      
+
       // Apply automated optimizations
       const appliedOptimizations = await this.applyAutomatedOptimizations(recommendations);
-      
+
       // Update metrics
       this.metrics.optimizationRuns++;
       this.metrics.performanceImprovements += appliedOptimizations.length;
       this.metrics.lastOptimization = new Date();
-      
+
       return recommendations;
     } catch (error) {
       console.error('Performance optimization failed:', error);
@@ -174,13 +177,13 @@ export class MemoryCoordinator {
     try {
       // Analyze user behavior pattern
       const behaviorPattern = await this.analyzeBehaviorPattern(event);
-      
+
       // Cross-layer adaptation
       await this.performCrossLayerAdaptation(behaviorPattern);
-      
+
       // Update adaptive learning
       await this.updateAdaptiveLearning(behaviorPattern);
-      
+
       this.metrics.adaptationEvents++;
     } catch (error) {
       console.error('User behavior adaptation failed:', error);
@@ -190,7 +193,7 @@ export class MemoryCoordinator {
   async resolveConflicts(): Promise<ConflictResolution[]> {
     const conflicts = await this.detectConflicts();
     const resolutions: ConflictResolution[] = [];
-    
+
     for (const conflict of conflicts) {
       const resolution = await this.resolveConflict(conflict);
       if (resolution) {
@@ -198,7 +201,7 @@ export class MemoryCoordinator {
         this.conflicts.push(resolution);
       }
     }
-    
+
     return resolutions;
   }
 
@@ -207,13 +210,13 @@ export class MemoryCoordinator {
   private async performCrossLayerSync(): Promise<void> {
     // Sync knowledge patterns from System 1 to System 2
     await this.syncKnowledgeToReasoning();
-    
+
     // Sync quality insights from System 2 to System 1
     await this.syncQualityToPatterns();
-    
+
     // Sync user preferences bidirectionally
     await this.syncUserPreferences();
-    
+
     // Sync learning data
     await this.syncLearningData();
   }
@@ -221,7 +224,7 @@ export class MemoryCoordinator {
   private async syncKnowledgeToReasoning(): Promise<void> {
     try {
       const highQualityKnowledge = this.system1.programmingConcepts
-        .filter(node => node.confidence > 0.8 && node.accessCount > 5)
+        .filter((node) => node.confidence > 0.8 && node.accessCount > 5)
         .slice(0, 20); // Top 20 knowledge nodes
 
       for (const knowledge of highQualityKnowledge) {
@@ -237,12 +240,12 @@ export class MemoryCoordinator {
   private async syncQualityToPatterns(): Promise<void> {
     try {
       const qualityInsights = this.system2.qualityEvaluation;
-      
+
       // Update System 1 patterns based on quality metrics
       if (qualityInsights.codeQuality.maintainability < 70) {
         await this.updatePatternsForMaintainability();
       }
-      
+
       if (qualityInsights.codeQuality.security < 80) {
         await this.updatePatternsForSecurity();
       }
@@ -256,12 +259,12 @@ export class MemoryCoordinator {
   private async syncUserPreferences(): Promise<void> {
     try {
       const preferences = await this.system1.getUserPreference('developmentStyle');
-      
+
       // Update System 2 reasoning based on user preferences
       if (preferences.approach === 'test-driven') {
         await this.adaptReasoningForTDD();
       }
-      
+
       if (preferences.problemSolvingStyle === 'systematic') {
         await this.adaptReasoningForSystematicApproach();
       }
@@ -277,13 +280,13 @@ export class MemoryCoordinator {
       // Sync recent learning patterns
       const recentPatterns = await this.system1.getRecentCommands(10);
       const recentReasonings = await this.system2.searchReasoningTraces({}, 10);
-      
+
       // Cross-pollinate learning
       await this.integratePatternLearning(recentPatterns, recentReasonings);
-      
+
       this.recordSyncPoint('pattern_learning', 'system1', 'system2', {
         patterns: recentPatterns.length,
-        reasonings: recentReasonings.length
+        reasonings: recentReasonings.length,
       });
     } catch (error) {
       console.error('Learning data sync failed:', error);
@@ -293,33 +296,33 @@ export class MemoryCoordinator {
   // ========== Performance Analysis & Optimization ==========
 
   private async analyzePerformance(): Promise<{
-    system1Performance: any;
-    system2Performance: any;
+    system1Performance: PerformanceMetrics;
+    system2Performance: PerformanceMetrics;
     bottlenecks: string[];
     opportunities: string[];
   }> {
     const dualEngineMetrics = this.dualEngine.getMetrics();
-    
+
     return {
       system1Performance: {
         averageLatency: dualEngineMetrics.averageLatency * 0.3, // Estimated S1 portion
         cacheHitRate: 0.85, // Estimated from System 1
-        memoryUsage: this.estimateSystem1Memory()
+        memoryUsage: this.estimateSystem1Memory(),
       },
       system2Performance: {
         averageLatency: dualEngineMetrics.averageLatency * 0.7, // Estimated S2 portion
         qualityScore: this.system2.qualityEvaluation.reasoningQuality.accuracy,
-        memoryUsage: this.estimateSystem2Memory()
+        memoryUsage: this.estimateSystem2Memory(),
       },
       bottlenecks: await this.identifyBottlenecks(),
-      opportunities: await this.identifyOptimizationOpportunities()
+      opportunities: await this.identifyOptimizationOpportunities(),
     };
   }
 
   private async generateOptimizationRecommendations(): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
     const dualEngineMetrics = this.dualEngine.getMetrics();
-    
+
     // Performance recommendations
     if (dualEngineMetrics.averageLatency > 100) {
       recommendations.push({
@@ -330,17 +333,17 @@ export class MemoryCoordinator {
         impact: {
           performance: 25,
           memory: -10,
-          latency: -50
+          latency: -50,
         },
         implementation: {
           effort: 'medium',
           risk: 'low',
-          timeline: 4
+          timeline: 4,
         },
-        automated: true
+        automated: true,
       });
     }
-    
+
     // Memory recommendations
     if (this.dualEngine.getCacheSize() > 1000) {
       recommendations.push({
@@ -351,17 +354,17 @@ export class MemoryCoordinator {
         impact: {
           performance: 5,
           memory: -50,
-          latency: 10
+          latency: 10,
         },
         implementation: {
           effort: 'low',
           risk: 'low',
-          timeline: 2
+          timeline: 2,
         },
-        automated: true
+        automated: true,
       });
     }
-    
+
     // Learning recommendations
     if (this.metrics.adaptationEvents < 10) {
       recommendations.push({
@@ -372,25 +375,25 @@ export class MemoryCoordinator {
         impact: {
           performance: 15,
           memory: 5,
-          latency: -10
+          latency: -10,
         },
         implementation: {
           effort: 'medium',
           risk: 'medium',
-          timeline: 6
+          timeline: 6,
         },
-        automated: false
+        automated: false,
       });
     }
-    
+
     return recommendations.sort((a, b) => b.priority - a.priority);
   }
 
   private async applyAutomatedOptimizations(
-    recommendations: OptimizationRecommendation[]
+    recommendations: OptimizationRecommendation[],
   ): Promise<OptimizationRecommendation[]> {
     const applied: OptimizationRecommendation[] = [];
-    
+
     for (const rec of recommendations) {
       if (rec.automated && rec.implementation.risk === 'low') {
         try {
@@ -401,7 +404,7 @@ export class MemoryCoordinator {
         }
       }
     }
-    
+
     return applied;
   }
 
@@ -424,35 +427,38 @@ export class MemoryCoordinator {
 
   // ========== Conflict Detection & Resolution ==========
 
-  private async detectConflicts(): Promise<any[]> {
+  private async detectConflicts(): Promise<unknown[]> {
     const conflicts = [];
-    
+
     // Data inconsistency detection
     const s1Preferences = await this.system1.getUserPreference('developmentStyle');
     const s2Quality = this.system2.qualityEvaluation;
-    
-    if (s1Preferences.approach === 'prototype-first' && s2Quality.codeQuality.maintainability < 50) {
+
+    if (
+      s1Preferences.approach === 'prototype-first' &&
+      s2Quality.codeQuality.maintainability < 50
+    ) {
       conflicts.push({
         type: 'preference_mismatch',
         description: 'User prefers prototyping but code quality is low',
-        severity: 'medium'
+        severity: 'medium',
       });
     }
-    
+
     // Performance vs quality tradeoffs
     const dualEngineMetrics = this.dualEngine.getMetrics();
     if (dualEngineMetrics.averageLatency > 200 && s2Quality.reasoningQuality.accuracy > 0.9) {
       conflicts.push({
         type: 'performance_tradeoff',
         description: 'High accuracy but poor performance',
-        severity: 'high'
+        severity: 'high',
       });
     }
-    
+
     return conflicts;
   }
 
-  private async resolveConflict(conflict: any): Promise<ConflictResolution | null> {
+  private async resolveConflict(conflict: SystemConflict): Promise<ConflictResolution | null> {
     const resolution: ConflictResolution = {
       id: `conflict-${Date.now()}`,
       timestamp: new Date(),
@@ -460,7 +466,7 @@ export class MemoryCoordinator {
       description: conflict.description,
       resolution: '',
       confidence: 0.8,
-      impact: conflict.severity
+      impact: conflict.severity,
     };
 
     try {
@@ -469,17 +475,17 @@ export class MemoryCoordinator {
           resolution.resolution = 'Adjust quality thresholds to match user prototyping style';
           await this.adjustQualityThresholds('prototype-friendly');
           break;
-          
+
         case 'performance_tradeoff':
           resolution.resolution = 'Optimize System 2 reasoning for faster processing';
           await this.optimizeSystem2Performance();
           break;
-          
+
         default:
           resolution.resolution = 'Applied default conflict resolution strategy';
           break;
       }
-      
+
       return resolution;
     } catch (error) {
       console.error(`Failed to resolve conflict ${conflict.type}:`, error);
@@ -499,16 +505,16 @@ export class MemoryCoordinator {
     const eventType = event.type;
     const userId = event.userId;
     const context = event.metadata;
-    
+
     return {
       pattern: `${eventType}_${context.priority}`,
       frequency: 1, // Would be calculated from historical data
       context: { userId, tags: context.tags },
-      adaptation: this.determineAdaptation(eventType, context)
+      adaptation: this.determineAdaptation(eventType, context),
     };
   }
 
-  private determineAdaptation(eventType: string, context: any): string {
+  private determineAdaptation(eventType: string, context: EventMetadata): string {
     switch (eventType) {
       case 'code_generation':
         return 'Increase code pattern relevance weighting';
@@ -521,20 +527,20 @@ export class MemoryCoordinator {
     }
   }
 
-  private async performCrossLayerAdaptation(behaviorPattern: any): Promise<void> {
+  private async performCrossLayerAdaptation(behaviorPattern: BehaviorPattern): Promise<void> {
     const { pattern, adaptation } = behaviorPattern;
-    
+
     try {
       // Adapt System 1 based on behavior
       if (pattern.includes('code_generation')) {
         await this.adaptSystem1ForCodeGeneration();
       }
-      
+
       // Adapt System 2 based on behavior
       if (pattern.includes('quality')) {
         await this.adaptSystem2ForQuality();
       }
-      
+
       this.metrics.crossLayerTransfers++;
     } catch (error) {
       console.error('Cross-layer adaptation failed:', error);
@@ -548,7 +554,7 @@ export class MemoryCoordinator {
       knowledgeNodes: this.system1.programmingConcepts.length,
       patterns: this.system1.codePatterns.codePatterns.length,
       interactions: this.system1.pastInteractions.sessions.length,
-      cacheHitRate: 0.85 // Estimated
+      cacheHitRate: 0.85, // Estimated
     };
   }
 
@@ -557,7 +563,7 @@ export class MemoryCoordinator {
       reasoningTraces: this.system2.reasoningSteps.length,
       qualityMetrics: this.system2.qualityEvaluation,
       enhancements: this.system2.improvementSuggestions.length,
-      reflections: this.system2.reflectionData.length
+      reflections: this.system2.reflectionData.length,
     };
   }
 
@@ -573,7 +579,7 @@ export class MemoryCoordinator {
     type: SyncPoint['type'],
     source: 'system1' | 'system2',
     target: 'system1' | 'system2',
-    data: unknown
+    data: unknown,
   ): void {
     const syncPoint: SyncPoint = {
       id: `sync-${Date.now()}`,
@@ -583,11 +589,11 @@ export class MemoryCoordinator {
       target,
       data,
       success: true,
-      latency: Math.random() * 100 // Simulated latency
+      latency: Math.random() * 100, // Simulated latency
     };
-    
+
     this.syncPoints.push(syncPoint);
-    
+
     // Keep only recent sync points
     if (this.syncPoints.length > 100) {
       this.syncPoints = this.syncPoints.slice(-50);
@@ -599,11 +605,14 @@ export class MemoryCoordinator {
     this.syncTimer = setInterval(() => {
       this.synchronizeSystems().catch(console.error);
     }, this.config.syncInterval);
-    
+
     // Start optimization timer
-    this.optimizationTimer = setInterval(() => {
-      this.optimizePerformance().catch(console.error);
-    }, 5 * 60 * 1000); // Every 5 minutes
+    this.optimizationTimer = setInterval(
+      () => {
+        this.optimizePerformance().catch(console.error);
+      },
+      5 * 60 * 1000,
+    ); // Every 5 minutes
   }
 
   private initializeMetrics(): CoordinationMetrics {
@@ -615,7 +624,7 @@ export class MemoryCoordinator {
       performanceImprovements: 0,
       lastOptimization: new Date(),
       averageSyncTime: 0,
-      systemHealth: 'good'
+      systemHealth: 'good',
     };
   }
 
@@ -628,11 +637,14 @@ export class MemoryCoordinator {
       goals: ['Integrate knowledge into reasoning'],
       constraints: [],
       assumptions: [`Knowledge confidence: ${knowledge.confidence}`],
-      availableResources: [knowledge.content]
+      availableResources: [knowledge.content],
     });
-    
-    await this.system2.completeReasoningTrace(reasoning.id, 
-      `Knowledge integrated: ${knowledge.name}`, knowledge.confidence);
+
+    await this.system2.completeReasoningTrace(
+      reasoning.id,
+      `Knowledge integrated: ${knowledge.name}`,
+      knowledge.confidence,
+    );
   }
 
   private async updatePatternsForMaintainability(): Promise<void> {
@@ -655,9 +667,14 @@ export class MemoryCoordinator {
     console.log('Adapting reasoning for systematic approach');
   }
 
-  private async integratePatternLearning(patterns: any[], reasonings: any[]): Promise<void> {
+  private async integratePatternLearning(
+    patterns: unknown[],
+    reasonings: unknown[],
+  ): Promise<void> {
     // Cross-integrate learning between patterns and reasoning
-    console.log(`Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`);
+    console.log(
+      `Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`,
+    );
   }
 
   private estimateSystem1Memory(): number {
@@ -670,15 +687,15 @@ export class MemoryCoordinator {
 
   private async identifyBottlenecks(): Promise<string[]> {
     const bottlenecks = [];
-    
+
     if (this.dualEngine.getQueueSize() > 50) {
       bottlenecks.push('Event queue processing');
     }
-    
+
     if (this.dualEngine.getCacheSize() > 1000) {
       bottlenecks.push('Cache memory usage');
     }
-    
+
     return bottlenecks;
   }
 
@@ -687,7 +704,7 @@ export class MemoryCoordinator {
       'Improve cache hit rate',
       'Optimize memory access patterns',
       'Enhance learning speed',
-      'Reduce synchronization overhead'
+      'Reduce synchronization overhead',
     ];
   }
 
@@ -727,7 +744,7 @@ export class MemoryCoordinator {
     console.log('Adapting System 2 for quality focus');
   }
 
-  private async updateAdaptiveLearning(behaviorPattern: any): Promise<void> {
+  private async updateAdaptiveLearning(behaviorPattern: BehaviorPattern): Promise<void> {
     console.log('Updating adaptive learning based on behavior pattern');
   }
 
@@ -740,7 +757,7 @@ export class MemoryCoordinator {
     else if (avgLatency < 100) this.metrics.systemHealth = 'good';
     else if (avgLatency < 200) this.metrics.systemHealth = 'fair';
     else this.metrics.systemHealth = 'poor';
-    
+
     return { ...this.metrics };
   }
 

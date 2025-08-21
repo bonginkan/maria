@@ -154,25 +154,25 @@ export class ProcessManager extends EventEmitter {
    * Setup event listeners
    */
   private setupEventListeners(): void {
-    this.backgroundProcessor.on('processCompleted', (_event) => {
+    this.backgroundProcessor.on('processCompleted', (event) => {
       this.stats.totalProcessed++;
-      this.updateAverageDuration(_event.task);
-      this.emit('taskCompleted', _event);
+      this.updateAverageDuration(event.task);
+      this.emit('taskCompleted', event);
     });
 
-    this.backgroundProcessor.on('processError', (_event) => {
+    this.backgroundProcessor.on('processError', (event) => {
       this.stats.failed++;
-      this.emit('taskFailed', _event);
+      this.emit('taskFailed', event);
     });
 
-    this.backgroundProcessor.on('processCancelled', (_event) => {
+    this.backgroundProcessor.on('processCancelled', (event) => {
       this.stats.cancelled++;
-      this.emit('taskCancelled', _event);
+      this.emit('taskCancelled', event);
     });
 
-    this.backgroundProcessor.on('processStarted', (_event) => {
+    this.backgroundProcessor.on('processStarted', (event) => {
       this.stats.backgrounded++;
-      this.emit('taskStarted', _event);
+      this.emit('taskStarted', event);
     });
   }
 

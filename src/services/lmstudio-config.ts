@@ -26,7 +26,7 @@ export interface LMStudioConfig {
     preload: string[];
     max_concurrent: number;
   };
-  startup_options: {
+  startupoptions: {
     headless: boolean;
     port?: number;
     host?: string;
@@ -68,7 +68,7 @@ export class LMStudioConfigManager {
         preload: ['gpt-oss-20b'],
         max_concurrent: 2,
       },
-      startup_options: {
+      startupoptions: {
         headless: true,
         port: 1234,
         host: 'localhost',
@@ -267,9 +267,9 @@ export class LMStudioConfigManager {
         ...base.models,
         ...(override.models || {}),
       },
-      startup_options: {
-        ...base.startup_options,
-        ...(override.startup_options || {}),
+      startupoptions: {
+        ...base.startupoptions,
+        ...(override.startupoptions || {}),
       },
       retry: {
         ...base.retry,
@@ -305,11 +305,11 @@ ${lms.paths.custom ? `custom = "${lms.paths.custom}"` : '# custom = "/path/to/lm
 preload = ${JSON.stringify(lms.models.preload)}
 max_concurrent = ${lms.models.max_concurrent}
 
-[lmstudio.startup_options]
-headless = ${lms.startup_options.headless}
-${lms.startup_options.port ? `port = ${lms.startup_options.port}` : '# port = 1234'}
-${lms.startup_options.host ? `host = "${lms.startup_options.host}"` : '# host = "localhost"'}
-${lms.startup_options.gpu_layers ? `gpu_layers = ${lms.startup_options.gpu_layers}` : '# gpu_layers = 32'}
+[lmstudio.startupoptions]
+headless = ${lms.startupoptions.headless}
+${lms.startupoptions.port ? `port = ${lms.startupoptions.port}` : '# port = 1234'}
+${lms.startupoptions.host ? `host = "${lms.startupoptions.host}"` : '# host = "localhost"'}
+${lms.startupoptions.gpu_layers ? `gpu_layers = ${lms.startupoptions.gpu_layers}` : '# gpu_layers = 32'}
 
 [lmstudio.retry]
 max_attempts = ${lms.retry.max_attempts}

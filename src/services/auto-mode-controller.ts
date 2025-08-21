@@ -266,7 +266,7 @@ export class AutoModeController extends EventEmitter {
   private async executeTask(
     task: Task,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _context?: ConversationContext,
+    context?: ConversationContext,
   ): Promise<{ success: boolean; output?: unknown }> {
     logger.debug(`Executing task: ${task.description}`);
 

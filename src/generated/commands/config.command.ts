@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { Command, RequireAuth, RateLimit, Validate } from '../decorators';
-import { CommandContext, CommandOptions, CommandResult } from '../types';
+import { _Command, RequireAuth, RateLimit, _Validate } from '../decorators';
+import { _CommandContext, CommandOptions, _CommandResult } from '../types';
 import { z } from 'zod';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger';

@@ -23,7 +23,7 @@ export const TASK_ROUTING: Record<TaskType, string[]> = {
     'mistral-7b-instruct',
   ],
   multilingual: ['qwen2.5:32b', 'qwen2.5-vl:7b', 'gemini-2.5-pro', 'mixtral-8x7b-32768'],
-  current_events: ['grok-2', 'gemini-2.5-pro', 'gpt-5', 'claude-opus-4-1-20250805'],
+  currentevents: ['grok-2', 'gemini-2.5-pro', 'gpt-5', 'claude-opus-4-1-20250805'],
   chat: ['gpt-4o-mini', 'claude-3-5-haiku-20241022', 'gemini-2.5-flash', 'mixtral-8x7b-32768'],
 };
 

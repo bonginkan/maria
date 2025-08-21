@@ -325,7 +325,7 @@ interface TestIssue {
   reproduction_steps: string[];
   expected_behavior: string;
   actual_behavior: string;
-  environment_context: unknown;
+  environmentcontext: unknown;
   suggested_fix: string;
   business_impact: string;
 }

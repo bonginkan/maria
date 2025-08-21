@@ -261,20 +261,20 @@ export class LMStudioManager {
     const args = [];
 
     // 起動オプションを構築
-    if (this.config.startup_options.headless) {
+    if (this.config.startupoptions.headless) {
       args.push('--headless');
     }
 
-    if (this.config.startup_options.port && this.config.startup_options.port !== 1234) {
-      args.push('--port', this.config.startup_options.port.toString());
+    if (this.config.startupoptions.port && this.config.startupoptions.port !== 1234) {
+      args.push('--port', this.config.startupoptions.port.toString());
     }
 
-    if (this.config.startup_options.host && this.config.startup_options.host !== 'localhost') {
-      args.push('--host', this.config.startup_options.host);
+    if (this.config.startupoptions.host && this.config.startupoptions.host !== 'localhost') {
+      args.push('--host', this.config.startupoptions.host);
     }
 
-    if (this.config.startup_options.gpu_layers) {
-      args.push('--gpu-layers', this.config.startup_options.gpu_layers.toString());
+    if (this.config.startupoptions.gpu_layers) {
+      args.push('--gpu-layers', this.config.startupoptions.gpu_layers.toString());
     }
 
     // プロセスを起動

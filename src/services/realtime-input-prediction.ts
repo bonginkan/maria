@@ -167,7 +167,7 @@ export class RealtimeInputPredictor {
   /**
    * パラメータ予測
    */
-  private predictParameters(input: string, _context: PredictionContext): PredictionResult[] {
+  private predictParameters(input: string, context: PredictionContext): PredictionResult[] {
     const predictions: PredictionResult[] = [];
     const parts = input.trim().split(/\s+/);
 
@@ -198,7 +198,7 @@ export class RealtimeInputPredictor {
   /**
    * ファイルパス予測
    */
-  private predictPaths(input: string, _context: PredictionContext): PredictionResult[] {
+  private predictPaths(input: string, context: PredictionContext): PredictionResult[] {
     const predictions: PredictionResult[] = [];
     const words = input.split(/\s+/);
     const lastWord = words[words.length - 1];
@@ -208,7 +208,7 @@ export class RealtimeInputPredictor {
       lastWord &&
       (lastWord.includes('/') || lastWord.includes('.') || lastWord.startsWith('./'))
     ) {
-      for (const file of _context.projectFiles) {
+      for (const file of context.projectFiles) {
         if (lastWord && file.toLowerCase().includes(lastWord.toLowerCase())) {
           predictions.push({
             suggestion: file,
@@ -227,7 +227,7 @@ export class RealtimeInputPredictor {
   /**
    * 値の予測
    */
-  private predictValues(input: string, _context: PredictionContext): PredictionResult[] {
+  private predictValues(input: string, context: PredictionContext): PredictionResult[] {
     const predictions: PredictionResult[] = [];
 
     // AIモデル名の予測
@@ -264,7 +264,7 @@ export class RealtimeInputPredictor {
   /**
    * 継続予測（未完成入力の補完）
    */
-  private predictContinuation(input: string, _context: PredictionContext): PredictionResult[] {
+  private predictContinuation(input: string, context: PredictionContext): PredictionResult[] {
     const predictions: PredictionResult[] = [];
 
     // 履歴ベースの予測

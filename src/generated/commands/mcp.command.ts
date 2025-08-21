@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import chalk from 'chalk';
@@ -137,7 +137,7 @@ export class MCPCommand extends BaseCommand {
       message += '\n';
     });
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async addServer(args: string[]): Promise<SlashCommandResult> {
@@ -241,7 +241,7 @@ export class MCPCommand extends BaseCommand {
       message += `${chalk.blue('Last Health Check:')} ${new Date(server.lastHealthCheck).toLocaleString()}\n`;
     }
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private getStatusDisplay(status: string): string {
@@ -346,7 +346,7 @@ export class MCPCommand extends BaseCommand {
 
     message += `${chalk.blue('💡 Tip:')} Use \`/mcp add\` to register new MCP servers`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async testConnection(args: string[]): Promise<SlashCommandResult> {

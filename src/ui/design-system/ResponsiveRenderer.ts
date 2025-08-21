@@ -17,15 +17,15 @@ export interface RenderableContent {
   responsive: boolean;
 }
 
-export type ContentType = 
-  | 'header' 
-  | 'status' 
-  | 'navigation' 
-  | 'content' 
-  | 'sidebar' 
-  | 'footer' 
-  | 'dialog' 
-  | 'table' 
+export type ContentType =
+  | 'header'
+  | 'status'
+  | 'navigation'
+  | 'content'
+  | 'sidebar'
+  | 'footer'
+  | 'dialog'
+  | 'table'
   | 'list'
   | 'progress';
 
@@ -81,7 +81,7 @@ export class ResponsiveRenderer {
     }
 
     this.updateContext();
-    
+
     // 画面サイズ変更イベントをリッスン（Node.js環境）
     if (process.stdout.isTTY) {
       process.stdout.on('resize', () => {
@@ -114,10 +114,10 @@ export class ResponsiveRenderer {
     if (!this.context) this.initialize();
 
     const contents = Array.isArray(content) ? content : [content];
-    
+
     // 優先度順ソート
     const sortedContents = contents.sort((a, b) => b.priority - a.priority);
-    
+
     // プログレッシブ表示
     if (this.config.enableProgressiveDisplay) {
       this.renderProgressive(sortedContents);
@@ -141,7 +141,7 @@ export class ResponsiveRenderer {
       }
 
       const estimatedHeight = this.estimateContentHeight(content);
-      
+
       if (estimatedHeight <= availableHeight - usedHeight || content.priority >= 9) {
         this.renderContent(content);
         usedHeight += estimatedHeight;
@@ -153,7 +153,7 @@ export class ResponsiveRenderer {
    * 直接描画
    */
   private static renderDirect(contents: RenderableContent[]): void {
-    contents.forEach(content => this.renderContent(content));
+    contents.forEach((content) => this.renderContent(content));
   }
 
   /**
@@ -198,7 +198,7 @@ export class ResponsiveRenderer {
    */
   private static renderHeader(data: HeaderData): void {
     const width = this.context.layout.contentWidth;
-    
+
     if (this.context.mode === 'compact') {
       // コンパクト版ヘッダー
       console.log(TEXT_HIERARCHY.TITLE(data.title));
@@ -207,17 +207,20 @@ export class ResponsiveRenderer {
       }
     } else {
       // フル版ヘッダー（MARIA CODEロゴベース）
-      OptimizedBox.brand([
-        LayoutManager.alignText(data.title, width - 4, 'center'),
-        data.subtitle ? LayoutManager.alignText(data.subtitle, width - 4, 'center') : '',
-        data.copyright ? LayoutManager.alignText(data.copyright, width - 4, 'center') : '',
-      ].filter(Boolean), {
-        width,
-        padding: 'large',
-        titleAlignment: 'center',
-      });
+      OptimizedBox.brand(
+        [
+          LayoutManager.alignText(data.title, width - 4, 'center'),
+          data.subtitle ? LayoutManager.alignText(data.subtitle, width - 4, 'center') : '',
+          data.copyright ? LayoutManager.alignText(data.copyright, width - 4, 'center') : '',
+        ].filter(Boolean),
+        {
+          width,
+          padding: 'large',
+          titleAlignment: 'center',
+        },
+      );
     }
-    
+
     console.log(); // 空行
   }
 
@@ -225,24 +228,28 @@ export class ResponsiveRenderer {
    * ステータス描画
    */
   private static renderStatus(data: StatusData): void {
-    const icon = IconRegistry.get(data.status === 'healthy' ? 'SUCCESS' : 
-                                  data.status === 'degraded' ? 'WARNING' : 'ERROR');
-    const color = ColorPalette.status(
-      data.status === 'healthy' ? 'success' : 
-      data.status === 'degraded' ? 'warning' : 'error'
+    const icon = IconRegistry.get(
+      data.status === 'healthy' ? 'SUCCESS' : data.status === 'degraded' ? 'WARNING' : 'ERROR',
     );
-    
+    const color = ColorPalette.status(
+      data.status === 'healthy' ? 'success' : data.status === 'degraded' ? 'warning' : 'error',
+    );
+
     const statusLine = `${color(icon)} ${TEXT_HIERARCHY.BODY(data.message)}`;
-    
+
     if (this.context.mode !== 'compact' && data.details) {
-      OptimizedBox.simple([
-        statusLine,
-        ...data.details.map(detail => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)
-      ], {
-        theme: data.status === 'healthy' ? 'success' : 
-               data.status === 'degraded' ? 'warning' : 'error',
-        padding: 'small',
-      });
+      OptimizedBox.simple(
+        [statusLine, ...data.details.map((detail) => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)],
+        {
+          theme:
+            data.status === 'healthy'
+              ? 'success'
+              : data.status === 'degraded'
+                ? 'warning'
+                : 'error',
+          padding: 'small',
+        },
+      );
     } else {
       console.log(statusLine);
     }
@@ -254,19 +261,20 @@ export class ResponsiveRenderer {
   private static renderNavigation(data: NavigationData): void {
     if (this.context.mode === 'compact') {
       // コンパクト：インライン表示
-      const items = data.items.slice(0, 3).map(item => 
-        TEXT_HIERARCHY.BODY(item.label)
-      ).join(TEXT_HIERARCHY.CAPTION(' • '));
+      const items = data.items
+        .slice(0, 3)
+        .map((item) => TEXT_HIERARCHY.BODY(item.label))
+        .join(TEXT_HIERARCHY.CAPTION(' • '));
       console.log(items);
     } else {
       // 標準：グリッド表示
       const grid = LayoutManager.createGrid(
-        data.items.map(item => `${item.icon || CORE_ICONS.ARROW.symbol} ${item.label}`),
-        this.context.mode === 'wide' ? 4 : 2
+        data.items.map((item) => `${item.icon || CORE_ICONS.ARROW.symbol} ${item.label}`),
+        this.context.mode === 'wide' ? 4 : 2,
       );
-      grid.forEach(line => console.log(line));
+      grid.forEach((line) => console.log(line));
     }
-    
+
     console.log();
   }
 
@@ -277,24 +285,26 @@ export class ResponsiveRenderer {
     const maxWidth = this.context.layout.contentWidth;
     const columnCount = data.headers.length;
     const columnWidth = Math.floor((maxWidth - (columnCount - 1) * 2) / columnCount);
-    
+
     // ヘッダー
-    const headerRow = data.headers.map(header => 
-      TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))
-    ).join('  ');
+    const headerRow = data.headers
+      .map((header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth)))
+      .join('  ');
     console.log(headerRow);
-    
+
     // 区切り線
     console.log(SEMANTIC_COLORS.MUTED('─'.repeat(maxWidth)));
-    
+
     // データ行
-    data.rows.forEach(row => {
-      const dataRow = data.headers.map(header => 
-        TEXT_HIERARCHY.BODY(LayoutManager.alignText(String(row[header] || ''), columnWidth))
-      ).join('  ');
+    data.rows.forEach((row) => {
+      const dataRow = data.headers
+        .map((header) =>
+          TEXT_HIERARCHY.BODY(LayoutManager.alignText(String(row[header] || ''), columnWidth)),
+        )
+        .join('  ');
       console.log(dataRow);
     });
-    
+
     console.log();
   }
 
@@ -305,13 +315,13 @@ export class ResponsiveRenderer {
     const width = Math.min(60, this.context.layout.contentWidth - 20);
     const filled = Math.floor((data.value / data.max) * width);
     const empty = width - filled;
-    
-    const bar = SEMANTIC_COLORS.SUCCESS('█'.repeat(filled)) + 
-                SEMANTIC_COLORS.MUTED('░'.repeat(empty));
-    
+
+    const bar =
+      SEMANTIC_COLORS.SUCCESS('█'.repeat(filled)) + SEMANTIC_COLORS.MUTED('░'.repeat(empty));
+
     const percentage = Math.round((data.value / data.max) * 100);
     const label = data.label ? `${data.label}: ` : '';
-    
+
     console.log(`${label}${bar} ${percentage}%`);
   }
 
@@ -357,10 +367,18 @@ export class ResponsiveRenderer {
   }
 
   // その他のrender*メソッドは簡略化のため省略
-  private static renderContentBlock(_data: ContentData): void { /* 実装 */ }
-  private static renderSidebar(_data: SidebarData): void { /* 実装 */ }
-  private static renderList(_data: ListData): void { /* 実装 */ }
-  private static renderDialog(_data: DialogData): void { /* 実装 */ }
+  private static renderContentBlock(_data: ContentData): void {
+    /* 実装 */
+  }
+  private static renderSidebar(_data: SidebarData): void {
+    /* 実装 */
+  }
+  private static renderList(_data: ListData): void {
+    /* 実装 */
+  }
+  private static renderDialog(_data: DialogData): void {
+    /* 実装 */
+  }
 }
 
 // データ型定義
