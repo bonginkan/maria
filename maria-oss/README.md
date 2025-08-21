@@ -1,249 +1,235 @@
-# MARIA CLI - Intelligent Development Assistant
+# 🤖 MARIA Platform v1.6.4 "Algorithm Education Revolution"
 
-[![npm version](https://img.shields.io/npm/v/@maria/cli)](https://www.npmjs.com/package/@maria/cli)
-[![Downloads](https://img.shields.io/npm/dt/@maria/cli)](https://www.npmjs.com/package/@maria/cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0%20%3C%3D22.0.0-brightgreen)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
+[![npm](https://img.shields.io/npm/v/@bonginkan/maria?label=npm%20package)](https://www.npmjs.com/package/@bonginkan/maria)
+[![Downloads](https://img.shields.io/npm/dt/@bonginkan/maria)](https://www.npmjs.com/package/@bonginkan/maria)
+[![License](https://img.shields.io/npm/l/@bonginkan/maria)](https://github.com/bonginkan/maria/blob/main/LICENSE)
 
-🤖 **MARIA CLI** is an advanced AI development assistant that brings senior engineer-level capabilities to your terminal. With support for 22+ AI models, intelligent routing, and comprehensive development tools.
+> 🎉 **MARIA Platform v1.6.4 "Algorithm Education Revolution"** - Interactive AI Development CLI with Complete CS Curriculum, 36+ Slash Commands, 50 Cognitive AI Modes, and Educational Development Platform!
 
-## ⚠️ Node.js Compatibility Notice
+## 🌟 What's New in v1.6.4 "Algorithm Education Revolution"
 
-**Recommended: Node.js v22 or lower for best experience**
+### 🚀 Autonomous Coding Agent
 
-```bash
-# Check your Node.js version
-node --version
+- **World's First Fully Autonomous Professional Engineering AI**
+- Complete software solutions from high-level requirements
+- Visual progress tracking with real-time feedback
+- Self-evolution learning engine
+- 120+ professional engineering modes
 
-# If using Node.js v24, switch to v22:
-nvm install 22
-nvm use 22
-```
+### 📚 Algorithm Education Platform
+
+- Interactive QuickSort implementation with visualization
+- Performance analysis and benchmarking tools
+- Memory profiling and optimization
+- Computer science curriculum integration
+- Educational sorting algorithms collection
+
+### 🎯 Key Features
+
+- **Interactive Learning**: Hands-on algorithm education with visualization
+- **Performance Analysis**: Real-time performance metrics and optimization
+- **Professional Engineering**: Industry-standard development practices
+- **Visual Progress**: Beautiful CLI interface with progress tracking
+- **Autonomous Execution**: Complete task automation from requirements
 
 ## 🚀 Quick Start
 
-```bash
-# Install globally (Node.js 18-22 recommended)
-npm install -g @maria/cli
+### Installation
 
-# Update to latest version
-npm update -g @maria/cli
+```bash
+# Install globally via npm
+npm install -g @bonginkan/maria
+
+# Verify installation
+maria --version
+# Output: MARIA Platform v1.6.4 "Algorithm Education Revolution"
 
 # Start interactive mode
 maria
 ```
 
-## ✨ Key Features
+### Alternative Installation Methods
 
-### 🧠 Interactive Router System
-- **Natural Language Understanding**: Interprets developer intentions and automatically routes to optimal commands
-- **Context Awareness**: Uses conversation history and project state for intelligent decision making
-- **Multi-Step Execution**: Decomposes complex tasks into executable steps
-- **Auto Mode**: Natural language → Automatic command execution
-
-### 🤖 Multi-Model AI Support
-- **Cloud Providers**: OpenAI GPT-4o, Anthropic Claude, Google Gemini, Groq
-- **Local Models**: LM Studio, vLLM, Ollama (GPT-OSS, Qwen, Mistral)
-- **Automatic Fallback**: Seamlessly switches between providers
-- **Task-Based Selection**: Chooses optimal model for each task type
-
-### 🎬 Media Generation
-- **Video Generation**: Text-to-Video and Image-to-Video with Wan 2.2
-- **Image Generation**: High-quality images with Qwen-Image
-- **Batch Processing**: Generate multiple variations
-- **Resolution Control**: 720p/1080p video, up to 1024x1024 images
-
-### ⚡ Development Tools
-- **Code Generation**: Create entire features with context awareness
-- **Code Review**: Comprehensive analysis with actionable suggestions
-- **Test Generation**: Unit, integration, and E2E tests
-- **Smart Commits**: AI-generated conventional commit messages
-
-## 📚 Commands
-
-### Core Commands
 ```bash
-maria init              # Initialize MARIA in your project
-maria chat              # Interactive mode (40+ slash commands)
-maria code "prompt"     # Generate code with AI
-maria vision image.png  # Analyze images with vision models
-maria review            # Review code changes
-maria test              # Generate tests
-maria commit            # Create AI commit messages
+# Using yarn
+yarn global add @bonginkan/maria
+
+# Using pnpm
+pnpm add -g @bonginkan/maria
 ```
 
-### Media Generation
+## 🎯 Usage Examples
+
+### Basic Interactive Mode
+
 ```bash
-maria video "A futuristic city"     # Generate AI video
-maria image "Abstract art"         # Generate AI image
+# Start MARIA interactive CLI
+maria
+
+# Available commands in interactive mode:
+> /help                          # Show all commands
+> /agent execute "create API"    # Autonomous coding agent
+> /agent demo                   # Demo autonomous capabilities
+> /code "hello world function"  # AI code generation
+> /status                       # System status
+> /exit                         # Exit
 ```
 
-### Interactive Slash Commands
-In `maria chat` mode, use these commands:
+### Algorithm Education Commands
 
-- `/help` - Show all commands
-- `/status` - System status
-- `/model` - Select AI model
-- `/clear` - Clear conversation
-- `/config` - Configuration panel
-- `/video` - Generate video
-- `/image` - Generate image
-- `/pr-comments` - Analyze PR comments
-- `/review` - Execute PR review
-- `/exit` - Exit interactive mode
+```bash
+# Start MARIA and use algorithm education slash commands
+maria
+> /sort quicksort --visualize     # Interactive sorting visualization
+> /learn algorithms               # Complete CS curriculum
+> /benchmark sorting              # Performance analysis
+> /algorithm complexity           # Big O notation tutorials
+> /code "merge sort implementation" # AI-generated algorithms
+```
+
+### 36+ Interactive Slash Commands
+
+```bash
+# All commands are slash commands within interactive mode
+maria
+> /help                          # Show all 36+ commands
+> /model                         # AI model selection
+> /sort quicksort               # Algorithm education
+> /code "function"              # AI code generation
+> /bug analyze                  # Bug detection
+> /lint check                   # Code quality
+> /status                       # System status
+> /mode internal                # 50 cognitive AI modes
+> /exit                         # Exit MARIA
+```
+
+## 🎨 Key Features
+
+### 🤖 Autonomous Coding Agent
+
+- **Complete SOW Generation**: Automatic Statement of Work creation
+- **Visual Mode Display**: Real-time progress with beautiful UI
+- **Active Reporting**: Progress tracking and status updates
+- **Self-Evolution**: Learning engine that improves over time
+- **120+ Engineering Modes**: Professional development patterns
+
+### 📊 Algorithm Education Platform
+
+- **Interactive QuickSort**: Step-by-step algorithm visualization
+- **Performance Benchmarking**: Compare algorithm efficiency
+- **Memory Profiling**: Analyze memory usage patterns
+- **Educational Tools**: Computer science curriculum support
+- **Sorting Algorithms**: Complete collection with analysis
+
+### 🔧 Development Tools
+
+- **AI Code Generation**: Multi-language code creation
+- **Intelligent Assistance**: Context-aware development help
+- **Project Analysis**: Codebase understanding and insights
+- **Quality Assurance**: Automated testing and validation
+- **Version Control**: Git integration and workflow support
+
+## 🌍 Supported Platforms
+
+- **Node.js**: 18.0.0 - 22.x
+- **Operating Systems**: macOS, Linux, Windows
+- **Terminals**: All major terminal applications
+- **Shells**: bash, zsh, fish, PowerShell
+
+## 📚 Documentation
+
+### Command Reference
+
+- **Interactive Mode**: `maria` (starts directly)
+- **All Commands**: `/help` within interactive mode
+- **Algorithm Education**: `/sort`, `/learn`, `/algorithm` commands
+- **AI Development**: `/code`, `/bug`, `/lint`, `/model` commands
+- **System Status**: `/status` command
+
+### Examples and Tutorials
+
+- **Getting Started**: Run `maria` and type `/help`
+- **Algorithm Learning**: Use `/sort quicksort --visualize` for interactive tutorials
+- **Development Workflow**: AI-assisted coding with `/code` commands
+- **Performance Analysis**: Built-in benchmarking with `/benchmark` commands
 
 ## 🔧 Configuration
 
-MARIA uses `.maria-code.toml` for configuration:
-
-```toml
-[project]
-name = "my-project"
-type = "typescript"
-
-[ai]
-default_provider = "openai"
-fallback_provider = "local"
-
-[ai.providers.openai]
-api_key = "${OPENAI_API_KEY}"
-model = "gpt-4o"
-
-[ai.providers.local]
-endpoint = "http://localhost:1234"
-model = "gpt-oss-20b"
-```
-
-## 🌟 Example Usage
-
-### Create a REST API
-```bash
-maria code "Create a REST API with user authentication" --language typescript
-```
-
-### Generate Tests
-```bash
-maria test src/ --framework jest --coverage
-```
-
-### AI Video Generation
-```bash
-maria video "A red sports car racing through mountains" --model wan22-14b
-```
-
-### Code Review
-```bash
-maria review --diff --suggestions --severity warning
-```
-
-## 📦 Installation Options
+MARIA works out of the box with no configuration required. For advanced features:
 
 ```bash
-# Latest stable (Node.js 18-22)
-npm install -g @maria/cli
+# Start interactive mode (default)
+maria
 
-# Update existing installation
-npm update -g @maria/cli
+# Check system status
+> /status
 
-# Development version
-npm install -g @maria/cli@alpha
+# Configure AI providers
+> /model  # Select from 22+ AI models (GPT, Claude, Gemini, Local LLMs)
 
-# Beta version
-npm install -g @maria/cli@beta
-
-# Run without installing
-npx @maria/cli
+# Algorithm education
+> /sort quicksort --visualize  # Interactive learning
 ```
-
-## 🔌 AI Provider Setup
-
-### OpenAI
-```bash
-export OPENAI_API_KEY=your_key
-```
-
-### Anthropic
-```bash
-export ANTHROPIC_API_KEY=your_key
-```
-
-### Local Models (LM Studio)
-1. Download [LM Studio](https://lmstudio.ai)
-2. Load a model (e.g., GPT-OSS, Mistral)
-3. Start the server
-4. MARIA auto-detects at `http://localhost:1234`
-
-## 🎯 Use Cases
-
-### For Developers
-- Generate boilerplate code instantly
-- Review code for best practices
-- Create comprehensive test suites
-- Debug complex issues with AI assistance
-
-### For Teams
-- Standardize commit messages
-- Automate code reviews
-- Generate documentation
-- Create consistent APIs
-
-### For Learning
-- Understand new codebases quickly
-- Learn best practices
-- Get explanations for complex code
-- Practice with AI pair programming
-
-## 🛠️ System Requirements
-
-- **Node.js**: 18.0.0 - 22.x.x (v22 recommended, v24 not yet supported)
-- **npm**: 6.0.0 or higher
-- **OS**: macOS, Linux, Windows (WSL recommended)
-- **Memory**: 4GB RAM minimum (8GB+ for local models)
-- **Storage**: 500MB for CLI, varies for local models
 
 ## 🤝 Contributing
 
-We welcome contributions! See [Contributing Guide](https://github.com/bonginkan/maria/blob/main/CONTRIBUTING.md) for details.
+We welcome contributions to MARIA! Please check our [contribution guidelines](https://github.com/bonginkan/maria/blob/main/CONTRIBUTING.md).
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/bonginkan/maria.git
+cd maria
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run locally
+./bin/maria
+```
 
 ## 📄 License
 
 MIT License - see [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE) for details.
 
-## 🐛 Troubleshooting
-
-### Node.js v24 Compatibility
-If you encounter warnings with Node.js v24:
-
-```bash
-# Recommended solution: Switch to Node.js v22
-nvm install 22
-nvm use 22
-npm install -g @maria/cli
-```
-
-### Installation Issues
-```bash
-# Clear npm cache
-npm cache clean --force
-
-# Reinstall
-npm uninstall -g @maria/cli
-npm install -g @maria/cli
-```
-
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/bonginkan/maria)
-- [NPM Package](https://www.npmjs.com/package/@maria/cli)
-- [Documentation](https://maria-code.vercel.app)
-- [Report Issues](https://github.com/bonginkan/maria/issues)
+- **NPM Package**: [npmjs.com/package/@bonginkan/maria](https://www.npmjs.com/package/@bonginkan/maria)
+- **GitHub Repository**: [github.com/bonginkan/maria](https://github.com/bonginkan/maria)
+- **Documentation**: Available via `maria --help`
+- **Support**: [GitHub Issues](https://github.com/bonginkan/maria/issues)
 
-## 💬 Support
+## 🎯 What Makes MARIA Special
 
-- Email: maria@bonginkan.ai
-- GitHub Issues: [Create an issue](https://github.com/bonginkan/maria/issues/new)
+### Revolutionary AI Development
+
+- **First Autonomous AI**: Complete software development from requirements
+- **Visual Progress**: Beautiful CLI with real-time feedback
+- **Educational Focus**: Algorithm learning with interactive visualization
+- **Professional Quality**: Industry-standard engineering practices
+
+### Cutting-Edge Technology
+
+- **Advanced AI Integration**: Multiple AI model support
+- **Intelligent Automation**: Self-learning and adaptation
+- **Modern CLI Experience**: Beautiful, responsive interface
+- **Cross-Platform**: Works everywhere Node.js runs
+
+### Perfect for:
+
+- **Students**: Learn algorithms with interactive visualization
+- **Developers**: Accelerate development with AI assistance
+- **Teams**: Collaborative development with autonomous agents
+- **Educators**: Teach computer science with hands-on tools
 
 ---
 
-**MARIA CODE** - Your AI-Powered Senior Engineer in the Terminal  
-© 2025 Bonginkan Inc. All rights reserved.
+**Experience the Algorithm Education Revolution with MARIA Platform v1.6.4**
+
+🚀 Start your journey: `npm install -g @bonginkan/maria && maria`
