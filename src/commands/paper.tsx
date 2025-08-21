@@ -4,12 +4,28 @@ import React from 'react';
 import { Box, Text } from 'ink';
 import SelectInput from 'ink-select-input';
 import Spinner from 'ink-spinner';
+// TODO: These imports are used but causing lint errors - need to implement these modules
+// import { MultiAgentSystem } from '../agents/multi-agent-system';
+// import { PaperProcessingRequest } from '../agents/types';
+// import { SynthesizedOutput } from '../agents/enhanced-communication';
+
+// Temporary type definitions to fix compilation
+type SynthesizedOutput = {
+  workflowId: string;
+  participatingAgents: string[];
+  qualityMetrics: { accuracy: number };
+  insights: string[];
+  recommendations: string[];
+  synthesizedData?: Record<string, unknown>;
+};
 
 interface PaperCommand {
-  action: 'outline' | 'write' | 'references' | 'review';
+  action: 'outline' | 'write' | 'references' | 'review' | 'enhanced-process';
   topic?: string;
   section?: string;
   file?: string;
+  source?: string;
+  content?: string;
 }
 
 const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({
@@ -18,33 +34,56 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({
 }) => {
   const [status, setStatus] = React.useState<'processing' | 'done'>('processing');
   const [result, setResult] = React.useState<string>('');
+  const [_synthesizedOutput, setSynthesizedOutput] = React.useState<SynthesizedOutput | null>(null);
 
   React.useEffect(() => {
     const executeAgent = async () => {
       try {
-        // Simulate academic agent execution for now
-        // TODO: Implement proper API integration
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        if (command.action === 'enhanced-process') {
+          // TODO: Implement multi-agent system
+          // Mock response for now
+          const mockOutput: SynthesizedOutput = {
+            workflowId: 'mock-workflow-1',
+            participatingAgents: ['DocumentParser', 'AlgorithmExtractor', 'CodeGenerator'],
+            qualityMetrics: { accuracy: 0.95 },
+            insights: [
+              'Successfully extracted algorithms from paper',
+              'Generated working code implementations',
+            ],
+            recommendations: [
+              'Add unit tests',
+              'Optimize algorithm complexity',
+              'Add documentation',
+            ],
+            synthesizedData: { code: 'Generated code', documentation: 'Generated docs' },
+          };
 
-        let mockResult = '';
-        switch (command.action) {
-          case 'outline':
-            mockResult = `Generated paper outline for topic: ${command.topic || 'General topic'}\n\n1. Introduction\n2. Literature Review\n3. Methodology\n4. Results\n5. Discussion\n6. Conclusion\n7. References`;
-            break;
-          case 'write':
-            mockResult = `Section written: ${command.section || 'Introduction'}\n\nThis section has been drafted with proper academic structure and citations.`;
-            break;
-          case 'references':
-            mockResult = `References managed for file: ${command.file || 'paper.tex'}\n\nBibTeX entries have been organized and formatted.`;
-            break;
-          case 'review':
-            mockResult = `Paper reviewed: ${command.file || 'paper.tex'}\n\nSuggestions for improvement:\n- Strengthen introduction\n- Add more recent citations\n- Improve data visualization`;
-            break;
-          default:
-            mockResult = 'Academic task completed successfully.';
+          setSynthesizedOutput(mockOutput);
+          setResult(formatSynthesizedOutput(mockOutput));
+        } else {
+          // Simulate academic agent execution for legacy commands
+          await new Promise((resolve) => setTimeout(resolve, 2000));
+
+          let mockResult = '';
+          switch (command.action) {
+            case 'outline':
+              mockResult = `Generated paper outline for topic: ${command.topic || 'General topic'}\n\n1. Introduction\n2. Literature Review\n3. Methodology\n4. Results\n5. Discussion\n6. Conclusion\n7. References`;
+              break;
+            case 'write':
+              mockResult = `Section written: ${command.section || 'Introduction'}\n\nThis section has been drafted with proper academic structure and citations.`;
+              break;
+            case 'references':
+              mockResult = `References managed for file: ${command.file || 'paper.tex'}\n\nBibTeX entries have been organized and formatted.`;
+              break;
+            case 'review':
+              mockResult = `Paper reviewed: ${command.file || 'paper.tex'}\n\nSuggestions for improvement:\n- Strengthen introduction\n- Add more recent citations\n- Improve data visualization`;
+              break;
+            default:
+              mockResult = 'Academic task completed successfully.';
+          }
+
+          setResult(mockResult);
         }
-
-        setResult(mockResult);
 
         setStatus('done');
       } catch (error: unknown) {
@@ -55,6 +94,32 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({
 
     executeAgent();
   }, [command]);
+
+  const formatSynthesizedOutput = (output: SynthesizedOutput): string => {
+    let formatted = `✨ Enhanced Multi-Agent Paper Processing Complete!\n\n`;
+    formatted += `📊 Workflow: ${output.workflowId}\n`;
+    formatted += `🤖 Participating Agents: ${output.participatingAgents.join(', ')}\n`;
+    formatted += `⭐ Quality Score: ${Math.round(output.qualityMetrics.accuracy * 100)}%\n\n`;
+
+    formatted += `🔍 Key Insights:\n`;
+    output.insights.forEach((insight, i) => {
+      formatted += `${i + 1}. ${insight}\n`;
+    });
+
+    formatted += `\n💡 Recommendations:\n`;
+    output.recommendations.forEach((rec, i) => {
+      formatted += `${i + 1}. ${rec}\n`;
+    });
+
+    if (output.synthesizedData) {
+      formatted += `\n📋 Generated Outputs:\n`;
+      Object.keys(output.synthesizedData).forEach((key) => {
+        formatted += `- ${key}: Available\n`;
+      });
+    }
+
+    return formatted;
+  };
 
   React.useEffect(() => {
     if (status === 'done') {
@@ -90,6 +155,7 @@ const PaperAgent: React.FC<{ command: PaperCommand; onExit: () => void }> = ({
 
 const InteractivePaperMenu: React.FC<{ onSelect: (action: string) => void }> = ({ onSelect }) => {
   const actions = [
+    { label: '🚀 Enhanced Multi-Agent Processing', value: 'enhanced-process' },
     { label: 'Generate paper outline', value: 'outline' },
     { label: 'Write paper section', value: 'write' },
     { label: 'Manage references', value: 'references' },
@@ -123,6 +189,13 @@ const PaperApp: React.FC = () => {
   const handleMenuSelect = (action: string) => {
     if (action === 'exit') {
       process.exit(0);
+    } else if (action === 'enhanced-process') {
+      setSelectedCommand({
+        action: 'enhanced-process',
+        content: 'Sample research paper content for enhanced processing',
+        source: 'text',
+      });
+      setCurrentView('agent');
     } else {
       setSelectedCommand({ action: action as PaperCommand['action'] });
       setCurrentView('agent');

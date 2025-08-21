@@ -68,7 +68,6 @@ export class OllamaProvider extends BaseAIProvider {
       this.isHealthy = response.ok;
       return this.isHealthy;
     } catch {
-      console.warn('Ollama server not reachable');
       this.isHealthy = false;
       return false;
     }
@@ -317,6 +316,11 @@ export class OllamaProvider extends BaseAIProvider {
         improvements: [],
       };
     }
+  }
+
+  // IAIProvider interface method
+  async validateConnection(): Promise<boolean> {
+    return await this.checkHealth();
   }
 
   // Ollama specific methods

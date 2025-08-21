@@ -24,14 +24,14 @@ const reviewSchema = z.object({
   detailed: z.boolean().optional().default(true),
   suggestions: z.boolean().optional().default(true),
   score: z.boolean().optional().default(true),
-  output: z.string().optional()
+  output: z.string().optional(),
 });
 
 export type ReviewOptions = z.infer<typeof reviewSchema>;
 
 /**
  * AI-Powered Code Review Command
- * 
+ *
  * Features:
  * - Review specific files or PR changes
  * - Security vulnerability detection
@@ -48,7 +48,7 @@ export type ReviewOptions = z.infer<typeof reviewSchema>;
   description: 'AI-powered code review and analysis',
   category: 'development',
   priority: 82,
-  version: '2.0.0'
+  version: '2.0.0',
 })
 @RequireAuth({ level: 'basic' })
 @RateLimit(15, '1m')
@@ -62,25 +62,29 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
 
   private readonly reviewCategories = {
     security: {
-      prompt: 'Review for security vulnerabilities, authentication issues, data exposure, injection attacks, and OWASP top 10',
+      prompt:
+        'Review for security vulnerabilities, authentication issues, data exposure, injection attacks, and OWASP top 10',
       icon: '🔒',
-      priority: 1
+      priority: 1,
     },
     performance: {
-      prompt: 'Review for performance issues, memory leaks, inefficient algorithms, unnecessary computations, and optimization opportunities',
+      prompt:
+        'Review for performance issues, memory leaks, inefficient algorithms, unnecessary computations, and optimization opportunities',
       icon: '⚡',
-      priority: 2
+      priority: 2,
     },
     bugs: {
-      prompt: 'Review for potential bugs, logic errors, edge cases, null pointer exceptions, and runtime errors',
+      prompt:
+        'Review for potential bugs, logic errors, edge cases, null pointer exceptions, and runtime errors',
       icon: '🐛',
-      priority: 3
+      priority: 3,
     },
     style: {
-      prompt: 'Review for code style, naming conventions, documentation, readability, and best practices',
+      prompt:
+        'Review for code style, naming conventions, documentation, readability, and best practices',
       icon: '🎨',
-      priority: 4
-    }
+      priority: 4,
+    },
   };
 
   constructor() {
@@ -94,14 +98,14 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
   async execute(
     args: string[],
     options: ReviewOptions,
-    context: CommandContext
+    context: CommandContext,
   ): Promise<CommandResult> {
     try {
       this.emit('start', { command: 'review', options });
 
       // Get code to review
       const codeToReview = await this.getCodeToReview(args, options, context);
-      
+
       if (!codeToReview || codeToReview.length === 0) {
         throw new Error('No code found to review. Specify files, PR, or branch.');
       }
@@ -135,16 +139,15 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
           filesReviewed: codeToReview.length,
           issues: this.countIssues(reviews),
           score: overallScore,
-          reviews
-        }
+          reviews,
+        },
       };
-
     } catch (error) {
       this.emit('error', { error });
       logger.error(chalk.red(`Review failed: ${error.message}`));
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -152,7 +155,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
   private async getCodeToReview(
     args: string[],
     options: ReviewOptions,
-    context: CommandContext
+    context: CommandContext,
   ): Promise<Array<{ path: string; content: string }>> {
     const files: Array<{ path: string; content: string }> = [];
 
@@ -165,7 +168,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
         }
       }
     }
-    
+
     // Review files from args
     if (args.length > 0) {
       for (const file of args) {
@@ -207,7 +210,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     try {
       const { stdout } = await execAsync(`gh pr diff ${prNumber} --name-only`);
       const fileNames = stdout.trim().split('\n').filter(Boolean);
-      
+
       const files = [];
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
@@ -215,7 +218,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
           files.push({ path: fileName, content });
         }
       }
-      
+
       return files;
     } catch (error) {
       logger.warn(chalk.yellow(`Could not fetch PR ${prNumber}: ${error.message}`));
@@ -223,11 +226,13 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     }
   }
 
-  private async getBranchChanges(branch: string): Promise<Array<{ path: string; content: string }>> {
+  private async getBranchChanges(
+    branch: string,
+  ): Promise<Array<{ path: string; content: string }>> {
     try {
       const { stdout } = await execAsync(`git diff main...${branch} --name-only`);
       const fileNames = stdout.trim().split('\n').filter(Boolean);
-      
+
       const files = [];
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
@@ -235,7 +240,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
           files.push({ path: fileName, content });
         }
       }
-      
+
       return files;
     } catch (error) {
       logger.warn(chalk.yellow(`Could not fetch branch changes: ${error.message}`));
@@ -243,11 +248,13 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     }
   }
 
-  private async getCommitChanges(commit: string): Promise<Array<{ path: string; content: string }>> {
+  private async getCommitChanges(
+    commit: string,
+  ): Promise<Array<{ path: string; content: string }>> {
     try {
       const { stdout } = await execAsync(`git show ${commit} --name-only --format=`);
       const fileNames = stdout.trim().split('\n').filter(Boolean);
-      
+
       const files = [];
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
@@ -255,7 +262,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
           files.push({ path: fileName, content });
         }
       }
-      
+
       return files;
     } catch (error) {
       logger.warn(chalk.yellow(`Could not fetch commit changes: ${error.message}`));
@@ -267,7 +274,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     try {
       const { stdout } = await execAsync('git diff --cached --name-only');
       const fileNames = stdout.trim().split('\n').filter(Boolean);
-      
+
       const files = [];
       for (const fileName of fileNames) {
         const content = await this.fileSystem.readFile(fileName);
@@ -275,7 +282,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
           files.push({ path: fileName, content });
         }
       }
-      
+
       return files;
     } catch (error) {
       logger.warn(chalk.yellow('No staged files found'));
@@ -285,41 +292,35 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
 
   private async performReview(
     files: Array<{ path: string; content: string }>,
-    options: ReviewOptions
+    options: ReviewOptions,
   ): Promise<any[]> {
     const reviews = [];
-    
+
     for (const file of files) {
       logger.info(chalk.gray(`Reviewing ${file.path}...`));
-      
+
       const fileReview: unknown = {
         file: file.path,
         issues: [],
         suggestions: [],
-        score: 100
+        score: 100,
       };
 
       // Determine which categories to review
-      const categories = options.type === 'all' 
-        ? Object.keys(this.reviewCategories)
-        : [options.type];
+      const categories =
+        options.type === 'all' ? Object.keys(this.reviewCategories) : [options.type];
 
       for (const category of categories) {
         const categoryConfig = this.reviewCategories[category];
-        const categoryReview = await this.reviewCategory(
-          file,
-          category,
-          categoryConfig,
-          options
-        );
-        
+        const categoryReview = await this.reviewCategory(file, category, categoryConfig, options);
+
         fileReview.issues.push(...categoryReview.issues);
         fileReview.suggestions.push(...categoryReview.suggestions);
       }
 
       // Calculate file score
       fileReview.score = this.calculateFileScore(fileReview.issues);
-      
+
       reviews.push(fileReview);
     }
 
@@ -330,7 +331,7 @@ export class ReviewCommand extends BaseCommand<ReviewOptions> {
     file: { path: string; content: string },
     category: string,
     config: unknown,
-    options: ReviewOptions
+    options: ReviewOptions,
   ): Promise<unknown> {
     const systemPrompt = `You are an expert code reviewer focusing on ${category} issues.
 ${config.prompt}
@@ -341,30 +342,30 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       model: 'gpt-4',
       messages: [
         { role: 'system', content: systemPrompt },
-        { 
-          role: 'user', 
-          content: `Review this ${this.getFileType(file.path)} file:\n\n${file.content}` 
-        }
+        {
+          role: 'user',
+          content: `Review this ${this.getFileType(file.path)} file:\n\n${file.content}`,
+        },
       ],
       temperature: 0.3,
-      maxTokens: 2000
+      maxTokens: 2000,
     });
 
     try {
       // Parse AI response
       const parsed = this.parseReviewResponse(response);
-      
+
       // Filter by severity if specified
       if (options.severity !== 'all') {
         parsed.issues = parsed.issues.filter(
-          (issue: unknown) => issue.severity === options.severity
+          (issue: unknown) => issue.severity === options.severity,
         );
       }
 
       return {
         category,
         issues: parsed.issues || [],
-        suggestions: options.suggestions ? (parsed.suggestions || []) : []
+        suggestions: options.suggestions ? parsed.suggestions || [] : [],
       };
     } catch (error) {
       logger.warn(chalk.yellow(`Could not parse ${category} review`));
@@ -384,20 +385,20 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       // Fallback: parse text response
       const lines = response.split('\n');
       const issues = [];
-      
+
       for (const line of lines) {
         if (line.includes('Line') || line.includes('line')) {
           const lineMatch = line.match(/[Ll]ine (\d+)/);
           const severityMatch = line.match(/(critical|high|medium|low)/i);
-          
+
           issues.push({
             line: lineMatch ? parseInt(lineMatch[1]) : 0,
             severity: severityMatch ? severityMatch[1].toLowerCase() : 'medium',
-            message: line.replace(/[Ll]ine \d+:?/, '').trim()
+            message: line.replace(/[Ll]ine \d+:?/, '').trim(),
           });
         }
       }
-      
+
       return { issues, suggestions: [] };
     }
   }
@@ -419,9 +420,9 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       rb: 'Ruby',
       php: 'PHP',
       swift: 'Swift',
-      kt: 'Kotlin'
+      kt: 'Kotlin',
     };
-    
+
     return typeMap[extension || ''] || 'code';
   }
 
@@ -430,29 +431,28 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
 
     for (const review of reviews) {
       console.log(chalk.bold.cyan(`\n${review.file}`));
-      
+
       if (options.score) {
-        const scoreColor = review.score >= 80 ? chalk.green : 
-                          review.score >= 60 ? chalk.yellow : 
-                          chalk.red;
+        const scoreColor =
+          review.score >= 80 ? chalk.green : review.score >= 60 ? chalk.yellow : chalk.red;
         console.log(scoreColor(`Score: ${review.score}/100`));
       }
 
       // Group issues by severity
       const grouped = this.groupIssuesBySeverity(review.issues);
-      
+
       for (const [severity, issues] of Object.entries(grouped)) {
         if (issues.length === 0) continue;
-        
+
         const severityIcon = this.getSeverityIcon(severity);
         const severityColor = this.getSeverityColor(severity);
-        
+
         console.log(chalk.bold(`\n${severityIcon} ${severity.toUpperCase()} (${issues.length})`));
-        
+
         for (const issue of issues) {
           const lineInfo = issue.line ? `Line ${issue.line}: ` : '';
           console.log(severityColor(`  ${lineInfo}${issue.message}`));
-          
+
           if (issue.suggestion && options.suggestions) {
             console.log(chalk.gray(`    💡 ${issue.suggestion}`));
           }
@@ -471,7 +471,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     // Summary
     const totalIssues = this.countIssues(reviews);
     const overallScore = this.calculateOverallScore(reviews);
-    
+
     console.log(chalk.bold('\n📊 Summary:'));
     console.log(chalk.white(`  Files reviewed: ${reviews.length}`));
     console.log(chalk.white(`  Total issues: ${totalIssues.total}`));
@@ -479,22 +479,24 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
     console.log(chalk.orange(`    High: ${totalIssues.high}`));
     console.log(chalk.yellow(`    Medium: ${totalIssues.medium}`));
     console.log(chalk.gray(`    Low: ${totalIssues.low}`));
-    
+
     if (options.score) {
-      const scoreColor = overallScore >= 80 ? chalk.green : 
-                        overallScore >= 60 ? chalk.yellow : 
-                        chalk.red;
+      const scoreColor =
+        overallScore >= 80 ? chalk.green : overallScore >= 60 ? chalk.yellow : chalk.red;
       console.log(chalk.bold(`\n  Overall Score: ${scoreColor(overallScore + '/100')}`));
     }
   }
 
   private groupIssuesBySeverity(issues: unknown[]): Record<string, any[]> {
-    return issues.reduce((acc, issue) => {
-      const severity = issue.severity || 'medium';
-      if (!acc[severity]) acc[severity] = [];
-      acc[severity].push(issue);
-      return acc;
-    }, { critical: [], high: [], medium: [], low: [] });
+    return issues.reduce(
+      (acc, issue) => {
+        const severity = issue.severity || 'medium';
+        if (!acc[severity]) acc[severity] = [];
+        acc[severity].push(issue);
+        return acc;
+      },
+      { critical: [], high: [], medium: [], low: [] },
+    );
   }
 
   private getSeverityIcon(severity: string): string {
@@ -502,7 +504,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       critical: '🚨',
       high: '⚠️',
       medium: '📝',
-      low: '💭'
+      low: '💭',
     };
     return icons[severity] || '📝';
   }
@@ -512,28 +514,28 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       critical: chalk.red,
       high: chalk.hex('#FFA500'), // orange
       medium: chalk.yellow,
-      low: chalk.gray
+      low: chalk.gray,
     };
     return colors[severity] || chalk.white;
   }
 
   private async applyAutoFixes(reviews: unknown[]): Promise<void> {
     logger.info(chalk.blue('\n🔧 Applying auto-fixes...'));
-    
+
     let fixCount = 0;
-    
+
     for (const review of reviews) {
       const fixableIssues = review.issues.filter((issue: unknown) => issue.suggestion);
-      
+
       if (fixableIssues.length > 0) {
         logger.info(chalk.gray(`Fixing ${review.file}...`));
-        
+
         // This would implement actual auto-fix logic
         // For now, just count
         fixCount += fixableIssues.length;
       }
     }
-    
+
     if (fixCount > 0) {
       logger.info(chalk.green(`✅ Applied ${fixCount} auto-fixes`));
     } else {
@@ -547,9 +549,9 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       summary: {
         filesReviewed: reviews.length,
         issues: this.countIssues(reviews),
-        overallScore: this.calculateOverallScore(reviews)
+        overallScore: this.calculateOverallScore(reviews),
       },
-      reviews
+      reviews,
     };
 
     await this.fileSystem.writeFile(outputPath, JSON.stringify(report, null, 2));
@@ -562,7 +564,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
       critical: 0,
       high: 0,
       medium: 0,
-      low: 0
+      low: 0,
     };
 
     for (const review of reviews) {
@@ -577,7 +579,7 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
 
   private calculateFileScore(issues: unknown[]): number {
     let score = 100;
-    
+
     for (const issue of issues) {
       switch (issue.severity) {
         case 'critical':
@@ -594,13 +596,13 @@ Format issues as JSON array with: { line, severity, message, suggestion }`;
           break;
       }
     }
-    
+
     return Math.max(0, score);
   }
 
   private calculateOverallScore(reviews: unknown[]): number {
     if (reviews.length === 0) return 100;
-    
+
     const totalScore = reviews.reduce((sum, review) => sum + review.score, 0);
     return Math.round(totalScore / reviews.length);
   }

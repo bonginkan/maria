@@ -66,6 +66,22 @@ export interface IntentionNode {
   fulfilled: boolean;
 }
 
+export interface EmotionalContextState {
+  emotion: string;
+  intensity: number;
+  timestamp: Date;
+  frustrationLevel?: number;
+  engagementLevel?: number;
+}
+
+export interface CodePatternKnowledge {
+  pattern: string;
+  usage: number;
+  effectiveness: number;
+  lastUsed?: Date;
+  examples?: string[];
+}
+
 export interface ProjectContextState {
   architecture: ArchitectureKnowledge;
   codePatterns: CodePatternKnowledge;
@@ -287,11 +303,11 @@ export interface ContextCompressionStrategy {
 export class EnhancedContextPreservation extends EventEmitter {
   private static instance: EnhancedContextPreservation;
   private contextSnapshots: Map<string, ContextSnapshot> = new Map();
-  private crossSessionMemory: Map<string, unknown> = new Map();
+  private ___crossSessionMemory: Map<string, unknown> = new Map();
   private compressionStrategies: Map<string, ContextCompressionStrategy> = new Map();
   private dataDir: string;
   private maxSnapshotsPerSession = 100;
-  private maxCrossSessionEntries = 1000;
+  private ___maxCrossSessionEntries = 1000;
 
   private constructor() {
     super();
@@ -671,15 +687,15 @@ export class EnhancedContextPreservation extends EventEmitter {
     const intentions: IntentionNode[] = [];
 
     messages.forEach((message) => {
-      const intention = this.extractIntention(message.content);
-      if (intention) {
+      const _intention = this.extractIntention(message.content);
+      if (_intention) {
         const node: IntentionNode = {
-          intention: intention.text,
-          confidence: intention.confidence,
-          parentIntention: this.findParentIntention(intention.text, intentions),
+          intention: _intention.text,
+          confidence: _intention.confidence,
+          parentIntention: this.findParentIntention(_intention.text, intentions),
           childIntentions: [],
           timestamp: message.timestamp,
-          fulfilled: this.isIntentionFulfilled(intention.text, messages, message.timestamp),
+          fulfilled: this.isIntentionFulfilled(_intention.text, messages, message.timestamp),
         };
         intentions.push(node);
 
@@ -711,7 +727,7 @@ export class EnhancedContextPreservation extends EventEmitter {
 
     for (const { pattern, confidence } of intentionPatterns) {
       const match = content.match(pattern);
-      if (match) {
+      if (match && match[1]) {
         return {
           text: match[1].trim(),
           confidence,
@@ -755,7 +771,7 @@ export class EnhancedContextPreservation extends EventEmitter {
    * Check if intention was fulfilled in subsequent messages
    */
   private isIntentionFulfilled(
-    intention: string,
+    _intention: string,
     messages: ConversationMessage[],
     intentionTime: Date,
   ): boolean {
@@ -776,7 +792,9 @@ export class EnhancedContextPreservation extends EventEmitter {
     const recentMessages = messages.slice(-10); // Last 10 messages
     const timeSpans = recentMessages
       .slice(1)
-      .map((msg, index) => msg.timestamp.getTime() - recentMessages[index].timestamp.getTime());
+      .map(
+        (msg, index) => msg.timestamp.getTime() - (recentMessages[index]?.timestamp.getTime() ?? 0),
+      );
 
     const avgTimeSpan = timeSpans.reduce((sum, span) => sum + span, 0) / timeSpans.length;
     const messageLength =
@@ -794,7 +812,7 @@ export class EnhancedContextPreservation extends EventEmitter {
     // Implementation would analyze project structure, dependencies, etc.
     return {
       architecture: { patterns: [], components: [], dataFlow: [], designPrinciples: [] },
-      codePatterns: {},
+      codePatterns: { pattern: '', usage: '', effectiveness: 0 } as unknown as CodePatternKnowledge,
       dependencies: { packages: [], internalDependencies: [], externalAPIs: [] },
       workflowState: {
         currentPhase: '',
@@ -862,11 +880,11 @@ export class EnhancedContextPreservation extends EventEmitter {
   ): Promise<EmotionalContextState> {
     // Implementation would analyze emotional indicators
     return {
+      emotion: 'neutral',
+      intensity: 0.5,
+      timestamp: new Date(),
       frustrationLevel: 0,
-      confidenceLevel: 0.5,
       engagementLevel: 0.5,
-      satisfactionLevel: 0.5,
-      stressIndicators: [],
     };
   }
 
@@ -877,7 +895,7 @@ export class EnhancedContextPreservation extends EventEmitter {
     importance: number,
     _context: DeepContextState,
   ): 'none' | 'light' | 'medium' | 'heavy' {
-    const contextSize = JSON.stringify(context).length;
+    const contextSize = JSON.stringify(_context).length;
 
     if (importance > 0.8) return 'none';
     if (importance > 0.6 && contextSize < 50000) return 'light';
@@ -892,12 +910,12 @@ export class EnhancedContextPreservation extends EventEmitter {
     _context: DeepContextState,
     level: 'none' | 'light' | 'medium' | 'heavy',
   ): Promise<DeepContextState> {
-    if (level === 'none') return context;
+    if (level === 'none') return _context;
 
     const strategy = this.compressionStrategies.get(level);
-    if (!strategy) return context;
+    if (!strategy) return _context;
 
-    return strategy.compressionFunction(context);
+    return strategy.compressionFunction(_context);
   }
 
   /**
@@ -1057,7 +1075,7 @@ export class EnhancedContextPreservation extends EventEmitter {
       const memoryFile = join(this.dataDir, 'cross-session-memory.json');
       if (existsSync(memoryFile)) {
         const memory = JSON.parse(readFileSync(memoryFile, 'utf-8'));
-        this.crossSessionMemory = new Map(Object.entries(memory));
+        this.___crossSessionMemory = new Map(Object.entries(memory));
       }
     } catch (error) {
       logger.error('Failed to load persisted data:', error);

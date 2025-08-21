@@ -1168,11 +1168,11 @@ export class MultimodalIntelligence extends EventEmitter {
    * Update adaptive interfaces
    */
   private async updateAdaptiveInterfaces(): Promise<void> {
-    for (const [_userId, interface] of this.adaptiveInterfaces) {
+    for (const [_userId, adaptiveInterface] of this.adaptiveInterfaces) {
       // Update performance metrics based on recent interactions
       // This would involve actual usage tracking in a real implementation
-      interface.performanceMetrics.preferenceStability = Math.min(
-        interface.performanceMetrics.preferenceStability + 0.1,
+      adaptiveInterface.performanceMetrics.preferenceStability = Math.min(
+        adaptiveInterface.performanceMetrics.preferenceStability + 0.1,
         1.0,
       );
     }
@@ -1244,11 +1244,12 @@ class TextProcessor implements ModalityProcessor {
   type: ModalityType = 'text';
 
   async process(input: MultimodalInput): Promise<ProcessedOutput> {
+    const textData = input.data as string;
     return {
       id: `output-${Date.now()}`,
       inputId: input.id,
       type: 'analysis',
-      data: { analyzedText: input.data, wordCount: input.data.length },
+      data: { analyzedText: textData, wordCount: textData.length },
       confidence: 0.9,
       processingTime: 100,
       metadata: {

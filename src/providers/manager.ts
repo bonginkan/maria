@@ -34,6 +34,16 @@ export class AIProviderManager {
     const apiKeys = this.config.get('apiKeys', {} as Record<string, string>) || {};
     const localProviders = this.config.get('localProviders', {} as Record<string, boolean>) || {};
 
+    // Debug logging
+    if (process.env['DEBUG']) {
+      console.log('🔧 Initializing providers...');
+      console.log('Local providers config:', localProviders);
+      console.log(
+        'API keys available:',
+        Object.keys(apiKeys).filter((k) => apiKeys[k]),
+      );
+    }
+
     // Cloud providers
     if (apiKeys && apiKeys['OPENAI_API_KEY']) {
       const provider = new OpenAIProvider();
@@ -68,39 +78,64 @@ export class AIProviderManager {
 
     // Local providers
     if (localProviders && localProviders['lmstudio'] !== false) {
+      if (process.env['DEBUG']) console.log('🔄 Initializing LM Studio provider...');
       const provider = new LMStudioProvider();
       await provider.initialize('lmstudio');
       this.providers.set('lmstudio', provider);
     }
 
     if (localProviders && localProviders['ollama'] !== false) {
+      if (process.env['DEBUG']) console.log('🔄 Initializing Ollama provider...');
       const provider = new OllamaProvider();
       await provider.initialize('ollama');
       this.providers.set('ollama', provider);
     }
 
     if (localProviders && localProviders['vllm'] !== false) {
+      if (process.env['DEBUG']) console.log('🔄 Initializing vLLM provider...');
       const provider = new VLLMProvider();
       await provider.initialize('vllm');
       this.providers.set('vllm', provider);
+    }
+
+    if (process.env['DEBUG']) {
+      console.log(
+        `✅ Initialized ${this.providers.size} providers:`,
+        Array.from(this.providers.keys()),
+      );
     }
   }
 
   private async checkAvailability(): Promise<void> {
     this.availableProviders.clear();
 
+    if (process.env['DEBUG']) {
+      console.log('🔍 Checking provider availability...');
+    }
+
     const checks = Array.from(this.providers.entries()).map(async ([name, provider]) => {
       try {
+        if (process.env['DEBUG']) console.log(`  • Checking ${name}...`);
         const isAvailable = await (provider.validateConnection?.() ?? Promise.resolve(true));
         if (isAvailable) {
           this.availableProviders.add(name);
+          if (process.env['DEBUG']) console.log(`    ✅ ${name} is available`);
+        } else {
+          if (process.env['DEBUG']) console.log(`    ❌ ${name} is not available`);
         }
       } catch (error: unknown) {
-        // Provider not available
+        if (process.env['DEBUG']) console.log(`    ❌ ${name} failed: ${error}`);
       }
     });
 
     await Promise.allSettled(checks);
+
+    if (process.env['DEBUG']) {
+      console.log(
+        `🎯 Available providers (${this.availableProviders.size}):`,
+        Array.from(this.availableProviders),
+      );
+    }
   }
 
   getProvider(name: string): IAIProvider | undefined {

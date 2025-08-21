@@ -12,7 +12,7 @@ import { logger } from '../utils/logger.js';
 import chalk from 'chalk';
 
 export interface TaskPriority {
-  level: 'low' | 'normal' | 'high' | 'urgent';
+  level: 'low' | 'normal' | 'high';
   score: number;
 }
 
@@ -117,7 +117,7 @@ export class ProcessManager extends EventEmitter {
         return Math.round(duration);
       },
 
-      calculatePriority: (command: string, args: string[], context: ConversationContext) => {
+      calculatePriority: (command: string, _args: string[], context: ConversationContext) => {
         let score = 50; // Base priority
 
         // Command-based priority
@@ -134,12 +134,14 @@ export class ProcessManager extends EventEmitter {
         score += (commandPriorities[command] || 0) - 50;
 
         // Context-based adjustments
-        if (context.isUrgent) score += 30;
-        if (context.isInteractive) score += 20;
+        // if (context.isUrgent) score += 30; // Property not available
+        // if (context.isInteractive) score += 20; // Property not available
+        if (context.hasErrors) score += 30;
+        if (context.currentTask) score += 20;
 
         // Normalize to priority level
         let level: TaskPriority['level'] = 'normal';
-        if (score >= 80) level = 'urgent';
+        if (score >= 80) level = 'high';
         else if (score >= 65) level = 'high';
         else if (score < 40) level = 'low';
 
@@ -154,7 +156,7 @@ export class ProcessManager extends EventEmitter {
   private setupEventListeners(): void {
     this.backgroundProcessor.on('processCompleted', (_event) => {
       this.stats.totalProcessed++;
-      this.updateAverageDuration(event.task);
+      this.updateAverageDuration(_event.task);
       this.emit('taskCompleted', _event);
     });
 
@@ -203,7 +205,7 @@ export class ProcessManager extends EventEmitter {
     result?: unknown;
   }> {
     try {
-      const __sessionId = context._sessionId || 'default';
+      const sessionId = context.sessionId || 'default';
 
       // Calculate priority and duration
       const priority = this.strategy.calculatePriority(command, args, context);
@@ -212,7 +214,7 @@ export class ProcessManager extends EventEmitter {
       // Determine if should run in background
       const shouldBackground =
         this.strategy.shouldAutoBackground(command, args) &&
-        !context.forceInline &&
+        // !context.forceInline && // Property not available
         estimatedDuration > 5000; // Only background tasks longer than 5 seconds
 
       logger.info(
@@ -221,7 +223,7 @@ export class ProcessManager extends EventEmitter {
 
       if (shouldBackground) {
         // Process in background
-        const result = await this.backgroundProcessor.moveToBackground(_sessionId, command, args, {
+        const result = await this.backgroundProcessor.moveToBackground(sessionId, command, args, {
           estimatedDuration,
           priority: priority.level,
           timeout: estimatedDuration * 3, // 3x timeout buffer
@@ -229,7 +231,7 @@ export class ProcessManager extends EventEmitter {
 
         if (result.success) {
           this.emit('commandBackgrounded', {
-            _sessionId,
+            sessionId,
             command,
             args,
             processId: result.processId,
@@ -266,11 +268,11 @@ export class ProcessManager extends EventEmitter {
         status: 'completed',
         progress: 100,
         startTime,
-        _sessionId,
+        sessionId: context.sessionId,
       } as BackgroundTask);
 
       this.emit('commandCompleted', {
-        _sessionId,
+        sessionId: context.sessionId,
         command,
         args,
         duration,
@@ -288,7 +290,7 @@ export class ProcessManager extends EventEmitter {
       logger.error(`Error processing command ${command}:`, error);
 
       this.emit('commandFailed', {
-        _sessionId: context._sessionId || 'default',
+        sessionId: context.sessionId || 'default',
         command,
         args,
         error,
@@ -330,7 +332,7 @@ export class ProcessManager extends EventEmitter {
         // High priority task - cancel current and start new
         const cancelResult = this.backgroundProcessor.cancelProcess(currentProcessId);
         if (cancelResult.success) {
-          const _processResult = await this.processCommand(newCommand, newArgs, context);
+          await this.processCommand(newCommand, newArgs, context);
           return {
             success: true,
             action: 'override',

@@ -1,7 +1,7 @@
 /**
  * Upgrade Command Module
  * プランアップグレードコマンド - サブスクリプション管理
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: Account Management
  */
@@ -33,7 +33,7 @@ export class UpgradeCommand extends BaseCommand {
   description = 'Upgrade your MARIA subscription plan';
   usage = '/upgrade [pro|max|enterprise]';
   aliases = ['subscribe', 'plan', 'pricing'];
-  
+
   private plans: Record<string, PlanDetails> = {
     free: {
       name: 'Free',
@@ -162,25 +162,24 @@ export class UpgradeCommand extends BaseCommand {
       if (args.length === 0) {
         return this.showPricingTable();
       }
-      
+
       const requestedPlan = args[0].toLowerCase();
-      
+
       if (requestedPlan === 'compare') {
         return this.comparePlans();
       }
-      
+
       if (requestedPlan === 'current') {
         return this.showCurrentPlan();
       }
-      
+
       const plan = this.plans[requestedPlan];
-      
+
       if (!plan) {
         return this.showPricingTable(requestedPlan);
       }
-      
+
       return this.initiateUpgrade(requestedPlan, plan);
-      
     } catch (error) {
       logger.error('Upgrade command error:', error);
       return {
@@ -191,27 +190,34 @@ export class UpgradeCommand extends BaseCommand {
   }
 
   private showPricingTable(invalidPlan?: string): SlashCommandResult {
-    const errorMessage = invalidPlan
-      ? `❌ Invalid plan: "${invalidPlan}"\n\n`
-      : '';
-    
+    const errorMessage = invalidPlan ? `❌ Invalid plan: "${invalidPlan}"\n\n` : '';
+
     return {
       success: !invalidPlan,
       message: `${errorMessage}# 💎 MARIA Subscription Plans
 
 ## 🆓 **Free** - $0/month
-${this.plans.free.features.map(f => `• ${f}`).join('\n')}
+${this.plans.free.features.map((f) => `• ${f}`).join('\n')}
 
 ## ⭐ **Pro** - $29/month (Save 17% yearly)
-${this.plans.pro.features.slice(0, 5).map(f => `• ${f}`).join('\n')}
+${this.plans.pro.features
+  .slice(0, 5)
+  .map((f) => `• ${f}`)
+  .join('\n')}
 *Plus ${this.plans.pro.features.length - 5} more features...*
 
 ## 🚀 **Max** - $99/month (Save 17% yearly)
-${this.plans.max.features.slice(0, 5).map(f => `• ${f}`).join('\n')}
+${this.plans.max.features
+  .slice(0, 5)
+  .map((f) => `• ${f}`)
+  .join('\n')}
 *Plus ${this.plans.max.features.length - 5} more features...*
 
 ## 🏢 **Enterprise** - Custom Pricing
-${this.plans.enterprise.features.slice(0, 5).map(f => `• ${f}`).join('\n')}
+${this.plans.enterprise.features
+  .slice(0, 5)
+  .map((f) => `• ${f}`)
+  .join('\n')}
 *Plus ${this.plans.enterprise.features.length - 5} more features...*
 
 ---
@@ -290,9 +296,9 @@ ${this.plans.enterprise.features.slice(0, 5).map(f => `• ${f}`).join('\n')}
       storage: '23MB',
       storageLimit: '100MB',
     };
-    
+
     const plan = this.plans[currentPlan];
-    
+
     return {
       success: true,
       message: `# ${plan.emoji} Your Current Plan: **${plan.name}**
@@ -303,7 +309,7 @@ ${this.plans.enterprise.features.slice(0, 5).map(f => `• ${f}`).join('\n')}
 • Active Models: ${plan.limits.models.length}
 
 ## 🎯 Your Benefits
-${plan.features.map(f => `• ${f}`).join('\n')}
+${plan.features.map((f) => `• ${f}`).join('\n')}
 
 ## 🚀 Upgrade Options
 
@@ -358,11 +364,11 @@ Thank you for your interest in MARIA Enterprise!
         component: 'auth-flow',
       };
     }
-    
+
     const monthlyPrice = plan.price.monthly;
     const yearlyPrice = plan.price.yearly;
-    const yearlySavings = (monthlyPrice * 12) - yearlyPrice;
-    
+    const yearlySavings = monthlyPrice * 12 - yearlyPrice;
+
     return {
       success: true,
       message: `# ${plan.emoji} Upgrade to ${plan.name}
@@ -373,10 +379,10 @@ Thank you for your interest in MARIA Enterprise!
 **Yearly**: $${yearlyPrice}/year (Save $${yearlySavings})
 
 ## ✨ What You'll Get:
-${plan.features.map(f => `• ${f}`).join('\n')}
+${plan.features.map((f) => `• ${f}`).join('\n')}
 
 ## 🎯 Why ${plan.name}?
-${plan.benefits.map(b => `• ${b}`).join('\n')}
+${plan.benefits.map((b) => `• ${b}`).join('\n')}
 
 ## 🔐 Secure Checkout:
 

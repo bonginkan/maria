@@ -405,7 +405,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
 
     // Command efficiency recommendations
     if (stats.totalCommands > 20) {
-      const _mostUsedCommands = this.getMostUsedCommands(5);
+      // const _mostUsedCommands = this.getMostUsedCommands(5); // Used for future feature recommendations
       const underutilizedFeatures = this.getUnderutilizedFeatures();
 
       if (underutilizedFeatures.length > 0) {
@@ -473,20 +473,20 @@ export class AdaptiveLearningEngine extends EventEmitter {
   /**
    * Get most used commands
    */
-  private getMostUsedCommands(limit: number): string[] {
-    const commandCounts = new Map<string, number>();
-
-    this.usagePatterns.forEach((pattern) => {
-      pattern.commandSequence.forEach((cmd) => {
-        commandCounts.set(cmd, (commandCounts.get(cmd) || 0) + pattern.frequency);
-      });
-    });
-
-    return Array.from(commandCounts.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, limit)
-      .map(([cmd]) => cmd);
-  }
+  // private _getMostUsedCommands(limit: number): string[] {
+  //   const commandCounts = new Map<string, number>();
+  //
+  //   this.usagePatterns.forEach((pattern) => {
+  //     pattern.commandSequence.forEach((cmd) => {
+  //       commandCounts.set(cmd, (commandCounts.get(cmd) || 0) + pattern.frequency);
+  //     });
+  //   });
+  //
+  //   return Array.from(commandCounts.entries())
+  //     .sort((a, b) => b[1] - a[1])
+  //     .slice(0, limit)
+  //     .map(([cmd]) => cmd);
+  // }
 
   /**
    * Get underutilized features

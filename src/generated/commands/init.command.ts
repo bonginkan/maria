@@ -13,7 +13,10 @@ import fs from 'fs/promises';
 
 const initSchema = z.object({
   name: z.string().optional(),
-  type: z.enum(['web', 'api', 'cli', 'library', 'mobile', 'desktop', 'auto']).optional().default('auto'),
+  type: z
+    .enum(['web', 'api', 'cli', 'library', 'mobile', 'desktop', 'auto'])
+    .optional()
+    .default('auto'),
   framework: z.string().optional(),
   language: z.string().optional(),
   description: z.string().optional(),
@@ -22,14 +25,14 @@ const initSchema = z.object({
   interactive: z.boolean().optional().default(true),
   force: z.boolean().optional().default(false),
   template: z.string().optional(),
-  gitInit: z.boolean().optional().default(true)
+  gitInit: z.boolean().optional().default(true),
 });
 
 export type InitOptions = z.infer<typeof initSchema>;
 
 /**
  * Project Initialization Command
- * 
+ *
  * Features:
  * - Generate .maria-code.toml configuration
  * - Create MARIA.md development guidance
@@ -46,7 +49,7 @@ export type InitOptions = z.infer<typeof initSchema>;
   description: 'Initialize MARIA configuration for the project',
   category: 'project',
   priority: 88,
-  version: '2.0.0'
+  version: '2.0.0',
 })
 @RequireAuth({ level: 'basic' })
 @RateLimit(10, '1m')
@@ -68,24 +71,24 @@ export class InitCommand extends BaseCommand<InitOptions> {
   async execute(
     args: string[],
     options: InitOptions,
-    context: CommandContext
+    context: CommandContext,
   ): Promise<CommandResult> {
     try {
       this.emit('start', { command: 'init', options });
 
       const projectPath = context.projectPath || process.cwd();
-      
+
       // Check if already initialized
       const existingConfig = await this.checkExistingConfig(projectPath);
       if (existingConfig && !options.force) {
         const proceed = await this.promptConfirm(
-          'MARIA configuration already exists. Overwrite? (y/n): '
+          'MARIA configuration already exists. Overwrite? (y/n): ',
         );
-        
+
         if (!proceed) {
           return {
             success: false,
-            data: { message: 'Initialization cancelled' }
+            data: { message: 'Initialization cancelled' },
           };
         }
       }
@@ -106,7 +109,7 @@ export class InitCommand extends BaseCommand<InitOptions> {
 
       // Generate configuration files
       logger.info(chalk.blue('📝 Generating configuration files...'));
-      
+
       // Create .maria-code.toml
       const tomlPath = await this.createTomlConfig(projectPath, config);
       logger.info(chalk.green(`✅ Created: ${tomlPath}`));
@@ -135,18 +138,17 @@ export class InitCommand extends BaseCommand<InitOptions> {
           config,
           files: {
             toml: tomlPath,
-            markdown: mdPath
+            markdown: mdPath,
           },
-          projectInfo
-        }
+          projectInfo,
+        },
       };
-
     } catch (error) {
       this.emit('error', { error });
       logger.error(chalk.red(`Initialization failed: ${error.message}`));
       return {
         success: false,
-        error: error.message
+        error: error.message,
       };
     }
   }
@@ -154,7 +156,7 @@ export class InitCommand extends BaseCommand<InitOptions> {
   private async checkExistingConfig(projectPath: string): Promise<boolean> {
     const tomlPath = path.join(projectPath, '.maria-code.toml');
     const mdPath = path.join(projectPath, 'MARIA.md');
-    
+
     try {
       await fs.access(tomlPath);
       return true;
@@ -176,16 +178,17 @@ export class InitCommand extends BaseCommand<InitOptions> {
       ai: {},
       development: {},
       testing: {},
-      deployment: {}
+      deployment: {},
     };
 
     // Project information
-    config.project.name = options.name || projectInfo.name || await this.prompt('Project name: ');
+    config.project.name = options.name || projectInfo.name || (await this.prompt('Project name: '));
     config.project.type = options.type === 'auto' ? projectInfo.type : options.type;
-    config.project.description = options.description || await this.prompt('Project description: ');
-    config.project.author = options.author || projectInfo.author || await this.prompt('Author: ');
+    config.project.description =
+      options.description || (await this.prompt('Project description: '));
+    config.project.author = options.author || projectInfo.author || (await this.prompt('Author: '));
     config.project.license = options.license;
-    
+
     // Detected information
     config.project.language = options.language || projectInfo.language;
     config.project.framework = options.framework || projectInfo.framework;
@@ -193,29 +196,37 @@ export class InitCommand extends BaseCommand<InitOptions> {
 
     // AI preferences
     console.log(chalk.cyan('\n🤖 AI Configuration:'));
-    config.ai.defaultModel = await this.prompt('Default AI model (gpt-4): ') || 'gpt-4';
+    config.ai.defaultModel = (await this.prompt('Default AI model (gpt-4): ')) || 'gpt-4';
     config.ai.codeStyle = await this.promptChoice('Code style:', ['functional', 'oop', 'mixed']);
-    config.ai.testingFramework = projectInfo.testFramework || await this.prompt('Testing framework: ');
-    config.ai.documentationStyle = await this.promptChoice('Documentation style:', ['jsdoc', 'tsdoc', 'minimal']);
+    config.ai.testingFramework =
+      projectInfo.testFramework || (await this.prompt('Testing framework: '));
+    config.ai.documentationStyle = await this.promptChoice('Documentation style:', [
+      'jsdoc',
+      'tsdoc',
+      'minimal',
+    ]);
 
     // Development settings
     console.log(chalk.cyan('\n⚙️  Development Settings:'));
     config.development.autoFormat = await this.promptConfirm('Enable auto-formatting? (y/n): ');
-    config.development.linter = projectInfo.linter || await this.prompt('Linter (eslint): ') || 'eslint';
-    config.development.formatter = projectInfo.formatter || await this.prompt('Formatter (prettier): ') || 'prettier';
+    config.development.linter =
+      projectInfo.linter || (await this.prompt('Linter (eslint): ')) || 'eslint';
+    config.development.formatter =
+      projectInfo.formatter || (await this.prompt('Formatter (prettier): ')) || 'prettier';
 
     // Testing configuration
     console.log(chalk.cyan('\n🧪 Testing Configuration:'));
     config.testing.coverage = await this.promptConfirm('Enable coverage reporting? (y/n): ');
-    config.testing.minCoverage = config.testing.coverage ? 
-      parseInt(await this.prompt('Minimum coverage % (80): ') || '80') : 0;
+    config.testing.minCoverage = config.testing.coverage
+      ? parseInt((await this.prompt('Minimum coverage % (80): ')) || '80')
+      : 0;
 
     return config;
   }
 
   private async templateSetup(templateName: string, projectInfo: unknown): Promise<unknown> {
     const template = await this.templateManager.get(templateName);
-    
+
     if (!template) {
       throw new Error(`Template not found: ${templateName}`);
     }
@@ -224,8 +235,8 @@ export class InitCommand extends BaseCommand<InitOptions> {
       ...template.config,
       project: {
         ...template.config.project,
-        ...projectInfo
-      }
+        ...projectInfo,
+      },
     };
   }
 
@@ -239,31 +250,31 @@ export class InitCommand extends BaseCommand<InitOptions> {
         license: options.license,
         language: options.language || projectInfo.language,
         framework: options.framework || projectInfo.framework,
-        dependencies: projectInfo.dependencies
+        dependencies: projectInfo.dependencies,
       },
       ai: {
         defaultModel: 'gpt-4',
         codeStyle: 'mixed',
         testingFramework: projectInfo.testFramework || 'jest',
-        documentationStyle: 'jsdoc'
+        documentationStyle: 'jsdoc',
       },
       development: {
         autoFormat: true,
         linter: projectInfo.linter || 'eslint',
-        formatter: projectInfo.formatter || 'prettier'
+        formatter: projectInfo.formatter || 'prettier',
       },
       testing: {
         coverage: true,
-        minCoverage: 80
+        minCoverage: 80,
       },
-      deployment: {}
+      deployment: {},
     };
   }
 
   private async createTomlConfig(projectPath: string, config: unknown): Promise<string> {
     const tomlContent = this.generateTomlContent(config);
     const tomlPath = path.join(projectPath, '.maria-code.toml');
-    
+
     await this.fileSystem.writeFile(tomlPath, tomlContent);
     return tomlPath;
   }
@@ -281,7 +292,7 @@ export class InitCommand extends BaseCommand<InitOptions> {
       `license = "${config.project.license}"`,
       `language = "${config.project.language}"`,
       `framework = "${config.project.framework}"`,
-      ''
+      '',
     ];
 
     if (config.project.dependencies && config.project.dependencies.length > 0) {
@@ -319,17 +330,21 @@ export class InitCommand extends BaseCommand<InitOptions> {
     return lines.join('\n');
   }
 
-  private async createMariaMd(projectPath: string, config: unknown, projectInfo: unknown): Promise<string> {
+  private async createMariaMd(
+    projectPath: string,
+    config: unknown,
+    projectInfo: unknown,
+  ): Promise<string> {
     const mdContent = this.generateMariaMdContent(config, projectInfo);
     const mdPath = path.join(projectPath, 'MARIA.md');
-    
+
     await this.fileSystem.writeFile(mdPath, mdContent);
     return mdPath;
   }
 
   private generateMariaMdContent(config: unknown, projectInfo: unknown): string {
     const date = new Date().toISOString().split('T')[0];
-    
+
     return `# MARIA.md - AI Development Guidelines
 
 > This file provides guidance for AI assistants working on this project.
@@ -474,7 +489,7 @@ This project is licensed under the ${config.project.license} License.
 
     try {
       await execAsync('git init', { cwd: projectPath });
-      
+
       // Create .gitignore if it doesn't exist
       const gitignorePath = path.join(projectPath, '.gitignore');
       try {
@@ -489,9 +504,9 @@ This project is licensed under the ${config.project.license} License.
           '*.log',
           '.DS_Store',
           'coverage/',
-          '.maria-cache/'
+          '.maria-cache/',
         ].join('\n');
-        
+
         await this.fileSystem.writeFile(gitignorePath, gitignoreContent);
       }
     } catch (error) {
@@ -503,27 +518,27 @@ This project is licensed under the ${config.project.license} License.
     await this.configManager.set('lastProject', {
       name: config.project.name,
       path: process.cwd(),
-      type: config.project.type
+      type: config.project.type,
     });
   }
 
   private displaySummary(config: unknown, projectInfo: unknown): void {
     console.log(chalk.bold.green('\n✨ MARIA initialization complete!\n'));
-    
+
     console.log(chalk.bold('Project Configuration:'));
     console.log(chalk.cyan('  Name:'), config.project.name);
     console.log(chalk.cyan('  Type:'), config.project.type);
     console.log(chalk.cyan('  Language:'), config.project.language);
     console.log(chalk.cyan('  Framework:'), config.project.framework);
-    
+
     console.log(chalk.bold('\nAI Settings:'));
     console.log(chalk.cyan('  Model:'), config.ai.defaultModel);
     console.log(chalk.cyan('  Style:'), config.ai.codeStyle);
-    
+
     console.log(chalk.bold('\nFiles Created:'));
     console.log(chalk.green('  ✅ .maria-code.toml - Configuration file'));
     console.log(chalk.green('  ✅ MARIA.md - AI development guidelines'));
-    
+
     console.log(chalk.gray('\nNext steps:'));
     console.log(chalk.gray('  1. Review and customize MARIA.md'));
     console.log(chalk.gray('  2. Start coding with /code command'));

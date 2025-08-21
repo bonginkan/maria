@@ -2,8 +2,9 @@ export { createCLI } from './cli.js';
 import 'commander';
 
 /**
- * MARIA - Intelligent CLI Assistant
- * Entry point for the library
+ * MARIA - AI-Powered Development Platform
+ * OSS Distribution Entry Point
+ * @version 1.0.7
  */
 
 declare const VERSION = "1.0.7";

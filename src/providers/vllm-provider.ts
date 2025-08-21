@@ -67,7 +67,6 @@ export class VLLMProvider extends BaseAIProvider {
       this.isHealthy = response.ok;
       return this.isHealthy;
     } catch {
-      console.warn('vLLM server not reachable');
       this.isHealthy = false;
       return false;
     }
@@ -308,6 +307,11 @@ export class VLLMProvider extends BaseAIProvider {
         improvements: [],
       };
     }
+  }
+
+  // IAIProvider interface method
+  async validateConnection(): Promise<boolean> {
+    return await this.checkHealth();
   }
 
   // vLLM specific methods

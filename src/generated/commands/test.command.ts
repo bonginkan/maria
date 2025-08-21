@@ -191,7 +191,11 @@ export class TestCommand extends BaseCommand<TestOptions> {
     return patterns[type] || patterns.all;
   }
 
-  private async runTests(files: string[], options: TestOptions, framework: string): Promise<unknown> {
+  private async runTests(
+    files: string[],
+    options: TestOptions,
+    framework: string,
+  ): Promise<unknown> {
     const command = this.buildTestCommand(files, options, framework);
     logger.info(chalk.gray(`Running: ${command}`));
 
@@ -331,7 +335,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
       passed: 0,
       failed: 0,
       skipped: 0,
-      failures: [] as any[],
+      failures: [] as unknown[],
     };
 
     // Parse common patterns

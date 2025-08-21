@@ -7,8 +7,8 @@
  * complete intelligent development environment.
  */
 
-import * as fs from 'fs/promises';
-import * as path from 'path';
+// import * as fs from 'fs/promises';
+// import * as path from 'path';
 import { EventEmitter } from 'events';
 
 // Integration test types and interfaces
@@ -370,9 +370,9 @@ class IntegrationTestSystem extends EventEmitter {
   private static instance: IntegrationTestSystem;
   private configuration: TestConfiguration;
   private testSuites: Map<string, IntegrationTestSuite> = new Map();
-  private executionHistory: TestExecution[] = new Map();
-  private activeExecution?: TestExecution;
-  private testDataCache: Map<string, any> = new Map();
+  private executionHistory: TestExecution[] = [];
+  private ___activeExecution?: TestExecution;
+  private ___testDataCache: Map<string, unknown> = new Map();
 
   private constructor() {
     super();
@@ -446,7 +446,7 @@ class IntegrationTestSystem extends EventEmitter {
         summary: this.initializeSummary(),
       };
 
-      this.activeExecution = execution;
+      this.__activeExecution = execution;
       this.emit('execution_started', {
         execution_id: execution.execution_id,
         suite: testSuite.name,
@@ -472,7 +472,7 @@ class IntegrationTestSystem extends EventEmitter {
       await this.cleanupTestExecution(testSuite, execution);
 
       this.executionHistory.push(execution);
-      this.activeExecution = undefined;
+      this.__activeExecution = undefined;
 
       this.emit('execution_completed', {
         execution_id: execution.execution_id,
@@ -580,7 +580,7 @@ class IntegrationTestSystem extends EventEmitter {
     recommendations: TestRecommendation[];
     action_items: ActionItem[];
   } {
-    const recentExecution = this.executionHistory[this.executionHistory.length - 1];
+    const ___recentExecution = this.executionHistory[this.executionHistory.length - 1];
 
     return {
       executive_summary: this.generateExecutiveSummary(),
@@ -640,15 +640,16 @@ class IntegrationTestSystem extends EventEmitter {
   }
 
   private async gatherEnvironmentInfo(): Promise<EnvironmentInfo> {
+    const os = await import('os');
     return {
       platform: process.platform,
       node_version: process.version,
       memory_gb: Math.round(process.memoryUsage().rss / 1024 / 1024 / 1024),
-      cpu_cores: require('os').cpus().length,
+      cpu_cores: os.cpus().length,
       disk_space_gb: 0, // Would implement actual disk space check
       network_latency_ms: 0, // Would implement actual network latency check
       system_load: 0, // Would implement actual system load check
-      environment_variables: process.env,
+      environment_variables: process.env as Record<string, string>,
     };
   }
 
@@ -698,8 +699,8 @@ class IntegrationTestSystem extends EventEmitter {
   }
 
   private async setupTestExecution(
-    testSuite: IntegrationTestSuite,
-    execution: TestExecution,
+    _testSuite: IntegrationTestSuite,
+    _execution: TestExecution,
   ): Promise<void> {
     // Setup test execution environment
   }
@@ -729,18 +730,18 @@ class IntegrationTestSystem extends EventEmitter {
   }
 
   private async cleanupTestExecution(
-    testSuite: IntegrationTestSuite,
-    execution: TestExecution,
+    _testSuite: IntegrationTestSuite,
+    _execution: TestExecution,
   ): Promise<void> {
     // Cleanup test execution environment
   }
 
-  private async generateExecutionSummary(execution: TestExecution): Promise<ExecutionSummary> {
+  private async generateExecutionSummary(_execution: TestExecution): Promise<ExecutionSummary> {
     // Generate execution summary
     return this.initializeSummary();
   }
 
-  private async generateCoverageReport(execution: TestExecution): Promise<CoverageReport> {
+  private async generateCoverageReport(_execution: TestExecution): Promise<CoverageReport> {
     // Generate coverage report
     return this.initializeCoverage();
   }
@@ -915,22 +916,22 @@ class IntegrationTestSystem extends EventEmitter {
   }
 
   private async detectPerformanceRegressions(
-    baseline: PerformanceMeasurement[],
-    current: PerformanceMeasurement[],
+    _baseline: PerformanceMeasurement[],
+    _current: PerformanceMeasurement[],
   ): Promise<PerformanceRegression[]> {
     return [];
   }
 
   private async detectPerformanceImprovements(
-    baseline: PerformanceMeasurement[],
-    current: PerformanceMeasurement[],
+    _baseline: PerformanceMeasurement[],
+    _current: PerformanceMeasurement[],
   ): Promise<PerformanceImprovement[]> {
     return [];
   }
 
   private calculateOverallPerformanceScore(
-    current: PerformanceMeasurement[],
-    baseline: PerformanceMeasurement[],
+    _current: PerformanceMeasurement[],
+    _baseline: PerformanceMeasurement[],
   ): number {
     return 95;
   }
@@ -1049,11 +1050,5 @@ interface ActionItem {
   dependencies: string[];
 }
 
-export {
-  IntegrationTestSystem,
-  IntegrationTestSuite,
-  TestExecution,
-  TestResult,
-  TestConfiguration,
-  IntegrationTest,
-};
+export { IntegrationTestSystem };
+export type { IntegrationTestSuite, TestExecution, TestResult, TestConfiguration, IntegrationTest };

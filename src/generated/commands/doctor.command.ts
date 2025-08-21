@@ -1,7 +1,7 @@
 /**
  * Doctor Command Module
  * システム診断コマンド - 環境チェックとトラブルシューティング
- * 
+ *
  * Phase 4: Low-frequency commands implementation
  * Category: System
  */
@@ -54,12 +54,12 @@ export class DoctorCommand extends BaseCommand {
   description = 'Run comprehensive system diagnostics and health checks';
   usage = '/doctor [--category=all|env|deps|config|performance] [--verbose] [--fix]';
   category = 'system';
-  
+
   examples = [
     '/doctor',
     '/doctor --category=deps',
     '/doctor --verbose --fix',
-    '/doctor --category=performance'
+    '/doctor --category=performance',
   ];
 
   private checks: DiagnosticCheck[] = [];
@@ -74,7 +74,7 @@ export class DoctorCommand extends BaseCommand {
       this.checks = [];
 
       const startTime = Date.now();
-      
+
       // Run diagnostics based on category
       switch (category) {
         case 'all':
@@ -99,7 +99,7 @@ export class DoctorCommand extends BaseCommand {
         default:
           return {
             success: false,
-            message: `Unknown category: ${category}. Use: all, env, deps, config, performance`
+            message: `Unknown category: ${category}. Use: all, env, deps, config, performance`,
           };
       }
 
@@ -112,16 +112,15 @@ export class DoctorCommand extends BaseCommand {
 
       // Generate report
       const report = await this.generateReport(duration, verbose);
-      
-      return {
-        success: this.checks.filter(c => c.status === 'fail').length === 0,
-        message: report
-      };
 
+      return {
+        success: this.checks.filter((c) => c.status === 'fail').length === 0,
+        message: report,
+      };
     } catch (error) {
       return {
         success: false,
-        message: `Doctor command error: ${error instanceof Error ? error.message : String(error)}`
+        message: `Doctor command error: ${error instanceof Error ? error.message : String(error)}`,
       };
     }
   }
@@ -138,20 +137,20 @@ export class DoctorCommand extends BaseCommand {
     await this.addCheck('Node.js Version', 'critical', async () => {
       const nodeVersion = process.version;
       const major = parseInt(nodeVersion.split('.')[0].substring(1));
-      
+
       if (major >= 18) {
         return { status: 'pass', message: `Node.js ${nodeVersion} ✓` };
       } else if (major >= 16) {
-        return { 
-          status: 'warn', 
+        return {
+          status: 'warn',
           message: `Node.js ${nodeVersion} (consider upgrading to 18+)`,
-          fix: 'Update Node.js to version 18 or higher'
+          fix: 'Update Node.js to version 18 or higher',
         };
       } else {
-        return { 
-          status: 'fail', 
+        return {
+          status: 'fail',
           message: `Node.js ${nodeVersion} is too old`,
-          fix: 'Update Node.js to version 18 or higher'
+          fix: 'Update Node.js to version 18 or higher',
         };
       }
     });
@@ -164,16 +163,16 @@ export class DoctorCommand extends BaseCommand {
       } catch {
         try {
           const { stdout } = await execAsync('npm --version');
-          return { 
-            status: 'warn', 
+          return {
+            status: 'warn',
             message: `npm ${stdout.trim()} (pnpm recommended)`,
-            fix: 'Install pnpm: npm install -g pnpm'
+            fix: 'Install pnpm: npm install -g pnpm',
           };
         } catch {
-          return { 
-            status: 'fail', 
+          return {
+            status: 'fail',
             message: 'No package manager found',
-            fix: 'Install pnpm or npm'
+            fix: 'Install pnpm or npm',
           };
         }
       }
@@ -185,10 +184,10 @@ export class DoctorCommand extends BaseCommand {
         const { stdout } = await execAsync('git --version');
         return { status: 'pass', message: stdout.trim() + ' ✓' };
       } catch {
-        return { 
-          status: 'fail', 
+        return {
+          status: 'fail',
           message: 'Git not found',
-          fix: 'Install Git from https://git-scm.com'
+          fix: 'Install Git from https://git-scm.com',
         };
       }
     });
@@ -197,37 +196,33 @@ export class DoctorCommand extends BaseCommand {
     await this.addCheck('Terminal Environment', 'info', async () => {
       const terminal = process.env.TERM_PROGRAM || process.env.TERMINAL_EMULATOR || 'Unknown';
       const shell = process.env.SHELL || 'Unknown';
-      
-      return { 
-        status: 'pass', 
+
+      return {
+        status: 'pass',
         message: `${terminal} with ${path.basename(shell)} ✓`,
-        details: `Terminal: ${terminal}, Shell: ${shell}`
+        details: `Terminal: ${terminal}, Shell: ${shell}`,
       };
     });
 
     // Environment variables
     await this.addCheck('Environment Variables', 'warning', async () => {
-      const requiredVars = [
-        'OPENAI_API_KEY',
-        'ANTHROPIC_API_KEY',
-        'GOOGLE_AI_API_KEY'
-      ];
-      
-      const missing = requiredVars.filter(varName => !process.env[varName]);
-      
+      const requiredVars = ['OPENAI_API_KEY', 'ANTHROPIC_API_KEY', 'GOOGLE_AI_API_KEY'];
+
+      const missing = requiredVars.filter((varName) => !process.env[varName]);
+
       if (missing.length === 0) {
         return { status: 'pass', message: 'All API keys configured ✓' };
       } else if (missing.length < requiredVars.length) {
-        return { 
-          status: 'warn', 
+        return {
+          status: 'warn',
           message: `Some API keys missing: ${missing.join(', ')}`,
-          fix: 'Configure missing API keys in .env file'
+          fix: 'Configure missing API keys in .env file',
         };
       } else {
-        return { 
-          status: 'fail', 
+        return {
+          status: 'fail',
           message: 'No API keys configured',
-          fix: 'Configure API keys in .env file'
+          fix: 'Configure API keys in .env file',
         };
       }
     });
@@ -239,16 +234,16 @@ export class DoctorCommand extends BaseCommand {
       try {
         await fs.access('package.json');
         const pkg = JSON.parse(await fs.readFile('package.json', 'utf-8'));
-        return { 
-          status: 'pass', 
+        return {
+          status: 'pass',
           message: `package.json found (${pkg.name}@${pkg.version}) ✓`,
-          details: `Dependencies: ${Object.keys(pkg.dependencies || {}).length}, DevDeps: ${Object.keys(pkg.devDependencies || {}).length}`
+          details: `Dependencies: ${Object.keys(pkg.dependencies || {}).length}, DevDeps: ${Object.keys(pkg.devDependencies || {}).length}`,
         };
       } catch {
-        return { 
-          status: 'fail', 
+        return {
+          status: 'fail',
           message: 'package.json not found',
-          fix: 'Initialize npm package: npm init'
+          fix: 'Initialize npm package: npm init',
         };
       }
     });
@@ -258,16 +253,16 @@ export class DoctorCommand extends BaseCommand {
       try {
         await fs.access('node_modules');
         const stats = await fs.stat('node_modules');
-        return { 
-          status: 'pass', 
+        return {
+          status: 'pass',
           message: 'node_modules directory exists ✓',
-          details: `Last modified: ${stats.mtime.toLocaleString()}`
+          details: `Last modified: ${stats.mtime.toLocaleString()}`,
         };
       } catch {
-        return { 
-          status: 'fail', 
+        return {
+          status: 'fail',
           message: 'node_modules not found',
-          fix: 'Run: pnpm install'
+          fix: 'Run: pnpm install',
         };
       }
     });
@@ -275,7 +270,7 @@ export class DoctorCommand extends BaseCommand {
     // Lock file check
     await this.addCheck('Lock File', 'warning', async () => {
       const lockFiles = ['pnpm-lock.yaml', 'package-lock.json', 'yarn.lock'];
-      
+
       for (const lockFile of lockFiles) {
         try {
           await fs.access(lockFile);
@@ -284,11 +279,11 @@ export class DoctorCommand extends BaseCommand {
           // Continue checking other lock files
         }
       }
-      
-      return { 
-        status: 'warn', 
+
+      return {
+        status: 'warn',
         message: 'No lock file found',
-        fix: 'Run package install to generate lock file'
+        fix: 'Run package install to generate lock file',
       };
     });
 
@@ -297,15 +292,15 @@ export class DoctorCommand extends BaseCommand {
       try {
         await fs.access('tsconfig.json');
         const { stdout } = await execAsync('npx tsc --version');
-        return { 
-          status: 'pass', 
-          message: `TypeScript configured (${stdout.trim()}) ✓`
+        return {
+          status: 'pass',
+          message: `TypeScript configured (${stdout.trim()}) ✓`,
         };
       } catch {
-        return { 
-          status: 'warn', 
+        return {
+          status: 'warn',
           message: 'TypeScript not configured',
-          fix: 'Install TypeScript: pnpm add -D typescript'
+          fix: 'Install TypeScript: pnpm add -D typescript',
         };
       }
     });
@@ -317,16 +312,16 @@ export class DoctorCommand extends BaseCommand {
       try {
         await fs.access('.maria');
         const files = await fs.readdir('.maria');
-        return { 
-          status: 'pass', 
+        return {
+          status: 'pass',
           message: `.maria directory found with ${files.length} files ✓`,
-          details: `Files: ${files.join(', ')}`
+          details: `Files: ${files.join(', ')}`,
         };
       } catch {
-        return { 
-          status: 'warn', 
+        return {
+          status: 'warn',
           message: '.maria configuration directory not found',
-          fix: 'Run: maria init'
+          fix: 'Run: maria init',
         };
       }
     });
@@ -336,15 +331,15 @@ export class DoctorCommand extends BaseCommand {
       try {
         const { stdout: name } = await execAsync('git config user.name');
         const { stdout: email } = await execAsync('git config user.email');
-        return { 
-          status: 'pass', 
-          message: `Git configured for ${name.trim()} <${email.trim()}> ✓`
+        return {
+          status: 'pass',
+          message: `Git configured for ${name.trim()} <${email.trim()}> ✓`,
         };
       } catch {
-        return { 
-          status: 'warn', 
+        return {
+          status: 'warn',
           message: 'Git user not configured',
-          fix: 'Configure git: git config --global user.name "Your Name" && git config --global user.email "your@email.com"'
+          fix: 'Configure git: git config --global user.name "Your Name" && git config --global user.email "your@email.com"',
         };
       }
     });
@@ -352,7 +347,7 @@ export class DoctorCommand extends BaseCommand {
     // ESLint configuration
     await this.addCheck('Code Quality Tools', 'info', async () => {
       const configs = ['.eslintrc.js', '.eslintrc.json', '.eslintrc.cjs', 'eslint.config.js'];
-      
+
       for (const config of configs) {
         try {
           await fs.access(config);
@@ -361,11 +356,11 @@ export class DoctorCommand extends BaseCommand {
           // Continue checking other config files
         }
       }
-      
-      return { 
-        status: 'info', 
+
+      return {
+        status: 'info',
         message: 'ESLint not configured',
-        fix: 'Add ESLint configuration'
+        fix: 'Add ESLint configuration',
       };
     });
   }
@@ -376,18 +371,18 @@ export class DoctorCommand extends BaseCommand {
       const used = process.memoryUsage();
       const totalMB = Math.round(used.heapTotal / 1024 / 1024);
       const usedMB = Math.round(used.heapUsed / 1024 / 1024);
-      
+
       if (usedMB > 1000) {
-        return { 
-          status: 'warn', 
+        return {
+          status: 'warn',
           message: `High memory usage: ${usedMB}MB used of ${totalMB}MB`,
-          fix: 'Consider restarting the application'
+          fix: 'Consider restarting the application',
         };
       }
-      
-      return { 
-        status: 'pass', 
-        message: `Memory usage: ${usedMB}MB used of ${totalMB}MB ✓`
+
+      return {
+        status: 'pass',
+        message: `Memory usage: ${usedMB}MB used of ${totalMB}MB ✓`,
       };
     });
 
@@ -400,27 +395,27 @@ export class DoctorCommand extends BaseCommand {
           const parts = lines[1].split(/\s+/);
           const usage = parts[4]?.replace('%', '');
           const usagePercent = parseInt(usage);
-          
+
           if (usagePercent > 90) {
-            return { 
-              status: 'fail', 
+            return {
+              status: 'fail',
               message: `Critical disk space: ${usage}% used`,
-              fix: 'Free up disk space'
+              fix: 'Free up disk space',
             };
           } else if (usagePercent > 80) {
-            return { 
-              status: 'warn', 
+            return {
+              status: 'warn',
               message: `Low disk space: ${usage}% used`,
-              fix: 'Consider cleaning up files'
+              fix: 'Consider cleaning up files',
             };
           }
-          
+
           return { status: 'pass', message: `Disk usage: ${usage}% ✓` };
         }
       } catch {
         // Fallback for non-Unix systems
       }
-      
+
       return { status: 'info', message: 'Disk space check not available on this platform' };
     });
 
@@ -429,47 +424,49 @@ export class DoctorCommand extends BaseCommand {
       try {
         // Test OpenAI API connectivity
         const startTime = Date.now();
-        await execAsync('curl -s --max-time 5 https://api.openai.com/v1/models', { timeout: 10000 });
+        await execAsync('curl -s --max-time 5 https://api.openai.com/v1/models', {
+          timeout: 10000,
+        });
         const latency = Date.now() - startTime;
-        
+
         if (latency > 5000) {
-          return { 
-            status: 'warn', 
+          return {
+            status: 'warn',
             message: `Slow network connection (${latency}ms)`,
-            details: 'API responses may be delayed'
+            details: 'API responses may be delayed',
           };
         }
-        
-        return { 
-          status: 'pass', 
-          message: `Network connectivity OK (${latency}ms) ✓`
+
+        return {
+          status: 'pass',
+          message: `Network connectivity OK (${latency}ms) ✓`,
         };
       } catch {
-        return { 
-          status: 'fail', 
+        return {
+          status: 'fail',
           message: 'Network connectivity issues',
-          fix: 'Check internet connection and firewall settings'
+          fix: 'Check internet connection and firewall settings',
         };
       }
     });
   }
 
   private async addCheck(
-    name: string, 
-    category: 'critical' | 'warning' | 'info', 
+    name: string,
+    category: 'critical' | 'warning' | 'info',
     checkFn: () => Promise<{
       status: 'pass' | 'fail' | 'warn' | 'skip';
       message: string;
       details?: string;
       fix?: string;
-    }>
+    }>,
   ): Promise<void> {
     const startTime = Date.now();
-    
+
     try {
       const result = await checkFn();
       const duration = Date.now() - startTime;
-      
+
       this.checks.push({
         name,
         category,
@@ -477,24 +474,26 @@ export class DoctorCommand extends BaseCommand {
         message: result.message,
         details: result.details,
         fix: result.fix,
-        duration
+        duration,
       });
     } catch (error) {
       const duration = Date.now() - startTime;
-      
+
       this.checks.push({
         name,
         category,
         status: 'fail',
         message: `Check failed: ${error instanceof Error ? error.message : String(error)}`,
-        duration
+        duration,
       });
     }
   }
 
   private async applyFixes(): Promise<void> {
-    const fixableChecks = this.checks.filter(c => c.fix && (c.status === 'fail' || c.status === 'warn'));
-    
+    const fixableChecks = this.checks.filter(
+      (c) => c.fix && (c.status === 'fail' || c.status === 'warn'),
+    );
+
     for (const check of fixableChecks) {
       try {
         // For now, just log what would be fixed
@@ -509,28 +508,37 @@ export class DoctorCommand extends BaseCommand {
   private async generateReport(duration: number, verbose: boolean): Promise<string> {
     const summary = {
       total: this.checks.length,
-      passed: this.checks.filter(c => c.status === 'pass').length,
-      warnings: this.checks.filter(c => c.status === 'warn').length,
-      failed: this.checks.filter(c => c.status === 'fail').length,
-      skipped: this.checks.filter(c => c.status === 'skip').length
+      passed: this.checks.filter((c) => c.status === 'pass').length,
+      warnings: this.checks.filter((c) => c.status === 'warn').length,
+      failed: this.checks.filter((c) => c.status === 'fail').length,
+      skipped: this.checks.filter((c) => c.status === 'skip').length,
     };
 
     const getStatusIcon = (status: string) => {
       switch (status) {
-        case 'pass': return chalk.green('✓');
-        case 'warn': return chalk.yellow('⚠');
-        case 'fail': return chalk.red('✗');
-        case 'skip': return chalk.gray('○');
-        default: return '?';
+        case 'pass':
+          return chalk.green('✓');
+        case 'warn':
+          return chalk.yellow('⚠');
+        case 'fail':
+          return chalk.red('✗');
+        case 'skip':
+          return chalk.gray('○');
+        default:
+          return '?';
       }
     };
 
     const getCategoryColor = (category: string) => {
       switch (category) {
-        case 'critical': return chalk.red;
-        case 'warning': return chalk.yellow;
-        case 'info': return chalk.blue;
-        default: return chalk.white;
+        case 'critical':
+          return chalk.red;
+        case 'warning':
+          return chalk.yellow;
+        case 'info':
+          return chalk.blue;
+        default:
+          return chalk.white;
       }
     };
 
@@ -553,23 +561,23 @@ export class DoctorCommand extends BaseCommand {
 
     // Group checks by category
     const categories = ['critical', 'warning', 'info'];
-    
+
     for (const category of categories) {
-      const categoryChecks = this.checks.filter(c => c.category === category);
+      const categoryChecks = this.checks.filter((c) => c.category === category);
       if (categoryChecks.length === 0) continue;
-      
+
       const categoryColor = getCategoryColor(category);
       report += `${categoryColor(category.toUpperCase())} Checks:\n`;
-      
+
       for (const check of categoryChecks) {
         const icon = getStatusIcon(check.status);
         const duration = verbose && check.duration ? chalk.gray(` (${check.duration}ms)`) : '';
         report += `  ${icon} ${check.name}: ${check.message}${duration}\n`;
-        
+
         if (verbose && check.details) {
           report += `    ${chalk.gray(check.details)}\n`;
         }
-        
+
         if (check.fix && (check.status === 'fail' || check.status === 'warn')) {
           report += `    ${chalk.blue('💡 Fix:')} ${check.fix}\n`;
         }
@@ -578,14 +586,16 @@ export class DoctorCommand extends BaseCommand {
     }
 
     // Overall status
-    const overallStatus = summary.failed === 0 ? 
-      (summary.warnings === 0 ? 'HEALTHY' : 'HEALTHY (with warnings)') : 
-      'ISSUES DETECTED';
-    
-    const statusColor = summary.failed === 0 ? 
-      (summary.warnings === 0 ? chalk.green : chalk.yellow) : 
-      chalk.red;
-    
+    const overallStatus =
+      summary.failed === 0
+        ? summary.warnings === 0
+          ? 'HEALTHY'
+          : 'HEALTHY (with warnings)'
+        : 'ISSUES DETECTED';
+
+    const statusColor =
+      summary.failed === 0 ? (summary.warnings === 0 ? chalk.green : chalk.yellow) : chalk.red;
+
     report += `${chalk.bold('Overall Status:')} ${statusColor(overallStatus)}\n`;
 
     if (summary.failed > 0 || summary.warnings > 0) {

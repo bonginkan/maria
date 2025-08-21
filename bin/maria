@@ -47,17 +47,17 @@ if (hasArgs) {
   });
   
 } else {
-  // If no arguments, launch chat mode (interactive mode)
+  // If no arguments, launch interactive mode directly
   
-  // Check if CLI file exists
-  if (!fs.existsSync(cliFile)) {
-    console.error('❌ CLI file not found:', cliFile);
+  // Check if maria.js file exists
+  if (!fs.existsSync(mariaFile)) {
+    console.error('❌ Built file not found:', mariaFile);
     console.error('💡 Please run: pnpm build');
     process.exit(1);
   }
   
-  // Launch the chat command for interactive mode
-  const child = spawn('node', ['--no-deprecation', cliFile, 'chat'], {
+  // Launch the maria entry point directly for interactive mode
+  const child = spawn('node', ['--no-deprecation', mariaFile], {
     stdio: 'inherit',
     cwd: process.cwd(),
     env: { ...process.env, NODE_NO_WARNINGS: '1' }

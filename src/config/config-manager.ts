@@ -91,9 +91,11 @@ export class ConfigManager {
   // Save configuration to file (for CLI usage)
   async save(configPath?: string): Promise<void> {
     const { importNodeBuiltin, safeDynamicImport } = await import('../utils/import-helper.js');
-    const fs = await safeDynamicImport('fs-extra').catch(() => importNodeBuiltin('fs'));
-    const path = await importNodeBuiltin('path');
-    const os = await importNodeBuiltin('os');
+    const fs = (await safeDynamicImport('fs-extra').catch(() =>
+      importNodeBuiltin('fs'),
+    )) as typeof import('fs-extra');
+    const path = (await importNodeBuiltin('path')) as typeof import('path');
+    const os = (await importNodeBuiltin('os')) as typeof import('os');
 
     const targetPath = configPath || path.join(os.homedir(), '.maria', 'config.json');
 
@@ -107,9 +109,11 @@ export class ConfigManager {
   // Load configuration from file
   static async load(configPath?: string): Promise<ConfigManager> {
     const { importNodeBuiltin, safeDynamicImport } = await import('../utils/import-helper.js');
-    const fs = await safeDynamicImport('fs-extra').catch(() => importNodeBuiltin('fs'));
-    const path = await importNodeBuiltin('path');
-    const os = await importNodeBuiltin('os');
+    const fs = (await safeDynamicImport('fs-extra').catch(() =>
+      importNodeBuiltin('fs'),
+    )) as typeof import('fs-extra');
+    const path = (await importNodeBuiltin('path')) as typeof import('path');
+    const os = (await importNodeBuiltin('os')) as typeof import('os');
 
     const targetPath = configPath || path.join(os.homedir(), '.maria', 'config.json');
 

@@ -203,7 +203,9 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
     return tokens.toString();
   }
 
-  private async checkModelStatus(model: unknown): Promise<{ available: boolean; latency?: number }> {
+  private async checkModelStatus(
+    model: unknown,
+  ): Promise<{ available: boolean; latency?: number }> {
     try {
       const provider = await this.providerManager.getProvider(model.provider);
       const startTime = Date.now();

@@ -329,7 +329,7 @@ export class BackgroundProcessor extends EventEmitter {
       process.controller?.abort();
 
       // Update task status
-      const sessionId = process.task.sessionId;
+      const sessionId = process.task.id;
       this.uiStateManager.updateBackgroundTask(sessionId, processId, {
         status: 'error',
         error: 'Cancelled by user',
@@ -432,10 +432,10 @@ export class BackgroundProcessor extends EventEmitter {
 
     return {
       totalProcesses: allProcesses.length,
-      runningProcesses: byStatus.running || 0,
-      completedProcesses: byStatus.completed || 0,
-      errorProcesses: byStatus.error || 0,
-      pausedProcesses: byStatus.paused || 0,
+      runningProcesses: byStatus['running'] || 0,
+      completedProcesses: byStatus['completed'] || 0,
+      errorProcesses: byStatus['error'] || 0,
+      pausedProcesses: byStatus['paused'] || 0,
       maxConcurrentProcesses: this.maxConcurrentProcesses,
       memoryUsage: this.processes.size * 2000, // rough estimate
     };

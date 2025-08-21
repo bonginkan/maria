@@ -143,8 +143,8 @@ class IntelligentDependencyManager extends EventEmitter {
   private static instance: IntelligentDependencyManager;
   private updateStrategy: DependencyUpdateStrategy;
   private packageManagerConfig: PackageManagerConfig;
-  private dependencyCache: Map<string, DependencyInfo> = new Map();
-  private securityDatabase: Map<string, SecurityVulnerability[]> = new Map();
+  private __dependencyCache: Map<string, DependencyInfo> = new Map();
+  private __securityDatabase: Map<string, SecurityVulnerability[]> = new Map();
   private lastAnalysis?: DependencyReport;
   private monitoringActive: boolean = false;
 
@@ -333,7 +333,9 @@ class IntelligentDependencyManager extends EventEmitter {
         Object.assign(results, batchResult);
       } else {
         for (const update of updatesToPerform) {
-          const updateResult = await this.performSingleUpdate(projectPath, update);
+          const updateResult = (await this.performSingleUpdate(projectPath, update)) as {
+            success: boolean;
+          };
           if (updateResult.success) {
             results.updated_packages.push(update.name);
           } else {
@@ -347,7 +349,10 @@ class IntelligentDependencyManager extends EventEmitter {
         results.test_results = await this.runTestSuite(projectPath);
 
         if (!results.test_results && this.updateStrategy.rollback_on_failure) {
-          const rollbackResult = await this.rollbackUpdates(projectPath, results.updated_packages);
+          const rollbackResult = (await this.rollbackUpdates(
+            projectPath,
+            results.updated_packages,
+          )) as { rolledback_packages: string[] };
           results.rollbacks = rollbackResult.rolledback_packages;
         }
       }
@@ -382,7 +387,10 @@ class IntelligentDependencyManager extends EventEmitter {
     for (const conflict of conflictsToResolve) {
       try {
         if (conflict.auto_resolvable) {
-          const resolution = await this.applyConflictResolution(projectPath, conflict);
+          const resolution = (await this.applyConflictResolution(projectPath, conflict)) as {
+            success: boolean;
+            changes: string[];
+          };
           if (resolution.success) {
             results.resolved_conflicts.push(conflict);
             results.changes_made.push(...resolution.changes);
@@ -431,7 +439,10 @@ class IntelligentDependencyManager extends EventEmitter {
 
     for (const optimization of optimizations) {
       try {
-        const optimizationResult = await this.applyOptimization(projectPath, optimization);
+        const optimizationResult = (await this.applyOptimization(projectPath, optimization)) as {
+          success: boolean;
+          changes: string[];
+        };
         if (optimizationResult.success) {
           results.applied_optimizations.push(optimization);
           results.estimated_savings.bundle_size_reduction_kb +=
@@ -463,7 +474,7 @@ class IntelligentDependencyManager extends EventEmitter {
     this.emit('monitoring_started', { projectPath });
 
     // Set up periodic analysis
-    const monitoringInterval = setInterval(
+    setInterval(
       async () => {
         if (this.monitoringActive) {
           try {
@@ -486,7 +497,7 @@ class IntelligentDependencyManager extends EventEmitter {
             const majorUpdates = report.dependencies.filter((dep) => {
               const [currentMajor] = dep.current_version.split('.');
               const [latestMajor] = dep.latest_version.split('.');
-              return parseInt(latestMajor) > parseInt(currentMajor);
+              return parseInt(latestMajor || '0', 10) > parseInt(currentMajor || '0', 10);
             });
 
             if (
@@ -559,12 +570,15 @@ class IntelligentDependencyManager extends EventEmitter {
         major_updates_available: report.dependencies.filter((d) => {
           const [currentMajor] = d.current_version.split('.');
           const [latestMajor] = d.latest_version.split('.');
-          return parseInt(latestMajor) > parseInt(currentMajor);
+          return parseInt(latestMajor || '0', 10) > parseInt(currentMajor || '0', 10);
         }).length,
         minor_updates_available: report.dependencies.filter((d) => {
           const [currentMajor, currentMinor] = d.current_version.split('.');
           const [latestMajor, latestMinor] = d.latest_version.split('.');
-          return currentMajor === latestMajor && parseInt(latestMinor) > parseInt(currentMinor);
+          return (
+            currentMajor === latestMajor &&
+            parseInt(latestMinor || '0', 10) > parseInt(currentMinor || '0', 10)
+          );
         }).length,
         patch_updates_available: report.dependencies.filter((d) => {
           const currentParts = d.current_version.split('.');
@@ -572,7 +586,7 @@ class IntelligentDependencyManager extends EventEmitter {
           return (
             currentParts[0] === latestParts[0] &&
             currentParts[1] === latestParts[1] &&
-            parseInt(latestParts[2]) > parseInt(currentParts[2])
+            parseInt(latestParts[2] || '0', 10) > parseInt(currentParts[2] || '0', 10)
           );
         }).length,
       },
@@ -761,8 +775,8 @@ class IntelligentDependencyManager extends EventEmitter {
   }
 }
 
-export {
-  IntelligentDependencyManager,
+export { IntelligentDependencyManager };
+export type {
   DependencyInfo,
   DependencyReport,
   DependencyRecommendation,

@@ -7,8 +7,13 @@ import chalk from 'chalk';
 import { MariaAI, MariaAIConfig } from './maria-ai';
 import { createInteractiveSession } from './services/interactive-session';
 import { loadConfig } from './config/loader';
-import { printWelcome, printStatus } from './utils/ui';
+import { printStatus } from './utils/ui';
 import { HealthStatus } from './types/common';
+import registerSetupOllamaCommand from './commands/setup-ollama';
+import registerSetupVllmCommand from './commands/setup-vllm';
+import registerCodeRAGCommand from './commands/coderag';
+import registerDocumentCommand from './commands/document';
+import registerApprovalGitCommands from './commands/approval-git';
 
 export interface CLIOptions {
   config?: string;
@@ -25,7 +30,7 @@ export function createCLI(): Command {
   program
     .name('maria')
     .description('MARIA - Intelligent CLI Assistant with Multi-Model AI Support')
-    .version('1.0.7');
+    .version('1.2.0');
 
   // Interactive chat mode (default)
   program
@@ -107,15 +112,32 @@ export function createCLI(): Command {
       await checkHealth(options);
     });
 
+  // Register setup commands
+  registerSetupOllamaCommand(program);
+  registerSetupVllmCommand(program);
+  registerCodeRAGCommand(program);
+  registerDocumentCommand(program);
+
+  // Register approval system commands
+  registerApprovalGitCommands(program);
+
   return program;
 }
 
 async function startInteractiveChat(config: MariaAIConfig): Promise<void> {
-  printWelcome();
+  // Import and initialize startup manager
+  const { LLMStartupManager } = await import('./services/llm-startup-manager.js');
+  const startupManager = new LLMStartupManager();
 
+  // Display welcome and AI service initialization
+  startupManager.displayWelcome();
+  await startupManager.initializeServices();
+
+  // Initialize MariaAI (cloud services are ready to use)
   const maria = new MariaAI(config);
-  const session = createInteractiveSession(maria);
 
+  // Start interactive session
+  const session = createInteractiveSession(maria);
   await session.start();
 }
 
@@ -169,14 +191,14 @@ async function processVision(
   // Ensure Maria is initialized before using
   await maria.initialize();
 
-  const fs = await (async () => {
+  const fs = (await (async () => {
     try {
       return await import('fs-extra');
     } catch {
       const { importNodeBuiltin } = await import('./utils/import-helper.js');
       return importNodeBuiltin('fs');
     }
-  })();
+  })()) as typeof import('fs-extra');
 
   try {
     console.log(chalk.blue('👁️  Analyzing image...'));
@@ -233,10 +255,10 @@ async function listModels(provider?: string): Promise<void> {
 async function runSetup(): Promise<void> {
   console.log(chalk.blue('🚀 Running MARIA setup wizard...'));
 
-  const { spawn } = await (async () => {
+  const { spawn } = (await (async () => {
     const { importNodeBuiltin } = await import('./utils/import-helper.js');
     return importNodeBuiltin('child_process');
-  })();
+  })()) as typeof import('child_process');
   const setupProcess = spawn('./scripts/setup-wizard.sh', [], {
     stdio: 'inherit',
     cwd: process.cwd(),
@@ -256,10 +278,10 @@ async function checkHealth(options: { json?: boolean; watch?: boolean }): Promis
   if (options.watch) {
     console.log(chalk.blue('🔄 Starting health monitoring... Press Ctrl+C to stop'));
 
-    const { spawn } = await (async () => {
+    const { spawn } = (await (async () => {
       const { importNodeBuiltin } = await import('./utils/import-helper.js');
       return importNodeBuiltin('child_process');
-    })();
+    })()) as typeof import('child_process');
     const healthProcess = spawn('./scripts/health-monitor.sh', ['monitor'], {
       stdio: 'inherit',
       cwd: process.cwd(),
@@ -270,10 +292,10 @@ async function checkHealth(options: { json?: boolean; watch?: boolean }): Promis
       process.exit(0);
     });
   } else {
-    const { spawn } = await (async () => {
+    const { spawn } = (await (async () => {
       const { importNodeBuiltin } = await import('./utils/import-helper.js');
       return importNodeBuiltin('child_process');
-    })();
+    })()) as typeof import('child_process');
     const args = options.json ? ['json'] : ['status'];
     const healthProcess = spawn('./scripts/health-monitor.sh', args, {
       stdio: 'inherit',
