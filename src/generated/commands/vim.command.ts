@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import chalk from 'chalk';
@@ -231,7 +231,7 @@ export class VimCommand extends BaseCommand {
     message += `• Use ${chalk.code('/vim help')} for a quick guide\n`;
     message += `• Press ${chalk.code('i')} to enter insert mode`;
     
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async disableVimMode(): Promise<SlashCommandResult> {
@@ -285,7 +285,7 @@ export class VimCommand extends BaseCommand {
       message += `${chalk.blue('📖 Learn more:')} /vim help`;
     }
     
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async configureVim(flags: Record<string, unknown>): Promise<SlashCommandResult> {
@@ -359,7 +359,7 @@ export class VimCommand extends BaseCommand {
       message += `\n${chalk.yellow('⚠️  Vim mode is disabled. Use \`/vim on\` to enable')`;
     }
     
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async showKeyBindings(flags: Record<string, unknown>): Promise<SlashCommandResult> {
@@ -415,7 +415,7 @@ export class VimCommand extends BaseCommand {
     message += `• Press ${chalk.code(config.preferences.escapeKey)} to return to normal mode\n`;
     message += `• Key sequences timeout after ${config.preferences.timeout}ms`;
     
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private getKeyMappings(): VimKeyMapping[] {
@@ -491,7 +491,7 @@ export class VimCommand extends BaseCommand {
     message += `• Use visual mode (v) for precise selections\n`;
     message += `• Customize leader key for personal shortcuts`;
     
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async resetToDefaults(): Promise<SlashCommandResult> {
@@ -587,6 +587,6 @@ export class VimCommand extends BaseCommand {
     message += `\n${chalk.blue('💡 Note:')} This is a configuration test only.\n`;
     message += `Actual key handling depends on your terminal and system.`;
     
-    return { success: allWorking, message };
+    return { success: allWorking, _message };
   }
 }

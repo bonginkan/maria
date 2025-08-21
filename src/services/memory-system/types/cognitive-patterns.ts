@@ -1,6 +1,6 @@
 /**
  * MARIA Memory System - Cognitive Pattern Classifications
- * 
+ *
  * Integration with MARIA's Internal Mode System (50 cognitive modes)
  * Memory-aware cognitive pattern recognition and adaptation
  */
@@ -19,14 +19,14 @@ export interface CognitivePattern {
 }
 
 export type CognitiveCategory =
-  | 'reasoning'      // 🧠 Reasoning modes
-  | 'creative'       // 💡 Creative modes  
-  | 'analytical'     // 📊 Analytical modes
-  | 'structural'     // 📐 Structural modes
-  | 'validation'     // 🔍 Validation modes
-  | 'contemplative'  // 🤔 Contemplative modes
-  | 'intensive'      // 💪 Intensive modes
-  | 'learning'       // 📚 Learning modes
+  | 'reasoning' // 🧠 Reasoning modes
+  | 'creative' // 💡 Creative modes
+  | 'analytical' // 📊 Analytical modes
+  | 'structural' // 📐 Structural modes
+  | 'validation' // 🔍 Validation modes
+  | 'contemplative' // 🤔 Contemplative modes
+  | 'intensive' // 💪 Intensive modes
+  | 'learning' // 📚 Learning modes
   | 'collaborative'; // 🤝 Collaborative modes
 
 export interface PatternTrigger {
@@ -38,16 +38,16 @@ export interface PatternTrigger {
 }
 
 export type TriggerType =
-  | 'keyword'           // Specific keywords in user input
-  | 'intent'            // Detected user intent
-  | 'context'           // Current session context
-  | 'history'           // Historical pattern
-  | 'performance'       // System performance metrics
-  | 'user_preference'   // User preference patterns
-  | 'team_activity'     // Team collaboration signals
-  | 'code_complexity'   // Code complexity analysis
-  | 'error_pattern'     // Error or bug patterns
-  | 'learning_state';   // User learning progression
+  | 'keyword' // Specific keywords in user input
+  | 'intent' // Detected user intent
+  | 'context' // Current session context
+  | 'history' // Historical pattern
+  | 'performance' // System performance metrics
+  | 'user_preference' // User preference patterns
+  | 'team_activity' // Team collaboration signals
+  | 'code_complexity' // Code complexity analysis
+  | 'error_pattern' // Error or bug patterns
+  | 'learning_state'; // User learning progression
 
 export interface TriggerContext {
   projectType?: string;
@@ -360,9 +360,9 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
           system2Required: true,
           historicalDataDepth: 7,
           patternMatchingNeeded: true,
-          learningDataRequired: true
-        }
-      }
+          learningDataRequired: true,
+        },
+      },
     ],
     memoryRequirements: {
       system1Usage: {
@@ -371,7 +371,7 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         preferenceAccess: true,
         quickDecisions: false,
         contextualMemory: true,
-        estimatedLatency: 50
+        estimatedLatency: 50,
       },
       system2Usage: {
         reasoningTraces: true,
@@ -379,28 +379,28 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         reflectiveThinking: true,
         complexDecisions: true,
         improvementSuggestions: true,
-        estimatedLatency: 200
+        estimatedLatency: 200,
       },
       learningIntegration: {
         patternLearning: true,
         preferenceLearning: true,
         adaptiveBehavior: true,
         crossSessionContinuity: true,
-        teamLearning: false
+        teamLearning: false,
       },
       performanceImpact: {
         memoryFootprint: 'medium',
         computationCost: 'medium',
         latencyIncrease: 100,
-        throughputImpact: 15
-      }
+        throughputImpact: 15,
+      },
     },
     performance: {
       accuracy: 0.85,
       latency: 150,
       memoryEfficiency: 0.75,
       userSatisfaction: 0.8,
-      adaptationSpeed: 0.7
+      adaptationSpeed: 0.7,
     },
     adaptation: {
       learningRate: 0.1,
@@ -411,16 +411,16 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         negativeReinforcement: true,
         neutralDecay: true,
         feedbackIntegration: true,
-        automaticAdjustment: true
+        automaticAdjustment: true,
       },
       contextSensitivity: {
         projectAware: true,
         teamAware: false,
         temporalAware: true,
         userStateAware: true,
-        performanceAware: true
-      }
-    }
+        performanceAware: true,
+      },
+    },
   },
 
   debugging: {
@@ -439,9 +439,9 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
           system2Required: true,
           historicalDataDepth: 30,
           patternMatchingNeeded: true,
-          learningDataRequired: true
-        }
-      }
+          learningDataRequired: true,
+        },
+      },
     ],
     memoryRequirements: {
       system1Usage: {
@@ -450,7 +450,7 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         preferenceAccess: false,
         quickDecisions: true,
         contextualMemory: true,
-        estimatedLatency: 30
+        estimatedLatency: 30,
       },
       system2Usage: {
         reasoningTraces: true,
@@ -458,28 +458,28 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         reflectiveThinking: false,
         complexDecisions: true,
         improvementSuggestions: true,
-        estimatedLatency: 150
+        estimatedLatency: 150,
       },
       learningIntegration: {
         patternLearning: true,
         preferenceLearning: false,
         adaptiveBehavior: true,
         crossSessionContinuity: true,
-        teamLearning: true
+        teamLearning: true,
       },
       performanceImpact: {
         memoryFootprint: 'high',
         computationCost: 'medium',
         latencyIncrease: 75,
-        throughputImpact: 10
-      }
+        throughputImpact: 10,
+      },
     },
     performance: {
       accuracy: 0.9,
       latency: 100,
       memoryEfficiency: 0.8,
       userSatisfaction: 0.85,
-      adaptationSpeed: 0.8
+      adaptationSpeed: 0.8,
     },
     adaptation: {
       learningRate: 0.15,
@@ -490,16 +490,16 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         negativeReinforcement: true,
         neutralDecay: false,
         feedbackIntegration: true,
-        automaticAdjustment: true
+        automaticAdjustment: true,
       },
       contextSensitivity: {
         projectAware: true,
         teamAware: true,
         temporalAware: false,
         userStateAware: true,
-        performanceAware: true
-      }
-    }
+        performanceAware: true,
+      },
+    },
   },
 
   optimizing: {
@@ -518,9 +518,9 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
           system2Required: true,
           historicalDataDepth: 14,
           patternMatchingNeeded: true,
-          learningDataRequired: true
-        }
-      }
+          learningDataRequired: true,
+        },
+      },
     ],
     memoryRequirements: {
       system1Usage: {
@@ -529,7 +529,7 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         preferenceAccess: true,
         quickDecisions: false,
         contextualMemory: true,
-        estimatedLatency: 40
+        estimatedLatency: 40,
       },
       system2Usage: {
         reasoningTraces: true,
@@ -537,28 +537,28 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         reflectiveThinking: true,
         complexDecisions: true,
         improvementSuggestions: true,
-        estimatedLatency: 180
+        estimatedLatency: 180,
       },
       learningIntegration: {
         patternLearning: true,
         preferenceLearning: true,
         adaptiveBehavior: true,
         crossSessionContinuity: true,
-        teamLearning: true
+        teamLearning: true,
       },
       performanceImpact: {
         memoryFootprint: 'medium',
         computationCost: 'high',
         latencyIncrease: 120,
-        throughputImpact: 20
-      }
+        throughputImpact: 20,
+      },
     },
     performance: {
       accuracy: 0.8,
       latency: 180,
       memoryEfficiency: 0.7,
       userSatisfaction: 0.85,
-      adaptationSpeed: 0.75
+      adaptationSpeed: 0.75,
     },
     adaptation: {
       learningRate: 0.12,
@@ -569,16 +569,16 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         negativeReinforcement: true,
         neutralDecay: true,
         feedbackIntegration: true,
-        automaticAdjustment: true
+        automaticAdjustment: true,
       },
       contextSensitivity: {
         projectAware: true,
         teamAware: true,
         temporalAware: true,
         userStateAware: true,
-        performanceAware: true
-      }
-    }
+        performanceAware: true,
+      },
+    },
   },
 
   brainstorming: {
@@ -597,9 +597,9 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
           system2Required: false,
           historicalDataDepth: 7,
           patternMatchingNeeded: true,
-          learningDataRequired: true
-        }
-      }
+          learningDataRequired: true,
+        },
+      },
     ],
     memoryRequirements: {
       system1Usage: {
@@ -608,7 +608,7 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         preferenceAccess: true,
         quickDecisions: true,
         contextualMemory: true,
-        estimatedLatency: 60
+        estimatedLatency: 60,
       },
       system2Usage: {
         reasoningTraces: false,
@@ -616,28 +616,28 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         reflectiveThinking: true,
         complexDecisions: false,
         improvementSuggestions: true,
-        estimatedLatency: 100
+        estimatedLatency: 100,
       },
       learningIntegration: {
         patternLearning: true,
         preferenceLearning: true,
         adaptiveBehavior: true,
         crossSessionContinuity: false,
-        teamLearning: true
+        teamLearning: true,
       },
       performanceImpact: {
         memoryFootprint: 'medium',
         computationCost: 'low',
         latencyIncrease: 50,
-        throughputImpact: 8
-      }
+        throughputImpact: 8,
+      },
     },
     performance: {
       accuracy: 0.75,
       latency: 80,
       memoryEfficiency: 0.85,
       userSatisfaction: 0.9,
-      adaptationSpeed: 0.9
+      adaptationSpeed: 0.9,
     },
     adaptation: {
       learningRate: 0.2,
@@ -648,17 +648,17 @@ export const COGNITIVE_PATTERNS: Record<string, CognitivePattern> = {
         negativeReinforcement: false,
         neutralDecay: true,
         feedbackIntegration: true,
-        automaticAdjustment: false
+        automaticAdjustment: false,
       },
       contextSensitivity: {
         projectAware: false,
         teamAware: true,
         temporalAware: false,
         userStateAware: true,
-        performanceAware: false
-      }
-    }
-  }
+        performanceAware: false,
+      },
+    },
+  },
 
   // Additional cognitive patterns would be defined here for all 50 modes
   // Following the same structure and adapting memory requirements accordingly

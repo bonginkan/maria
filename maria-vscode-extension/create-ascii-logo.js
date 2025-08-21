@@ -1,0 +1,80 @@
+// Create ASCII art style logo for MARIA CODE extension
+const fs = require('fs');
+
+// Create SVG logo with ASCII art style blocks
+const svgLogo = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="128" height="128" fill="#1a1a1a" rx="12"/>
+  
+  <!-- Border frame -->
+  <rect x="4" y="4" width="120" height="120" fill="none" stroke="#C341C5" stroke-width="1" rx="8"/>
+  
+  <!-- MARIA text using block letters (simplified for icon) -->
+  <!-- M -->
+  <rect x="12" y="20" width="4" height="20" fill="#C341C5"/>
+  <rect x="12" y="20" width="12" height="4" fill="#C341C5"/>
+  <rect x="20" y="20" width="4" height="20" fill="#C341C5"/>
+  <rect x="16" y="28" width="4" height="8" fill="#C341C5"/>
+  
+  <!-- A -->
+  <rect x="28" y="24" width="4" height="16" fill="#C341C5"/>
+  <rect x="28" y="20" width="12" height="4" fill="#C341C5"/>
+  <rect x="36" y="24" width="4" height="16" fill="#C341C5"/>
+  <rect x="32" y="30" width="4" height="4" fill="#C341C5"/>
+  
+  <!-- R -->
+  <rect x="44" y="20" width="4" height="20" fill="#C341C5"/>
+  <rect x="44" y="20" width="12" height="4" fill="#C341C5"/>
+  <rect x="52" y="24" width="4" height="6" fill="#C341C5"/>
+  <rect x="44" y="30" width="8" height="4" fill="#C341C5"/>
+  <rect x="50" y="34" width="6" height="6" fill="#C341C5"/>
+  
+  <!-- I -->
+  <rect x="60" y="20" width="8" height="4" fill="#C341C5"/>
+  <rect x="62" y="24" width="4" height="12" fill="#C341C5"/>
+  <rect x="60" y="36" width="8" height="4" fill="#C341C5"/>
+  
+  <!-- A -->
+  <rect x="72" y="24" width="4" height="16" fill="#C341C5"/>
+  <rect x="72" y="20" width="12" height="4" fill="#C341C5"/>
+  <rect x="80" y="24" width="4" height="16" fill="#C341C5"/>
+  <rect x="76" y="30" width="4" height="4" fill="#C341C5"/>
+  
+  <!-- CODE text (smaller) -->
+  <!-- C -->
+  <rect x="20" y="50" width="12" height="4" fill="#C341C5"/>
+  <rect x="20" y="54" width="4" height="8" fill="#C341C5"/>
+  <rect x="20" y="62" width="12" height="4" fill="#C341C5"/>
+  
+  <!-- O -->
+  <rect x="36" y="50" width="12" height="4" fill="#C341C5"/>
+  <rect x="36" y="54" width="4" height="8" fill="#C341C5"/>
+  <rect x="44" y="54" width="4" height="8" fill="#C341C5"/>
+  <rect x="36" y="62" width="12" height="4" fill="#C341C5"/>
+  
+  <!-- D -->
+  <rect x="52" y="50" width="8" height="4" fill="#C341C5"/>
+  <rect x="52" y="54" width="4" height="8" fill="#C341C5"/>
+  <rect x="56" y="54" width="4" height="8" fill="#C341C5"/>
+  <rect x="52" y="62" width="8" height="4" fill="#C341C5"/>
+  
+  <!-- E -->
+  <rect x="64" y="50" width="12" height="4" fill="#C341C5"/>
+  <rect x="64" y="54" width="4" height="4" fill="#C341C5"/>
+  <rect x="64" y="58" width="8" height="4" fill="#C341C5"/>
+  <rect x="64" y="62" width="12" height="4" fill="#C341C5"/>
+  
+  <!-- AI indicator dot -->
+  <circle cx="64" cy="80" r="3" fill="#00FF88"/>
+  
+  <!-- Subtitle -->
+  <text x="64" y="95" font-family="monospace" font-size="8" fill="#888" text-anchor="middle">AI Platform</text>
+  <text x="64" y="105" font-family="monospace" font-size="6" fill="#666" text-anchor="middle">Bonginkan.ai</text>
+</svg>`;
+
+// Save as SVG
+fs.writeFileSync('resources/icon-ascii.svg', svgLogo);
+
+console.log('ASCII art style logo created: resources/icon-ascii.svg');
+console.log('Converting to PNG...');

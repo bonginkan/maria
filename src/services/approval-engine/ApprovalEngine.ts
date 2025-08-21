@@ -248,7 +248,7 @@ export class ApprovalEngine extends EventEmitter {
     proposedActions: ProposedAction[],
     primaryTheme: ApprovalTheme | undefined,
     riskAssessment: unknown,
-    _options?: unknown,
+    options?: unknown,
   ): ApprovalRequest {
     return {
       id: uuidv4(),

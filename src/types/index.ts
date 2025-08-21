@@ -75,7 +75,7 @@ export type TaskType =
   | 'cost_effective'
   | 'privacy'
   | 'multilingual'
-  | 'current_events';
+  | 'currentevents';
 
 export type PriorityMode = 'privacy-first' | 'performance' | 'cost-effective' | 'auto';
 

@@ -477,7 +477,7 @@ export class DocumentProcessorService extends EventEmitter {
   private buildDocumentFromResult(
     source: DocumentSource,
     result: unknown,
-    _options: ProcessingOptions,
+    options: ProcessingOptions,
   ): Document {
     const documentId = this.generateDocumentId(source);
 
@@ -533,7 +533,7 @@ export class DocumentProcessorService extends EventEmitter {
   private buildDocumentFromArXivResult(
     source: DocumentSource,
     result: unknown,
-    _options: ProcessingOptions,
+    options: ProcessingOptions,
   ): Document {
     const documentId = this.generateDocumentId(source);
 
@@ -583,7 +583,7 @@ export class DocumentProcessorService extends EventEmitter {
   private buildDocumentFromWebResult(
     source: DocumentSource,
     result: unknown,
-    _options: ProcessingOptions,
+    options: ProcessingOptions,
   ): Document {
     const documentId = this.generateDocumentId(source);
 
@@ -638,7 +638,7 @@ export class DocumentProcessorService extends EventEmitter {
   private buildDocumentFromOfficeResult(
     source: DocumentSource,
     result: unknown,
-    _options: ProcessingOptions,
+    options: ProcessingOptions,
   ): Document {
     const documentId = this.generateDocumentId(source);
 
@@ -685,7 +685,7 @@ export class DocumentProcessorService extends EventEmitter {
   private buildDocumentFromTextResult(
     source: DocumentSource,
     result: unknown,
-    _options: ProcessingOptions,
+    options: ProcessingOptions,
   ): Document {
     const documentId = this.generateDocumentId(source);
 

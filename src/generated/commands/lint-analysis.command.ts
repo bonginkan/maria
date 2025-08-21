@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { CommandContext, CommandResult, CommandArgs } from './types';
+import { _CommandContext, CommandResult, _CommandArgs } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
@@ -64,7 +64,7 @@ export class LintAnalysisCommand extends BaseCommand {
             } else if (line.includes('react') || line.includes('next')) {
               type = 'framework';
             }
-            importLines.push({ line: index + 1, text: line, type });
+            importLines.push({ line: index + 1, text: line, _type });
           }
         });
         

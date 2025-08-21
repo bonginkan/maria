@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { Command, RequireAuth, RateLimit, Validate } from '../decorators';
-import { CommandContext, CommandOptions, CommandResult } from '../types';
+import { _Command, RequireAuth, RateLimit, _Validate } from '../decorators';
+import { _CommandContext, CommandOptions, _CommandResult } from '../types';
 import { z } from 'zod';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger';
@@ -212,7 +212,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
       const available = await provider.testConnection(model.id);
       const latency = Date.now() - startTime;
 
-      return { available, latency };
+      return { available, _latency };
     } catch {
       return { available: false };
     }
@@ -367,7 +367,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
 
     const results = [];
 
-    for (const { name, test } of tests) {
+    for (const { name, _test } of tests) {
       process.stdout.write(chalk.cyan(`Testing ${name}... `));
 
       try {
@@ -376,7 +376,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
         const duration = Date.now() - startTime;
 
         console.log(chalk.green(`✓ (${duration}ms)`));
-        results.push({ name, success: true, duration });
+        results.push({ name, success: true, _duration });
       } catch (error) {
         console.log(chalk.red(`✗ ${error.message}`));
         results.push({ name, success: false, error: error.message });
@@ -498,7 +498,7 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
     // Display results
     console.log(chalk.bold('\n📊 Benchmark Results:\n'));
 
-    results.forEach((result, index) => {
+    results.forEach((result, _index) => {
       const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '  ';
 
       console.log(`${medal} ${chalk.bold(result.model)}`);

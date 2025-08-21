@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
@@ -277,7 +277,7 @@ export class MigrateInstallerCommand extends BaseCommand {
         }
 
         if (detected || location) {
-          detectedMethods.push({ method, location, version });
+          detectedMethods.push({ method, location, _version });
         }
       } catch (error) {
         // Skip this method
@@ -294,7 +294,7 @@ export class MigrateInstallerCommand extends BaseCommand {
     } else {
       message += `${chalk.green('✅ Detected MARIA installations:')}\n\n`;
 
-      detectedMethods.forEach(({ method, location, version }) => {
+      detectedMethods.forEach(({ method, location, _version }) => {
         message += `${chalk.bold(method.name)} (${method.description})\n`;
         message += `  Location: ${location}\n`;
         if (version) {
@@ -355,7 +355,7 @@ export class MigrateInstallerCommand extends BaseCommand {
       report.steps.push({ step: 'Install via npm', status: 'running' });
 
       try {
-        const { stdout, stderr } = await execAsync('npm install -g @bonginkan/maria');
+        const { stdout, _stderr } = await execAsync('npm install -g @bonginkan/maria');
         report.steps[report.steps.length - 1].status = 'completed';
         report.steps[report.steps.length - 1].output = stdout;
       } catch (error) {
@@ -546,7 +546,7 @@ export class MigrateInstallerCommand extends BaseCommand {
       message += `${chalk.blue('Success:')} ${report.success ? chalk.green('✅ Yes') : chalk.red('❌ No')}\n\n`;
 
       message += `${chalk.bold('Steps:')}\n`;
-      report.steps.forEach((step, index) => {
+      report.steps.forEach((step, _index) => {
         const statusIcon = {
           pending: chalk.gray('○'),
           running: chalk.yellow('●'),
@@ -566,7 +566,7 @@ export class MigrateInstallerCommand extends BaseCommand {
         }
       });
 
-      return { success: true, message };
+      return { success: true, _message };
     } catch {
       return {
         success: false,
@@ -625,6 +625,6 @@ export class MigrateInstallerCommand extends BaseCommand {
 
     message += `\n${dryRun ? 'Would clean' : 'Cleaned'} ${cleanupItems.length} items.`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 }

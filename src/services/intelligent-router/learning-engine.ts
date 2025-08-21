@@ -19,7 +19,7 @@ export interface UsagePattern {
   hourOfDay: number;
   command: string;
   params: Record<string, unknown>;
-  __context: {
+  _context: {
     projectType?: string;
     fileTypes?: string[];
     previousCommand?: string;
@@ -59,7 +59,7 @@ export interface LearningModel {
 export interface CommandPrediction {
   command: string;
   probability: number;
-  __context: string;
+  _context: string;
   suggestedParams?: Record<string, unknown>;
 }
 
@@ -73,7 +73,7 @@ export interface ErrorPattern {
 
 export interface SuccessPattern {
   command: string;
-  __context: string;
+  _context: string;
   successRate: number;
   averageTime: number;
   optimalParams?: Record<string, unknown>;
@@ -117,7 +117,7 @@ export class LearningEngine extends EventEmitter {
     command: InferredCommand,
     success: boolean,
     executionTime: number,
-    __context: unknown = {},
+    _context: unknown = {},
   ) {
     const now = new Date();
     const pattern: UsagePattern = {
@@ -127,7 +127,7 @@ export class LearningEngine extends EventEmitter {
       hourOfDay: now.getHours(),
       command: command.command,
       params: command.params,
-      __context: {
+      _context: {
         projectType: context.projectType,
         fileTypes: context.fileTypes,
         previousCommand: context.previousCommand,
@@ -225,7 +225,7 @@ export class LearningEngine extends EventEmitter {
     } else {
       this.model.successPatterns.push({
         command: pattern.command,
-        __context: contextKey,
+        _context: contextKey,
         successRate: 1.0,
         averageTime: pattern.executionTime,
         optimalParams: pattern.params,
@@ -313,7 +313,7 @@ export class LearningEngine extends EventEmitter {
         predictions.push({
           command: cmd,
           probability: 0.3,
-          __context: 'time-based',
+          _context: 'time-based',
         });
       });
     }
@@ -325,7 +325,7 @@ export class LearningEngine extends EventEmitter {
         predictions.push({
           command: seq.nextCommand,
           probability: seq.probability,
-          __context: 'sequence-based',
+          _context: 'sequence-based',
           suggestedParams: seq.params,
         });
       });
@@ -343,7 +343,7 @@ export class LearningEngine extends EventEmitter {
         predictions.push({
           command: sp.command,
           probability: sp.successRate * 0.5,
-          __context: 'success-pattern',
+          _context: 'success-pattern',
           suggestedParams: sp.optimalParams,
         });
       });
@@ -449,7 +449,7 @@ export class LearningEngine extends EventEmitter {
    * プロアクティブな提案
    */
   // @ts-nocheck - Machine learning engine with complex dynamic data structures
-  getProactiveSuggestions(__context: unknown): string[] {
+  getProactiveSuggestions(_context: unknown): string[] {
     const suggestions: string[] = [];
 
     // エラーパターンに基づく提案
@@ -670,7 +670,7 @@ export class LearningEngine extends EventEmitter {
       predictions.push({
         command,
         probability: count / total,
-        __context: 'frequency',
+        _context: 'frequency',
       });
     });
 

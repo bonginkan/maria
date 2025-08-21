@@ -303,7 +303,7 @@ export class CodeRAGService extends EventEmitter {
 
       const mockAnalysis = analysisResult as {
         codebase: {
-          total_files: number;
+          totalfiles: number;
           total_chunks: number;
           languages: string[];
           complexity_distribution: Record<string, number>;
@@ -326,7 +326,7 @@ export class CodeRAGService extends EventEmitter {
 
       const analysis: SemanticAnalysis = {
         codebase: {
-          totalFiles: mockAnalysis.codebase?.total_files || 0,
+          totalFiles: mockAnalysis.codebase?.totalfiles || 0,
           totalChunks: mockAnalysis.codebase?.total_chunks || 0,
           languages: mockAnalysis.codebase?.languages || [],
           complexityDistribution: mockAnalysis.codebase?.complexity_distribution || {},

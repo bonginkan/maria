@@ -1,6 +1,6 @@
 /**
  * Memory-Aware Internal Mode Service
- * 
+ *
  * Enhanced Internal Mode Service that integrates with MARIA's dual-layer memory system
  * Provides memory-aware cognitive mode switching and cross-session learning
  */
@@ -23,13 +23,13 @@ import type {
   PatternRecognitionResult,
   MemoryInsight,
   ModeMemoryState,
-  AdaptationRecord
+  AdaptationRecord,
 } from '../memory-system/types/cognitive-patterns';
 import type {
   MemoryEvent,
   UserPreferenceSet,
   ReasoningTrace,
-  QualityMetrics
+  QualityMetrics,
 } from '../memory-system/types/memory-interfaces';
 
 export interface MemoryAwareModeConfig extends ModeConfig {
@@ -78,24 +78,24 @@ export class MemoryAwareModeService extends EventEmitter {
     baseModeService: InternalModeService,
     memoryEngine: DualMemoryEngine,
     memoryCoordinator: MemoryCoordinator,
-    config: Partial<MemoryAwareModeConfig> = {}
+    config: Partial<MemoryAwareModeConfig> = {},
   ) {
     super();
-    
+
     this.baseModeService = baseModeService;
     this.memoryEngine = memoryEngine;
     this.memoryCoordinator = memoryCoordinator;
-    
+
     this.config = {
       ...this.getDefaultConfig(),
-      ...config
+      ...config,
     };
-    
+
     this.memoryMetrics = this.initializeMemoryMetrics();
-    
+
     // Initialize memory-aware modes
     this.initializeMemoryAwareModes();
-    
+
     // Setup event listeners
     this.setupEventListeners();
   }
@@ -105,27 +105,27 @@ export class MemoryAwareModeService extends EventEmitter {
   async recognizeMode(
     input: string,
     context: ModeContext,
-    includeMemoryInsights: boolean = true
+    includeMemoryInsights: boolean = true,
   ): Promise<MemoryEnhancedModeResult> {
     const startTime = Date.now();
-    
+
     try {
       // Get base mode recognition
       const baseResult = await this.baseModeService.recognizeMode(input, context);
-      
+
       if (!this.config.memoryIntegrationEnabled || !includeMemoryInsights) {
         return this.wrapBaseResult(baseResult);
       }
 
       // Enhance with memory insights
       const memoryEnhanced = await this.enhanceWithMemory(baseResult, input, context);
-      
+
       // Update metrics
       this.updateRecognitionMetrics(memoryEnhanced, Date.now() - startTime);
-      
+
       // Store recognition event for learning
       await this.storeRecognitionEvent(input, context, memoryEnhanced);
-      
+
       return memoryEnhanced;
     } catch (error) {
       console.error('Memory-aware mode recognition failed:', error);
@@ -138,16 +138,16 @@ export class MemoryAwareModeService extends EventEmitter {
   async switchMode(
     targetModeId: string,
     context: ModeContext,
-    reason?: string
+    reason?: string,
   ): Promise<ModeTransition> {
     try {
       // Check if target mode is memory-aware
       const memoryAwareMode = this.memoryAwareModes.get(targetModeId);
-      
+
       if (memoryAwareMode && this.config.memoryIntegrationEnabled) {
         return this.switchToMemoryAwareMode(memoryAwareMode, context, reason);
       }
-      
+
       // Fallback to base service
       return this.baseModeService.switchMode(targetModeId, context, reason);
     } catch (error) {
@@ -161,35 +161,35 @@ export class MemoryAwareModeService extends EventEmitter {
   private async enhanceWithMemory(
     baseResult: ModeRecognitionResult,
     input: string,
-    context: ModeContext
+    context: ModeContext,
   ): Promise<MemoryEnhancedModeResult> {
     // Get memory insights
     const memoryInsights = await this.getMemoryInsights(input, context);
-    
+
     // Get user preferences and adapt confidence
     const userPreferences = await this.memoryEngine.getUserPreferences();
     const personalizedConfidence = this.calculatePersonalizedConfidence(
-      baseResult, 
-      userPreferences.data
+      baseResult,
+      userPreferences.data,
     );
-    
+
     // Get cross-session context
     const crossSessionContext = await this.getCrossSessionContext(input, context);
-    
+
     // Get quality prediction based on past performance
     const qualityPrediction = await this.predictQualityOutcome(baseResult.selectedMode);
-    
+
     // Generate adaptation recommendations
     const recommendedAdaptations = await this.generateAdaptationRecommendations(
-      baseResult, 
-      memoryInsights
+      baseResult,
+      memoryInsights,
     );
-    
+
     // Apply memory influence to mode selection
     const memoryInfluencedMode = await this.applyMemoryInfluence(
-      baseResult, 
-      memoryInsights, 
-      userPreferences.data
+      baseResult,
+      memoryInsights,
+      userPreferences.data,
     );
 
     return {
@@ -200,24 +200,17 @@ export class MemoryAwareModeService extends EventEmitter {
       recommendedAdaptations,
       qualityPrediction,
       personalizedConfidence,
-      crossSessionContext
+      crossSessionContext,
     };
   }
 
-  private async getMemoryInsights(
-    input: string,
-    context: ModeContext
-  ): Promise<MemoryInsight[]> {
+  private async getMemoryInsights(input: string, context: ModeContext): Promise<MemoryInsight[]> {
     const insights: MemoryInsight[] = [];
-    
+
     try {
       // Search for similar past interactions
-      const similarInteractions = await this.memoryEngine.findKnowledge(
-        input, 
-        undefined, 
-        5
-      );
-      
+      const similarInteractions = await this.memoryEngine.findKnowledge(input, undefined, 5);
+
       if (similarInteractions.data.length > 0) {
         insights.push({
           type: 'pattern',
@@ -225,10 +218,10 @@ export class MemoryAwareModeService extends EventEmitter {
           confidence: similarInteractions.confidence,
           actionable: true,
           priority: 7,
-          suggestedActions: ['Use learned patterns for mode selection']
+          suggestedActions: ['Use learned patterns for mode selection'],
         });
       }
-      
+
       // Check for quality patterns
       const qualityInsights = await this.memoryEngine.getQualityInsights();
       if (qualityInsights.data.codeQuality.maintainability < 70) {
@@ -238,10 +231,10 @@ export class MemoryAwareModeService extends EventEmitter {
           confidence: 0.8,
           actionable: true,
           priority: 6,
-          suggestedActions: ['Prioritize refactoring modes', 'Increase code review emphasis']
+          suggestedActions: ['Prioritize refactoring modes', 'Increase code review emphasis'],
         });
       }
-      
+
       // User preference insights
       const preferences = await this.memoryEngine.getUserPreferences();
       if (preferences.data.developmentStyle.approach === 'test-driven') {
@@ -251,39 +244,38 @@ export class MemoryAwareModeService extends EventEmitter {
           confidence: 0.9,
           actionable: true,
           priority: 8,
-          suggestedActions: ['Prioritize testing-related modes', 'Suggest TDD patterns']
+          suggestedActions: ['Prioritize testing-related modes', 'Suggest TDD patterns'],
         });
       }
-      
     } catch (error) {
       console.error('Failed to get memory insights:', error);
     }
-    
+
     return insights;
   }
 
   private async getCrossSessionContext(
     input: string,
-    context: ModeContext
+    context: ModeContext,
   ): Promise<MemoryEnhancedModeResult['crossSessionContext']> {
     if (!this.config.crossSessionMemoryEnabled) {
       return undefined;
     }
-    
+
     try {
       // Find similar past sessions
       const similarSessions = await this.findSimilarPastSessions(input, context);
-      
+
       // Get learned preferences
       const userPreferences = await this.memoryEngine.getUserPreferences();
-      
+
       // Predict user needs based on context
       const predictedNeeds = await this.predictUserNeeds(context);
-      
+
       return {
         similarPastSessions: similarSessions,
         learnedPreferences: userPreferences.data,
-        predictedUserNeeds: predictedNeeds
+        predictedUserNeeds: predictedNeeds,
       };
     } catch (error) {
       console.error('Failed to get cross-session context:', error);
@@ -294,21 +286,21 @@ export class MemoryAwareModeService extends EventEmitter {
   private async switchToMemoryAwareMode(
     memoryAwareMode: MemoryAwareCognitiveMode,
     context: ModeContext,
-    reason?: string
+    reason?: string,
   ): Promise<ModeTransition> {
     const startTime = Date.now();
-    
+
     try {
       // Update memory state for the mode
       await this.updateModeMemoryState(memoryAwareMode, context);
-      
+
       // Perform base mode switch
       const baseTransition = await this.baseModeService.switchMode(
-        memoryAwareMode.id, 
-        context, 
-        reason
+        memoryAwareMode.id,
+        context,
+        reason,
       );
-      
+
       // Enhanced transition with memory insights
       const enhancedTransition: ModeTransition = {
         ...baseTransition,
@@ -316,16 +308,16 @@ export class MemoryAwareModeService extends EventEmitter {
           ...baseTransition.metadata,
           memoryEnhanced: true,
           memoryLatency: Date.now() - startTime,
-          adaptationApplied: this.adaptationHistory.length > 0
-        }
+          adaptationApplied: this.adaptationHistory.length > 0,
+        },
       };
-      
+
       // Store transition for learning
       await this.storeTransitionEvent(enhancedTransition, memoryAwareMode);
-      
+
       // Update current memory state
       this.currentMemoryState = memoryAwareMode.memoryState;
-      
+
       return enhancedTransition;
     } catch (error) {
       console.error('Memory-aware mode switch failed:', error);
@@ -341,16 +333,16 @@ export class MemoryAwareModeService extends EventEmitter {
       satisfaction: number; // 1-5
       effectiveness: number; // 1-5
       suggestions?: string[];
-    }
+    },
   ): Promise<void> {
     if (!this.config.adaptiveLearningEnabled) {
       return;
     }
-    
+
     try {
       // Update mode success rates
       this.memoryMetrics.userSatisfactionRatings.set(modeId, feedback.satisfaction);
-      
+
       // Create learning event
       const learningEvent: MemoryEvent = {
         id: `feedback-${modeId}-${Date.now()}`,
@@ -363,18 +355,17 @@ export class MemoryAwareModeService extends EventEmitter {
           confidence: 0.9,
           source: 'user_input',
           priority: 'high',
-          tags: ['feedback', 'mode-learning', modeId]
-        }
+          tags: ['feedback', 'mode-learning', modeId],
+        },
       };
-      
+
       // Store in memory system
       await this.memoryEngine.store(learningEvent);
-      
+
       // Adapt mode if needed
       if (feedback.satisfaction < 3) {
         await this.adaptModeBasedOnFeedback(modeId, feedback);
       }
-      
     } catch (error) {
       console.error('Failed to learn from user feedback:', error);
     }
@@ -386,23 +377,23 @@ export class MemoryAwareModeService extends EventEmitter {
       triggerAdjustments?: Record<string, number>;
       memoryWeightAdjustments?: Record<string, number>;
       performanceTargets?: Record<string, number>;
-    }
+    },
   ): Promise<boolean> {
     try {
       const memoryAwareMode = this.memoryAwareModes.get(modeId);
       if (!memoryAwareMode) {
         return false;
       }
-      
+
       // Apply adaptations
       if (adaptationData.triggerAdjustments) {
         await this.adjustModeTriggers(memoryAwareMode, adaptationData.triggerAdjustments);
       }
-      
+
       if (adaptationData.memoryWeightAdjustments) {
         await this.adjustMemoryWeights(memoryAwareMode, adaptationData.memoryWeightAdjustments);
       }
-      
+
       // Record adaptation
       const adaptation: AdaptationRecord = {
         timestamp: new Date(),
@@ -412,14 +403,14 @@ export class MemoryAwareModeService extends EventEmitter {
           performanceChange: 0,
           userSatisfactionChange: 0,
           efficiencyChange: 0,
-          accuracyChange: 0
+          accuracyChange: 0,
         },
-        success: true
+        success: true,
       };
-      
+
       this.adaptationHistory.push(adaptation);
       memoryAwareMode.adaptationHistory.push(adaptation);
-      
+
       return true;
     } catch (error) {
       console.error('Mode adaptation failed:', error);
@@ -435,52 +426,56 @@ export class MemoryAwareModeService extends EventEmitter {
       memoryInsights: [],
       recommendedAdaptations: [],
       qualityPrediction: 0.8,
-      personalizedConfidence: baseResult.confidence
+      personalizedConfidence: baseResult.confidence,
     };
   }
 
   private calculatePersonalizedConfidence(
     baseResult: ModeRecognitionResult,
-    userPreferences: UserPreferenceSet
+    userPreferences: UserPreferenceSet,
   ): number {
     let personalizedConfidence = baseResult.confidence;
-    
+
     // Adjust based on user's communication preferences
-    if (userPreferences.communicationPreferences.verbosity === 'minimal' && 
-        baseResult.selectedMode.name.includes('Detailed')) {
+    if (
+      userPreferences.communicationPreferences.verbosity === 'minimal' &&
+      baseResult.selectedMode.name.includes('Detailed')
+    ) {
       personalizedConfidence *= 0.8;
     }
-    
+
     // Adjust based on development style
-    if (userPreferences.developmentStyle.approach === 'test-driven' &&
-        baseResult.selectedMode.name.includes('Testing')) {
+    if (
+      userPreferences.developmentStyle.approach === 'test-driven' &&
+      baseResult.selectedMode.name.includes('Testing')
+    ) {
       personalizedConfidence *= 1.2;
     }
-    
+
     return Math.min(1.0, personalizedConfidence);
   }
 
   private blendConfidence(baseConfidence: number, personalizedConfidence: number): number {
     const weight = this.config.memoryInfluenceWeight;
-    return (baseConfidence * (1 - weight)) + (personalizedConfidence * weight);
+    return baseConfidence * (1 - weight) + personalizedConfidence * weight;
   }
 
   private async applyMemoryInfluence(
     baseResult: ModeRecognitionResult,
     memoryInsights: MemoryInsight[],
-    userPreferences: UserPreferenceSet
+    userPreferences: UserPreferenceSet,
   ): Promise<ModeDefinition | null> {
     // If memory insights strongly suggest a different mode, consider switching
-    const strongInsights = memoryInsights.filter(insight => 
-      insight.confidence > 0.8 && insight.priority >= 7
+    const strongInsights = memoryInsights.filter(
+      (insight) => insight.confidence > 0.8 && insight.priority >= 7,
     );
-    
+
     if (strongInsights.length > 0) {
       // Logic to select alternative mode based on insights
       // This would be more sophisticated in production
       return null; // For now, stick with base result
     }
-    
+
     return null;
   }
 
@@ -488,12 +483,12 @@ export class MemoryAwareModeService extends EventEmitter {
     try {
       const modeUsageData = this.memoryMetrics.modeSuccessRates.get(mode.id);
       const qualityData = await this.memoryEngine.getQualityInsights();
-      
+
       if (modeUsageData && qualityData.data) {
         // Simple prediction based on past success and current quality trends
         return (modeUsageData + qualityData.data.codeQuality.maintainability / 100) / 2;
       }
-      
+
       return 0.8; // Default prediction
     } catch (error) {
       return 0.8;
@@ -502,10 +497,10 @@ export class MemoryAwareModeService extends EventEmitter {
 
   private async generateAdaptationRecommendations(
     baseResult: ModeRecognitionResult,
-    memoryInsights: MemoryInsight[]
+    memoryInsights: MemoryInsight[],
   ): Promise<AdaptationRecord[]> {
     const recommendations: AdaptationRecord[] = [];
-    
+
     // Generate recommendations based on insights
     for (const insight of memoryInsights) {
       if (insight.actionable && insight.priority >= 6) {
@@ -517,48 +512,45 @@ export class MemoryAwareModeService extends EventEmitter {
             performanceChange: 0.1,
             userSatisfactionChange: 0.05,
             efficiencyChange: 0.08,
-            accuracyChange: 0.03
+            accuracyChange: 0.03,
           },
           success: true,
-          feedback: insight.insight
+          feedback: insight.insight,
         });
       }
     }
-    
+
     return recommendations;
   }
 
-  private async findSimilarPastSessions(
-    input: string,
-    context: ModeContext
-  ): Promise<string[]> {
+  private async findSimilarPastSessions(input: string, context: ModeContext): Promise<string[]> {
     // Simplified implementation - would use more sophisticated similarity in production
     return [`session-${Date.now() - 86400000}`, `session-${Date.now() - 172800000}`];
   }
 
   private async predictUserNeeds(context: ModeContext): Promise<string[]> {
     const needs: string[] = [];
-    
+
     // Simple prediction based on context
     if (context.projectType?.includes('web')) {
       needs.push('Frontend optimization', 'API integration');
     }
-    
+
     if (context.urgency === 'high') {
       needs.push('Quick solutions', 'Efficient debugging');
     }
-    
+
     return needs;
   }
 
   private async updateModeMemoryState(
     mode: MemoryAwareCognitiveMode,
-    context: ModeContext
+    context: ModeContext,
   ): Promise<void> {
     // Update mode's memory state based on current context
     mode.memoryState.lastUsed = new Date();
     mode.memoryState.usageFrequency++;
-    
+
     // Update learning state if applicable
     if (this.config.adaptiveLearningEnabled) {
       mode.memoryState.learningState.learningProgress += 0.01;
@@ -568,7 +560,7 @@ export class MemoryAwareModeService extends EventEmitter {
   private async storeRecognitionEvent(
     input: string,
     context: ModeContext,
-    result: MemoryEnhancedModeResult
+    result: MemoryEnhancedModeResult,
   ): Promise<void> {
     const event: MemoryEvent = {
       id: `recognition-${Date.now()}`,
@@ -581,16 +573,16 @@ export class MemoryAwareModeService extends EventEmitter {
         confidence: result.confidence,
         source: 'ai_generated',
         priority: 'medium',
-        tags: ['mode-recognition', result.selectedMode.id]
-      }
+        tags: ['mode-recognition', result.selectedMode.id],
+      },
     };
-    
+
     await this.memoryEngine.store(event);
   }
 
   private async storeTransitionEvent(
     transition: ModeTransition,
-    mode: MemoryAwareCognitiveMode
+    mode: MemoryAwareCognitiveMode,
   ): Promise<void> {
     const event: MemoryEvent = {
       id: `transition-${Date.now()}`,
@@ -603,38 +595,29 @@ export class MemoryAwareModeService extends EventEmitter {
         confidence: 0.9,
         source: 'system_inferred',
         priority: 'medium',
-        tags: ['mode-transition', mode.id]
-      }
+        tags: ['mode-transition', mode.id],
+      },
     };
-    
+
     await this.memoryEngine.store(event);
   }
 
-  private updateRecognitionMetrics(
-    result: MemoryEnhancedModeResult,
-    latency: number
-  ): void {
-    this.memoryMetrics.averageModeLatency.set(
-      result.selectedMode.id,
-      latency
-    );
-    
+  private updateRecognitionMetrics(result: MemoryEnhancedModeResult, latency: number): void {
+    this.memoryMetrics.averageModeLatency.set(result.selectedMode.id, latency);
+
     if (result.memoryInsights.length > 0) {
       this.memoryMetrics.memoryInfluencedDecisions++;
     }
   }
 
-  private async adaptModeBasedOnFeedback(
-    modeId: string,
-    feedback: any
-  ): Promise<void> {
+  private async adaptModeBasedOnFeedback(modeId: string, feedback: any): Promise<void> {
     // Implement mode adaptation logic based on feedback
     console.log(`Adapting mode ${modeId} based on feedback:`, feedback);
   }
 
   private async adjustModeTriggers(
     mode: MemoryAwareCognitiveMode,
-    adjustments: Record<string, number>
+    adjustments: Record<string, number>,
   ): Promise<void> {
     // Implement trigger adjustment logic
     console.log(`Adjusting triggers for mode ${mode.id}:`, adjustments);
@@ -642,7 +625,7 @@ export class MemoryAwareModeService extends EventEmitter {
 
   private async adjustMemoryWeights(
     mode: MemoryAwareCognitiveMode,
-    adjustments: Record<string, number>
+    adjustments: Record<string, number>,
   ): Promise<void> {
     // Implement memory weight adjustment logic
     console.log(`Adjusting memory weights for mode ${mode.id}:`, adjustments);
@@ -652,16 +635,16 @@ export class MemoryAwareModeService extends EventEmitter {
     // Initialize memory-aware versions of existing modes
     // This would load from the cognitive patterns defined earlier
     const baseModes = this.baseModeService.getAllModes();
-    
+
     for (const baseMode of baseModes) {
       const memoryAwareMode: MemoryAwareCognitiveMode = {
         ...baseMode,
         memoryPattern: this.createCognitivePattern(baseMode),
         memoryState: this.createInitialMemoryState(),
         adaptationHistory: [],
-        performance: this.createInitialPerformanceMetrics()
+        performance: this.createInitialPerformanceMetrics(),
       };
-      
+
       this.memoryAwareModes.set(baseMode.id, memoryAwareMode);
     }
   }
@@ -680,7 +663,7 @@ export class MemoryAwareModeService extends EventEmitter {
         latency: 100,
         memoryEfficiency: 0.7,
         userSatisfaction: 0.8,
-        adaptationSpeed: 0.7
+        adaptationSpeed: 0.7,
       },
       adaptation: {
         learningRate: 0.1,
@@ -691,16 +674,16 @@ export class MemoryAwareModeService extends EventEmitter {
           negativeReinforcement: true,
           neutralDecay: true,
           feedbackIntegration: true,
-          automaticAdjustment: true
+          automaticAdjustment: true,
         },
         contextSensitivity: {
           projectAware: true,
           teamAware: false,
           temporalAware: true,
           userStateAware: true,
-          performanceAware: true
-        }
-      }
+          performanceAware: true,
+        },
+      },
     };
   }
 
@@ -720,7 +703,7 @@ export class MemoryAwareModeService extends EventEmitter {
         preferenceAccess: true,
         quickDecisions: true,
         contextualMemory: true,
-        estimatedLatency: 50
+        estimatedLatency: 50,
       },
       system2Usage: {
         reasoningTraces: true,
@@ -728,21 +711,21 @@ export class MemoryAwareModeService extends EventEmitter {
         reflectiveThinking: true,
         complexDecisions: true,
         improvementSuggestions: true,
-        estimatedLatency: 150
+        estimatedLatency: 150,
       },
       learningIntegration: {
         patternLearning: true,
         preferenceLearning: true,
         adaptiveBehavior: true,
         crossSessionContinuity: true,
-        teamLearning: false
+        teamLearning: false,
       },
       performanceImpact: {
         memoryFootprint: 'medium',
         computationCost: 'medium',
         latencyIncrease: 75,
-        throughputImpact: 15
-      }
+        throughputImpact: 15,
+      },
     };
   }
 
@@ -753,7 +736,7 @@ export class MemoryAwareModeService extends EventEmitter {
         cachedKnowledge: [],
         userPreferences: [],
         contextualMemory: [],
-        cacheHitRate: 0.0
+        cacheHitRate: 0.0,
       },
       system2Context: {
         activeReasoningTraces: [],
@@ -761,22 +744,22 @@ export class MemoryAwareModeService extends EventEmitter {
           currentQualityScore: 0.8,
           qualityTrend: 'stable',
           qualityFactors: [],
-          recommendedImprovements: []
+          recommendedImprovements: [],
         },
         reflectionQueue: [],
         improvementOpportunities: [],
-        complexityLevel: 5
+        complexityLevel: 5,
       },
       learningState: {
         learningProgress: 0.0,
         learningGoals: [],
         knowledgeGaps: [],
         adaptationNeeds: [],
-        competencyLevel: 5
+        competencyLevel: 5,
       },
       lastUsed: new Date(),
       usageFrequency: 0,
-      successRate: 0.8
+      successRate: 0.8,
     };
   }
 
@@ -787,7 +770,7 @@ export class MemoryAwareModeService extends EventEmitter {
       userSatisfaction: 0.8,
       taskCompletionRate: 0.85,
       errorRate: 0.1,
-      adaptationSuccess: 0.7
+      adaptationSuccess: 0.7,
     };
   }
 
@@ -797,10 +780,10 @@ export class MemoryAwareModeService extends EventEmitter {
       this.emit('memoryAwareModeChanged', {
         ...data,
         memoryEnhanced: true,
-        adaptationApplied: this.adaptationHistory.length > 0
+        adaptationApplied: this.adaptationHistory.length > 0,
       });
     });
-    
+
     // Listen to memory coordinator events
     this.memoryCoordinator.on('optimizationComplete', (data) => {
       this.emit('memoryOptimizationComplete', data);
@@ -822,14 +805,14 @@ export class MemoryAwareModeService extends EventEmitter {
       defaultLanguage: 'en',
       supportedLanguages: ['en', 'ja', 'cn', 'ko', 'vn'],
       maxHistoryEntries: 1000,
-      
+
       // Memory-specific config
       memoryIntegrationEnabled: true,
       adaptiveLearningEnabled: true,
       crossSessionMemoryEnabled: true,
       memoryInfluenceWeight: 0.3,
       qualityFeedbackEnabled: true,
-      personalizedModesEnabled: true
+      personalizedModesEnabled: true,
     };
   }
 
@@ -842,7 +825,7 @@ export class MemoryAwareModeService extends EventEmitter {
       memoryInfluencedDecisions: 0,
       adaptationSuccessRate: 0.8,
       crossSessionContinuity: 0.9,
-      lastMemorySync: new Date()
+      lastMemorySync: new Date(),
     };
   }
 
@@ -863,7 +846,7 @@ export class MemoryAwareModeService extends EventEmitter {
   async getMemoryInsightsForMode(modeId: string): Promise<MemoryInsight[]> {
     const mode = this.memoryAwareModes.get(modeId);
     if (!mode) return [];
-    
+
     return this.getMemoryInsights(`mode:${modeId}`, { modeId });
   }
 

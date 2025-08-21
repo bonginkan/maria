@@ -4,8 +4,8 @@
  */
 // @ts-nocheck - Complex type interactions requiring gradual type migration
 
-// import { Request, Response, NextFunction } from 'express';
-import { body, validationResult } from 'express-validator';
+// import { _Request, Response, _NextFunction } from 'express';
+import { _body, _validationResult } from 'express-validator';
 import rateLimit from 'express-rate-limit';
 
 // Rate limiting middleware

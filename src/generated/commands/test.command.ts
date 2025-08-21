@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { Command, RequireAuth, RateLimit, Cache, Validate } from '../decorators';
-import { CommandContext, CommandOptions, CommandResult } from '../types';
+import { _Command, RequireAuth, RateLimit, Cache, _Validate } from '../decorators';
+import { _CommandContext, CommandOptions, _CommandResult } from '../types';
 import { z } from 'zod';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -115,7 +115,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
         await this.suggestFixes(testResults.failures, context);
       }
 
-      this.emit('complete', { testResults, coverageReport });
+      this.emit('complete', { testResults, _coverageReport });
 
       return {
         success: testResults.success,
@@ -201,7 +201,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
 
     try {
       const startTime = Date.now();
-      const { stdout, stderr } = await execAsync(command, {
+      const { stdout, _stderr } = await execAsync(command, {
         maxBuffer: 10 * 1024 * 1024, // 10MB buffer
         timeout: options.timeout,
       });

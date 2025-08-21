@@ -41,7 +41,7 @@ export class OptimizedBox {
 
   constructor(options: BoxOptions = {}) {
     this.config = LayoutManager.getCurrentConfig();
-    
+
     // デフォルト設定
     this.options = {
       width: options.width || this.config.contentWidth,
@@ -68,7 +68,7 @@ export class OptimizedBox {
   render(content: string[] | BoxContent): void {
     const lines = Array.isArray(content) ? content : content.lines;
     const processedLines = this.processContent(lines);
-    
+
     this.renderBox(processedLines);
   }
 
@@ -94,7 +94,7 @@ export class OptimizedBox {
   static status(
     status: 'success' | 'error' | 'warning' | 'info',
     content: string[],
-    options: BoxOptions = {}
+    options: BoxOptions = {},
   ): void {
     const themeMap = {
       success: 'success' as BoxTheme,
@@ -102,11 +102,11 @@ export class OptimizedBox {
       warning: 'warning' as BoxTheme,
       info: 'info' as BoxTheme,
     };
-    
-    const box = new OptimizedBox({ 
-      ...options, 
+
+    const box = new OptimizedBox({
+      ...options,
       theme: themeMap[status],
-      style: 'heavy'
+      style: 'heavy',
     });
     box.render(content);
   }
@@ -115,10 +115,10 @@ export class OptimizedBox {
    * 静的メソッド：ブランドボックス（MARIA CODE用）
    */
   static brand(content: string[], options: BoxOptions = {}): void {
-    const box = new OptimizedBox({ 
-      ...options, 
+    const box = new OptimizedBox({
+      ...options,
       theme: 'brand',
-      style: 'heavy'
+      style: 'heavy',
     });
     box.render(content);
   }
@@ -128,14 +128,14 @@ export class OptimizedBox {
    */
   private adjustForCurrentLayout(): void {
     this.config = LayoutManager.getCurrentConfig();
-    
+
     // コンパクトモードでの調整
     if (this.config.mode === 'compact') {
       this.options.width = Math.min(this.options.width, this.config.contentWidth);
-      this.options.padding = typeof this.options.padding === 'string' ? 'small' : 
-        Math.max(1, this.options.padding - 1);
+      this.options.padding =
+        typeof this.options.padding === 'string' ? 'small' : Math.max(1, this.options.padding - 1);
     }
-    
+
     // ワイドモードでの調整
     if (this.config.mode === 'wide' && this.options.width === this.config.contentWidth) {
       this.options.width = this.config.contentWidth;
@@ -147,10 +147,10 @@ export class OptimizedBox {
    */
   private processContent(lines: string[]): string[] {
     const padding = this.getPaddingSize();
-    const contentWidth = this.options.width - 2 - (padding * 2); // ボーダーとパディング分
-    
-    return lines.map(line => 
-      LayoutManager.alignText(line, contentWidth, this.options.contentAlignment)
+    const contentWidth = this.options.width - 2 - padding * 2; // ボーダーとパディング分
+
+    return lines.map((line) =>
+      LayoutManager.alignText(line, contentWidth, this.options.contentAlignment),
     );
   }
 
@@ -162,25 +162,27 @@ export class OptimizedBox {
     const padding = this.getPaddingSize();
     const colorFn = this.getThemeColor();
     const border = this.getBorderChars();
-    
+
     // 上ボーダー（タイトル付き）
     this.renderTopBorder(colorFn, border, width);
-    
+
     // 上パディング
     this.renderPaddingLines(padding, width, colorFn, border.vertical);
-    
+
     // コンテンツ行
-    contentLines.forEach(line => {
+    contentLines.forEach((line) => {
       const paddedLine = ' '.repeat(padding) + line + ' '.repeat(padding);
       console.log(colorFn(border.vertical) + paddedLine + colorFn(border.vertical));
     });
-    
+
     // 下パディング
     this.renderPaddingLines(padding, width, colorFn, border.vertical);
-    
+
     // 下ボーダー
-    console.log(colorFn(border.bottomLeft + border.horizontal.repeat(width - 2) + border.bottomRight));
-    
+    console.log(
+      colorFn(border.bottomLeft + border.horizontal.repeat(width - 2) + border.bottomRight),
+    );
+
     // シャドウ効果（オプション）
     if (this.options.shadow) {
       this.renderShadow(width);
@@ -194,33 +196,30 @@ export class OptimizedBox {
     if (this.options.title) {
       const titleWidth = width - 4; // ボーダーと余白分
       const title = LayoutManager.alignText(
-        this.options.title, 
-        titleWidth, 
-        this.options.titleAlignment
+        this.options.title,
+        titleWidth,
+        this.options.titleAlignment,
       );
-      
+
       // タイトル付きボーダー
-      console.log(colorFn(
-        border.topLeft + 
-        border.horizontal + 
-        title + 
-        border.horizontal + 
-        border.topRight
-      ));
+      console.log(
+        colorFn(border.topLeft + border.horizontal + title + border.horizontal + border.topRight),
+      );
     } else {
       // 通常のボーダー
-      console.log(colorFn(
-        border.topLeft + 
-        border.horizontal.repeat(width - 2) + 
-        border.topRight
-      ));
+      console.log(colorFn(border.topLeft + border.horizontal.repeat(width - 2) + border.topRight));
     }
   }
 
   /**
    * パディング行描画
    */
-  private renderPaddingLines(padding: number, width: number, colorFn: Function, vertical: string): void {
+  private renderPaddingLines(
+    padding: number,
+    width: number,
+    colorFn: Function,
+    vertical: string,
+  ): void {
     for (let i = 0; i < padding; i++) {
       console.log(colorFn(vertical) + ' '.repeat(width - 2) + colorFn(vertical));
     }
@@ -232,7 +231,7 @@ export class OptimizedBox {
   private renderShadow(width: number): void {
     const shadowChar = '▓';
     const shadowColor = SEMANTIC_COLORS.MUTED;
-    
+
     // 右側と下側にシャドウ
     console.log(' ' + shadowColor(shadowChar.repeat(width)));
     console.log(shadowColor(shadowChar.repeat(width + 1)));
@@ -245,14 +244,14 @@ export class OptimizedBox {
     if (typeof this.options.padding === 'number') {
       return this.options.padding;
     }
-    
+
     const paddingMap = {
       none: 0,
       small: 1,
       medium: 2,
       large: 3,
     };
-    
+
     return paddingMap[this.options.padding];
   }
 
@@ -269,7 +268,7 @@ export class OptimizedBox {
       info: SEMANTIC_COLORS.INFO,
       brand: BRAND_COLORS.BRAND_PRIMARY,
     };
-    
+
     return themeMap[this.options.theme];
   }
 
@@ -286,27 +285,47 @@ export class OptimizedBox {
   } {
     const borderMap = {
       light: {
-        topLeft: '┌', topRight: '┐', bottomLeft: '└', bottomRight: '┘',
-        horizontal: '─', vertical: '│'
+        topLeft: '┌',
+        topRight: '┐',
+        bottomLeft: '└',
+        bottomRight: '┘',
+        horizontal: '─',
+        vertical: '│',
       },
       heavy: {
-        topLeft: '╔', topRight: '╗', bottomLeft: '╚', bottomRight: '╝',
-        horizontal: '═', vertical: '║'
+        topLeft: '╔',
+        topRight: '╗',
+        bottomLeft: '╚',
+        bottomRight: '╝',
+        horizontal: '═',
+        vertical: '║',
       },
       double: {
-        topLeft: '╔', topRight: '╗', bottomLeft: '╚', bottomRight: '╝',
-        horizontal: '═', vertical: '║'
+        topLeft: '╔',
+        topRight: '╗',
+        bottomLeft: '╚',
+        bottomRight: '╝',
+        horizontal: '═',
+        vertical: '║',
       },
       rounded: {
-        topLeft: '╭', topRight: '╮', bottomLeft: '╰', bottomRight: '╯',
-        horizontal: '─', vertical: '│'
+        topLeft: '╭',
+        topRight: '╮',
+        bottomLeft: '╰',
+        bottomRight: '╯',
+        horizontal: '─',
+        vertical: '│',
       },
       minimal: {
-        topLeft: '+', topRight: '+', bottomLeft: '+', bottomRight: '+',
-        horizontal: '-', vertical: '|'
+        topLeft: '+',
+        topRight: '+',
+        bottomLeft: '+',
+        bottomRight: '+',
+        horizontal: '-',
+        vertical: '|',
       },
     };
-    
+
     return borderMap[this.options.style];
   }
 
@@ -318,20 +337,20 @@ export class OptimizedBox {
     warnings: string[];
   } {
     const warnings: string[] = [];
-    
+
     // 幅チェック
     if (options.width && options.width < 10) {
       warnings.push('幅が小さすぎます（最小10文字推奨）');
     }
-    
+
     // パディングチェック
     if (typeof options.padding === 'number' && options.padding < 0) {
       warnings.push('パディングは0以上である必要があります');
     }
-    
+
     return {
       isValid: warnings.length === 0,
-      warnings
+      warnings,
     };
   }
 

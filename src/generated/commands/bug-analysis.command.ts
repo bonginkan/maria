@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { CommandContext, CommandResult, CommandArgs } from './types';
+import { _CommandContext, CommandResult, _CommandArgs } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';

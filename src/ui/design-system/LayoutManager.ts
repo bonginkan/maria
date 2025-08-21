@@ -8,29 +8,29 @@
 export const LAYOUT_CONSTANTS = {
   // 基準画面幅
   SCREEN_WIDTH: 124,
-  CONTENT_WIDTH: 120,        // 両端2文字余白
-  BORDER_WIDTH: 118,         // ボーダー内容幅
-  
+  CONTENT_WIDTH: 120, // 両端2文字余白
+  BORDER_WIDTH: 118, // ボーダー内容幅
+
   // セクション間隔
-  SECTION_PADDING: 4,        // セクション間隔
-  INDENT_SIZE: 2,            // インデント幅
-  LINE_SPACING: 1,           // 行間
-  
+  SECTION_PADDING: 4, // セクション間隔
+  INDENT_SIZE: 2, // インデント幅
+  LINE_SPACING: 1, // 行間
+
   // 黄金比レイアウト（合計120文字）
-  MAIN_CONTENT: 80,          // メインコンテンツ幅
-  SIDEBAR: 36,               // サイドバー幅（0.45比率）
-  COLUMN_GAP: 4,             // 列間ギャップ
-  
+  MAIN_CONTENT: 80, // メインコンテンツ幅
+  SIDEBAR: 36, // サイドバー幅（0.45比率）
+  COLUMN_GAP: 4, // 列間ギャップ
+
   // ステータス・ヘッダー
-  STATUS_BAR: 120,           // ステータスバー幅
-  HEADER_HEIGHT: 12,         // ヘッダー行数
-  FOOTER_HEIGHT: 3,          // フッター行数
-  
+  STATUS_BAR: 120, // ステータスバー幅
+  HEADER_HEIGHT: 12, // ヘッダー行数
+  FOOTER_HEIGHT: 3, // フッター行数
+
   // レスポンシブ閾値
-  MIN_WIDTH: 80,             // 最小表示幅
-  MAX_WIDTH: 200,            // 最大表示幅
-  COMPACT_THRESHOLD: 100,    // コンパクト表示閾値
-  WIDE_THRESHOLD: 140,       // ワイド表示閾値
+  MIN_WIDTH: 80, // 最小表示幅
+  MAX_WIDTH: 200, // 最大表示幅
+  COMPACT_THRESHOLD: 100, // コンパクト表示閾値
+  WIDE_THRESHOLD: 140, // ワイド表示閾値
 } as const;
 
 // レイアウトモード定義
@@ -61,7 +61,7 @@ export class LayoutManager {
    */
   static getOptimalLayout(terminalWidth?: number): LayoutConfig {
     const width = terminalWidth || process.stdout.columns || LAYOUT_CONSTANTS.SCREEN_WIDTH;
-    
+
     let mode: LayoutMode;
     let config: Partial<LayoutConfig> = {};
 
@@ -116,7 +116,7 @@ export class LayoutManager {
   static alignText(text: string, width: number, alignment: Alignment = 'left'): string {
     // Unicode文字を考慮した正確な文字幅計算
     const actualLength = this.getStringWidth(text);
-    
+
     if (actualLength > width) {
       // 切り詰め処理（安全な境界）
       return this.truncateString(text, width - 3) + '...';
@@ -129,10 +129,10 @@ export class LayoutManager {
         const leftPad = Math.floor(padding / 2);
         const rightPad = padding - leftPad;
         return ' '.repeat(leftPad) + text + ' '.repeat(rightPad);
-      
+
       case 'right':
         return ' '.repeat(padding) + text;
-      
+
       case 'left':
       default:
         return text + ' '.repeat(padding);
@@ -145,10 +145,10 @@ export class LayoutManager {
   static createTwoColumnLayout(
     leftContent: string[],
     rightContent: string[],
-    config?: Partial<LayoutConfig>
+    config?: Partial<LayoutConfig>,
   ): string[] {
     const layout = config ? { ...this.getCurrentConfig(), ...config } : this.getCurrentConfig();
-    
+
     if (layout.mode === 'compact') {
       // コンパクトモードでは単列表示
       return [...leftContent, '', ...rightContent];
@@ -158,18 +158,10 @@ export class LayoutManager {
     const result: string[] = [];
 
     for (let i = 0; i < maxLines; i++) {
-      const left = this.alignText(
-        leftContent[i] || '', 
-        layout.mainContentWidth, 
-        'left'
-      );
-      const right = this.alignText(
-        rightContent[i] || '', 
-        layout.sidebarWidth, 
-        'left'
-      );
+      const left = this.alignText(leftContent[i] || '', layout.mainContentWidth, 'left');
+      const right = this.alignText(rightContent[i] || '', layout.sidebarWidth, 'left');
       const gap = ' '.repeat(layout.columnGap);
-      
+
       result.push(left + gap + right);
     }
 
@@ -180,13 +172,13 @@ export class LayoutManager {
    * セクション区切り生成
    */
   static createSectionSeparator(
-    width?: number, 
-    char: string = '─', 
-    style: 'full' | 'partial' | 'minimal' = 'full'
+    width?: number,
+    char: string = '─',
+    style: 'full' | 'partial' | 'minimal' = 'full',
   ): string {
     const layout = this.getCurrentConfig();
     const actualWidth = width || layout.contentWidth;
-    
+
     switch (style) {
       case 'partial':
         return char.repeat(Math.floor(actualWidth * 0.6));
@@ -202,13 +194,13 @@ export class LayoutManager {
    * ボックスボーダー生成（厳密な幅管理）
    */
   static createBoxBorder(
-    width: number, 
-    style: 'light' | 'heavy' | 'double' = 'light'
+    width: number,
+    style: 'light' | 'heavy' | 'double' = 'light',
   ): { top: string; bottom: string; side: string; innerWidth: number } {
     const chars = {
       light: { corner: ['┌', '┐', '└', '┘'], horizontal: '─', vertical: '│' },
       heavy: { corner: ['╔', '╗', '╚', '╝'], horizontal: '═', vertical: '║' },
-      double: { corner: ['╔', '╗', '╚', '╝'], horizontal: '═', vertical: '║' }
+      double: { corner: ['╔', '╗', '╚', '╝'], horizontal: '═', vertical: '║' },
     }[style];
 
     const horizontal = chars.horizontal.repeat(width - 2);
@@ -218,36 +210,33 @@ export class LayoutManager {
       top: `${chars.corner[0]}${horizontal}${chars.corner[1]}`,
       bottom: `${chars.corner[2]}${horizontal}${chars.corner[3]}`,
       side: chars.vertical,
-      innerWidth
+      innerWidth,
     };
   }
 
   /**
    * レスポンシブグリッド生成
    */
-  static createGrid(
-    items: string[], 
-    columns?: number
-  ): string[] {
+  static createGrid(items: string[], columns?: number): string[] {
     const layout = this.getCurrentConfig();
     const autoColumns = columns || (layout.mode === 'compact' ? 1 : layout.mode === 'wide' ? 4 : 2);
-    
+
     const columnWidth = Math.floor(layout.contentWidth / autoColumns);
-    const gap = Math.floor((layout.contentWidth - (columnWidth * autoColumns)) / (autoColumns - 1));
-    
+    const gap = Math.floor((layout.contentWidth - columnWidth * autoColumns) / (autoColumns - 1));
+
     const result: string[] = [];
-    
+
     for (let i = 0; i < items.length; i += autoColumns) {
       const row = items.slice(i, i + autoColumns);
-      const paddedRow = row.map(item => this.alignText(item, columnWidth));
-      
+      const paddedRow = row.map((item) => this.alignText(item, columnWidth));
+
       while (paddedRow.length < autoColumns) {
         paddedRow.push(' '.repeat(columnWidth));
       }
-      
+
       result.push(paddedRow.join(' '.repeat(gap)));
     }
-    
+
     return result;
   }
 
@@ -260,11 +249,11 @@ export class LayoutManager {
     for (const char of str) {
       const code = char.codePointAt(0);
       if (!code) continue;
-      
+
       // 全角文字判定（簡易）
-      if (code > 0x3000 && code < 0x9FFF) {
+      if (code > 0x3000 && code < 0x9fff) {
         width += 2;
-      } else if (code > 0x1F300 && code < 0x1F9FF) {
+      } else if (code > 0x1f300 && code < 0x1f9ff) {
         // 絵文字（使用非推奨だが安全のため）
         width += 2;
       } else {
@@ -280,15 +269,15 @@ export class LayoutManager {
   private static truncateString(str: string, maxWidth: number): string {
     let width = 0;
     let result = '';
-    
+
     for (const char of str) {
       const charWidth = this.getStringWidth(char);
       if (width + charWidth > maxWidth) break;
-      
+
       result += char;
       width += charWidth;
     }
-    
+
     return result;
   }
 
@@ -315,21 +304,23 @@ export class LayoutManager {
     errors: string[];
   } {
     const errors: string[] = [];
-    
+
     // 基本幅チェック
     if (config.width < LAYOUT_CONSTANTS.MIN_WIDTH) {
       errors.push(`幅が最小値(${LAYOUT_CONSTANTS.MIN_WIDTH})を下回っています: ${config.width}`);
     }
-    
+
     // カラム幅整合性チェック
     const totalWidth = config.mainContentWidth + config.sidebarWidth + config.columnGap;
     if (totalWidth > config.contentWidth) {
-      errors.push(`カラム幅の合計が content width を超えています: ${totalWidth} > ${config.contentWidth}`);
+      errors.push(
+        `カラム幅の合計が content width を超えています: ${totalWidth} > ${config.contentWidth}`,
+      );
     }
-    
+
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }

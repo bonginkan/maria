@@ -24,14 +24,14 @@ interface ContextClue {
 export class IntentRecognizer {
   private config: Required<RouterConfig>;
   private intentPatterns: Map<string, IntentPattern[]>;
-  private __contextClues: Map<string, ContextClue>;
+  private _contextClues: Map<string, ContextClue>;
   private commandHistory: string[] = [];
   private initialized: boolean = false;
 
   constructor(config: Required<RouterConfig>) {
     this.config = config;
     this.intentPatterns = new Map();
-    this.__contextClues = new Map();
+    this._contextClues = new Map();
     this.initializePatterns();
   }
 

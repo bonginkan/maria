@@ -1667,7 +1667,7 @@ var init_coderag_system = __esm({
           const mockAnalysis = analysisResult;
           const analysis = {
             codebase: {
-              totalFiles: mockAnalysis.codebase?.total_files || 0,
+              totalFiles: mockAnalysis.codebase?.totalfiles || 0,
               totalChunks: mockAnalysis.codebase?.total_chunks || 0,
               languages: mockAnalysis.codebase?.languages || [],
               complexityDistribution: mockAnalysis.codebase?.complexity_distribution || {}
@@ -1971,7 +1971,7 @@ var init_document_processor = __esm({
       /**
        * Build document from processing result
        */
-      buildDocumentFromResult(source, result, _options) {
+      buildDocumentFromResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         const document2 = {
           id: documentId,
@@ -2018,7 +2018,7 @@ var init_document_processor = __esm({
       /**
        * Build document from arXiv result
        */
-      buildDocumentFromArXivResult(source, result, _options) {
+      buildDocumentFromArXivResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -2062,7 +2062,7 @@ var init_document_processor = __esm({
       /**
        * Build document from web content result
        */
-      buildDocumentFromWebResult(source, result, _options) {
+      buildDocumentFromWebResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -2110,7 +2110,7 @@ var init_document_processor = __esm({
       /**
        * Build document from office document result
        */
-      buildDocumentFromOfficeResult(source, result, _options) {
+      buildDocumentFromOfficeResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -2151,7 +2151,7 @@ var init_document_processor = __esm({
       /**
        * Build document from text result
        */
-      buildDocumentFromTextResult(source, result, _options) {
+      buildDocumentFromTextResult(source, result, options) {
         const documentId = this.generateDocumentId(source);
         return {
           id: documentId,
@@ -6038,7 +6038,7 @@ var TASK_ROUTING = {
     "mistral-7b-instruct"
   ],
   multilingual: ["qwen2.5:32b", "qwen2.5-vl:7b", "gemini-2.5-pro", "mixtral-8x7b-32768"],
-  current_events: ["grok-2", "gemini-2.5-pro", "gpt-5", "claude-opus-4-1-20250805"],
+  currentevents: ["grok-2", "gemini-2.5-pro", "gpt-5", "claude-opus-4-1-20250805"],
   chat: ["gpt-4o-mini", "claude-3-5-haiku-20241022", "gemini-2.5-flash", "mixtral-8x7b-32768"]
 };
 function getRecommendedModel(taskType, availableModels) {
@@ -6150,7 +6150,7 @@ var IntelligentRouter = class {
       return "multilingual";
     }
     if (this.containsKeywords(content, ["news", "current", "today", "recent", "latest"])) {
-      return "current_events";
+      return "currentevents";
     }
     return "chat";
   }
@@ -7884,13 +7884,13 @@ var IntentRecognizer = class {
   }
   config;
   intentPatterns;
-  __contextClues;
+  _contextClues;
   commandHistory = [];
   initialized = false;
   constructor(config) {
     this.config = config;
     this.intentPatterns = /* @__PURE__ */ new Map();
-    this.__contextClues = /* @__PURE__ */ new Map();
+    this._contextClues = /* @__PURE__ */ new Map();
     this.initializePatterns();
   }
   async initialize() {
@@ -10068,7 +10068,7 @@ var ModeRecognitionEngine = class extends events.EventEmitter {
     }
     return null;
   }
-  generateReasoning(modeScore, _context) {
+  generateReasoning(modeScore, context) {
     const reasons = [];
     if (modeScore.scores.intent > 0.5) {
       reasons.push(`Strong intent match (${(modeScore.scores.intent * 100).toFixed(0)}%)`);
@@ -11107,18 +11107,7 @@ var CORE_ICONS = {
     usage: ["\u30D5\u30ED\u30FC\u8868\u793A", "\u30CA\u30D3\u30B2\u30FC\u30B7\u30E7\u30F3", "\u6B21\u306E\u30B9\u30C6\u30C3\u30D7"]
   }
 };
-var SPINNER_FRAMES = [
-  "\u280B",
-  "\u2819",
-  "\u2839",
-  "\u2838",
-  "\u283C",
-  "\u2834",
-  "\u2826",
-  "\u2827",
-  "\u2807",
-  "\u280F"
-];
+var SPINNER_FRAMES = ["\u280B", "\u2819", "\u2839", "\u2838", "\u283C", "\u2834", "\u2826", "\u2827", "\u2807", "\u280F"];
 var FORBIDDEN_ICONS = [
   // 絵文字系（レンダリング不安定）
   "\u{1F680}",
@@ -11376,16 +11365,8 @@ var LayoutManager = class {
     const maxLines = Math.max(leftContent.length, rightContent.length);
     const result = [];
     for (let i = 0; i < maxLines; i++) {
-      const left = this.alignText(
-        leftContent[i] || "",
-        layout.mainContentWidth,
-        "left"
-      );
-      const right = this.alignText(
-        rightContent[i] || "",
-        layout.sidebarWidth,
-        "left"
-      );
+      const left = this.alignText(leftContent[i] || "", layout.mainContentWidth, "left");
+      const right = this.alignText(rightContent[i] || "", layout.sidebarWidth, "left");
       const gap = " ".repeat(layout.columnGap);
       result.push(left + gap + right);
     }
@@ -11500,7 +11481,9 @@ var LayoutManager = class {
     }
     const totalWidth = config.mainContentWidth + config.sidebarWidth + config.columnGap;
     if (totalWidth > config.contentWidth) {
-      errors.push(`\u30AB\u30E9\u30E0\u5E45\u306E\u5408\u8A08\u304C content width \u3092\u8D85\u3048\u3066\u3044\u307E\u3059: ${totalWidth} > ${config.contentWidth}`);
+      errors.push(
+        `\u30AB\u30E9\u30E0\u5E45\u306E\u5408\u8A08\u304C content width \u3092\u8D85\u3048\u3066\u3044\u307E\u3059: ${totalWidth} > ${config.contentWidth}`
+      );
     }
     return {
       isValid: errors.length === 0,
@@ -11629,7 +11612,9 @@ var OptimizedBox = class _OptimizedBox {
       console.log(colorFn(border.vertical) + paddedLine + colorFn(border.vertical));
     });
     this.renderPaddingLines(padding, width, colorFn, border.vertical);
-    console.log(colorFn(border.bottomLeft + border.horizontal.repeat(width - 2) + border.bottomRight));
+    console.log(
+      colorFn(border.bottomLeft + border.horizontal.repeat(width - 2) + border.bottomRight)
+    );
     if (this.options.shadow) {
       this.renderShadow(width);
     }
@@ -11645,13 +11630,11 @@ var OptimizedBox = class _OptimizedBox {
         titleWidth,
         this.options.titleAlignment
       );
-      console.log(colorFn(
-        border.topLeft + border.horizontal + title + border.horizontal + border.topRight
-      ));
+      console.log(
+        colorFn(border.topLeft + border.horizontal + title + border.horizontal + border.topRight)
+      );
     } else {
-      console.log(colorFn(
-        border.topLeft + border.horizontal.repeat(width - 2) + border.topRight
-      ));
+      console.log(colorFn(border.topLeft + border.horizontal.repeat(width - 2) + border.topRight));
     }
   }
   /**
@@ -11948,15 +11931,18 @@ var ResponsiveRenderer = class {
         console.log(TEXT_HIERARCHY.CAPTION(data.subtitle));
       }
     } else {
-      OptimizedBox.brand([
-        LayoutManager.alignText(data.title, width - 4, "center"),
-        data.subtitle ? LayoutManager.alignText(data.subtitle, width - 4, "center") : "",
-        data.copyright ? LayoutManager.alignText(data.copyright, width - 4, "center") : ""
-      ].filter(Boolean), {
-        width,
-        padding: "large",
-        titleAlignment: "center"
-      });
+      OptimizedBox.brand(
+        [
+          LayoutManager.alignText(data.title, width - 4, "center"),
+          data.subtitle ? LayoutManager.alignText(data.subtitle, width - 4, "center") : "",
+          data.copyright ? LayoutManager.alignText(data.copyright, width - 4, "center") : ""
+        ].filter(Boolean),
+        {
+          width,
+          padding: "large",
+          titleAlignment: "center"
+        }
+      );
     }
     console.log();
   }
@@ -11964,19 +11950,21 @@ var ResponsiveRenderer = class {
    * ステータス描画
    */
   static renderStatus(data) {
-    const icon = IconRegistry.get(data.status === "healthy" ? "SUCCESS" : data.status === "degraded" ? "WARNING" : "ERROR");
+    const icon = IconRegistry.get(
+      data.status === "healthy" ? "SUCCESS" : data.status === "degraded" ? "WARNING" : "ERROR"
+    );
     const color = ColorPalette.status(
       data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error"
     );
     const statusLine = `${color(icon)} ${TEXT_HIERARCHY.BODY(data.message)}`;
     if (this.context.mode !== "compact" && data.details) {
-      OptimizedBox.simple([
-        statusLine,
-        ...data.details.map((detail) => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)
-      ], {
-        theme: data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error",
-        padding: "small"
-      });
+      OptimizedBox.simple(
+        [statusLine, ...data.details.map((detail) => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)],
+        {
+          theme: data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error",
+          padding: "small"
+        }
+      );
     } else {
       console.log(statusLine);
     }
@@ -11986,9 +11974,7 @@ var ResponsiveRenderer = class {
    */
   static renderNavigation(data) {
     if (this.context.mode === "compact") {
-      const items = data.items.slice(0, 3).map(
-        (item) => TEXT_HIERARCHY.BODY(item.label)
-      ).join(TEXT_HIERARCHY.CAPTION(" \u2022 "));
+      const items = data.items.slice(0, 3).map((item) => TEXT_HIERARCHY.BODY(item.label)).join(TEXT_HIERARCHY.CAPTION(" \u2022 "));
       console.log(items);
     } else {
       const grid = LayoutManager.createGrid(
@@ -12006,9 +11992,7 @@ var ResponsiveRenderer = class {
     const maxWidth = this.context.layout.contentWidth;
     const columnCount = data.headers.length;
     const columnWidth = Math.floor((maxWidth - (columnCount - 1) * 2) / columnCount);
-    const headerRow = data.headers.map(
-      (header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))
-    ).join("  ");
+    const headerRow = data.headers.map((header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))).join("  ");
     console.log(headerRow);
     console.log(SEMANTIC_COLORS.MUTED("\u2500".repeat(maxWidth)));
     data.rows.forEach((row) => {
@@ -12086,14 +12070,15 @@ ResponsiveRenderer.initialize;
 // src/utils/ui.ts
 function printStatus(health) {
   const layout = LayoutManager.getOptimalLayout();
-  OptimizedBox.withTitle("System Status", [
-    renderOverallStatus(health),
-    ...renderHealthSections(health)
-  ], {
-    theme: getHealthTheme(health.overall),
-    width: layout.contentWidth,
-    responsive: true
-  });
+  OptimizedBox.withTitle(
+    "System Status",
+    [renderOverallStatus(health), ...renderHealthSections(health)],
+    {
+      theme: getHealthTheme(health.overall),
+      width: layout.contentWidth,
+      responsive: true
+    }
+  );
   if (health.timestamp || health.lastUpdate) {
     const timestamp = health.timestamp || health.lastUpdate;
     const timeStr = timestamp instanceof Date ? timestamp.toLocaleString() : new Date(timestamp).toLocaleString();
@@ -12709,7 +12694,7 @@ var ApprovalContextAnalyzer = class {
   /**
    * Identify specific approval points
    */
-  static identifyApprovalPoints(input, category, _context) {
+  static identifyApprovalPoints(input, category, context) {
     const points = [];
     if (input.includes("database") || input.includes("migration") || input.includes("schema")) {
       points.push({
@@ -13360,7 +13345,7 @@ var ApprovalEngine = class _ApprovalEngine extends events.EventEmitter {
   /**
    * Create approval request object
    */
-  createApprovalRequest(context, proposedActions, primaryTheme, riskAssessment, _options) {
+  createApprovalRequest(context, proposedActions, primaryTheme, riskAssessment, options) {
     return {
       id: uuid.v4(),
       themeId: primaryTheme?.id || "unknown",
@@ -14798,7 +14783,9 @@ function createInteractiveSession(maria) {
         historySize: 100
       });
       rl.on("SIGINT", () => {
-        console.log(SEMANTIC_COLORS.WARNING(IconRegistry.get("WARNING")) + TEXT_HIERARCHY.BODY("\n\nReceived SIGINT. Use /exit to quit gracefully."));
+        console.log(
+          SEMANTIC_COLORS.WARNING(IconRegistry.get("WARNING")) + TEXT_HIERARCHY.BODY("\n\nReceived SIGINT. Use /exit to quit gracefully.")
+        );
         rl?.prompt();
       });
       while (running) {
@@ -18084,9 +18071,7 @@ var System1MemoryManager = class {
       patterns = patterns.filter((p) => p.framework === framework);
     }
     if (useCase) {
-      patterns = patterns.filter(
-        (p) => p.useCase.toLowerCase().includes(useCase.toLowerCase())
-      );
+      patterns = patterns.filter((p) => p.useCase.toLowerCase().includes(useCase.toLowerCase()));
     }
     const results = patterns.sort((a, b) => {
       const complexityWeight = { beginner: 3, intermediate: 2, advanced: 1 };
@@ -18197,7 +18182,9 @@ var System1MemoryManager = class {
   }
   async compressMemory() {
     const cutoffDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1e3);
-    this.interactionHistory.sessions = this.interactionHistory.sessions.filter((session) => session.startTime > cutoffDate);
+    this.interactionHistory.sessions = this.interactionHistory.sessions.filter(
+      (session) => session.startTime > cutoffDate
+    );
     await this.mergeimilarPatterns();
     this.cache.clear();
   }
@@ -18346,10 +18333,7 @@ var System1MemoryManager = class {
     return {
       ...primary,
       description: `${primary.description} (merged from ${similar.length + 1} patterns)`,
-      examples: [
-        ...primary.examples,
-        ...similar.flatMap((p) => p.examples)
-      ]
+      examples: [...primary.examples, ...similar.flatMap((p) => p.examples)]
     };
   }
   initializeDefaultPreferences() {
@@ -18378,9 +18362,7 @@ var System1MemoryManager = class {
           { name: "react", category: "frontend", proficiency: 0.7, preference: 4 },
           { name: "express", category: "backend", proficiency: 0.6, preference: 3 }
         ],
-        libraries: [
-          { name: "lodash", category: "utility", proficiency: 0.8, preference: 4 }
-        ],
+        libraries: [{ name: "lodash", category: "utility", proficiency: 0.8, preference: 4 }],
         buildTools: ["webpack", "vite"],
         testingTools: ["jest", "vitest"]
       },
@@ -18412,11 +18394,14 @@ var System1MemoryManager = class {
         },
         security: {
           requirements: [
-            { type: "authentication", description: "Secure auth required", severity: "high", mandatory: true }
+            {
+              type: "authentication",
+              description: "Secure auth required",
+              severity: "high",
+              mandatory: true
+            }
           ],
-          compliance: [
-            { name: "OWASP", version: "2021", requirements: ["Top 10 coverage"] }
-          ],
+          compliance: [{ name: "OWASP", version: "2021", requirements: ["Top 10 coverage"] }],
           scanningEnabled: true
         }
       }
@@ -18442,20 +18427,28 @@ var System2MemoryManager = class {
     this.qualityMetrics = this.initializeQualityMetrics();
   }
   get reasoningSteps() {
-    return Array.from(this.reasoningTraces.values()).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return Array.from(this.reasoningTraces.values()).sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    );
   }
   get qualityEvaluation() {
     return this.qualityMetrics;
   }
   get decisionContext() {
     const trees = Array.from(this.decisionTrees.values());
-    return trees.sort((a, b) => b.metadata.lastUpdated.getTime() - a.metadata.lastUpdated.getTime())[0] || this.createEmptyDecisionTree();
+    return trees.sort(
+      (a, b) => b.metadata.lastUpdated.getTime() - a.metadata.lastUpdated.getTime()
+    )[0] || this.createEmptyDecisionTree();
   }
   get improvementSuggestions() {
-    return Array.from(this.enhancements.values()).filter((enhancement) => enhancement.status === "proposed" || enhancement.status === "approved").sort((a, b) => b.priority - a.priority);
+    return Array.from(this.enhancements.values()).filter(
+      (enhancement) => enhancement.status === "proposed" || enhancement.status === "approved"
+    ).sort((a, b) => b.priority - a.priority);
   }
   get reflectionData() {
-    return Array.from(this.reflectionEntries.values()).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+    return Array.from(this.reflectionEntries.values()).sort(
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+    );
   }
   // Reasoning Trace Management
   async startReasoningTrace(context, initialStep) {
@@ -18877,29 +18870,35 @@ var System2MemoryManager = class {
           affectedComponents: ["reasoning", "decision-making"]
         },
         implementation: {
-          phases: [{
-            id: "analysis",
-            name: "Quality Analysis",
-            description: "Analyze low-quality reasoning patterns",
-            duration: 3,
-            deliverables: ["Pattern analysis", "Improvement plan"],
-            dependencies: []
-          }],
+          phases: [
+            {
+              id: "analysis",
+              name: "Quality Analysis",
+              description: "Analyze low-quality reasoning patterns",
+              duration: 3,
+              deliverables: ["Pattern analysis", "Improvement plan"],
+              dependencies: []
+            }
+          ],
           timeline: 7,
-          resources: [{
-            type: "developer",
-            quantity: 1,
-            duration: 7
-          }],
+          resources: [
+            {
+              type: "developer",
+              quantity: 1,
+              duration: 7
+            }
+          ],
           dependencies: [],
-          risks: [{
-            id: "complexity",
-            description: "Reasoning improvement may add complexity",
-            probability: 0.3,
-            impact: 4,
-            mitigation: "Gradual implementation with testing",
-            contingency: "Rollback to previous version"
-          }]
+          risks: [
+            {
+              id: "complexity",
+              description: "Reasoning improvement may add complexity",
+              probability: 0.3,
+              impact: 4,
+              mitigation: "Gradual implementation with testing",
+              contingency: "Rollback to previous version"
+            }
+          ]
         },
         priority: 6
       });
@@ -19057,7 +19056,9 @@ var System2MemoryManager = class {
   async manageTraceLimit() {
     if (this.reasoningTraces.size > this.config.maxReasoningTraces) {
       const traces = Array.from(this.reasoningTraces.entries());
-      const sortedByQuality = traces.sort((a, b) => a[1].metadata.qualityScore - b[1].metadata.qualityScore);
+      const sortedByQuality = traces.sort(
+        (a, b) => a[1].metadata.qualityScore - b[1].metadata.qualityScore
+      );
       const removeCount = Math.floor(this.config.maxReasoningTraces * 0.2);
       for (let i = 0; i < removeCount; i++) {
         this.reasoningTraces.delete(sortedByQuality[i][0]);
@@ -19072,7 +19073,10 @@ var System2MemoryManager = class {
       comments: (code.match(/\/\/|\/\*|\#/g) || []).length / code.split("\n").length * 100,
       complexity: 100 - this.calculateBasicComplexity(code) * 10
     };
-    return Math.max(0, Math.min(100, Object.values(factors).reduce((sum, val) => sum + val, 0) / 3));
+    return Math.max(
+      0,
+      Math.min(100, Object.values(factors).reduce((sum, val) => sum + val, 0) / 3)
+    );
   }
   async calculateReadability(code, language) {
     const lines = code.split("\n");
@@ -19251,7 +19255,9 @@ var DualMemoryEngine = class {
       return result;
     } catch (error) {
       this.updateOperationMetrics("both", Date.now() - startTime, false);
-      throw new Error(`Memory query failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+      throw new Error(
+        `Memory query failed: ${error instanceof Error ? error.message : "Unknown error"}`
+      );
     }
   }
   async store(event) {
@@ -19467,11 +19473,14 @@ var DualMemoryEngine = class {
     switch (query.type) {
       case "reasoning":
         const { domain, complexity, minQuality } = query.context || {};
-        result = await this.system2.searchReasoningTraces({
-          domain,
-          complexity,
-          minQuality
-        }, query.limit);
+        result = await this.system2.searchReasoningTraces(
+          {
+            domain,
+            complexity,
+            minQuality
+          },
+          query.limit
+        );
         break;
       case "quality":
         result = this.system2.qualityEvaluation;
@@ -19611,12 +19620,18 @@ var DualMemoryEngine = class {
     setInterval(() => {
       this.processEventQueue();
     }, this.config.coordinator.syncInterval);
-    setInterval(() => {
-      this.cleanupCache();
-    }, 5 * 60 * 1e3);
-    setInterval(() => {
-      this.optimizeMemory();
-    }, 15 * 60 * 1e3);
+    setInterval(
+      () => {
+        this.cleanupCache();
+      },
+      5 * 60 * 1e3
+    );
+    setInterval(
+      () => {
+        this.optimizeMemory();
+      },
+      15 * 60 * 1e3
+    );
   }
   async processEventQueue() {
     if (this.processingLock || this.eventQueue.length === 0) {
@@ -19693,7 +19708,10 @@ var DualMemoryEngine = class {
   }
   // ========== Public API for Monitoring ==========
   getMetrics() {
-    const totalCacheAccess = Array.from(this.performanceCache.values()).reduce((sum, cached) => sum + cached.hits, 0);
+    const totalCacheAccess = Array.from(this.performanceCache.values()).reduce(
+      (sum, cached) => sum + cached.hits,
+      0
+    );
     this.operationMetrics.cacheHitRate = this.operationMetrics.totalOperations > 0 ? totalCacheAccess / this.operationMetrics.totalOperations : 0;
     return { ...this.operationMetrics };
   }
@@ -20103,9 +20121,12 @@ var MemoryCoordinator = class {
     this.syncTimer = setInterval(() => {
       this.synchronizeSystems().catch(console.error);
     }, this.config.syncInterval);
-    this.optimizationTimer = setInterval(() => {
-      this.optimizePerformance().catch(console.error);
-    }, 5 * 60 * 1e3);
+    this.optimizationTimer = setInterval(
+      () => {
+        this.optimizePerformance().catch(console.error);
+      },
+      5 * 60 * 1e3
+    );
   }
   initializeMetrics() {
     return {
@@ -20147,7 +20168,9 @@ var MemoryCoordinator = class {
     console.log("Adapting reasoning for systematic approach");
   }
   async integratePatternLearning(patterns, reasonings) {
-    console.log(`Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`);
+    console.log(
+      `Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`
+    );
   }
   estimateSystem1Memory() {
     return 50;
@@ -20321,11 +20344,7 @@ var MemoryAwareModeService = class extends events.EventEmitter {
   async getMemoryInsights(input, context) {
     const insights = [];
     try {
-      const similarInteractions = await this.memoryEngine.findKnowledge(
-        input,
-        void 0,
-        5
-      );
+      const similarInteractions = await this.memoryEngine.findKnowledge(input, void 0, 5);
       if (similarInteractions.data.length > 0) {
         insights.push({
           type: "pattern",
@@ -20590,10 +20609,7 @@ var MemoryAwareModeService = class extends events.EventEmitter {
     await this.memoryEngine.store(event);
   }
   updateRecognitionMetrics(result, latency) {
-    this.memoryMetrics.averageModeLatency.set(
-      result.selectedMode.id,
-      latency
-    );
+    this.memoryMetrics.averageModeLatency.set(result.selectedMode.id, latency);
     if (result.memoryInsights.length > 0) {
       this.memoryMetrics.memoryInfluencedDecisions++;
     }

@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import chalk from 'chalk';
 
 export interface HelpTopic {
@@ -119,7 +119,7 @@ export class HelpCommand extends BaseCommand {
       '💬 Need more help? Just ask: "How do I...?" or "Can you help me with...?"',
     );
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async showTopicHelp(topic: string): Promise<SlashCommandResult> {
@@ -152,7 +152,7 @@ export class HelpCommand extends BaseCommand {
       });
     }
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async showCommandHelp(commandName: string): Promise<SlashCommandResult> {
@@ -187,7 +187,7 @@ export class HelpCommand extends BaseCommand {
       message += specificHelp;
     }
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async showCategoryHelp(category: string): Promise<SlashCommandResult> {
@@ -216,7 +216,7 @@ export class HelpCommand extends BaseCommand {
     message += `Use ${chalk.blue('/help <command>')} for detailed help on any command.\n`;
     message += `Example: ${chalk.blue(`/help ${categoryCommands[0]?.name}`)}`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async searchHelp(searchTerm: string): Promise<SlashCommandResult> {
@@ -274,7 +274,7 @@ export class HelpCommand extends BaseCommand {
     message += chalk.gray(`Found ${totalResults} result${totalResults !== 1 ? 's' : ''}\n\n`);
     message += `${chalk.blue('💡 Tip:')} Use ${chalk.code(`/help <topic>`)} for detailed information`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private getHelpTopics(): HelpTopic[] {

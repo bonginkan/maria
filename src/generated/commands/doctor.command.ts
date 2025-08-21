@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';

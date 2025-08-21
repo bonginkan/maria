@@ -476,7 +476,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Analyze tool preferences from usage patterns
    */
   private analyzeToolPreferences(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
   ): Array<{ tool: string; context: string; confidence: number; usage: number }> {
     const preferences: Array<{ tool: string; context: string; confidence: number; usage: number }> =
       [];
@@ -528,7 +528,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Analyze task sequencing patterns
    */
   private analyzeTaskSequencing(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
   ): Array<{ sequence: string; efficiency: number; confidence: number; frequency: number }> {
     const patterns: Array<{
       sequence: string;
@@ -615,7 +615,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Analyze problem-solving strategies
    */
   private analyzeProblemSolvingStrategies(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
   ): Array<{ name: string; successRate: number; confidence: number; instances: number }> {
     const strategies: Array<{
       name: string;
@@ -671,7 +671,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Identify transferable patterns across contexts
    */
   private async identifyTransferablePatterns(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
   ): Promise<TransferablePattern[]> {
     const patterns: TransferablePattern[] = [];
 
@@ -698,7 +698,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Identify improvement opportunities
    */
   private async identifyImprovementOpportunities(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
     _metrics: SessionMetrics,
   ): Promise<ImprovementOpportunity[]> {
     const opportunities: ImprovementOpportunity[] = [];
@@ -753,7 +753,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Identify success factors from session
    */
   private async identifySuccessFactors(
-    _contexts: DeepContextState[],
+    contexts: DeepContextState[],
     _metrics: SessionMetrics,
   ): Promise<SuccessFactor[]> {
     const factors: SuccessFactor[] = [];

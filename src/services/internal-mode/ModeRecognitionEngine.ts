@@ -464,7 +464,7 @@ export class ModeRecognitionEngine extends EventEmitter {
     return null;
   }
 
-  private generateReasoning(modeScore: ModeScore, _context: ModeContext): string {
+  private generateReasoning(modeScore: ModeScore, context: ModeContext): string {
     const reasons: string[] = [];
 
     if (modeScore.scores.intent > 0.5) {

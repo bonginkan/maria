@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
@@ -373,7 +373,7 @@ export class SetupCommand extends BaseCommand {
     message += `${chalk.blue('💡 Alternative:')} Use ${chalk.code('/settings')} for detailed configuration\n`;
     message += `${chalk.blue('📋 Track progress:')} Use ${chalk.code('/setup status')} to see setup progress`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async startAdvancedSetup(flags: Record<string, unknown>): Promise<SlashCommandResult> {
@@ -404,7 +404,7 @@ export class SetupCommand extends BaseCommand {
     message += `4. Set up git hooks with ${chalk.code('/hooks')} for quality control\n`;
     message += `5. Use ${chalk.code('/terminal-setup')} for optimal terminal experience`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async startTeamSetup(flags: Record<string, unknown>): Promise<SlashCommandResult> {
@@ -434,7 +434,7 @@ export class SetupCommand extends BaseCommand {
 
     message += `${chalk.blue('💡 Individual Setup:')} Use ${chalk.code('/setup quick')} for personal configuration`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async startMigrationSetup(flags: Record<string, unknown>): Promise<SlashCommandResult> {
@@ -475,7 +475,7 @@ export class SetupCommand extends BaseCommand {
 
     message += `${chalk.blue('💡 Need help?')} Use ${chalk.code('/help migration')} for detailed migration guides`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async detectExistingTools(): Promise<Array<{ name: string; configPath: string }>> {
@@ -527,7 +527,7 @@ export class SetupCommand extends BaseCommand {
 
       message += `\n${chalk.blue('💡 Recommendation:')} Start with ${chalk.code('/setup quick')} for essential configuration`;
 
-      return { success: true, message };
+      return { success: true, _message };
     }
 
     const profile = this.getSetupProfiles()[setupState.profile];
@@ -562,7 +562,7 @@ export class SetupCommand extends BaseCommand {
       message += `\n${chalk.green('🎉 Setup completed!')} Your MARIA configuration is ready`;
     }
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async resumeSetup(): Promise<SlashCommandResult> {
@@ -588,7 +588,7 @@ export class SetupCommand extends BaseCommand {
       message += `${chalk.yellow('⚠️  Interactive setup wizard not yet implemented')}\n`;
       message += `${chalk.blue('Manual completion:')} Complete the step manually, then run ${chalk.code('/setup status')} to track progress`;
 
-      return { success: true, message };
+      return { success: true, _message };
     } catch {
       return {
         success: false,
@@ -643,7 +643,7 @@ export class SetupCommand extends BaseCommand {
     message += `• Power users: ${chalk.code('/setup advanced')}\n`;
     message += `• Teams: ${chalk.code('/setup team')}`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async validateSetup(): Promise<SlashCommandResult> {
@@ -714,7 +714,7 @@ export class SetupCommand extends BaseCommand {
       message += `${chalk.blue('💡 Quick fix:')} ${chalk.code('/setup quick')}`;
     }
 
-    return { success: passCount === total, message };
+    return { success: passCount === total, _message };
   }
 
   private async exportSetup(fileName?: string): Promise<SlashCommandResult> {

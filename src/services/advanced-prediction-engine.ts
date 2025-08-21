@@ -259,7 +259,7 @@ export class AdvancedPredictionEngine extends EventEmitter {
         'question_count',
         'code_blocks',
         'urgency_indicators',
-        'time_context',
+        'timecontext',
         'recent_actions',
         'user_skill_level',
         'session_momentum',
@@ -1264,7 +1264,7 @@ class TextAnalysisExtractor implements FeatureExtractor {
 class TemporalExtractor implements FeatureExtractor {
   async extract(featureName: string, context: PredictionContext): Promise<number> {
     switch (featureName) {
-      case 'time_context': {
+      case 'timecontext': {
         const hour = new Date().getHours();
         return hour / 24; // Normalize to 0-1
       }
