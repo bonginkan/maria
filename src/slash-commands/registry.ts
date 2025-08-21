@@ -324,7 +324,7 @@ export class CommandRegistry {
     this.registerMiddleware({
       name: 'error-handler',
       priority: 1,
-      async execute(_command, _args, _context, next) {
+      async execute(_command, _args, context, next) {
         try {
           return await next();
         } catch (error) {

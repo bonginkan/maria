@@ -521,22 +521,22 @@ BEGIN CODE GENERATION:
     return 'unit tests';
   }
 
-  private async formatCode(code: string, _context: ProjectContext): Promise<string> {
+  private async formatCode(code: string, context: ProjectContext): Promise<string> {
     // TODO: Implement code formatting based on project's prettier/eslint config
     return code;
   }
 
-  private async addImports(code: string, _context: ProjectContext): Promise<string> {
+  private async addImports(code: string, context: ProjectContext): Promise<string> {
     // TODO: Analyze code and add missing imports
     return code;
   }
 
-  private async validateSyntax(_code: string, _context: ProjectContext): Promise<boolean> {
+  private async validateSyntax(_code: string, context: ProjectContext): Promise<boolean> {
     // TODO: Use language-specific parsers to validate syntax
     return true;
   }
 
-  private async fixSyntaxIssues(code: string, _context: ProjectContext): Promise<string> {
+  private async fixSyntaxIssues(code: string, context: ProjectContext): Promise<string> {
     // TODO: Attempt to fix common syntax issues
     return code;
   }
@@ -582,7 +582,7 @@ class LanguageDetector {
 }
 
 class ContextAnalyzer {
-  async analyzePatterns(_files: string[]): Promise<CodePattern[]> {
+  async analyzePatterns(files: string[]): Promise<CodePattern[]> {
     const patterns: CodePattern[] = [];
 
     // TODO: Analyze files for common patterns

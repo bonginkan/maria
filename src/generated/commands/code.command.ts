@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { Command, RequireAuth, RateLimit, Cache, Validate } from '../decorators';
-import { CommandContext, CommandOptions, CommandResult } from '../types';
+import { _Command, RequireAuth, RateLimit, Cache, _Validate } from '../decorators';
+import { _CommandContext, CommandOptions, _CommandResult } from '../types';
 import { z } from 'zod';
 import { AIRouterService } from '../../services/ai-router';
 import { IntentAnalyzerService } from '../../services/intent-analyzer';

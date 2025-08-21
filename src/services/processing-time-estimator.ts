@@ -54,7 +54,7 @@ export class ProcessingTimeEstimator {
   estimateProcessingTime(
     command: string,
     parameters: string[] = [],
-    _context?: unknown,
+    context?: unknown,
   ): TimeEstimate {
     const factors: EstimationFactor[] = [];
     let baseEstimate = this.getBaseEstimate(command);

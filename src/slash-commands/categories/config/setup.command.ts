@@ -255,7 +255,7 @@ export class SetupCommand extends BaseCommand {
     }
   }
 
-  private async advancedSetup(_context: CommandContext): Promise<CommandResult> {
+  private async advancedSetup(context: CommandContext): Promise<CommandResult> {
     // Advanced setup with full customization
     return this.success('Advanced setup mode - Full customization available', {
       features: [
@@ -368,7 +368,7 @@ export class SetupCommand extends BaseCommand {
     }
   }
 
-  private async silentSetup(_context: CommandContext, configPath: string): Promise<CommandResult> {
+  private async silentSetup(context: CommandContext, configPath: string): Promise<CommandResult> {
     // Silent setup from configuration file
     return this.success('Silent setup completed from configuration file', {
       configPath,
@@ -454,7 +454,7 @@ export class SetupCommand extends BaseCommand {
     };
   }
 
-  private async configureProviders(_context: CommandContext): Promise<CommandResult> {
+  private async configureProviders(context: CommandContext): Promise<CommandResult> {
     // Generate environment template for provider configuration
     return await this.generateQuickEnvTemplate();
   }
@@ -597,7 +597,7 @@ Happy coding! 🚀
 
   private async fixConfigurationIssue(
     issue: { description: string; severity: 'error' | 'warning' },
-    _context: CommandContext,
+    context: CommandContext,
   ): Promise<void> {
     // Fix specific configuration issues
     if (issue.description.includes('.env.local')) {
@@ -623,7 +623,7 @@ Happy coding! 🚀
     return this.fileExists(path.join(context.environment.cwd, '.maria-code.toml'));
   }
 
-  private async validateProviderConnections(_context: CommandContext): Promise<boolean> {
+  private async validateProviderConnections(context: CommandContext): Promise<boolean> {
     // Would test actual provider connections in real implementation
     return true;
   }

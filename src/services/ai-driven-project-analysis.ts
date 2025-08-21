@@ -13,7 +13,7 @@ import { EventEmitter } from 'events';
 // Project analysis types and interfaces
 interface ProjectStructure {
   root_path: string;
-  total_files: number;
+  totalfiles: number;
   total_lines_of_code: number;
   languages: LanguageAnalysis[];
   directories: DirectoryAnalysis[];
@@ -46,7 +46,7 @@ interface DirectoryAnalysis {
   file_count: number;
   lines_of_code: number;
   avg_complexity: number;
-  key_files: string[];
+  keyfiles: string[];
   recommendations: string[];
 }
 
@@ -167,7 +167,7 @@ interface RemediationTask {
   category: string;
   priority: 'critical' | 'high' | 'medium' | 'low';
   estimated_effort_hours: number;
-  affected_files: string[];
+  affectedfiles: string[];
   dependencies: string[];
   expected_benefits: string[];
   implementation_steps: string[];
@@ -278,8 +278,8 @@ interface ProjectTrend {
 interface AnalysisConfiguration {
   depth_level: 'basic' | 'standard' | 'comprehensive' | 'deep';
   include_external_dependencies: boolean;
-  include_test_files: boolean;
-  include_generated_files: boolean;
+  include_testfiles: boolean;
+  include_generatedfiles: boolean;
   file_size_limit_mb: number;
   language_specific_analysis: boolean;
   ai_insights_enabled: boolean;
@@ -312,8 +312,8 @@ class AIProjectAnalyzer extends EventEmitter {
   //   return {
   //     depth_level: 'comprehensive',
   //     include_external_dependencies: true,
-  //     include_test_files: true,
-  //     include_generated_files: false,
+  //     include_testfiles: true,
+  //     include_generatedfiles: false,
   //     file_size_limit_mb: 10,
   //     language_specific_analysis: true,
   //     ai_insights_enabled: true,
@@ -551,7 +551,7 @@ class AIProjectAnalyzer extends EventEmitter {
       overview: {
         health_score: latestAnalysis.health_score,
         project_type: latestAnalysis.project_structure.architecture_type,
-        total_files: latestAnalysis.project_structure.total_files,
+        totalfiles: latestAnalysis.project_structure.totalfiles,
         lines_of_code: latestAnalysis.project_structure.total_lines_of_code,
         technical_debt_hours: latestAnalysis.technical_debt.total_debt_hours,
         last_analysis: latestAnalysis.timestamp,
@@ -593,7 +593,7 @@ class AIProjectAnalyzer extends EventEmitter {
     // Implementation for project structure analysis
     return {
       root_path: projectPath,
-      total_files: 0,
+      totalfiles: 0,
       total_lines_of_code: 0,
       languages: [],
       directories: [],
@@ -732,7 +732,7 @@ class AIProjectAnalyzer extends EventEmitter {
     };
   }
 
-  private async detectContextualPatterns(_context: string, _filePath: string): Promise<unknown[]> {
+  private async detectContextualPatterns(context: string, filePath: string): Promise<unknown[]> {
     return [];
   }
 
@@ -750,7 +750,7 @@ class AIProjectAnalyzer extends EventEmitter {
 
   private async predictPotentialIssues(
     _fileAnalysis: FileAnalysis,
-    _context: string,
+    context: string,
     _suggestions: CodeSuggestion[],
   ): Promise<string[]> {
     return [];

@@ -16,7 +16,7 @@ interface RefactoringOperation {
   type: RefactoringType;
   name: string;
   description: string;
-  target_files: string[];
+  targetfiles: string[];
   target_elements: RefactoringTarget[];
   confidence_score: number;
   risk_level: 'low' | 'medium' | 'high';
@@ -939,9 +939,9 @@ class AutomatedRefactoringEngine extends EventEmitter {
   }
 
   private async analyzeCodeSnippet(
-    _filePath: string,
+    filePath: string,
     _codeSnippet: string,
-    _context?: unknown,
+    context?: unknown,
   ): Promise<unknown> {
     return {};
   }

@@ -1,0 +1,1 @@
+{"version":3,"file":"MariaStatusBar.d.ts","sourceRoot":"","sources":["../../src/ui/MariaStatusBar.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,MAAM,QAAQ,CAAC;AAEjC,qBAAa,cAAe,YAAW,MAAM,CAAC,UAAU;IACtD,OAAO,CAAC,aAAa,CAAuB;;IAarC,MAAM,CAAC,IAAI,EAAE,MAAM,EAAE,OAAO,CAAC,EAAE,MAAM,GAAG,IAAI;IAO5C,OAAO,IAAI,IAAI;CAGvB"}

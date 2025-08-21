@@ -234,7 +234,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Get repository statistics from GitHub
    */
-  async getRepositoryStats(): Promise<any> {
+  async getRepositoryStats(): Promise<unknown> {
     try {
       const [repo, contributors, commits] = await Promise.all([
         this.githubRequest('GET', ''),
@@ -331,7 +331,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Make authenticated GitHub API request
    */
-  private async githubRequest(method: string, endpoint: string, data?: any): Promise<any> {
+  private async githubRequest(method: string, endpoint: string, data?: any): Promise<unknown> {
     const baseUrl = this.config.baseUrl || 'https://api.github.com';
     const url = `${baseUrl}/repos/${this.config.owner}/${this.config.repo}${endpoint}`;
 

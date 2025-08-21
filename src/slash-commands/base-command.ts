@@ -76,7 +76,7 @@ export abstract class BaseCommand implements ISlashCommand {
   /**
    * Rollback on error - override for custom rollback logic
    */
-  async rollback(_context: CommandContext, error: Error): Promise<void> {
+  async rollback(context: CommandContext, error: Error): Promise<void> {
     logger.error(`Rollback for ${this.name}:`, error);
   }
 

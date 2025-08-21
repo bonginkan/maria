@@ -449,7 +449,7 @@ export class LearningEngine extends EventEmitter {
    * Check and unlock achievements
    */
   // @ts-nocheck - Complex async type handling
-  private checkAchievements(_command: string, _context: CommandContext): void {
+  private checkAchievements(_command: string, context: CommandContext): void {
     const achievements: Achievement[] = [];
 
     // Check various achievement conditions

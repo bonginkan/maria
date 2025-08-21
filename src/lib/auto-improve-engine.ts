@@ -70,14 +70,14 @@ export interface ImprovementResult {
 }
 
 class AutoImproveEngine {
-  async analyze(_mode: AutoImproveMode, _options?: unknown): Promise<ImprovementSuggestion[]> {
+  async analyze(_mode: AutoImproveMode, options?: unknown): Promise<ImprovementSuggestion[]> {
     // Mock implementation
     return [];
   }
 
   async apply(
     _suggestions: ImprovementSuggestion[],
-    _options?: unknown,
+    options?: unknown,
   ): Promise<ImprovementResult> {
     // Mock implementation
     return {

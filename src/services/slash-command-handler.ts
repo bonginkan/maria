@@ -472,7 +472,7 @@ export class SlashCommandHandler {
 
   private async handleInternalModeCommand(
     args: string[],
-    _context: ConversationContext,
+    context: ConversationContext,
   ): Promise<SlashCommandResult> {
     const modeService = getInternalModeService();
 
@@ -1382,24 +1382,24 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     };
   }
 
-  private async handleCompact(_context: ConversationContext): Promise<SlashCommandResult> {
-    if (!_context.history?.length) {
+  private async handleCompact(context: ConversationContext): Promise<SlashCommandResult> {
+    if (!context.history?.length) {
       return {
         success: false,
         message: 'No conversation history to compact',
       };
     }
 
-    const originalCount = _context.history.length;
-    const originalTokens = Number(_context.metadata?.['totalTokens']) || 0;
+    const originalCount = context.history.length;
+    const originalTokens = Number(context.metadata?.['totalTokens']) || 0;
 
     // 重要なメッセージのみを保持（エラー、重要なシステムメッセージ、最後の5つの交換）
-    const importantMessages = _context.history.filter(
+    const importantMessages = context.history.filter(
       (msg: ConversationHistory) =>
         msg.data?.['error'] || msg.action === 'system' || msg.data?.['command'],
     );
 
-    const recentMessages = _context.history.slice(-10); // 最新10メッセージを保持
+    const recentMessages = context.history.slice(-10); // 最新10メッセージを保持
     const compactedHistory: ConversationHistory[] = [
       ...importantMessages.slice(0, 5), // 重要メッセージの最初の5つ
       {
@@ -1416,16 +1416,16 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     // 重複を除去
     const uniqueMessages = compactedHistory;
 
-    _context.history = uniqueMessages;
+    context.history = uniqueMessages;
 
     // トークン数を推定 (簡易計算: 文字数 ÷ 4)
     const newTokenCount = Math.ceil(
       uniqueMessages.reduce((sum, msg) => sum + JSON.stringify(msg.data || '').length, 0) / 4,
     );
 
-    if (_context.metadata) {
-      _context.metadata['totalTokens'] = newTokenCount;
-      _context.metadata['cost'] = newTokenCount * 0.000002; // 簡易計算
+    if (context.metadata) {
+      context.metadata['totalTokens'] = newTokenCount;
+      context.metadata['cost'] = newTokenCount * 0.000002; // 簡易計算
     }
 
     return {
@@ -1440,7 +1440,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     };
   }
 
-  private async handleResume(_context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleResume(context: ConversationContext): Promise<SlashCommandResult> {
     const resumeFile = `${process.cwd()}/.maria-session.json`;
 
     try {
@@ -1460,7 +1460,7 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
 
       // 保存された会話を現在のコンテキストにマージ
       if (isArray(savedContext.history)) {
-        _context.history = savedContext.history.map((msg: unknown): ConversationHistory => {
+        context.history = savedContext.history.map((msg: unknown): ConversationHistory => {
           if (isObject(msg)) {
             return {
               timestamp: new Date(getStringProperty(msg, 'timestamp', new Date().toISOString())),
@@ -1475,19 +1475,19 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
           };
         });
       } else {
-        _context.history = [];
+        context.history = [];
       }
 
       if (savedContext.currentTask) {
-        _context.currentTask =
+        context.currentTask =
           typeof savedContext.currentTask === 'string'
             ? savedContext.currentTask
             : String(savedContext.currentTask);
       }
 
       if (savedContext.metadata) {
-        _context.metadata = {
-          ..._context.metadata,
+        context.metadata = {
+          ...context.metadata,
           ...savedContext.metadata,
           startTime: new Date(
             ((savedContext.metadata as Record<string, unknown>)['startTime'] as string) ||
@@ -1505,11 +1505,11 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
 
       return {
         success: true,
-        message: `Conversation resumed: ${_context.history.length} messages restored${_context.currentTask ? ` (task: ${_context.currentTask})` : ''}`,
+        message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${context.currentTask})` : ''}`,
         data: {
-          messagesRestored: _context.history.length,
-          taskRestored: !!_context.currentTask,
-          lastActivity: _context.metadata?.['lastActivity'],
+          messagesRestored: context.history.length,
+          taskRestored: !!context.currentTask,
+          lastActivity: context.metadata?.['lastActivity'],
         },
       };
     } catch (error: unknown) {
@@ -1528,12 +1528,12 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     }
   }
 
-  private async handleCost(_context: ConversationContext): Promise<SlashCommandResult> {
-    const cost = (_context.metadata?.['cost'] as number) || 0;
-    const tokens = (_context.metadata?.['totalTokens'] as number) || 0;
-    const sessionStart = (_context.metadata?.['startTime'] as Date) || new Date();
+  private async handleCost(context: ConversationContext): Promise<SlashCommandResult> {
+    const cost = (context.metadata?.['cost'] as number) || 0;
+    const tokens = (context.metadata?.['totalTokens'] as number) || 0;
+    const sessionStart = (context.metadata?.['startTime'] as Date) || new Date();
     const duration = Math.round((Date.now() - sessionStart.getTime()) / 1000);
-    const messageCount = _context.history?.length || 0;
+    const messageCount = context.history?.length || 0;
 
     // ユーザープランに基づくコスト制限を取得
     const dailyLimit =
@@ -1915,7 +1915,7 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
   }
 
-  private async handleVim(_context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleVim(context: ConversationContext): Promise<SlashCommandResult> {
     const config = await readConfig();
 
     // Vim モードの現在の状態を取得
@@ -1923,8 +1923,8 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     const newVimMode = !currentVimMode;
 
     // Vim モード設定を更新
-    if (_context.preferences) {
-      (_context.preferences as Record<string, unknown>)['vimMode'] = newVimMode;
+    if (context.preferences) {
+      (context.preferences as Record<string, unknown>)['vimMode'] = newVimMode;
     }
 
     // 設定ファイルに保存
@@ -2119,11 +2119,11 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     };
   }
 
-  private async handleSuggest(_context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleSuggest(context: ConversationContext): Promise<SlashCommandResult> {
     const suggestionContext: SuggestionContext = {
       projectInitialized: await this.checkProjectInitialized(),
       userLoggedIn: this.userSession.isAuthenticated,
-      currentMode: _context.preferences?.defaultModel || 'chat',
+      currentMode: context.preferences?.defaultModel || 'chat',
       sessionDuration: Date.now() - this.sessionStartTime,
       commandHistory: this.suggestionService.getCommandHistory(),
     };
@@ -2875,9 +2875,9 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
   }
 
-  private async handleExit(_context: ConversationContext): Promise<SlashCommandResult> {
+  private async handleExit(context: ConversationContext): Promise<SlashCommandResult> {
     // 会話セッションを保存（オプション）
-    const shouldSave = _context.history && _context.history.length > 0;
+    const shouldSave = context.history && context.history.length > 0;
 
     if (shouldSave) {
       try {
@@ -2885,20 +2885,20 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
         const sessionFile = `${process.cwd()}/.maria-session.json`;
 
         const sessionData = {
-          sessionId: _context.sessionId,
-          history: _context.history,
-          currentTask: _context.currentTask,
-          metadata: _context.metadata,
+          sessionId: context.sessionId,
+          history: context.history,
+          currentTask: context.currentTask,
+          metadata: context.metadata,
           savedAt: new Date().toISOString(),
         };
 
         await fs.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
 
         const stats = {
-          messages: _context.history?.length || 0,
-          cost: (_context.metadata?.['cost'] as number) || 0,
-          duration: _context.metadata?.['startTime']
-            ? Math.round((Date.now() - (_context.metadata['startTime'] as Date).getTime()) / 1000)
+          messages: context.history?.length || 0,
+          cost: (context.metadata?.['cost'] as number) || 0,
+          duration: context.metadata?.['startTime']
+            ? Math.round((Date.now() - (context.metadata['startTime'] as Date).getTime()) / 1000)
             : 0,
         };
 
@@ -3858,7 +3858,7 @@ Options:
   // === TEST GENERATION COMMAND (重要) ===
   private async handleTest(
     args: string[],
-    _context: ConversationContext,
+    context: ConversationContext,
   ): Promise<SlashCommandResult> {
     const testGenService = TestGenerationService.getInstance();
 
@@ -4035,7 +4035,7 @@ Usage: /test [target] [options]
   // === PAPER PROCESSING COMMAND (DeepCode Integration - Phase 1) ===
   private async handlePaper(
     args: string[],
-    _context: ConversationContext,
+    context: ConversationContext,
   ): Promise<SlashCommandResult> {
     const { MultiAgentSystem } = await import('../agents/multi-agent-system');
     const multiAgentSystem = MultiAgentSystem.getInstance();

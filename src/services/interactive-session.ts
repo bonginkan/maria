@@ -52,7 +52,10 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
 
       // Handle Ctrl+C gracefully with optimized colors
       rl.on('SIGINT', () => {
-        console.log(SEMANTIC_COLORS.WARNING(IconRegistry.get('WARNING')) + TEXT_HIERARCHY.BODY('\n\nReceived SIGINT. Use /exit to quit gracefully.'));
+        console.log(
+          SEMANTIC_COLORS.WARNING(IconRegistry.get('WARNING')) +
+            TEXT_HIERARCHY.BODY('\n\nReceived SIGINT. Use /exit to quit gracefully.'),
+        );
         rl?.prompt();
       });
 

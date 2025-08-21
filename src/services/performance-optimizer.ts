@@ -354,7 +354,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Track UI performance
    */
-  private trackUIPerformance(_event: unknown): void {
+  private trackUIPerformance(event: unknown): void {
     // This would track UI responsiveness and state change performance
     // For now, we'll use a simple metric based on state updates
     this.recordCommandExecution(50); // Assume UI operations take ~50ms

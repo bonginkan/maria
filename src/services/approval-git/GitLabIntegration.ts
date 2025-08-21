@@ -181,15 +181,15 @@ export class GitLabIntegration extends EventEmitter {
   async setupWebhook(webhookUrl: string): Promise<void> {
     const webhookData = {
       url: webhookUrl,
-      push_events: true,
-      issues_events: true,
-      merge_requests_events: true,
-      wiki_page_events: false,
-      deployment_events: false,
-      job_events: false,
-      pipeline_events: true,
-      release_events: false,
-      subgroup_events: false,
+      pushevents: true,
+      issuesevents: true,
+      merge_requestsevents: true,
+      wiki_pageevents: false,
+      deploymentevents: false,
+      jobevents: false,
+      pipelineevents: true,
+      releaseevents: false,
+      subgroupevents: false,
       enable_ssl_verification: true,
       token: this.config.webhookSecret,
     };
@@ -201,7 +201,7 @@ export class GitLabIntegration extends EventEmitter {
         id: response.id,
         url: response.url,
         events: Object.keys(webhookData).filter(
-          (key) => key.endsWith('_events') && webhookData[key as keyof typeof webhookData],
+          (key) => key.endsWith('events') && webhookData[key as keyof typeof webhookData],
         ),
       });
     } catch (error) {
@@ -243,7 +243,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Get project statistics from GitLab
    */
-  async getProjectStats(): Promise<any> {
+  async getProjectStats(): Promise<unknown> {
     try {
       const [project, contributors, commits] = await Promise.all([
         this.gitlabRequest('GET', ''),
@@ -304,7 +304,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Get merge request approvals
    */
-  async getMergeRequestApprovals(mrIid: number): Promise<any> {
+  async getMergeRequestApprovals(mrIid: number): Promise<unknown> {
     try {
       const response = await this.gitlabRequest('GET', `/merge_requests/${mrIid}/approvals`);
 
@@ -406,7 +406,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Make authenticated GitLab API request
    */
-  private async gitlabRequest(method: string, endpoint: string, data?: any): Promise<any> {
+  private async gitlabRequest(method: string, endpoint: string, data?: any): Promise<unknown> {
     const baseUrl = this.config.baseUrl || 'https://gitlab.com/api/v4';
     let url = `${baseUrl}/projects/${this.config.projectId}${endpoint}`;
 

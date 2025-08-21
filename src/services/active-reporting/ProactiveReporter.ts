@@ -1,0 +1,581 @@
+/**
+ * Proactive Reporter - Intelligent progress reporting and alerting
+ * Implements systematic "Horenso" (Report-Contact-Consult) methodology
+ */
+import { _EventEmitter } from 'events';
+import chalk from 'chalk';
+import {
+  Task,
+  SOW as _SOW,
+  ProgressReport as _ProgressReport,
+  ProactiveReport,
+  ReportTrigger,
+  Blocker,
+  Milestone as _Milestone,
+  DecisionPoint,
+  Recommendation,
+} from './types';
+import { _TaskVisualizer } from './TaskVisualizer';
+import { _ProgressTracker } from './ProgressTracker';
+
+export class ProactiveReporter extends EventEmitter {
+  private triggers: Map<string, ReportTrigger>;
+  private reportHistory: ProactiveReport[];
+  private taskVisualizer: TaskVisualizer;
+  private progressTracker: ProgressTracker;
+  private lastReportTime: Date;
+  private reportingInterval: number = 15; // minutes
+  private isReportingEnabled: boolean = true;
+
+  /**
+   * Initialize the reporter
+   */
+  public async initialize(): Promise<void> {
+    console.log('✓ Proactive Reporter initialized');
+  }
+
+  /**
+   * Dispose the reporter
+   */
+  public async dispose(): Promise<void> {
+    this.removeAllListeners();
+  }
+
+  constructor() {
+    super();
+    this.triggers = new Map();
+    this.reportHistory = [];
+    this.taskVisualizer = new TaskVisualizer();
+    this.progressTracker = new ProgressTracker();
+    this.lastReportTime = new Date();
+    this.initializeDefaultTriggers();
+  }
+
+  /**
+   * Initialize default reporting triggers
+   */
+  private initializeDefaultTriggers(): void {
+    // Task completion trigger
+    this.addTrigger({
+      id: 'task_completion',
+      type: 'taskevent',
+      condition: 'task_completed',
+      enabled: true,
+      priority: 'high',
+      reportTemplate: 'milestone',
+    });
+
+    // Blocker detection trigger
+    this.addTrigger({
+      id: 'blocker_detection',
+      type: 'blockerevent',
+      condition: 'blocker_detected',
+      enabled: true,
+      priority: 'critical',
+      reportTemplate: 'blocker',
+    });
+
+    // Progress interval trigger
+    this.addTrigger({
+      id: 'progress_interval',
+      type: 'time_based',
+      condition: 'interval_elapsed',
+      enabled: true,
+      priority: 'medium',
+      reportTemplate: 'progress',
+    });
+
+    // Decision point trigger
+    this.addTrigger({
+      id: 'decision_required',
+      type: 'decisionevent',
+      condition: 'decision_needed',
+      enabled: true,
+      priority: 'high',
+      reportTemplate: 'decision',
+    });
+  }
+
+  /**
+   * Add a new reporting trigger
+   */
+  public addTrigger(_trigger: ReportTrigger): void {
+    this.triggers.set(trigger.id, trigger);
+  }
+
+  /**
+   * Enable/disable proactive reporting
+   */
+  public setReportingEnabled(_enabled: boolean): void {
+    this.isReportingEnabled = enabled;
+    if (enabled) {
+      this.emit('reporting_enabled');
+    } else {
+      this.emit('reporting_disabled');
+    }
+  }
+
+  /**
+   * Set reporting interval in minutes
+   */
+  public setReportingInterval(_minutes: number): void {
+    this.reportingInterval = Math.max(1, minutes); // Minimum 1 minute
+  }
+
+  /**
+   * Check if a report should be triggered
+   */
+  public checkTriggers(event: string, _data: unknown): void {
+    if (!this.isReportingEnabled) return;
+
+    for (const [_id, trigger] of this.triggers) {
+      if (!trigger.enabled) continue;
+
+      if (this.shouldTriggerReport(trigger, event, data)) {
+        this.generateReport(trigger, data);
+      }
+    }
+  }
+
+  /**
+   * Determine if a trigger should fire
+   */
+  private shouldTriggerReport(_trigger: ReportTrigger, event: string, _data: unknown): boolean {
+    switch (trigger.type) {
+      case 'taskevent':
+        return event === 'task_completed' || event === 'task_blocked' || event === 'task_started';
+
+      case 'blockerevent':
+        return event === 'blocker_detected' || event === 'blocker_resolved';
+
+      case 'time_based': {
+        const _timeSinceLastReport = Date.now() - this.lastReportTime.getTime();
+        return timeSinceLastReport >= this.reportingInterval * 60 * 1000;
+      }
+
+      case 'decisionevent':
+        return event === 'decision_required' || event === 'approval_needed';
+
+      case 'milestoneevent':
+        return event === 'milestone_reached' || event === 'deliverable_completed';
+
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Generate a proactive report based on trigger
+   */
+  private async generateReport(_trigger: ReportTrigger, _data: unknown): Promise<void> {
+    try {
+      const _report = await this.createReport(trigger.reportTemplate, data);
+      this.reportHistory.push(report);
+      this.lastReportTime = new Date();
+
+      // Display the report
+      this.displayReport(report);
+
+      // Emit event for external listeners
+      this.emit('report_generated', report);
+    } catch (error) {
+      console.error(chalk.red('Failed to generate proactive report:'), error);
+    }
+  }
+
+  /**
+   * Create a report based on template and data
+   */
+  private async createReport(_template: string, _data: unknown): Promise<ProactiveReport> {
+    const _timestamp = new Date();
+
+    switch (template) {
+      case 'milestone':
+        return this.createMilestoneReport(timestamp, data);
+
+      case 'blocker':
+        return this.createBlockerReport(timestamp, data);
+
+      case 'progress':
+        return this.createProgressReport(timestamp, data);
+
+      case 'decision':
+        return this.createDecisionReport(timestamp, data);
+
+      default:
+        return this.createGenericReport(timestamp, data);
+    }
+  }
+
+  /**
+   * Create milestone completion report
+   */
+  private createMilestoneReport(_timestamp: Date, _data: unknown): ProactiveReport {
+    const _completedTask = data.task as Task;
+
+    return {
+      id: `milestone_${timestamp.getTime()}`,
+      type: 'milestone',
+      timestamp,
+      title: `🎉 Milestone Achieved: ${completedTask.title}`,
+      summary: `Task "${completedTask.title}" has been completed successfully.`,
+      details: {
+        completed: [
+          {
+            id: completedTask.id,
+            title: completedTask.title,
+            completedAt: timestamp,
+            actualTime: completedTask.actualTime,
+            estimatedTime: completedTask.estimatedTime,
+          },
+        ],
+      },
+      recommendations: this.generateMilestoneRecommendations(completedTask),
+      visualRepresentation: this.taskVisualizer.renderTaskCompletion(completedTask),
+      priority: 'medium',
+    };
+  }
+
+  /**
+   * Create blocker detection report
+   */
+  private createBlockerReport(_timestamp: Date, _data: unknown): ProactiveReport {
+    const _blocker = data.blocker as Blocker;
+
+    return {
+      id: `blocker_${timestamp.getTime()}`,
+      type: 'blocker',
+      timestamp,
+      title: `🚨 Blocker Detected: ${blocker.title}`,
+      summary: `A blocker has been identified that may impact progress.`,
+      details: {
+        blockers: [blocker],
+      },
+      recommendations: this.generateBlockerRecommendations(blocker),
+      visualRepresentation: this.taskVisualizer.renderBlockerAlert(blocker),
+      priority: 'critical',
+    };
+  }
+
+  /**
+   * Create regular progress report
+   */
+  private createProgressReport(_timestamp: Date, _data: unknown): ProactiveReport {
+    const _progressData = this.progressTracker.getCurrentProgress();
+
+    return {
+      id: `progress_${timestamp.getTime()}`,
+      type: 'progress',
+      timestamp,
+      title: `📊 Progress Update: ${progressData.overallProgress}% Complete`,
+      summary: `Regular progress update showing current status and next steps.`,
+      details: {
+        current: progressData.currentTasks.map((_task) => ({
+          id: task.id,
+          title: task.title,
+          progress: task.progress,
+          estimatedTimeRemaining: this.calculateTimeRemaining(task),
+        })),
+        upcoming: progressData.upcomingTasks.slice(0, 3).map((_task) => ({
+          id: task.id,
+          title: task.title,
+          estimatedTime: task.estimatedTime,
+        })),
+      },
+      recommendations: this.generateProgressRecommendations(progressData),
+      visualRepresentation: this.taskVisualizer.renderProgressDashboard(progressData),
+      priority: 'medium',
+    };
+  }
+
+  /**
+   * Create decision point report
+   */
+  private createDecisionReport(_timestamp: Date, _data: unknown): ProactiveReport {
+    const _decision = data.decision as DecisionPoint;
+
+    return {
+      id: `decision_${timestamp.getTime()}`,
+      type: 'decision',
+      timestamp,
+      title: `🤔 Decision Required: ${decision.title}`,
+      summary: `A decision point has been reached that requires user input.`,
+      details: {
+        decisions: [decision],
+      },
+      recommendations: this.generateDecisionRecommendations(decision),
+      visualRepresentation: this.taskVisualizer.renderDecisionPoint(decision),
+      priority: 'high',
+    };
+  }
+
+  /**
+   * Create generic report
+   */
+  private createGenericReport(_timestamp: Date, _data: unknown): ProactiveReport {
+    return {
+      id: `generic_${timestamp.getTime()}`,
+      type: 'context',
+      timestamp,
+      title: '📋 Status Update',
+      summary: 'General status update',
+      details: data,
+      recommendations: [],
+      visualRepresentation: '',
+      priority: 'low',
+    };
+  }
+
+  /**
+   * Display report to user
+   */
+  private displayReport(_report: ProactiveReport): void {
+    const _priorityColor = this.getPriorityColor(report.priority);
+
+    console.log(chalk.cyan('\n' + '═'.repeat(124)));
+    console.log(priorityColor(this.centerText(report.title, 124)));
+    console.log(chalk.cyan('═'.repeat(124)));
+
+    console.log(chalk.white(`\n📅 ${report.timestamp.toLocaleString()}`));
+    console.log(chalk.gray(`📝 ${report.summary}\n`));
+
+    if (report.visualRepresentation) {
+      console.log(report.visualRepresentation);
+    }
+
+    // Display recommendations
+    if (report.recommendations.length > 0) {
+      console.log(chalk.yellow('\n💡 Recommendations:'));
+      report.recommendations.forEach((rec, _index) => {
+        console.log(chalk.yellow(`   ${index + 1}. ${rec.title}`));
+        if (rec.description) {
+          console.log(chalk.gray(`      ${rec.description}`));
+        }
+      });
+    }
+
+    console.log(chalk.cyan('\n' + '═'.repeat(124) + '\n'));
+  }
+
+  /**
+   * Generate milestone-specific recommendations
+   */
+  private generateMilestoneRecommendations(_task: Task): Recommendation[] {
+    const recommendations: Recommendation[] = [
+      {
+        id: 'next_task',
+        title: 'Consider starting the next task in the sequence',
+        description: 'Maintain momentum by immediately beginning dependent tasks',
+        priority: 'medium',
+        actionRequired: false,
+      },
+    ];
+
+    // Add time efficiency recommendation if completed early/late
+    if (task.actualTime && task.estimatedTime) {
+      const _efficiency = task.estimatedTime / task.actualTime;
+      if (efficiency > 1.2) {
+        recommendations.push({
+          id: 'time_optimization',
+          title: 'Task completed ahead of schedule',
+          description: 'Consider using extra time for code review or testing',
+          priority: 'low',
+          actionRequired: false,
+        });
+      } else if (efficiency < 0.8) {
+        recommendations.push({
+          id: 'estimation_review',
+          title: 'Review time estimation accuracy',
+          description: 'Consider adjusting estimates for similar future tasks',
+          priority: 'medium',
+          actionRequired: false,
+        });
+      }
+    }
+
+    return recommendations;
+  }
+
+  /**
+   * Generate blocker-specific recommendations
+   */
+  private generateBlockerRecommendations(_blocker: Blocker): Recommendation[] {
+    return [
+      {
+        id: 'blocker_analysis',
+        title: 'Analyze blocker impact and alternatives',
+        description: 'Assess if there are parallel tasks that can be worked on',
+        priority: 'high',
+        actionRequired: true,
+      },
+      {
+        id: 'escalation_path',
+        title: 'Consider escalation if blocker persists',
+        description: 'Identify stakeholders who can help resolve the blocker',
+        priority: 'medium',
+        actionRequired: false,
+      },
+    ];
+  }
+
+  /**
+   * Generate progress-specific recommendations
+   */
+  private generateProgressRecommendations(_progressData: unknown): Recommendation[] {
+    const recommendations: Recommendation[] = [];
+
+    if (progressData.overallProgress < 30) {
+      recommendations.push({
+        id: 'early_stage',
+        title: 'Focus on establishing momentum',
+        description: 'Prioritize quick wins to build confidence',
+        priority: 'medium',
+        actionRequired: false,
+      });
+    } else if (progressData.overallProgress > 80) {
+      recommendations.push({
+        id: 'final_stage',
+        title: 'Prepare for final testing and deployment',
+        description: 'Ensure all edge cases are covered',
+        priority: 'high',
+        actionRequired: false,
+      });
+    }
+
+    return recommendations;
+  }
+
+  /**
+   * Generate decision-specific recommendations
+   */
+  private generateDecisionRecommendations(_decision: DecisionPoint): Recommendation[] {
+    return [
+      {
+        id: 'gather_info',
+        title: 'Gather all necessary information',
+        description: 'Ensure you have complete context before deciding',
+        priority: 'high',
+        actionRequired: true,
+      },
+      {
+        id: 'consider_impact',
+        title: 'Consider long-term implications',
+        description: 'Evaluate how this decision affects future development',
+        priority: 'medium',
+        actionRequired: false,
+      },
+    ];
+  }
+
+  /**
+   * Calculate remaining time for a task
+   */
+  private calculateTimeRemaining(_task: Task): number {
+    if (!task.estimatedTime) return 0;
+    const _completedTime = task.actualTime || 0;
+    const _progressRatio = task.progress / 100;
+    const _estimatedTotalTime =
+      progressRatio > 0 ? completedTime / progressRatio : task.estimatedTime;
+    return Math.max(0, estimatedTotalTime - completedTime);
+  }
+
+  /**
+   * Get color for priority level
+   */
+  private getPriorityColor(_priority: string): unknown {
+    switch (priority) {
+      case 'critical':
+        return chalk.red.bold;
+      case 'high':
+        return chalk.yellow.bold;
+      case 'medium':
+        return chalk.blue.bold;
+      case 'low':
+        return chalk.gray.bold;
+      default:
+        return chalk.white.bold;
+    }
+  }
+
+  /**
+   * Center text within specified width
+   */
+  private centerText(_text: string, _width: number): string {
+    const _textLength = _text.replace(/\x1b\[[0-9;]*m/g, '').length; // Remove ANSI codes
+    const _padding = Math.max(0, Math.floor((_width - _textLength) / 2));
+    return ' '.repeat(_padding) + _text + ' '.repeat(_width - _textLength - _padding);
+  }
+
+  /**
+   * Get report history
+   */
+  public getReportHistory(limit?: number): ProactiveReport[] {
+    const _reports = [...this.reportHistory].reverse(); // Most recent first
+    return limit ? reports.slice(0, limit) : reports;
+  }
+
+  /**
+   * Clear report history
+   */
+  public clearReportHistory(): void {
+    this.reportHistory = [];
+  }
+
+  /**
+   * Export reports in various formats
+   */
+  public exportReports(_format: 'json' | 'markdown' = 'json'): string {
+    if (format === 'json') {
+      return JSON.stringify(this.reportHistory, _null, 2);
+    } else {
+      return this.generateMarkdownReport();
+    }
+  }
+
+  /**
+   * Generate markdown report
+   */
+  private generateMarkdownReport(): string {
+    const _markdown = '# Proactive Reporting History\n\n';
+
+    this.reportHistory.forEach((report, _index) => {
+      markdown += `## ${index + 1}. ${report.title}\n\n`;
+      markdown += `**Date:** ${report.timestamp.toLocaleString()}\n`;
+      markdown += `**Type:** ${report.type}\n`;
+      markdown += `**Priority:** ${report.priority}\n\n`;
+      markdown += `**Summary:** ${report.summary}\n\n`;
+
+      if (report.recommendations.length > 0) {
+        markdown += '**Recommendations:**\n';
+        report.recommendations.forEach((_rec) => {
+          markdown += `- ${rec.title}\n`;
+          if (rec.description) {
+            markdown += `  - ${rec.description}\n`;
+          }
+        });
+        markdown += '\n';
+      }
+
+      markdown += '---\n\n';
+    });
+
+    return markdown;
+  }
+
+  /**
+   * Trigger manual report generation
+   */
+  public generateManualReport(_type: string = 'progress'): void {
+    this.generateReport(
+      {
+        id: 'manual',
+        type: 'manual',
+        condition: 'user_requested',
+        enabled: true,
+        priority: 'medium',
+        reportTemplate: type,
+      },
+      {},
+    );
+  }
+}

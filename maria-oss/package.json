@@ -1,7 +1,7 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.2.0",
-  "description": "Enterprise-Grade AI Development Platform - Intelligent CLI with Vector-based Code Search, Advanced Document Processing, Multi-Agent Orchestration, and Comprehensive Quality Analysis",
+  "version": "1.6.0",
+  "description": "Revolutionary AI Development Platform - World's First Autonomous Coding Agent with 120+ Professional Engineering Modes, Algorithm Education Platform, Real-time Visual Progress, and Complete Software Development Lifecycle",
   "keywords": [
     "ai",
     "cli",
@@ -32,7 +32,22 @@
     "arxiv-integration",
     "multi-agent-system",
     "mcp-protocol",
-    "semantic-analysis"
+    "semantic-analysis",
+    "autonomous-agent",
+    "algorithm-education",
+    "sorting-algorithms",
+    "quicksort",
+    "visualization",
+    "performance-analysis",
+    "educational-platform",
+    "computer-science",
+    "benchmarking",
+    "memory-profiling",
+    "interactive-learning",
+    "professional-engineering",
+    "autonomous-coding",
+    "visual-progress",
+    "real-time-feedback"
   ],
   "author": "Bonginkan Inc.",
   "license": "MIT",

@@ -139,7 +139,7 @@ export class IntelligentRouter {
     }
 
     if (this.containsKeywords(content, ['news', 'current', 'today', 'recent', 'latest'])) {
-      return 'current_events';
+      return 'currentevents';
     }
 
     return 'chat';

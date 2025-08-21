@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import { exec } from 'child_process';
@@ -465,7 +465,7 @@ export class TerminalSetupCommand extends BaseCommand {
         message += `  ${status} ${config.configFile}\n`;
       });
       
-      return { success: true, message };
+      return { success: true, _message };
     }
     
     return {
@@ -572,7 +572,7 @@ export class TerminalSetupCommand extends BaseCommand {
     
     let message = `\n${chalk.bold('🛠️  Recommended Terminal Tools:')}\n\n`;
     
-    recommendations.forEach((tool, index) => {
+    recommendations.forEach((tool, _index) => {
       message += `${index + 1}. ${chalk.bold(tool.name)}\n`;
       message += `   ${tool.description}\n`;
       message += `   ${chalk.gray(tool.install)}\n\n`;

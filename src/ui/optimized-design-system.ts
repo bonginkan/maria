@@ -8,39 +8,39 @@ import chalk from 'chalk';
 // 124文字画面幅の設計定数
 export const DESIGN_CONSTANTS = {
   SCREEN_WIDTH: 124,
-  CONTENT_WIDTH: 120,    // 両端2文字余白
-  BORDER_WIDTH: 118,     // ボーダー内容幅
-  SECTION_PADDING: 4,    // セクション間隔
-  INDENT_SIZE: 2,        // インデント幅
-  
+  CONTENT_WIDTH: 120, // 両端2文字余白
+  BORDER_WIDTH: 118, // ボーダー内容幅
+  SECTION_PADDING: 4, // セクション間隔
+  INDENT_SIZE: 2, // インデント幅
+
   // 黄金比に基づく分割
-  MAIN_CONTENT: 80,      // メインコンテンツ幅
-  SIDEBAR: 36,           // サイドバー幅（MAIN_CONTENT * 0.45）
-  STATUS_BAR: 120,       // ステータスバー幅
+  MAIN_CONTENT: 80, // メインコンテンツ幅
+  SIDEBAR: 36, // サイドバー幅（MAIN_CONTENT * 0.45）
+  STATUS_BAR: 120, // ステータスバー幅
 } as const;
 
 // ミニマルアイコンシステム（必要最小限の6個のみ）
 export const MINIMAL_ICONS = {
-  SUCCESS: '✓',          // シンプルなチェック
-  ERROR: '✗',            // シンプルなX
-  WARNING: '!',          // 感嘆符のみ
-  INFO: 'i',             // 小文字i
-  LOADING: '◯',          // シンプルな円
-  ARROW: '→',            // 右矢印
+  SUCCESS: '✓', // シンプルなチェック
+  ERROR: '✗', // シンプルなX
+  WARNING: '!', // 感嘆符のみ
+  INFO: 'i', // 小文字i
+  LOADING: '◯', // シンプルな円
+  ARROW: '→', // 右矢印
 } as const;
 
 // 統一色彩システム（7色パレット）
 export const UNIFIED_COLORS = {
   // Primary Colors (メイン4色)
-  PRIMARY: chalk.cyan,        // メインアクション、ヘッダー
-  SUCCESS: chalk.green,       // 成功状態、完了
-  WARNING: chalk.yellow,      // 警告、注意
-  ERROR: chalk.red,          // エラー、失敗
-  
+  PRIMARY: chalk.cyan, // メインアクション、ヘッダー
+  SUCCESS: chalk.green, // 成功状態、完了
+  WARNING: chalk.yellow, // 警告、注意
+  ERROR: chalk.red, // エラー、失敗
+
   // Secondary Colors (補助3色)
-  INFO: chalk.blue,          // 情報表示
-  MUTED: chalk.gray,         // 補助情報、メタデータ
-  ACCENT: chalk.magenta,     // アクセント、ブランド
+  INFO: chalk.blue, // 情報表示
+  MUTED: chalk.gray, // 補助情報、メタデータ
+  ACCENT: chalk.magenta, // アクセント、ブランド
 } as const;
 
 // テキスト階層システム
@@ -81,20 +81,41 @@ export class LayoutHelpers {
   /**
    * 水平区切り線を生成
    */
-  static horizontalRule(width: number = DESIGN_CONSTANTS.CONTENT_WIDTH, char: string = '─'): string {
+  static horizontalRule(
+    width: number = DESIGN_CONSTANTS.CONTENT_WIDTH,
+    char: string = '─',
+  ): string {
     return char.repeat(width);
   }
 
   /**
    * ボックスボーダーを生成
    */
-  static boxBorder(width: number, style: 'light' | 'heavy' = 'light'): { top: string; bottom: string; sides: string } {
-    const chars = style === 'heavy' 
-      ? { topLeft: '╔', topRight: '╗', bottomLeft: '╚', bottomRight: '╝', horizontal: '═', vertical: '║' }
-      : { topLeft: '┌', topRight: '┐', bottomLeft: '└', bottomRight: '┘', horizontal: '─', vertical: '│' };
-    
+  static boxBorder(
+    width: number,
+    style: 'light' | 'heavy' = 'light',
+  ): { top: string; bottom: string; sides: string } {
+    const chars =
+      style === 'heavy'
+        ? {
+            topLeft: '╔',
+            topRight: '╗',
+            bottomLeft: '╚',
+            bottomRight: '╝',
+            horizontal: '═',
+            vertical: '║',
+          }
+        : {
+            topLeft: '┌',
+            topRight: '┐',
+            bottomLeft: '└',
+            bottomRight: '┘',
+            horizontal: '─',
+            vertical: '│',
+          };
+
     const horizontal = chars.horizontal.repeat(width - 2);
-    
+
     return {
       top: `${chars.topLeft}${horizontal}${chars.topRight}`,
       bottom: `${chars.bottomLeft}${horizontal}${chars.bottomRight}`,
@@ -108,71 +129,75 @@ export class OptimizedComponents {
   /**
    * 美しいボックスコンポーネント
    */
-  static renderBox(content: string[], options: {
-    width?: number;
-    padding?: number;
-    style?: 'light' | 'heavy';
-    color?: Function;
-  } = {}): void {
+  static renderBox(
+    content: string[],
+    options: {
+      width?: number;
+      padding?: number;
+      style?: 'light' | 'heavy';
+      color?: Function;
+    } = {},
+  ): void {
     const width = options.width || DESIGN_CONSTANTS.CONTENT_WIDTH;
     const padding = options.padding || 2;
     const color = options.color || UNIFIED_COLORS.PRIMARY;
-    const innerWidth = width - (padding * 2) - 2;
-    
+    const innerWidth = width - padding * 2 - 2;
+
     const border = LayoutHelpers.boxBorder(width, options.style);
-    
+
     console.log(color(border.top));
-    
+
     // 空行（上パディング）
     if (padding > 0) {
       console.log(color(border.sides) + ' '.repeat(width - 2) + color(border.sides));
     }
-    
+
     // コンテンツ行
-    content.forEach(line => {
-      const paddedLine = ' '.repeat(padding) + 
-        LayoutHelpers.leftPad(line, innerWidth) + 
-        ' '.repeat(padding);
+    content.forEach((line) => {
+      const paddedLine =
+        ' '.repeat(padding) + LayoutHelpers.leftPad(line, innerWidth) + ' '.repeat(padding);
       console.log(color(border.sides) + paddedLine + color(border.sides));
     });
-    
+
     // 空行（下パディング）
     if (padding > 0) {
       console.log(color(border.sides) + ' '.repeat(width - 2) + color(border.sides));
     }
-    
+
     console.log(color(border.bottom));
   }
 
   /**
    * プログレスバーコンポーネント
    */
-  static renderProgress(progress: number, options: {
-    width?: number;
-    showPercentage?: boolean;
-    label?: string;
-  } = {}): void {
+  static renderProgress(
+    progress: number,
+    options: {
+      width?: number;
+      showPercentage?: boolean;
+      label?: string;
+    } = {},
+  ): void {
     const width = options.width || 60;
     const showPercentage = options.showPercentage !== false;
-    
+
     const filled = Math.floor((progress / 100) * width);
     const empty = width - filled;
-    
-    const bar = 
-      UNIFIED_COLORS.SUCCESS('█'.repeat(filled)) + 
-      UNIFIED_COLORS.MUTED('░'.repeat(empty));
-    
+
+    const bar =
+      UNIFIED_COLORS.SUCCESS('█'.repeat(filled)) + UNIFIED_COLORS.MUTED('░'.repeat(empty));
+
     let output = bar;
-    
+
     if (showPercentage) {
       const percentage = TEXT_HIERARCHY.BODY(`${progress}%`).padStart(5);
       output += ` ${percentage}`;
     }
-    
+
     if (options.label) {
       output = TEXT_HIERARCHY.CAPTION(options.label) + ' ' + output;
     }
-    
+
     console.log(output);
   }
 
@@ -186,7 +211,7 @@ export class OptimizedComponents {
       warning: UNIFIED_COLORS.WARNING(MINIMAL_ICONS.WARNING),
       info: UNIFIED_COLORS.INFO(MINIMAL_ICONS.INFO),
     };
-    
+
     console.log(`${icons[status]} ${TEXT_HIERARCHY.BODY(message)}`);
   }
 
@@ -194,20 +219,20 @@ export class OptimizedComponents {
    * 2カラムレイアウト
    */
   static renderTwoColumn(
-    leftContent: string[], 
-    rightContent: string[], 
-    options: { gap?: number } = {}
+    leftContent: string[],
+    rightContent: string[],
+    options: { gap?: number } = {},
   ): void {
     const gap = options.gap || 4;
     const leftWidth = DESIGN_CONSTANTS.MAIN_CONTENT;
     const rightWidth = DESIGN_CONSTANTS.SIDEBAR;
-    
+
     const maxLines = Math.max(leftContent.length, rightContent.length);
-    
+
     for (let i = 0; i < maxLines; i++) {
       const left = LayoutHelpers.leftPad(leftContent[i] || '', leftWidth);
       const right = LayoutHelpers.leftPad(rightContent[i] || '', rightWidth);
-      
+
       console.log(left + ' '.repeat(gap) + right);
     }
   }
@@ -217,7 +242,7 @@ export class OptimizedComponents {
    */
   static renderSectionHeader(title: string, width?: number): void {
     const contentWidth = width || DESIGN_CONSTANTS.CONTENT_WIDTH;
-    
+
     console.log(TEXT_HIERARCHY.TITLE(title));
     console.log(UNIFIED_COLORS.MUTED(LayoutHelpers.horizontalRule(contentWidth)));
   }

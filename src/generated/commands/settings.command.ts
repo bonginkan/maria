@@ -8,7 +8,7 @@
 
 import { SlashCommandResult } from '../../services/slash-command-handler';
 import { BaseCommand } from './base-command';
-import { CommandArgs, CommandContext } from './types';
+import { _CommandArgs, _CommandContext } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import chalk from 'chalk';
@@ -265,7 +265,7 @@ export class SettingsCommand extends BaseCommand {
       message += `• ${chalk.blue('/settings search <term>')} - Find settings\n`;
     }
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private formatCategorySettings(category: string, settings: unknown): string {
@@ -335,7 +335,7 @@ export class SettingsCommand extends BaseCommand {
       message += `\n${chalk.bold('Example:')}\n`;
       message += `/settings edit ${category} ${Object.keys(categorySettings as Record<string, unknown>)[0]} <new-value>`;
 
-      return { success: true, message };
+      return { success: true, _message };
     }
 
     if (args.length < 2) {
@@ -450,7 +450,7 @@ export class SettingsCommand extends BaseCommand {
             key.toLowerCase().includes(term) ||
             String(value).toLowerCase().includes(term)
           ) {
-            results.push({ category, key, value });
+            results.push({ category, key, _value });
           }
         }
       }
@@ -465,12 +465,12 @@ export class SettingsCommand extends BaseCommand {
 
     let message = `\n${chalk.bold(`🔍 Settings Search Results for "${searchTerm}"`)} (${results.length} found)\n\n`;
 
-    results.forEach(({ category, key, value }) => {
+    results.forEach(({ category, key, _value }) => {
       message += `${chalk.blue(category)}.${chalk.bold(key)} = ${value}\n`;
       message += `  ${chalk.gray(`Edit: /settings edit ${category} ${key} <value>`)}\n\n`;
     });
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async backupSettings(): Promise<SlashCommandResult> {
@@ -510,14 +510,14 @@ export class SettingsCommand extends BaseCommand {
         }
 
         let message = `\n${chalk.bold('📦 Available Backups:')}\n\n`;
-        backups.forEach((file, index) => {
+        backups.forEach((file, _index) => {
           const date = file.replace('settings-backup-', '').replace('.json', '').replace(/-/g, ':');
           message += `${index + 1}. ${file} (${date})\n`;
         });
 
         message += `\n${chalk.blue('Usage:')} /settings restore <backup-filename>`;
 
-        return { success: true, message };
+        return { success: true, _message };
       } catch (error) {
         return {
           success: false,
@@ -629,7 +629,7 @@ export class SettingsCommand extends BaseCommand {
     message += `• ${chalk.code('/settings edit aiModels defaultModel claude-3-opus')}\n`;
     message += `• ${chalk.code('/settings edit development autoFormat true')}\n`;
 
-    return { success: true, message };
+    return { success: true, _message };
   }
 
   private async exportSettings(fileName?: string): Promise<SlashCommandResult> {
@@ -750,7 +750,7 @@ export class SettingsCommand extends BaseCommand {
         message += `• ${chalk.code('/settings env setup ai')} - AI providers only\n`;
         message += `• ${chalk.code('/settings env sample')} - Create sample file\n`;
 
-        return { success: false, message };
+        return { success: false, _message };
       }
 
       const envContent = await fs.readFile(envPath, 'utf-8');
@@ -817,7 +817,7 @@ export class SettingsCommand extends BaseCommand {
         });
       }
 
-      return { success: true, message };
+      return { success: true, _message };
     } catch (error) {
       return {
         success: false,
@@ -945,7 +945,7 @@ export class SettingsCommand extends BaseCommand {
       message += `3. ${chalk.blue('Test configuration')} with ${chalk.code('/settings env validate')}\n\n`;
       message += `${chalk.yellow('⚠️  Keep your API keys secure!')} The .env.local file is in .gitignore.`;
 
-      return { success: true, message };
+      return { success: true, _message };
     } catch (error) {
       return {
         success: false,

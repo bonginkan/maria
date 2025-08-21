@@ -350,7 +350,7 @@ export class ApprovalContextAnalyzer {
   private static identifyApprovalPoints(
     input: string,
     category: ApprovalCategory,
-    _context: TaskContext,
+    context: TaskContext,
   ): ApprovalPoint[] {
     const points: ApprovalPoint[] = [];
 

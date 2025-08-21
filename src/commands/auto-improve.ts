@@ -294,7 +294,7 @@ export async function runAutoImproveCommand(options: AutoImproveCliOptions): Pro
               console.log(chalk.red('❌ Please provide a suggestion ID'));
             }
             break;
-          case 'status':
+          case 'status': {
             const status = autoImproveEngine.getStatus();
             console.log(
               `${chalk.gray('Running:')} ${status.isRunning ? chalk.green('Yes') : chalk.red('No')}`,
@@ -303,6 +303,7 @@ export async function runAutoImproveCommand(options: AutoImproveCliOptions): Pro
             console.log(`${chalk.gray('Applied:')} ${chalk.green(status.applied)}`);
             console.log(`${chalk.gray('Failed:')} ${chalk.red(status.failed)}`);
             break;
+          }
           case 'quit':
           case 'exit':
             rl.close();
@@ -407,8 +408,8 @@ export async function runAutoImproveApprovalCommand(
           console.log(`   ${chalk.gray('Priority:')} ${chalk.yellow(workflow.priority_level)}`);
 
           const affectedFiles =
-            (workflow as unknown as { impact_assessment?: { affected_files_count?: number } })
-              .impact_assessment?.affected_files_count || 0;
+            (workflow as unknown as { impact_assessment?: { affectedfiles_count?: number } })
+              .impact_assessment?.affectedfiles_count || 0;
           console.log(`   ${chalk.gray('Files Affected:')} ${affectedFiles}`);
 
           const riskFactors =

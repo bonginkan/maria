@@ -1,0 +1,73 @@
+# VS Code ignore file for MARIA CODE extension
+# パッケージサイズを最適化するためのファイル
+
+# Build directories
+.vscode/**
+.vscode-test/**
+node_modules/**
+coverage/**
+out/**
+
+# Source files (keep only dist)
+src/**
+test/**
+tsconfig.json
+webpack.config.js
+
+# Development files
+*.ts
+*.map
+.nyc_output
+.gitignore
+.eslintrc.*
+.prettierrc.*
+
+# Testing and CI
+**/*.test.*
+**/*.spec.*
+jest.config.*
+.coverage/**
+mocha.opts
+
+# Documentation (keep only essential)
+docs/**
+examples/**
+CONTRIBUTING.md
+DEVELOPMENT.md
+
+# Package management
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+.npmrc
+
+# IDE files
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/**
+
+# Temporary files
+tmp/**
+temp/**
+*.tmp
+
+# Development scripts
+scripts/**
+tools/**
+build/**
+
+# Keep these essential files:
+# package.json
+# README.md
+# LICENSE.md
+# dist/**
+# resources/**
+# media/**
