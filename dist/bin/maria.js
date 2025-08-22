@@ -86,9 +86,9 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3_yaml@2.8.1/node_modules/tsup/assets/cjs_shims.js
+// node_modules/tsup/assets/cjs_shims.js
 var init_cjs_shims = __esm({
-  "node_modules/.pnpm/tsup@8.5.0_postcss@8.5.6_typescript@5.3.3_yaml@2.8.1/node_modules/tsup/assets/cjs_shims.js"() {
+  "node_modules/tsup/assets/cjs_shims.js"() {
   }
 });
 
