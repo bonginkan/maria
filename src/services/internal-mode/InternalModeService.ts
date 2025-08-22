@@ -13,8 +13,9 @@ import {
   ModeRecognitionResult,
   ModeTransition,
   ModeConfig,
-  ModeServiceEvents,
   ModeHistoryEntry,
+  UserPattern,
+  ModeTriggerType,
 } from './types';
 import { ModeDefinitionRegistry, getModeRegistry } from './ModeDefinitionRegistry';
 import { ModeRecognitionEngine } from './ModeRecognitionEngine';
@@ -317,7 +318,7 @@ export class InternalModeService extends EventEmitter {
     }
 
     if (data.patterns) {
-      await this.historyTracker.importPatterns(data.patterns);
+      await this.historyTracker.importPatterns(data.patterns as UserPattern[]);
     }
   }
 
@@ -363,7 +364,7 @@ export class InternalModeService extends EventEmitter {
       const transition: ModeTransition = {
         from: previousMode?.id || '',
         to: mode.id,
-        trigger: trigger as unknown,
+        trigger: trigger as ModeTriggerType,
         confidence: 1.0, // Would be from recognition result in real implementation
         automatic: trigger !== 'manual',
         timestamp: new Date(),
@@ -377,7 +378,7 @@ export class InternalModeService extends EventEmitter {
 
       // Display mode change
       if (this.config.showTransitions && !isInitial) {
-        await this.displayManager.showModeTransition(mode, previousMode);
+        await this.displayManager.showModeTransition(mode, previousMode || undefined);
       } else if (isInitial) {
         await this.displayManager.showMode(mode);
       }

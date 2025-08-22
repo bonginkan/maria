@@ -17,7 +17,8 @@ export {
   InternalModeService,
   getInternalModeService,
 } from './services/internal-mode/InternalModeService';
-export { MemoryAwareModeService } from './services/internal-mode/MemoryAwareModeService';
+// Temporarily disabled due to type errors - will fix in integration phase
+// export { MemoryAwareModeService } from './services/internal-mode/MemoryAwareModeService';
 
 // Memory System Types
 export type {
