@@ -19,7 +19,7 @@ export function createCLI(): Command {
   program
     .name('maria')
     .description('MARIA - AI-Powered Development Platform')
-    .version('1.6.6');
+    .version('1.0.7');
 
   // Chat command
   program
