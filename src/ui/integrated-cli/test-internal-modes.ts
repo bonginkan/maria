@@ -2,7 +2,7 @@
  * Internal Modes Test: 50 Cognitive States
  * 50種類の内部認知状態のテスト
  */
-import { ModeIndicator, ModeCategory } from './ModeIndicator.js';
+import { ModeCategory, ModeIndicator } from './ModeIndicator.js';
 
 /**
  * 50種類の内部モードを包括的にテスト

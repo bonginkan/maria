@@ -91,7 +91,7 @@ export class InputBox {
 
     const truncatedText =
       displayText.length > maxTextWidth
-        ? displayText.substring(0, maxTextWidth - 3) + '...'
+        ? `${displayText.substring(0, maxTextWidth - 3)  }...`
         : displayText;
 
     const textLine = promptStr + text(truncatedText);
@@ -190,7 +190,7 @@ export class InputBox {
    * キー入力を処理
    */
   private handleKeypress(str: string, key: unknown): void {
-    if (!this.isActive) return;
+    if (!this.isActive) {return;}
 
     // Update display in real-time
     if (key && key.name === 'backspace') {

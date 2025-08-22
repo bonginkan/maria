@@ -418,7 +418,7 @@ export class CommandDispatcher extends EventEmitter {
 
     while (this.commandQueue.length > 0) {
       const command = this.commandQueue.find((c) => c.status === 'pending');
-      if (!command) break;
+      if (!command) {break;}
 
       command.status = 'running';
       this.emit('command:processing', command);

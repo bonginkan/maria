@@ -601,8 +601,8 @@ export default class OptimizingMode extends BaseMode {
     const highImpactCount = opportunities.filter((opp) => opp.impact === 'high').length;
     const totalCount = opportunities.length;
 
-    if (highImpactCount / totalCount > 0.6) return 'High';
-    if (highImpactCount / totalCount > 0.3) return 'Medium-High';
+    if (highImpactCount / totalCount > 0.6) {return 'High';}
+    if (highImpactCount / totalCount > 0.3) {return 'Medium-High';}
     return 'Medium';
   }
 
@@ -618,9 +618,9 @@ export default class OptimizingMode extends BaseMode {
 
     const totalEffort = effortCounts.low * 1 + effortCounts.medium * 3 + effortCounts.high * 8;
 
-    if (totalEffort <= 5) return '1-2 weeks';
-    if (totalEffort <= 15) return '2-4 weeks';
-    if (totalEffort <= 30) return '1-2 months';
+    if (totalEffort <= 5) {return '1-2 weeks';}
+    if (totalEffort <= 15) {return '2-4 weeks';}
+    if (totalEffort <= 30) {return '1-2 months';}
     return '2+ months';
   }
 
@@ -652,10 +652,10 @@ export default class OptimizingMode extends BaseMode {
   private calculateAnalysisDepth(input: string): number {
     let depth = 1;
 
-    if (this.containsCode(input)) depth++;
-    if (this.containsMetrics(input)) depth++;
-    if (input.length > 100) depth++;
-    if (this.identifyConstraints(input).length > 0) depth++;
+    if (this.containsCode(input)) {depth++;}
+    if (this.containsMetrics(input)) {depth++;}
+    if (input.length > 100) {depth++;}
+    if (this.identifyConstraints(input).length > 0) {depth++;}
 
     return depth;
   }
@@ -666,11 +666,11 @@ export default class OptimizingMode extends BaseMode {
   private identifyOptimizationTarget(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('algorithm')) return 'algorithm';
-    if (inputLower.includes('database')) return 'database';
-    if (inputLower.includes('ui') || inputLower.includes('interface')) return 'user_interface';
-    if (inputLower.includes('api')) return 'api';
-    if (inputLower.includes('system')) return 'system';
+    if (inputLower.includes('algorithm')) {return 'algorithm';}
+    if (inputLower.includes('database')) {return 'database';}
+    if (inputLower.includes('ui') || inputLower.includes('interface')) {return 'user_interface';}
+    if (inputLower.includes('api')) {return 'api';}
+    if (inputLower.includes('system')) {return 'system';}
 
     return 'general';
   }

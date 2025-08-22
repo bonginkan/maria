@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
 import OpenAI from 'openai';
-import { spawn, ChildProcess } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
@@ -323,11 +323,11 @@ export class TextToSpeechService extends EventEmitter {
 
     if (process.platform === 'darwin') {
       // macOS voices
-      if (lang.startsWith('ja')) return 'Kyoko';
-      if (lang.startsWith('es')) return 'Monica';
-      if (lang.startsWith('fr')) return 'Amelie';
-      if (lang.startsWith('de')) return 'Anna';
-      if (lang.startsWith('zh')) return 'Ting-Ting';
+      if (lang.startsWith('ja')) {return 'Kyoko';}
+      if (lang.startsWith('es')) {return 'Monica';}
+      if (lang.startsWith('fr')) {return 'Amelie';}
+      if (lang.startsWith('de')) {return 'Anna';}
+      if (lang.startsWith('zh')) {return 'Ting-Ting';}
       return 'Samantha'; // Default English voice
     }
 

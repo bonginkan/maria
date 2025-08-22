@@ -147,8 +147,8 @@ export class ParameterExtractorService extends BaseService {
     // Calculate confidence based on extraction success
     let confidence = 0.5; // Base confidence
 
-    if (Object.keys(parameters).length > 0) confidence += 0.3;
-    if (entities.length > 0) confidence += 0.2;
+    if (Object.keys(parameters).length > 0) {confidence += 0.3;}
+    if (entities.length > 0) {confidence += 0.2;}
 
     return {
       parameters,

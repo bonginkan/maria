@@ -54,7 +54,7 @@ export class LocalStorageService extends EventEmitter {
   }
 
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     try {
       // Create storage directories
@@ -144,7 +144,7 @@ export class LocalStorageService extends EventEmitter {
     await this.initialize();
 
     const item = this.index.get(id);
-    if (!item) return null;
+    if (!item) {return null;}
 
     // Load fresh from disk
     try {
@@ -165,7 +165,7 @@ export class LocalStorageService extends EventEmitter {
     await this.initialize();
 
     const existing = await this.read(id);
-    if (!existing) return null;
+    if (!existing) {return null;}
 
     // Create backup before updating
     await this.createBackup(existing);
@@ -198,7 +198,7 @@ export class LocalStorageService extends EventEmitter {
     await this.initialize();
 
     const item = this.index.get(id);
-    if (!item) return false;
+    if (!item) {return false;}
 
     // Create backup before deleting
     await this.createBackup(item);

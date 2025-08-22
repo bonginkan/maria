@@ -481,14 +481,14 @@ export default class ImplementingMode extends BaseMode {
   private identifyImplementationType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('frontend') || inputLower.includes('ui')) return 'frontend_development';
-    if (inputLower.includes('backend') || inputLower.includes('api')) return 'backend_development';
+    if (inputLower.includes('frontend') || inputLower.includes('ui')) {return 'frontend_development';}
+    if (inputLower.includes('backend') || inputLower.includes('api')) {return 'backend_development';}
     if (inputLower.includes('database') || inputLower.includes('data'))
-      return 'data_layer_implementation';
+      {return 'data_layer_implementation';}
     if (inputLower.includes('integration') || inputLower.includes('connector'))
-      return 'integration_development';
+      {return 'integration_development';}
     if (inputLower.includes('infrastructure') || inputLower.includes('deployment'))
-      return 'infrastructure_implementation';
+      {return 'infrastructure_implementation';}
 
     return 'full_stack_development';
   }
@@ -496,11 +496,11 @@ export default class ImplementingMode extends BaseMode {
   private defineImplementationScope(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('prototype') || inputLower.includes('poc')) return 'prototype';
-    if (inputLower.includes('mvp') || inputLower.includes('minimum')) return 'mvp';
+    if (inputLower.includes('prototype') || inputLower.includes('poc')) {return 'prototype';}
+    if (inputLower.includes('mvp') || inputLower.includes('minimum')) {return 'mvp';}
     if (inputLower.includes('full') || inputLower.includes('complete'))
-      return 'full_implementation';
-    if (inputLower.includes('component') || inputLower.includes('module')) return 'component_level';
+      {return 'full_implementation';}
+    if (inputLower.includes('component') || inputLower.includes('module')) {return 'component_level';}
 
     return 'feature_implementation';
   }
@@ -509,13 +509,13 @@ export default class ImplementingMode extends BaseMode {
     const requirements: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('authentication')) requirements.push('User authentication');
-    if (inputLower.includes('authorization')) requirements.push('Access control');
+    if (inputLower.includes('authentication')) {requirements.push('User authentication');}
+    if (inputLower.includes('authorization')) {requirements.push('Access control');}
     if (inputLower.includes('crud') || inputLower.includes('data management'))
-      requirements.push('Data management');
-    if (inputLower.includes('api')) requirements.push('API functionality');
+      {requirements.push('Data management');}
+    if (inputLower.includes('api')) {requirements.push('API functionality');}
     if (inputLower.includes('ui') || inputLower.includes('interface'))
-      requirements.push('User interface');
+      {requirements.push('User interface');}
 
     return requirements.length > 0
       ? requirements
@@ -526,11 +526,11 @@ export default class ImplementingMode extends BaseMode {
     const requirements: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('performance')) requirements.push('Performance requirements');
-    if (inputLower.includes('security')) requirements.push('Security requirements');
-    if (inputLower.includes('scalability')) requirements.push('Scalability requirements');
-    if (inputLower.includes('availability')) requirements.push('Availability requirements');
-    if (inputLower.includes('usability')) requirements.push('Usability requirements');
+    if (inputLower.includes('performance')) {requirements.push('Performance requirements');}
+    if (inputLower.includes('security')) {requirements.push('Security requirements');}
+    if (inputLower.includes('scalability')) {requirements.push('Scalability requirements');}
+    if (inputLower.includes('availability')) {requirements.push('Availability requirements');}
+    if (inputLower.includes('usability')) {requirements.push('Usability requirements');}
 
     return requirements.length > 0 ? requirements : ['Performance', 'Security', 'Maintainability'];
   }
@@ -540,12 +540,12 @@ export default class ImplementingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('deadline') || inputLower.includes('timeline'))
-      constraints.push('Time constraints');
+      {constraints.push('Time constraints');}
     if (inputLower.includes('budget') || inputLower.includes('cost'))
-      constraints.push('Budget constraints');
+      {constraints.push('Budget constraints');}
     if (inputLower.includes('technology') || inputLower.includes('platform'))
-      constraints.push('Technology constraints');
-    if (inputLower.includes('resource')) constraints.push('Resource constraints');
+      {constraints.push('Technology constraints');}
+    if (inputLower.includes('resource')) {constraints.push('Resource constraints');}
 
     return constraints;
   }
@@ -554,11 +554,11 @@ export default class ImplementingMode extends BaseMode {
     const dependencies: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('external')) dependencies.push('External services');
-    if (inputLower.includes('database')) dependencies.push('Database systems');
+    if (inputLower.includes('external')) {dependencies.push('External services');}
+    if (inputLower.includes('database')) {dependencies.push('Database systems');}
     if (inputLower.includes('library') || inputLower.includes('framework'))
-      dependencies.push('Third-party libraries');
-    if (inputLower.includes('api')) dependencies.push('External APIs');
+      {dependencies.push('Third-party libraries');}
+    if (inputLower.includes('api')) {dependencies.push('External APIs');}
 
     return dependencies.length > 0 ? dependencies : ['System dependencies', 'Library dependencies'];
   }
@@ -577,15 +577,15 @@ export default class ImplementingMode extends BaseMode {
     const totalRequirements =
       requirements.functional_requirements.length + requirements.non_functional_requirements.length;
 
-    if (totalRequirements > 8) return 'high';
-    if (totalRequirements > 4) return 'medium';
+    if (totalRequirements > 8) {return 'high';}
+    if (totalRequirements > 4) {return 'medium';}
     return 'low';
   }
 
   private selectArchitecturalPattern(requirements: unknown): string {
-    if (requirements.type === 'frontend_development') return 'component_based';
-    if (requirements.type === 'backend_development') return 'layered_architecture';
-    if (requirements.type === 'full_stack_development') return 'mvc_pattern';
+    if (requirements.type === 'frontend_development') {return 'component_based';}
+    if (requirements.type === 'backend_development') {return 'layered_architecture';}
+    if (requirements.type === 'full_stack_development') {return 'mvc_pattern';}
     return 'modular_architecture';
   }
 

@@ -6,7 +6,7 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import { terminalDetector, TerminalCapabilities } from './TerminalDetector';
+import { TerminalCapabilities, terminalDetector } from './TerminalDetector';
 
 export interface CursorWorkspace {
   name: string;

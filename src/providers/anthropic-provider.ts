@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './ai-provider.js';
+import { BaseAIProvider, CodeReviewResult, CompletionOptions, Message } from './ai-provider.js';
 
 export class AnthropicProvider extends BaseAIProvider {
   readonly name = 'Anthropic';

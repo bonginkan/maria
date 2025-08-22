@@ -4,13 +4,13 @@
 
 import { EventEmitter } from 'events';
 import {
-  IService,
-  ServiceState,
-  ServiceMetadata,
-  ServiceConfig,
   HealthStatus,
-  ServiceEvent,
+  IService,
+  ServiceConfig,
   ServiceError,
+  ServiceEvent,
+  ServiceMetadata,
+  ServiceState,
 } from './types';
 import { ServiceBus } from './ServiceBus';
 import { ServiceRegistry } from './ServiceRegistry';

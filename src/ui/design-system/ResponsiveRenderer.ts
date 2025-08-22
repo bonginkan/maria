@@ -4,10 +4,10 @@
  * Ultra Think設計による完璧な画面サイズ適応
  */
 
-import { LayoutManager, type LayoutConfig, type LayoutMode } from './LayoutManager.js';
+import { type LayoutConfig, LayoutManager, type LayoutMode } from './LayoutManager.js';
 import { OptimizedBox } from './OptimizedBox.js';
 import { SEMANTIC_COLORS, TEXT_HIERARCHY } from './UnifiedColorPalette.js';
-import { IconRegistry, CORE_ICONS } from './MinimalIconRegistry.js';
+import { CORE_ICONS, IconRegistry } from './MinimalIconRegistry.js';
 
 // レンダリング可能コンテンツ型
 export interface RenderableContent {
@@ -111,7 +111,7 @@ export class ResponsiveRenderer {
    * レスポンシブコンテンツ描画
    */
   static render(content: RenderableContent | RenderableContent[]): void {
-    if (!this.context) this.initialize();
+    if (!this.context) {this.initialize();}
 
     const contents = Array.isArray(content) ? content : [content];
 

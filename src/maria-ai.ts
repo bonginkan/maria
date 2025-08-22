@@ -114,7 +114,7 @@ export class MariaAI {
         const context = await this.memoryEngine.getContext({
           query: prompt,
           type: 'code_generation',
-          language: language,
+          language,
         });
 
         if (context.codePatterns?.length > 0) {
@@ -133,7 +133,7 @@ export class MariaAI {
         await this.memoryEngine.storeInteraction({
           type: 'code_generation',
           input: prompt,
-          language: language,
+          language,
           timestamp: new Date(),
         });
       } catch (error) {

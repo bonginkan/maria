@@ -122,7 +122,7 @@ export class InteractiveUIRenderer {
     query: string,
     position: { x: number; y: number } = { x: 0, y: 0 },
   ): string {
-    if (suggestions.length === 0) return '';
+    if (suggestions.length === 0) {return '';}
 
     const lines: string[] = [];
     const maxWidth = Math.min(50, this.terminalWidth - position.x - 2);
@@ -288,7 +288,7 @@ export class InteractiveUIRenderer {
 
     for (let i = visibleStart; i < visibleEnd; i++) {
       const command = commands[i];
-      if (!command) continue;
+      if (!command) {continue;}
       const isSelected = i === selectedIndex;
       const line = this.renderCommandItem(command, isSelected, i);
       lines.push(line);
@@ -320,11 +320,11 @@ export class InteractiveUIRenderer {
       return this.wrapInBorder(chalk.hex(this.theme.accent).bold(content));
     } else if (this.options.enableColors) {
       return this.wrapInBorder(
-        chalk.hex(this.theme.primary)(name) +
-          ' ' +
-          chalk.hex(this.theme.secondary)(desc) +
-          ' ' +
-          chalk.hex(this.theme.muted)(freqBar),
+        `${chalk.hex(this.theme.primary)(name) 
+          } ${ 
+          chalk.hex(this.theme.secondary)(desc) 
+          } ${ 
+          chalk.hex(this.theme.muted)(freqBar)}`,
       );
     }
 
@@ -370,7 +370,7 @@ export class InteractiveUIRenderer {
       return this.wrapInBorder(chalk.hex(this.theme.accent).bold(content));
     } else if (this.options.enableColors) {
       return this.wrapInBorder(
-        chalk.hex(this.theme.primary)(name) + ' ' + chalk.hex(this.theme.secondary)(desc),
+        `${chalk.hex(this.theme.primary)(name)  } ${  chalk.hex(this.theme.secondary)(desc)}`,
       );
     }
 

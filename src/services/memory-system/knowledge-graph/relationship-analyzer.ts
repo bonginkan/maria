@@ -10,7 +10,7 @@
 
 import { EventEmitter } from 'events';
 import { CodeEntity, ConceptEntity, EntityType } from './entity-extractor';
-import { Relationship, RelationshipType, RelationshipMetadata } from './graph-builder';
+import { Relationship, RelationshipMetadata, RelationshipType } from './graph-builder';
 
 export interface RelationshipAnalysisResult {
   relationships: Relationship[];
@@ -167,7 +167,7 @@ export class RelationshipAnalyzer extends EventEmitter {
   ): Promise<RelationshipAnalysisResult> {
     const cacheKey = `${source.id}__${target.id}`;
     const cached = this.analysisCache.get(cacheKey);
-    if (cached) return cached;
+    if (cached) {return cached;}
 
     const startTime = Date.now();
     const relationships: Relationship[] = [];
@@ -451,7 +451,7 @@ export class RelationshipAnalyzer extends EventEmitter {
     const sourceVector = this.semanticVectors.get(sourceId);
     const targetVector = this.semanticVectors.get(targetId);
 
-    if (!sourceVector || !targetVector) return 0;
+    if (!sourceVector || !targetVector) {return 0;}
 
     // Cosine similarity
     const dotProduct = sourceVector.vector.reduce(
@@ -463,7 +463,7 @@ export class RelationshipAnalyzer extends EventEmitter {
 
     const targetMagnitude = Math.sqrt(targetVector.vector.reduce((sum, val) => sum + val * val, 0));
 
-    if (sourceMagnitude === 0 || targetMagnitude === 0) return 0;
+    if (sourceMagnitude === 0 || targetMagnitude === 0) {return 0;}
 
     return dotProduct / (sourceMagnitude * targetMagnitude);
   }
@@ -472,7 +472,7 @@ export class RelationshipAnalyzer extends EventEmitter {
     source: CodeEntity | ConceptEntity,
     target: CodeEntity | ConceptEntity,
   ): number {
-    if (!source.documentation || !target.documentation) return 0;
+    if (!source.documentation || !target.documentation) {return 0;}
 
     const sourceTokens = this.tokenizeText(source.documentation);
     const targetTokens = this.tokenizeText(target.documentation);
@@ -486,7 +486,7 @@ export class RelationshipAnalyzer extends EventEmitter {
     const sourceMagnitude = Math.sqrt(sourceVector.reduce((sum, val) => sum + val * val, 0));
     const targetMagnitude = Math.sqrt(targetVector.reduce((sum, val) => sum + val * val, 0));
 
-    if (sourceMagnitude === 0 || targetMagnitude === 0) return 0;
+    if (sourceMagnitude === 0 || targetMagnitude === 0) {return 0;}
 
     return dotProduct / (sourceMagnitude * targetMagnitude);
   }
@@ -568,7 +568,7 @@ export class RelationshipAnalyzer extends EventEmitter {
   ): { relationship: Relationship; evidence: Evidence[] } | null {
     // Component-Props relationship
     if (source.type === 'component' && target.type === 'interface') {
-      if (target.name.includes('Props') && source.name + 'Props' === target.name) {
+      if (target.name.includes('Props') && `${source.name  }Props` === target.name) {
         return {
           relationship: this.createRelationship(source.id, target.id, 'depends', {
             confidence: 0.9,
@@ -782,7 +782,7 @@ export class RelationshipAnalyzer extends EventEmitter {
   }
 
   private calculateOverallConfidence(relationships: Relationship[], evidence: Evidence[]): number {
-    if (relationships.length === 0) return 0;
+    if (relationships.length === 0) {return 0;}
 
     const relationshipConfidence =
       relationships.reduce((sum, rel) => sum + rel.metadata.confidence, 0) / relationships.length;

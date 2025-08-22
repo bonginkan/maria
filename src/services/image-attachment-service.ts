@@ -71,12 +71,12 @@ export class ImageAttachmentService {
   public async validateImageFile(filepath: string): Promise<boolean> {
     try {
       const stats = await fs.stat(filepath);
-      if (!stats.isFile()) return false;
+      if (!stats.isFile()) {return false;}
 
       const ext = path.extname(filepath).toLowerCase();
-      if (!this.supportedFormats.includes(ext)) return false;
+      if (!this.supportedFormats.includes(ext)) {return false;}
 
-      if (stats.size > this.maxFileSize) return false;
+      if (stats.size > this.maxFileSize) {return false;}
 
       return true;
     } catch {
@@ -90,7 +90,7 @@ export class ImageAttachmentService {
   public async processImageFile(filepath: string): Promise<ImageAttachment | null> {
     try {
       const isValid = await this.validateImageFile(filepath);
-      if (!isValid) return null;
+      if (!isValid) {return null;}
 
       const stats = await fs.stat(filepath);
       const buffer = await fs.readFile(filepath);
@@ -173,7 +173,7 @@ export class ImageAttachmentService {
    * Format file size for display
    */
   public formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 B';
+    if (bytes === 0) {return '0 B';}
 
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
@@ -186,8 +186,8 @@ export class ImageAttachmentService {
    * Display image preview in terminal
    */
   public displayImagePreview(attachment: ImageAttachment): void {
-    console.log('\n' + chalk.cyan('🖼️  Image Attachment'));
-    console.log(chalk.gray('=' + '='.repeat(40)));
+    console.log(`\n${  chalk.cyan('🖼️  Image Attachment')}`);
+    console.log(chalk.gray(`=${  '='.repeat(40)}`));
 
     // Basic info
     console.log(chalk.white.bold(`📁 ${attachment.filename}`));
@@ -206,7 +206,7 @@ export class ImageAttachmentService {
 
     // Base64 info
     const base64Length = attachment.base64.length;
-    const base64Preview = attachment.base64.substring(0, 50) + '...';
+    const base64Preview = `${attachment.base64.substring(0, 50)  }...`;
     console.log(chalk.gray(`   Base64: ${base64Length} chars (${base64Preview})`));
 
     // Simple ASCII art representation
@@ -226,23 +226,23 @@ export class ImageAttachmentService {
     const frameHeight = 8;
 
     // Top border
-    console.log(chalk.gray('   ┌' + '─'.repeat(frameWidth - 2) + '┐'));
+    console.log(chalk.gray(`   ┌${  '─'.repeat(frameWidth - 2)  }┐`));
 
     // Content area with image icon
     for (let row = 0; row < frameHeight - 2; row++) {
       if (row === Math.floor((frameHeight - 2) / 2)) {
         // Center row with image icon
         const padding = Math.floor((frameWidth - 8) / 2);
-        const content = ' '.repeat(padding) + '🖼️ IMG' + ' '.repeat(frameWidth - padding - 8);
+        const content = `${' '.repeat(padding)  }🖼️ IMG${  ' '.repeat(frameWidth - padding - 8)}`;
         console.log(chalk.gray('   │') + chalk.cyan(content) + chalk.gray('│'));
       } else {
         // Empty rows
-        console.log(chalk.gray('   │' + ' '.repeat(frameWidth - 2) + '│'));
+        console.log(chalk.gray(`   │${  ' '.repeat(frameWidth - 2)  }│`));
       }
     }
 
     // Bottom border
-    console.log(chalk.gray('   └' + '─'.repeat(frameWidth - 2) + '┘'));
+    console.log(chalk.gray(`   └${  '─'.repeat(frameWidth - 2)  }┘`));
   }
 
   /**
@@ -272,7 +272,7 @@ export class ImageAttachmentService {
    * Create a summary of all attachments for AI context
    */
   public createAttachmentSummary(attachments: ImageAttachment[]): string {
-    if (attachments.length === 0) return '';
+    if (attachments.length === 0) {return '';}
 
     let summary = `\n[ATTACHED IMAGES: ${attachments.length}]\n`;
 

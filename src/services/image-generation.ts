@@ -1,6 +1,6 @@
-import { modelManager, GenerationOptions } from './model-manager';
+import { GenerationOptions, modelManager } from './model-manager';
 import { promises as fs } from 'fs';
-import { join, resolve, dirname } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 export interface ImageOptions extends GenerationOptions {

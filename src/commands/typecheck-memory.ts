@@ -17,8 +17,8 @@ import * as path from 'path';
 import { DualMemoryEngine } from '../services/memory-system/dual-memory-engine';
 import { logger } from '../utils/logger';
 import type {
-  MemoryQuery,
   CodePattern,
+  MemoryQuery,
   QualityMetrics,
   ReasoningTrace,
 } from '../services/memory-system/types/memory-interfaces';
@@ -744,7 +744,7 @@ function displayTypeCheckResults(
     // Display up to 5 files
     let fileCount = 0;
     for (const [file, violations] of fileViolations.entries()) {
-      if (fileCount >= 5) break;
+      if (fileCount >= 5) {break;}
 
       console.log(chalk.gray(`\n  ${file}`));
       violations.slice(0, 3).forEach((v) => {

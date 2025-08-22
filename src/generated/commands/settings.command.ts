@@ -781,7 +781,7 @@ export class SettingsCommand extends BaseCommand {
       };
 
       for (const [category, keys] of Object.entries(categories)) {
-        if (category === 'other') continue;
+        if (category === 'other') {continue;}
 
         const categoryVars = envLines.filter((line) => {
           const varName = line.split('=')[0];
@@ -926,7 +926,7 @@ export class SettingsCommand extends BaseCommand {
           success: false,
           message:
             `${chalk.red('⚠️  .env.local already exists')}\n\n` +
-            `Use ${chalk.code('/settings env setup ' + providerType + ' --overwrite')} to replace it\n` +
+            `Use ${chalk.code(`/settings env setup ${  providerType  } --overwrite`)} to replace it\n` +
             `Or ${chalk.code('/settings env sample')} to create .env.local.sample`,
         };
       }

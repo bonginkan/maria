@@ -350,9 +350,9 @@ export function isRecommendation(value: unknown): value is Recommendation {
 
 // Enhanced error handling utilities
 export function getErrorMessage(error: unknown): string {
-  if (isErrorResponse(error)) return error.message;
-  if (typeof error === 'string') return error;
-  if (error instanceof Error) return error.message;
+  if (isErrorResponse(error)) {return error.message;}
+  if (typeof error === 'string') {return error;}
+  if (error instanceof Error) {return error.message;}
   if (isDictionary(error) && typeof error['message'] === 'string') {
     return error['message'] as string;
   }

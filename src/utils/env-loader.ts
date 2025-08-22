@@ -47,11 +47,11 @@ export function getEnvironmentStatus(): {
 } {
   const providers: string[] = [];
 
-  if (process.env['OPENAI_API_KEY']) providers.push('OpenAI');
-  if (process.env['ANTHROPIC_API_KEY']) providers.push('Anthropic');
-  if (process.env['GEMINI_API_KEY']) providers.push('Google Gemini');
-  if (process.env['GROK_API_KEY']) providers.push('Grok');
-  if (process.env['LMSTUDIO_ENABLED'] === 'true') providers.push('LM Studio');
+  if (process.env['OPENAI_API_KEY']) {providers.push('OpenAI');}
+  if (process.env['ANTHROPIC_API_KEY']) {providers.push('Anthropic');}
+  if (process.env['GEMINI_API_KEY']) {providers.push('Google Gemini');}
+  if (process.env['GROK_API_KEY']) {providers.push('Grok');}
+  if (process.env['LMSTUDIO_ENABLED'] === 'true') {providers.push('LM Studio');}
 
   return {
     hasApiKeys: providers.length > 0,

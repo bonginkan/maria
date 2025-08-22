@@ -3,7 +3,7 @@
  * Handles language detection, intent extraction, and NLP operations
  */
 
-import { BaseService, Service, Inject } from '../core';
+import { BaseService, Inject, Service } from '../core';
 
 export interface LanguageDetectionResult {
   language: string;
@@ -231,7 +231,7 @@ export class NaturalLanguageProcessorService extends BaseService {
 
     // Test against each language pattern
     for (const [lang, pattern] of Object.entries(this.languagePatterns)) {
-      if (lang === 'english') continue; // Handle English separately
+      if (lang === 'english') {continue;} // Handle English separately
 
       const matches = text.match(pattern);
       if (matches) {
@@ -317,7 +317,7 @@ export class NaturalLanguageProcessorService extends BaseService {
     baseScore: number,
     context?: Record<string, any>,
   ): number {
-    if (!context) return baseScore;
+    if (!context) {return baseScore;}
 
     let boost = 0;
 

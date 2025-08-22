@@ -5,8 +5,8 @@
  * Tests all 4 phases of the MEMORY_DESIGN_SOW.md specification
  */
 
-import { describe, it, expect, beforeAll } from 'vitest';
-import { readFileSync, existsSync } from 'fs';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 // Import actual implementations to verify functionality
@@ -23,7 +23,7 @@ import { EntityExtractor } from '../knowledge-graph/entity-extractor';
 import { AccessControlManager } from '../enterprise/access-control-manager';
 
 // Types for verification
-import type { MemoryEvent, CognitivePattern } from '../types/memory-interfaces';
+import type { CognitivePattern, MemoryEvent } from '../types/memory-interfaces';
 
 describe('MARIA Memory System - SOW Implementation Verification', () => {
   

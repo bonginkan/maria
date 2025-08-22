@@ -462,7 +462,7 @@ export class UXOptimizer extends EventEmitter {
    * Select the best optimization to implement
    */
   private selectBestOptimization(optimizations: UXOptimization[]): UXOptimization | null {
-    if (optimizations.length === 0) return null;
+    if (optimizations.length === 0) {return null;}
 
     // Score optimizations based on impact, confidence, and type priority
     const scored = optimizations.map((opt) => ({
@@ -798,12 +798,12 @@ export class UXOptimizer extends EventEmitter {
    * Calculate improvement percentage
    */
   private calculateImprovement(metrics: OptimizationMetrics): number {
-    if (!metrics.before || !metrics.after) return 0;
+    if (!metrics.before || !metrics.after) {return 0;}
 
     const beforeValues = Object.values(metrics.before);
     const afterValues = Object.values(metrics.after);
 
-    if (beforeValues.length !== afterValues.length) return 0;
+    if (beforeValues.length !== afterValues.length) {return 0;}
 
     let totalImprovement = 0;
     for (let i = 0; i < beforeValues.length; i++) {

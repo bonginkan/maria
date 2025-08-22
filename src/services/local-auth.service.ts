@@ -331,7 +331,7 @@ export class LocalAuthService {
 
   // Permission helpers
   hasPermission(permission: string): boolean {
-    if (!this.currentUser) return false;
+    if (!this.currentUser) {return false;}
 
     const permissions: Record<string, string[]> = {
       admin: ['read', 'write', 'delete', 'admin'],

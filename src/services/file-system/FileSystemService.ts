@@ -196,15 +196,15 @@ export class FileSystemService {
         const stats = await this.getFileStats(entryPath);
 
         if (options.type) {
-          if (options.type === 'file' && !stats.isFile) continue;
-          if (options.type === 'directory' && !stats.isDirectory) continue;
+          if (options.type === 'file' && !stats.isFile) {continue;}
+          if (options.type === 'directory' && !stats.isDirectory) {continue;}
         }
 
         if (options.pattern) {
           const match = options.caseSensitive
             ? stats.name.includes(options.pattern)
             : stats.name.toLowerCase().includes(options.pattern.toLowerCase());
-          if (!match) continue;
+          if (!match) {continue;}
         }
 
         results.push(stats);
@@ -212,8 +212,8 @@ export class FileSystemService {
 
       this.logOperation('readdir', resolvedPath, true);
       return results.sort((a, b) => {
-        if (a.isDirectory && !b.isDirectory) return -1;
-        if (!a.isDirectory && b.isDirectory) return 1;
+        if (a.isDirectory && !b.isDirectory) {return -1;}
+        if (!a.isDirectory && b.isDirectory) {return 1;}
         return a.name.localeCompare(b.name);
       });
     } catch (error) {
@@ -477,18 +477,18 @@ export class FileSystemService {
 
           if (match) {
             if (options.type) {
-              if (options.type === 'file' && stats.isFile) results.push(stats);
-              if (options.type === 'directory' && stats.isDirectory) results.push(stats);
-              if (options.type === 'both') results.push(stats);
+              if (options.type === 'file' && stats.isFile) {results.push(stats);}
+              if (options.type === 'directory' && stats.isDirectory) {results.push(stats);}
+              if (options.type === 'both') {results.push(stats);}
             } else {
               results.push(stats);
             }
           }
         } else if (!options.pattern) {
           if (options.type) {
-            if (options.type === 'file' && stats.isFile) results.push(stats);
-            if (options.type === 'directory' && stats.isDirectory) results.push(stats);
-            if (options.type === 'both') results.push(stats);
+            if (options.type === 'file' && stats.isFile) {results.push(stats);}
+            if (options.type === 'directory' && stats.isDirectory) {results.push(stats);}
+            if (options.type === 'both') {results.push(stats);}
           } else {
             results.push(stats);
           }

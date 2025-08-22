@@ -6,21 +6,21 @@
  */
 
 import type {
-  System2Memory,
-  ReasoningTrace,
+  ActionItem,
+  AlternativeReasoning,
+  CodeQualityMetrics,
+  DecisionNode,
+  DecisionTree,
+  Enhancement,
+  Evidence,
+  MemoryEvent,
+  QualityMetrics,
   ReasoningContext,
   ReasoningStep,
-  AlternativeReasoning,
-  QualityMetrics,
-  CodeQualityMetrics,
-  DecisionTree,
-  DecisionNode,
-  Enhancement,
+  ReasoningTrace,
   ReflectionEntry,
-  ActionItem,
   System2Config,
-  MemoryEvent,
-  Evidence,
+  System2Memory,
 } from './types/memory-interfaces';
 
 export class System2MemoryManager implements System2Memory {
@@ -517,9 +517,9 @@ export class System2MemoryManager implements System2Memory {
 
     const complexityScore = factors.filter(Boolean).length;
 
-    if (complexityScore === 0) return 'simple';
-    if (complexityScore === 1) return 'moderate';
-    if (complexityScore === 2) return 'complex';
+    if (complexityScore === 0) {return 'simple';}
+    if (complexityScore === 1) {return 'moderate';}
+    if (complexityScore === 2) {return 'complex';}
     return 'very_complex';
   }
 
@@ -565,12 +565,12 @@ export class System2MemoryManager implements System2Memory {
     }
 
     // Adjust based on input/output quality
-    if (stepData.input.length > 100) confidence += 0.1;
-    if (stepData.output.length > 100) confidence += 0.1;
+    if (stepData.input.length > 100) {confidence += 0.1;}
+    if (stepData.output.length > 100) {confidence += 0.1;}
 
     // Adjust based on trace complexity
-    if (trace.metadata.complexity === 'simple') confidence += 0.1;
-    if (trace.metadata.complexity === 'very_complex') confidence -= 0.1;
+    if (trace.metadata.complexity === 'simple') {confidence += 0.1;}
+    if (trace.metadata.complexity === 'very_complex') {confidence -= 0.1;}
 
     return Math.max(0.1, Math.min(1.0, confidence));
   }
@@ -599,8 +599,8 @@ export class System2MemoryManager implements System2Memory {
     const hasEvaluation = trace.steps.some((step) => step.type === 'evaluation');
 
     let quality = avgConfidence * 0.6;
-    if (hasAnalysis) quality += 0.2;
-    if (hasEvaluation) quality += 0.2;
+    if (hasAnalysis) {quality += 0.2;}
+    if (hasEvaluation) {quality += 0.2;}
 
     trace.metadata.qualityScore = Math.max(0, Math.min(1, quality));
   }
@@ -758,11 +758,11 @@ export class System2MemoryManager implements System2Memory {
   }
 
   private findDecisionNode(root: DecisionNode, nodeId: string): DecisionNode | null {
-    if (root.id === nodeId) return root;
+    if (root.id === nodeId) {return root;}
 
     for (const child of root.children) {
       const found = this.findDecisionNode(child, nodeId);
-      if (found) return found;
+      if (found) {return found;}
     }
 
     return null;
@@ -786,7 +786,7 @@ export class System2MemoryManager implements System2Memory {
   }
 
   private calculateNodeConfidence(evidence: Evidence[]): number {
-    if (evidence.length === 0) return 0.5;
+    if (evidence.length === 0) {return 0.5;}
 
     const weightedSum = evidence.reduce((sum, e) => sum + e.strength, 0);
     return Math.min(1, weightedSum / evidence.length);
@@ -969,9 +969,9 @@ export class System2MemoryManager implements System2Memory {
     const lowCoupling = !/global|window|document/.test(code);
 
     let score = 50;
-    if (hasFunctions) score += 20;
-    if (hasClasses) score += 15;
-    if (lowCoupling) score += 15;
+    if (hasFunctions) {score += 20;}
+    if (hasClasses) {score += 15;}
+    if (lowCoupling) {score += 15;}
 
     return Math.max(0, Math.min(100, score));
   }
@@ -983,9 +983,9 @@ export class System2MemoryManager implements System2Memory {
     const hasEarlyReturns = (code.match(/return/g) || []).length > 1;
 
     let score = 80;
-    if (hasNestedLoops) score -= 20;
-    if (hasRecursion && !hasEarlyReturns) score -= 15;
-    if (hasEarlyReturns) score += 10;
+    if (hasNestedLoops) {score -= 20;}
+    if (hasRecursion && !hasEarlyReturns) {score -= 15;}
+    if (hasEarlyReturns) {score += 10;}
 
     return Math.max(0, Math.min(100, score));
   }

@@ -484,5 +484,5 @@ function formatContent(content: any): string {
     return content.substring(0, 200) + (content.length > 200 ? '...' : '');
   }
 
-  return JSON.stringify(content, null, 2).substring(0, 200) + '...';
+  return `${JSON.stringify(content, null, 2).substring(0, 200)  }...`;
 }

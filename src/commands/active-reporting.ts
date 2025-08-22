@@ -111,7 +111,7 @@ export class ActiveReportingCommand {
    * Show current task overview
    */
   private async showTaskOverview(): Promise<void> {
-    console.log(chalk.cyan('\n' + '═'.repeat(124)));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)}`));
     console.log(chalk.cyan.bold(this.centerText('📋 ACTIVE TASK OVERVIEW', 124)));
     console.log(chalk.cyan('═'.repeat(124)));
 
@@ -121,7 +121,7 @@ export class ActiveReportingCommand {
       console.log(
         chalk.gray('\n   No active tasks. Use "/task add <description>" to create a new task.\n'),
       );
-      console.log(chalk.cyan('═'.repeat(124) + '\n'));
+      console.log(chalk.cyan(`${'═'.repeat(124)  }\n`));
       return;
     }
 
@@ -129,7 +129,7 @@ export class ActiveReportingCommand {
       this.displayTask(task);
     });
 
-    console.log(chalk.cyan('═'.repeat(124) + '\n'));
+    console.log(chalk.cyan(`${'═'.repeat(124)  }\n`));
   }
 
   /**
@@ -138,20 +138,20 @@ export class ActiveReportingCommand {
   private async listTasks(): Promise<void> {
     const allTasks = this.service.getAllTasks();
 
-    console.log(chalk.cyan('\n' + '═'.repeat(124)));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)}`));
     console.log(chalk.cyan.bold(this.centerText('📝 ALL TASKS', 124)));
     console.log(chalk.cyan('═'.repeat(124)));
 
     if (allTasks.length === 0) {
       console.log(chalk.gray('\n   No tasks found.\n'));
-      console.log(chalk.cyan('═'.repeat(124) + '\n'));
+      console.log(chalk.cyan(`${'═'.repeat(124)  }\n`));
       return;
     }
 
     // Group tasks by status
     const tasksByStatus = allTasks.reduce(
       (acc: Record<string, Task[]>, task: Task) => {
-        if (!acc[task.status]) acc[task.status] = [];
+        if (!acc[task.status]) {acc[task.status] = [];}
         acc[task.status].push(task);
         return acc;
       },
@@ -172,7 +172,7 @@ export class ActiveReportingCommand {
       });
     });
 
-    console.log(chalk.cyan('\n' + '═'.repeat(124) + '\n'));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)  }\n`));
   }
 
   /**
@@ -270,7 +270,7 @@ export class ActiveReportingCommand {
       const intent = await this.service.analyzeUserIntent(request);
       const sow = await this.service.createSOWFromIntent(intent);
 
-      console.log(chalk.cyan('\n' + '═'.repeat(124)));
+      console.log(chalk.cyan(`\n${  '═'.repeat(124)}`));
       console.log(chalk.cyan.bold(this.centerText('📋 GENERATED SOW', 124)));
       console.log(chalk.cyan('═'.repeat(124)));
 
@@ -292,7 +292,7 @@ export class ActiveReportingCommand {
       }
 
       console.log(chalk.blue('\n🔍 Shall I proceed with this plan? [Y/n/modify]'));
-      console.log(chalk.cyan('═'.repeat(124) + '\n'));
+      console.log(chalk.cyan(`${'═'.repeat(124)  }\n`));
     } catch (error) {
       console.log(chalk.red(`❌ Failed to generate SOW: ${(error as Error).message}`));
     }
@@ -309,7 +309,7 @@ export class ActiveReportingCommand {
       return;
     }
 
-    console.log(chalk.cyan('\n' + '═'.repeat(124)));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)}`));
     console.log(chalk.cyan.bold(this.centerText('📋 CURRENT SOW', 124)));
     console.log(chalk.cyan('═'.repeat(124)));
 
@@ -330,7 +330,7 @@ export class ActiveReportingCommand {
       ),
     );
 
-    console.log(chalk.cyan('\n' + '═'.repeat(124) + '\n'));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)  }\n`));
   }
 
   /**
@@ -350,7 +350,7 @@ export class ActiveReportingCommand {
     try {
       const report = await this.service.generateProgressReport();
 
-      console.log(chalk.cyan('\n' + '═'.repeat(124)));
+      console.log(chalk.cyan(`\n${  '═'.repeat(124)}`));
       console.log(chalk.cyan.bold(this.centerText('📊 STATUS REPORT', 124)));
       console.log(chalk.cyan('═'.repeat(124)));
 
@@ -374,7 +374,7 @@ export class ActiveReportingCommand {
         });
       }
 
-      console.log(chalk.cyan('\n' + '═'.repeat(124) + '\n'));
+      console.log(chalk.cyan(`\n${  '═'.repeat(124)  }\n`));
     } catch (error) {
       console.log(chalk.red(`❌ Failed to generate report: ${(error as Error).message}`));
     }

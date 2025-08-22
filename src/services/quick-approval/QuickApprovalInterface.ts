@@ -6,9 +6,9 @@
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
 import {
+  ApprovalAction,
   ApprovalRequest,
   ApprovalResponse,
-  ApprovalAction,
   TrustLevel,
 } from '../approval-engine/types';
 import { ApprovalEngine } from '../approval-engine/ApprovalEngine';
@@ -123,121 +123,121 @@ export class QuickApprovalInterface extends EventEmitter {
     console.clear();
 
     // Top border with attention-grabbing pattern
-    console.log('\n' + chalk.red('┏' + '━'.repeat(78) + '┓'));
+    console.log(`\n${  chalk.red(`┏${  '━'.repeat(78)  }┓`)}`);
     console.log(
       chalk.red('┃') +
-        chalk.bgYellow.black.bold(' '.repeat(24) + '🤝 APPROVAL REQUEST' + ' '.repeat(24)) +
+        chalk.bgYellow.black.bold(`${' '.repeat(24)  }🤝 APPROVAL REQUEST${  ' '.repeat(24)}`) +
         chalk.red(' ┃'),
     );
     console.log(
       chalk.red('┃') +
         chalk.bgYellow.black.bold(
-          ' '.repeat(20) + '重要な決定が必要です (Important Decision)' + ' '.repeat(17),
+          `${' '.repeat(20)  }重要な決定が必要です (Important Decision)${  ' '.repeat(17)}`,
         ) +
         chalk.red(' ┃'),
     );
-    console.log(chalk.red('┗' + '━'.repeat(78) + '┛'));
+    console.log(chalk.red(`┗${  '━'.repeat(78)  }┛`));
     console.log('');
 
     // Main content box
-    console.log(chalk.cyan('┌' + '─'.repeat(78) + '┐'));
+    console.log(chalk.cyan(`┌${  '─'.repeat(78)  }┐`));
     console.log(
-      chalk.cyan('│') + chalk.white(' 📋 Request Details:' + ' '.repeat(56)) + chalk.cyan('│'),
+      chalk.cyan('│') + chalk.white(` 📋 Request Details:${  ' '.repeat(56)}`) + chalk.cyan('│'),
     );
-    console.log(chalk.cyan('├' + '─'.repeat(78) + '┤'));
+    console.log(chalk.cyan(`├${  '─'.repeat(78)  }┤`));
 
     // Display request details with better formatting
     const themeDisplay = `Theme: ${chalk.bold.white(request.themeId)}`;
     console.log(
-      chalk.cyan('│') + ` ${themeDisplay}${' '.repeat(77 - themeDisplay.length)}` + chalk.cyan('│'),
+      `${chalk.cyan('│')  } ${themeDisplay}${' '.repeat(77 - themeDisplay.length)}${  chalk.cyan('│')}`,
     );
 
     const contextDisplay = `Context: ${chalk.white(request.context.description || 'No description')}`;
     const contextTrimmed =
-      contextDisplay.length > 75 ? contextDisplay.substring(0, 72) + '...' : contextDisplay;
+      contextDisplay.length > 75 ? `${contextDisplay.substring(0, 72)  }...` : contextDisplay;
     console.log(
-      chalk.cyan('│') +
-        ` ${contextTrimmed}${' '.repeat(77 - contextTrimmed.length)}` +
-        chalk.cyan('│'),
+      `${chalk.cyan('│') 
+        } ${contextTrimmed}${' '.repeat(77 - contextTrimmed.length)}${ 
+        chalk.cyan('│')}`,
     );
 
     const riskDisplay = `Risk Level: ${this.formatRiskLevel(request.riskAssessment)}`;
     console.log(
-      chalk.cyan('│') + ` ${riskDisplay}${' '.repeat(77 - riskDisplay.length)}` + chalk.cyan('│'),
+      `${chalk.cyan('│')  } ${riskDisplay}${' '.repeat(77 - riskDisplay.length)}${  chalk.cyan('│')}`,
     );
 
     const timeDisplay = `Estimated Time: ${chalk.white(request.estimatedTime)}`;
     console.log(
-      chalk.cyan('│') + ` ${timeDisplay}${' '.repeat(77 - timeDisplay.length)}` + chalk.cyan('│'),
+      `${chalk.cyan('│')  } ${timeDisplay}${' '.repeat(77 - timeDisplay.length)}${  chalk.cyan('│')}`,
     );
 
     if (request.rationale) {
-      console.log(chalk.cyan('├' + '─'.repeat(78) + '┤'));
+      console.log(chalk.cyan(`├${  '─'.repeat(78)  }┤`));
       const rationaleLines = request.rationale.match(/.{1,75}/g) || [request.rationale];
       rationaleLines.forEach((line, index) => {
         const prefix = index === 0 ? 'Rationale: ' : '           ';
         const display = `${prefix}${chalk.white(line)}`;
         console.log(
-          chalk.cyan('│') + ` ${display}${' '.repeat(77 - display.length)}` + chalk.cyan('│'),
+          `${chalk.cyan('│')  } ${display}${' '.repeat(77 - display.length)}${  chalk.cyan('│')}`,
         );
       });
     }
 
     // Display proposed actions in a box
     if (request.proposedActions && request.proposedActions.length > 0) {
-      console.log(chalk.cyan('├' + '─'.repeat(78) + '┤'));
+      console.log(chalk.cyan(`├${  '─'.repeat(78)  }┤`));
       console.log(
-        chalk.cyan('│') + chalk.white(' 📝 Proposed Actions:' + ' '.repeat(56)) + chalk.cyan('│'),
+        chalk.cyan('│') + chalk.white(` 📝 Proposed Actions:${  ' '.repeat(56)}`) + chalk.cyan('│'),
       );
       request.proposedActions.forEach((action, index) => {
         const actionText = `  ${index + 1}. ${action.description || action.type}`;
-        const trimmed = actionText.length > 76 ? actionText.substring(0, 73) + '...' : actionText;
+        const trimmed = actionText.length > 76 ? `${actionText.substring(0, 73)  }...` : actionText;
         console.log(
-          chalk.cyan('│') +
-            ` ${chalk.gray(trimmed)}${' '.repeat(77 - trimmed.length)}` +
-            chalk.cyan('│'),
+          `${chalk.cyan('│') 
+            } ${chalk.gray(trimmed)}${' '.repeat(77 - trimmed.length)}${ 
+            chalk.cyan('│')}`,
         );
       });
     }
 
     // Display dependencies if any
     if (request.dependencies && request.dependencies.length > 0) {
-      console.log(chalk.cyan('├' + '─'.repeat(78) + '┤'));
+      console.log(chalk.cyan(`├${  '─'.repeat(78)  }┤`));
       const depDisplay = `Dependencies: ${chalk.white(request.dependencies.join(', '))}`;
-      const depTrimmed = depDisplay.length > 75 ? depDisplay.substring(0, 72) + '...' : depDisplay;
+      const depTrimmed = depDisplay.length > 75 ? `${depDisplay.substring(0, 72)  }...` : depDisplay;
       console.log(
-        chalk.cyan('│') + ` ${depTrimmed}${' '.repeat(77 - depTrimmed.length)}` + chalk.cyan('│'),
+        `${chalk.cyan('│')  } ${depTrimmed}${' '.repeat(77 - depTrimmed.length)}${  chalk.cyan('│')}`,
       );
     }
 
-    console.log(chalk.cyan('└' + '─'.repeat(78) + '┘'));
+    console.log(chalk.cyan(`└${  '─'.repeat(78)  }┘`));
 
     // Security warning box if applicable
     if (request.securityImpact) {
       console.log('');
-      console.log(chalk.red('┌' + '─'.repeat(78) + '┐'));
+      console.log(chalk.red(`┌${  '─'.repeat(78)  }┐`));
       console.log(
         chalk.red('│') +
           chalk.bgRed.white.bold(
-            ' ⚠️  SECURITY IMPACT DETECTED - EXTRA CAUTION REQUIRED ⚠️ ' + ' '.repeat(19),
+            ` ⚠️  SECURITY IMPACT DETECTED - EXTRA CAUTION REQUIRED ⚠️ ${  ' '.repeat(19)}`,
           ) +
           chalk.red('│'),
       );
-      console.log(chalk.red('└' + '─'.repeat(78) + '┘'));
+      console.log(chalk.red(`└${  '─'.repeat(78)  }┘`));
     }
 
     console.log('');
 
     // Quick choices box with emphasis
-    console.log(chalk.magenta('┌' + '─'.repeat(78) + '┐'));
+    console.log(chalk.magenta(`┌${  '─'.repeat(78)  }┐`));
     console.log(
       chalk.magenta('│') +
         chalk.bgMagenta.white.bold(
-          ' ⚡ Quick Approval Options (キーボードショートカット):' + ' '.repeat(27),
+          ` ⚡ Quick Approval Options (キーボードショートカット):${  ' '.repeat(27)}`,
         ) +
         chalk.magenta('│'),
     );
-    console.log(chalk.magenta('├' + '─'.repeat(78) + '┤'));
+    console.log(chalk.magenta(`├${  '─'.repeat(78)  }┤`));
 
     // Display quick choices with enhanced formatting
     this.quickChoices.forEach((choice) => {
@@ -247,13 +247,13 @@ export class QuickApprovalInterface extends EventEmitter {
 
       const choiceText = `${keyDisplay} ${chalk.bold.white(label)}${trustInfo} - ${chalk.gray(choice.description)}`;
       console.log(
-        chalk.magenta('│') +
-          ` ${choiceText}${' '.repeat(77 - choiceText.length)}` +
-          chalk.magenta('│'),
+        `${chalk.magenta('│') 
+          } ${choiceText}${' '.repeat(77 - choiceText.length)}${ 
+          chalk.magenta('│')}`,
       );
     });
 
-    console.log(chalk.magenta('└' + '─'.repeat(78) + '┘'));
+    console.log(chalk.magenta(`└${  '─'.repeat(78)  }┘`));
 
     // Instructions with emphasis
     console.log('');
@@ -340,7 +340,7 @@ export class QuickApprovalInterface extends EventEmitter {
    * Handle key press events
    */
   private handleKeyPress(key: string): void {
-    if (!this.isActive || !this.currentRequest) return;
+    if (!this.isActive || !this.currentRequest) {return;}
 
     // Handle escape key
     if (key === '\u001b') {
@@ -352,7 +352,7 @@ export class QuickApprovalInterface extends EventEmitter {
     // Handle Ctrl+C
     if (key === '\u0003') {
       // Ctrl+C
-      console.log('\n' + chalk.red('Approval cancelled by user'));
+      console.log(`\n${  chalk.red('Approval cancelled by user')}`);
       this.emit('approval-cancelled', this.currentRequest.id);
       return;
     }
@@ -381,19 +381,19 @@ export class QuickApprovalInterface extends EventEmitter {
    * Handle quick choice selection
    */
   private async handleQuickChoice(choice: QuickApprovalChoice): Promise<void> {
-    if (!this.currentRequest) return;
+    if (!this.currentRequest) {return;}
 
     // Clear the waiting prompt and show selection
     console.clear();
 
     // Show dramatic selection confirmation
-    console.log('\n' + chalk.bgGreen.black.bold('┌' + '─'.repeat(78) + '┐'));
+    console.log(`\n${  chalk.bgGreen.black.bold(`┌${  '─'.repeat(78)  }┐`)}`);
     console.log(
       chalk.bgGreen.black.bold('│') +
-        chalk.bgGreen.black.bold(' ✓ CHOICE SELECTED / 選択完了:' + ' '.repeat(47)) +
+        chalk.bgGreen.black.bold(` ✓ CHOICE SELECTED / 選択完了:${  ' '.repeat(47)}`) +
         chalk.bgGreen.black.bold('│'),
     );
-    console.log(chalk.bgGreen.black.bold('├' + '─'.repeat(78) + '┤'));
+    console.log(chalk.bgGreen.black.bold(`├${  '─'.repeat(78)  }┤`));
     const choiceText = `${choice.label} (${choice.labelJa})`;
     const padding = ' '.repeat(Math.max(0, 76 - choiceText.length));
     console.log(
@@ -401,7 +401,7 @@ export class QuickApprovalInterface extends EventEmitter {
         chalk.bgGreen.black.bold(` ${choiceText}${padding}`) +
         chalk.bgGreen.black.bold('│'),
     );
-    console.log(chalk.bgGreen.black.bold('└' + '─'.repeat(78) + '┘'));
+    console.log(chalk.bgGreen.black.bold(`└${  '─'.repeat(78)  }┘`));
 
     console.log(chalk.yellow('\n🔄 Processing your approval decision...'));
 
@@ -418,15 +418,15 @@ export class QuickApprovalInterface extends EventEmitter {
       response.quickDecision = true;
 
       // Show success message with box
-      console.log('\n' + chalk.bgGreen.black('┌' + '─'.repeat(78) + '┐'));
+      console.log(`\n${  chalk.bgGreen.black(`┌${  '─'.repeat(78)  }┐`)}`);
       console.log(
         chalk.bgGreen.black('│') +
           chalk.bgGreen.black(
-            ' 🎉 APPROVAL PROCESSED SUCCESSFULLY / 承認処理完了!' + ' '.repeat(32),
+            ` 🎉 APPROVAL PROCESSED SUCCESSFULLY / 承認処理完了!${  ' '.repeat(32)}`,
           ) +
           chalk.bgGreen.black('│'),
       );
-      console.log(chalk.bgGreen.black('└' + '─'.repeat(78) + '┘'));
+      console.log(chalk.bgGreen.black(`└${  '─'.repeat(78)  }┘`));
 
       if (choice.trustLevel) {
         console.log(chalk.blue(`\n✨ Trust level updated: ${choice.trustLevel}`));
@@ -435,15 +435,15 @@ export class QuickApprovalInterface extends EventEmitter {
       this.emit('approval-response', response);
     } catch (error) {
       // Show error message with dramatic box
-      console.log('\n' + chalk.bgRed.white.bold('┌' + '─'.repeat(78) + '┐'));
+      console.log(`\n${  chalk.bgRed.white.bold(`┌${  '─'.repeat(78)  }┐`)}`);
       console.log(
         chalk.bgRed.white.bold('│') +
           chalk.bgRed.white.bold(
-            ' ❌ ERROR PROCESSING APPROVAL / 承認処理エラー' + ' '.repeat(35),
+            ` ❌ ERROR PROCESSING APPROVAL / 承認処理エラー${  ' '.repeat(35)}`,
           ) +
           chalk.bgRed.white.bold('│'),
       );
-      console.log(chalk.bgRed.white.bold('└' + '─'.repeat(78) + '┘'));
+      console.log(chalk.bgRed.white.bold(`└${  '─'.repeat(78)  }┘`));
       console.error(chalk.red('\nError details:'), error);
       this.emit('approval-error', error);
     }
@@ -459,24 +459,24 @@ export class QuickApprovalInterface extends EventEmitter {
       // Setup timeout if specified
       if (timeout && timeout > 0) {
         timeoutId = setTimeout(() => {
-          console.log('\n' + chalk.yellow('⏰ Approval request timed out - auto-approving...'));
+          console.log(`\n${  chalk.yellow('⏰ Approval request timed out - auto-approving...')}`);
           this.handleTimeoutResponse(resolve);
         }, timeout);
       }
 
       // Listen for approval response
       const responseHandler = (response: ApprovalResponse) => {
-        if (timeoutId) clearTimeout(timeoutId);
+        if (timeoutId) {clearTimeout(timeoutId);}
         resolve(response);
       };
 
       const errorHandler = (error: Error) => {
-        if (timeoutId) clearTimeout(timeoutId);
+        if (timeoutId) {clearTimeout(timeoutId);}
         reject(error);
       };
 
       const cancelHandler = () => {
-        if (timeoutId) clearTimeout(timeoutId);
+        if (timeoutId) {clearTimeout(timeoutId);}
         reject(new Error('Approval cancelled by user'));
       };
 
@@ -490,7 +490,7 @@ export class QuickApprovalInterface extends EventEmitter {
    * Handle timeout response
    */
   private async handleTimeoutResponse(resolve: (value: ApprovalResponse) => void): Promise<void> {
-    if (!this.currentRequest) return;
+    if (!this.currentRequest) {return;}
 
     try {
       const response = await this.approvalEngine.processApprovalResponse(

@@ -5,17 +5,17 @@ import { Neo4jService } from '../services/neo4j.service';
 import { logger } from '../utils/logger';
 import { Table } from 'console-table-printer';
 import {
-  GraphEdge,
   Community as _Community,
+  Metric as _Metric,
   PathResult as _PathResult,
   Recommendation as _Recommendation,
-  Metric as _Metric,
   Dictionary,
+  GraphEdge,
   isCommunity,
+  isDictionary,
+  isMetric,
   isPathResult,
   isRecommendation,
-  isMetric,
-  isDictionary,
 } from '../types/common';
 
 interface AnalyzeOptions {

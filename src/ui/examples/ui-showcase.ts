@@ -7,7 +7,7 @@ import { OptimizedAnimations, TransitionEffects } from '../animations/OptimizedA
 import { StatusBarRenderer, SystemStatus } from '../components/StatusBarRenderer.js';
 import { OptimizedProgress } from '../components/OptimizedProgress.js';
 import { OptimizedTable } from '../components/OptimizedTable.js';
-import { OptimizedComponents, UNIFIED_COLORS, TEXT_HIERARCHY } from '../optimized-design-system.js';
+import { OptimizedComponents, TEXT_HIERARCHY, UNIFIED_COLORS } from '../optimized-design-system.js';
 
 /**
  * UIショーケースを実行

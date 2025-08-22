@@ -76,11 +76,11 @@ export class ResponseFormatter {
       Math.max(h.length, ...rows.map((r) => r[i]?.length || 0)),
     );
 
-    const separator = '+' + columnWidths.map((w) => '-'.repeat(w + 2)).join('+') + '+';
+    const separator = `+${  columnWidths.map((w) => '-'.repeat(w + 2)).join('+')  }+`;
     const headerRow =
-      '|' + headers.map((h, i) => ` ${h.padEnd(columnWidths[i] || 0)} `).join('|') + '|';
+      `|${  headers.map((h, i) => ` ${h.padEnd(columnWidths[i] || 0)} `).join('|')  }|`;
     const dataRows = rows.map(
-      (row) => '|' + row.map((cell, i) => ` ${cell.padEnd(columnWidths[i] || 0)} `).join('|') + '|',
+      (row) => `|${  row.map((cell, i) => ` ${cell.padEnd(columnWidths[i] || 0)} `).join('|')  }|`,
     );
 
     return [separator, headerRow, separator, ...dataRows, separator].join('\n');

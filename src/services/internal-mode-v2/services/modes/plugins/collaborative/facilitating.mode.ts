@@ -511,12 +511,12 @@ export default class FacilitatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('conflict') || inputLower.includes('disagreement'))
-      return 'conflict_resolution';
-    if (inputLower.includes('decision') || inputLower.includes('choose')) return 'decision_making';
+      {return 'conflict_resolution';}
+    if (inputLower.includes('decision') || inputLower.includes('choose')) {return 'decision_making';}
     if (inputLower.includes('brainstorm') || inputLower.includes('creative'))
-      return 'creative_collaboration';
-    if (inputLower.includes('plan') || inputLower.includes('strategy')) return 'planning_session';
-    if (inputLower.includes('problem') || inputLower.includes('solve')) return 'problem_solving';
+      {return 'creative_collaboration';}
+    if (inputLower.includes('plan') || inputLower.includes('strategy')) {return 'planning_session';}
+    if (inputLower.includes('problem') || inputLower.includes('solve')) {return 'problem_solving';}
 
     return 'general_collaboration';
   }
@@ -525,16 +525,16 @@ export default class FacilitatingMode extends BaseMode {
     const wordCount = input.split(/\s+/).length;
     const stakeholderCount = this.countStakeholderReferences(input);
 
-    if (wordCount > 100 || stakeholderCount > 5) return 'high';
-    if (wordCount > 50 || stakeholderCount > 3) return 'medium';
+    if (wordCount > 100 || stakeholderCount > 5) {return 'high';}
+    if (wordCount > 50 || stakeholderCount > 3) {return 'medium';}
     return 'low';
   }
 
   private assessUrgency(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('urgent') || inputLower.includes('asap')) return 'high';
-    if (inputLower.includes('soon') || inputLower.includes('quickly')) return 'medium';
+    if (inputLower.includes('urgent') || inputLower.includes('asap')) {return 'high';}
+    if (inputLower.includes('soon') || inputLower.includes('quickly')) {return 'medium';}
     return 'low';
   }
 
@@ -542,9 +542,9 @@ export default class FacilitatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('department') || inputLower.includes('organization'))
-      return 'organizational';
-    if (inputLower.includes('project') || inputLower.includes('initiative')) return 'project';
-    if (inputLower.includes('team') || inputLower.includes('group')) return 'team';
+      {return 'organizational';}
+    if (inputLower.includes('project') || inputLower.includes('initiative')) {return 'project';}
+    if (inputLower.includes('team') || inputLower.includes('group')) {return 'team';}
     return 'individual';
   }
 
@@ -552,10 +552,10 @@ export default class FacilitatingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('time')) constraints.push('time limitations');
-    if (inputLower.includes('budget')) constraints.push('budget constraints');
-    if (inputLower.includes('resource')) constraints.push('resource limitations');
-    if (inputLower.includes('remote')) constraints.push('remote collaboration');
+    if (inputLower.includes('time')) {constraints.push('time limitations');}
+    if (inputLower.includes('budget')) {constraints.push('budget constraints');}
+    if (inputLower.includes('resource')) {constraints.push('resource limitations');}
+    if (inputLower.includes('remote')) {constraints.push('remote collaboration');}
 
     return constraints;
   }
@@ -573,9 +573,9 @@ export default class FacilitatingMode extends BaseMode {
     const risks: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('conflict')) risks.push('unresolved conflicts');
-    if (inputLower.includes('deadline')) risks.push('time pressure');
-    if (inputLower.includes('complex')) risks.push('process complexity');
+    if (inputLower.includes('conflict')) {risks.push('unresolved conflicts');}
+    if (inputLower.includes('deadline')) {risks.push('time pressure');}
+    if (inputLower.includes('complex')) {risks.push('process complexity');}
 
     risks.push('participant disengagement');
     return risks;
@@ -617,19 +617,19 @@ export default class FacilitatingMode extends BaseMode {
   private assessPowerDynamics(stakeholders: unknown[]): string {
     const highInfluence = stakeholders.filter((s) => s.influence === 'high').length;
 
-    if (highInfluence > 2) return 'complex';
-    if (highInfluence > 1) return 'moderate';
+    if (highInfluence > 2) {return 'complex';}
+    if (highInfluence > 1) {return 'moderate';}
     return 'simple';
   }
 
   private selectFacilitationStrategy(input: string, stakeholderMap: unknown): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('conflict')) return 'mediative';
-    if (stakeholderMap.power_dynamics === 'complex') return 'consultative';
+    if (inputLower.includes('conflict')) {return 'mediative';}
+    if (stakeholderMap.power_dynamics === 'complex') {return 'consultative';}
     if (inputLower.includes('creative') || inputLower.includes('brainstorm'))
-      return 'collaborative';
-    if (inputLower.includes('urgent')) return 'directive';
+      {return 'collaborative';}
+    if (inputLower.includes('urgent')) {return 'directive';}
 
     return 'collaborative';
   }
@@ -682,9 +682,9 @@ export default class FacilitatingMode extends BaseMode {
   private estimateProcessTimeline(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('quick') || inputLower.includes('brief')) return '30-60 minutes';
-    if (inputLower.includes('workshop') || inputLower.includes('session')) return '2-4 hours';
-    if (inputLower.includes('retreat') || inputLower.includes('intensive')) return '1-2 days';
+    if (inputLower.includes('quick') || inputLower.includes('brief')) {return '30-60 minutes';}
+    if (inputLower.includes('workshop') || inputLower.includes('session')) {return '2-4 hours';}
+    if (inputLower.includes('retreat') || inputLower.includes('intensive')) {return '1-2 days';}
 
     return '1-2 hours';
   }
@@ -735,11 +735,11 @@ export default class FacilitatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('decision'))
-      return ['Clear decision made', 'Stakeholder buy-in achieved'];
+      {return ['Clear decision made', 'Stakeholder buy-in achieved'];}
     if (inputLower.includes('plan'))
-      return ['Actionable plan created', 'Roles and responsibilities defined'];
+      {return ['Actionable plan created', 'Roles and responsibilities defined'];}
     if (inputLower.includes('problem'))
-      return ['Problem clearly defined', 'Solution options identified'];
+      {return ['Problem clearly defined', 'Solution options identified'];}
 
     return ['Clear outcomes achieved', 'Team alignment established'];
   }

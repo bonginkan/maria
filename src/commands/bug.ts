@@ -546,8 +546,8 @@ function displayBug(bug: Bug, color: typeof chalk.red): void {
 
   if (bug.file) {
     let location = `    📍 ${bug.file}`;
-    if (bug.line) location += `:${bug.line}`;
-    if (bug.column) location += `:${bug.column}`;
+    if (bug.line) {location += `:${bug.line}`;}
+    if (bug.column) {location += `:${bug.column}`;}
     console.log(chalk.gray(location));
   }
 

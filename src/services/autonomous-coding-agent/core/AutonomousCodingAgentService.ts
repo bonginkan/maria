@@ -7,7 +7,7 @@ import { EventEmitter } from 'events';
 import { VisualModeDisplayEngine } from './VisualModeDisplayEngine';
 import { ActiveReportingIntegration } from './ActiveReportingIntegration';
 import { SelfEvolutionEngine } from './SelfEvolutionEngine';
-import { CodingMode, ExecutionContext, AutonomousDecision, SOW, Task as _Task } from '../types';
+import { Task as _Task, AutonomousDecision, CodingMode, ExecutionContext, SOW } from '../types';
 
 // Placeholder classes for missing modules
 class ModeOrchestrator {

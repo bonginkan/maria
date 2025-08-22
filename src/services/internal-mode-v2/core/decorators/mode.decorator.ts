@@ -3,7 +3,7 @@
  */
 
 import 'reflect-metadata';
-import { ModeConfig, ModeCategory, METADATA_KEYS } from '../types';
+import { METADATA_KEYS, ModeCategory, ModeConfig } from '../types';
 
 // Global mode registry
 const modeRegistry = new Map<string, any>();

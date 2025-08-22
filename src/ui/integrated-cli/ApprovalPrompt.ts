@@ -163,9 +163,9 @@ export class ApprovalPrompt {
           action: () => this.selectOptionByKey(option.key),
         };
 
-        if (parts.includes('ctrl')) binding.ctrl = true;
-        if (parts.includes('meta') || parts.includes('cmd')) binding.meta = true;
-        if (parts.includes('shift')) binding.shift = true;
+        if (parts.includes('ctrl')) {binding.ctrl = true;}
+        if (parts.includes('meta') || parts.includes('cmd')) {binding.meta = true;}
+        if (parts.includes('shift')) {binding.shift = true;}
 
         this.keyBindings.set(option.shortcut.toLowerCase(), binding);
       }
@@ -228,17 +228,17 @@ export class ApprovalPrompt {
     }
 
     // タイトルボックス
-    console.log(border('╔' + '═'.repeat(width - 2) + '╗'));
+    console.log(border(`╔${  '═'.repeat(width - 2)  }╗`));
     console.log(border('║') + this.centerText(this.config.title, width - 2, title) + border('║'));
-    console.log(border('╠' + '═'.repeat(width - 2) + '╣'));
+    console.log(border(`╠${  '═'.repeat(width - 2)  }╣`));
 
     // メッセージ
     const messageLines = this.wrapText(this.config.message, width - 4);
     messageLines.forEach((line) => {
-      console.log(border('║') + ' ' + message(line.padEnd(width - 3)) + border('║'));
+      console.log(`${border('║')  } ${  message(line.padEnd(width - 3))  }${border('║')}`);
     });
 
-    console.log(border('╠' + '═'.repeat(width - 2) + '╣'));
+    console.log(border(`╠${  '═'.repeat(width - 2)  }╣`));
 
     // オプション表示
     this.config.options.forEach((option, index) => {
@@ -251,24 +251,24 @@ export class ApprovalPrompt {
       const style = this.getOptionStyle(option.style, isSelected);
       const optionText = `${prefix}${number} ${key} ${option.label}${shortcut}`;
 
-      console.log(border('║') + ' ' + style(optionText.padEnd(width - 3)) + border('║'));
+      console.log(`${border('║')  } ${  style(optionText.padEnd(width - 3))  }${border('║')}`);
 
       if (option.description && !this.config.compactMode) {
         const desc = `     ${chalk.gray(option.description)}`;
-        console.log(border('║') + ' ' + desc.padEnd(width - 3) + border('║'));
+        console.log(`${border('║')  } ${  desc.padEnd(width - 3)  }${border('║')}`);
       }
     });
 
     // キーボードヘルプ
     if (this.config.showShortcuts) {
-      console.log(border('╠' + '═'.repeat(width - 2) + '╣'));
+      console.log(border(`╠${  '═'.repeat(width - 2)  }╣`));
       console.log(
-        border('║') +
-          ' ' +
+        `${border('║') 
+          } ${ 
           chalk
             .gray('Navigation: ↑↓ / Tab  Select: Enter / Space  Cancel: Esc / Q')
-            .padEnd(width - 3) +
-          border('║'),
+            .padEnd(width - 3) 
+          }${border('║')}`,
       );
     }
 
@@ -277,15 +277,15 @@ export class ApprovalPrompt {
       const remaining = Math.ceil((this.config.timeout - (Date.now() - this.startTime)) / 1000);
       if (remaining > 0) {
         console.log(
-          border('║') +
-            ' ' +
-            chalk.yellow(`Timeout in ${remaining}s`).padEnd(width - 3) +
-            border('║'),
+          `${border('║') 
+            } ${ 
+            chalk.yellow(`Timeout in ${remaining}s`).padEnd(width - 3) 
+            }${border('║')}`,
         );
       }
     }
 
-    console.log(border('╚' + '═'.repeat(width - 2) + '╝'));
+    console.log(border(`╚${  '═'.repeat(width - 2)  }╝`));
 
     // カーソルを適切な位置に移動
     const optionLine = 5 + this.currentSelection * (this.config.compactMode ? 1 : 2);
@@ -308,7 +308,7 @@ export class ApprovalPrompt {
         const style = this.getOptionStyle(option.style, isSelected);
         const prefix = isSelected ? '► ' : '  ';
 
-        return `${prefix}${style(key + ' ' + option.label)}`;
+        return `${prefix}${style(`${key  } ${  option.label}`)}`;
       })
       .join('  ');
 
@@ -323,11 +323,11 @@ export class ApprovalPrompt {
    * キー入力処理を設定
    */
   private setupKeyHandling(resolve: (result: ApprovalResult) => void): void {
-    if (!this.rl) return;
+    if (!this.rl) {return;}
 
     // キープレスイベント
     process.stdin.on('keypress', (str: string, key: unknown) => {
-      if (!this.isActive) return;
+      if (!this.isActive) {return;}
 
       const keyName = key.name || str;
       const fullKey = this.buildKeyString(key);
@@ -344,7 +344,7 @@ export class ApprovalPrompt {
 
     // 直接文字入力
     this.rl.on('line', (input: string) => {
-      if (!this.isActive) return;
+      if (!this.isActive) {return;}
 
       const trimmed = input.trim().toLowerCase();
 
@@ -385,7 +385,7 @@ export class ApprovalPrompt {
    * インデックスでオプションを選択
    */
   private async selectOption(index: number): Promise<void> {
-    if (index < 0 || index >= this.config.options.length) return;
+    if (index < 0 || index >= this.config.options.length) {return;}
 
     const option = this.config.options[index];
     await this.executeOption(option, 'keyboard');
@@ -411,7 +411,7 @@ export class ApprovalPrompt {
     // 確認が必要な場合
     if (option.confirm) {
       const confirmed = await this.showConfirmation(option);
-      if (!confirmed) return;
+      if (!confirmed) {return;}
     }
 
     // 結果を作成
@@ -468,7 +468,7 @@ export class ApprovalPrompt {
    * タイムアウト処理
    */
   private handleTimeout(resolve: (result: ApprovalResult) => void): void {
-    if (!this.isActive) return;
+    if (!this.isActive) {return;}
 
     const defaultOption = this.config.defaultOption
       ? this.config.options.find((opt) => opt.key === this.config.defaultOption)
@@ -541,9 +541,9 @@ export class ApprovalPrompt {
    * キーバインドをトリガーすべきかチェック
    */
   private shouldTriggerBinding(binding: KeyBinding, key: unknown): boolean {
-    if (binding.ctrl && !key.ctrl) return false;
-    if (binding.meta && !key.meta) return false;
-    if (binding.shift && !key.shift) return false;
+    if (binding.ctrl && !key.ctrl) {return false;}
+    if (binding.meta && !key.meta) {return false;}
+    if (binding.shift && !key.shift) {return false;}
     return true;
   }
 
@@ -552,9 +552,9 @@ export class ApprovalPrompt {
    */
   private buildKeyString(key: unknown): string {
     const parts: string[] = [];
-    if (key.ctrl) parts.push('ctrl');
-    if (key.meta) parts.push('meta');
-    if (key.shift) parts.push('shift');
+    if (key.ctrl) {parts.push('ctrl');}
+    if (key.meta) {parts.push('meta');}
+    if (key.shift) {parts.push('shift');}
     parts.push(key.name);
     return parts.join('+');
   }
@@ -581,12 +581,12 @@ export class ApprovalPrompt {
       if (currentLine.length + word.length + 1 <= width) {
         currentLine += (currentLine ? ' ' : '') + word;
       } else {
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {lines.push(currentLine);}
         currentLine = word;
       }
     }
 
-    if (currentLine) lines.push(currentLine);
+    if (currentLine) {lines.push(currentLine);}
     return lines;
   }
 

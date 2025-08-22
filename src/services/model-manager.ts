@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
-import { join, resolve, dirname } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { spawn, ChildProcess } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 
 export interface ModelInfo {
   id: string;

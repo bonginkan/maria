@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { IService, IServiceBus, ServiceEvent, ServiceNotFoundError, ServiceError } from './types';
+import { IService, IServiceBus, ServiceError, ServiceEvent, ServiceNotFoundError } from './types';
 import { ServiceRegistry } from './ServiceRegistry';
 
 export class ServiceBus extends EventEmitter implements IServiceBus {
@@ -204,7 +204,7 @@ export class ServiceBus extends EventEmitter implements IServiceBus {
    * Process queued messages
    */
   private async processQueue(): Promise<void> {
-    if (this.processing) return;
+    if (this.processing) {return;}
     this.processing = true;
 
     while (this.messageQueue.length > 0) {

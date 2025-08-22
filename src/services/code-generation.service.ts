@@ -485,12 +485,12 @@ BEGIN CODE GENERATION:
       const packageJson = await fs.readFile('package.json', 'utf-8');
       const pkg = JSON.parse(packageJson) as Record<string, unknown>;
 
-      if (pkg.dependencies?.react || pkg.devDependencies?.react) return 'React';
-      if (pkg.dependencies?.vue || pkg.devDependencies?.vue) return 'Vue';
-      if (pkg.dependencies?.angular || pkg.devDependencies?.angular) return 'Angular';
-      if (pkg.dependencies?.express) return 'Express';
-      if (pkg.dependencies?.nestjs) return 'NestJS';
-      if (pkg.dependencies?.next) return 'Next.js';
+      if (pkg.dependencies?.react || pkg.devDependencies?.react) {return 'React';}
+      if (pkg.dependencies?.vue || pkg.devDependencies?.vue) {return 'Vue';}
+      if (pkg.dependencies?.angular || pkg.devDependencies?.angular) {return 'Angular';}
+      if (pkg.dependencies?.express) {return 'Express';}
+      if (pkg.dependencies?.nestjs) {return 'NestJS';}
+      if (pkg.dependencies?.next) {return 'Next.js';}
     } catch {
       // No package.json or error reading it
     }
@@ -501,11 +501,11 @@ BEGIN CODE GENERATION:
     try {
       const files = await fs.readdir(process.cwd());
 
-      if (files.includes('package.json')) return 'Node.js';
-      if (files.includes('requirements.txt') || files.includes('setup.py')) return 'Python';
-      if (files.includes('go.mod')) return 'Go';
-      if (files.includes('Cargo.toml')) return 'Rust';
-      if (files.includes('pom.xml') || files.includes('build.gradle')) return 'Java';
+      if (files.includes('package.json')) {return 'Node.js';}
+      if (files.includes('requirements.txt') || files.includes('setup.py')) {return 'Python';}
+      if (files.includes('go.mod')) {return 'Go';}
+      if (files.includes('Cargo.toml')) {return 'Rust';}
+      if (files.includes('pom.xml') || files.includes('build.gradle')) {return 'Java';}
     } catch {
       // Error reading directory
     }
@@ -518,20 +518,20 @@ BEGIN CODE GENERATION:
         const packageJson = await fs.readFile('package.json', 'utf-8');
         const pkg = JSON.parse(packageJson) as Record<string, unknown>;
 
-        if (pkg.devDependencies?.jest) return 'Jest';
-        if (pkg.devDependencies?.mocha) return 'Mocha';
-        if (pkg.devDependencies?.vitest) return 'Vitest';
-        if (pkg.devDependencies?.['@testing-library/react']) return 'React Testing Library';
+        if (pkg.devDependencies?.jest) {return 'Jest';}
+        if (pkg.devDependencies?.mocha) {return 'Mocha';}
+        if (pkg.devDependencies?.vitest) {return 'Vitest';}
+        if (pkg.devDependencies?.['@testing-library/react']) {return 'React Testing Library';}
       } catch {
         // Default to Jest for JS/TS
       }
       return 'Jest';
     }
 
-    if (context.language === 'python') return 'pytest';
-    if (context.language === 'go') return 'testing';
-    if (context.language === 'rust') return 'cargo test';
-    if (context.language === 'java') return 'JUnit';
+    if (context.language === 'python') {return 'pytest';}
+    if (context.language === 'go') {return 'testing';}
+    if (context.language === 'rust') {return 'cargo test';}
+    if (context.language === 'java') {return 'JUnit';}
 
     return 'unit tests';
   }

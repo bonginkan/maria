@@ -99,7 +99,7 @@ export class StatusCommand extends BaseCommand {
       if (jsonOutput) {
         return {
           success: true,
-          message: '```json\n' + JSON.stringify(status, null, 2) + '\n```',
+          message: `\`\`\`json\n${  JSON.stringify(status, null, 2)  }\n\`\`\``,
           data: status,
         };
       }
@@ -302,17 +302,17 @@ export class StatusCommand extends BaseCommand {
     if (fs.existsSync(path.join(projectPath, 'package.json'))) {
       const pkg = JSON.parse(fs.readFileSync(path.join(projectPath, 'package.json'), 'utf-8'));
 
-      if (pkg.dependencies?.next || pkg.devDependencies?.next) return 'Next.js';
-      if (pkg.dependencies?.react || pkg.devDependencies?.react) return 'React';
-      if (pkg.dependencies?.vue || pkg.devDependencies?.vue) return 'Vue';
-      if (pkg.dependencies?.express) return 'Express';
+      if (pkg.dependencies?.next || pkg.devDependencies?.next) {return 'Next.js';}
+      if (pkg.dependencies?.react || pkg.devDependencies?.react) {return 'React';}
+      if (pkg.dependencies?.vue || pkg.devDependencies?.vue) {return 'Vue';}
+      if (pkg.dependencies?.express) {return 'Express';}
 
       return 'Node.js';
     }
 
-    if (fs.existsSync(path.join(projectPath, 'requirements.txt'))) return 'Python';
-    if (fs.existsSync(path.join(projectPath, 'Cargo.toml'))) return 'Rust';
-    if (fs.existsSync(path.join(projectPath, 'go.mod'))) return 'Go';
+    if (fs.existsSync(path.join(projectPath, 'requirements.txt'))) {return 'Python';}
+    if (fs.existsSync(path.join(projectPath, 'Cargo.toml'))) {return 'Rust';}
+    if (fs.existsSync(path.join(projectPath, 'go.mod'))) {return 'Go';}
 
     return 'Unknown';
   }
@@ -383,8 +383,8 @@ export class StatusCommand extends BaseCommand {
     const hours = Math.floor((seconds % 86400) / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
 
-    if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h ${mins}m`;
+    if (days > 0) {return `${days}d ${hours}h`;}
+    if (hours > 0) {return `${hours}h ${mins}m`;}
     return `${mins}m`;
   }
 

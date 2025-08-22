@@ -396,7 +396,7 @@ export class LearningEngine extends EventEmitter {
    */
   // @ts-nocheck - Complex async type handling
   private predictParameters(pattern: UsagePattern): Record<string, unknown> | undefined {
-    if (pattern.parameters.length === 0) return undefined;
+    if (pattern.parameters.length === 0) {return undefined;}
 
     // Find most common parameters
     const paramCounts = new Map<string, number>();
@@ -431,7 +431,7 @@ export class LearningEngine extends EventEmitter {
   // @ts-nocheck - Complex async type handling
   learnFromFeedback(command: string, feedback: UserFeedback): void {
     const pattern = this.usagePatterns.get(command);
-    if (!pattern) return;
+    if (!pattern) {return;}
 
     if (feedback.wasHelpful) {
       // Increase weight for this command
@@ -559,8 +559,8 @@ export class LearningEngine extends EventEmitter {
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
     const recent = values.slice(-3).reduce((a, b) => a + b, 0) / 3;
 
-    if (recent > avg * 1.2) return 'Increasing productivity 📈';
-    if (recent < avg * 0.8) return 'Decreasing activity 📉';
+    if (recent > avg * 1.2) {return 'Increasing productivity 📈';}
+    if (recent < avg * 0.8) {return 'Decreasing activity 📉';}
     return 'Stable usage pattern ➡️';
   }
 

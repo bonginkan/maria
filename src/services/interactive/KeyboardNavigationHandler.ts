@@ -119,7 +119,7 @@ export class KeyboardNavigationHandler extends EventEmitter {
    * キーボードナビゲーションを開始
    */
   public start(): void {
-    if (this.isActive) return;
+    if (this.isActive) {return;}
 
     try {
       // 標準入力をRawモードに設定
@@ -150,7 +150,7 @@ export class KeyboardNavigationHandler extends EventEmitter {
    * キーボードナビゲーションを停止
    */
   public stop(): void {
-    if (!this.isActive) return;
+    if (!this.isActive) {return;}
 
     try {
       if (this.stdin && this.originalTTY) {
@@ -218,7 +218,7 @@ export class KeyboardNavigationHandler extends EventEmitter {
    * キー入力を処理
    */
   private handleKeyInput(data: string): void {
-    if (!this.isActive) return;
+    if (!this.isActive) {return;}
 
     const keyEvent = this.parseKeyInput(data);
 
@@ -318,12 +318,12 @@ export class KeyboardNavigationHandler extends EventEmitter {
           // Modified keys (Shift, Ctrl, Alt combinations)
           if (code.includes(';')) {
             const [keyCode, modCode] = code.split(';');
-            if (!keyCode || !modCode) return null;
+            if (!keyCode || !modCode) {return null;}
             const mod = parseInt(modCode);
 
-            if (mod & 1) modifiers.push('shift');
-            if (mod & 2) modifiers.push('alt');
-            if (mod & 4) modifiers.push('ctrl');
+            if (mod & 1) {modifiers.push('shift');}
+            if (mod & 2) {modifiers.push('alt');}
+            if (mod & 4) {modifiers.push('ctrl');}
 
             switch (keyCode) {
               case '1':
@@ -402,7 +402,7 @@ export class KeyboardNavigationHandler extends EventEmitter {
    */
   private resolveKeyAction(keyEvent: KeyEvent): string | null {
     const currentMode = this.navigationModes[this.currentMode];
-    if (!currentMode) return null;
+    if (!currentMode) {return null;}
     const currentBindings = currentMode.keyBindings;
 
     // 完全一致チェック

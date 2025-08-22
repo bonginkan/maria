@@ -5,15 +5,15 @@
 
 import * as crypto from 'crypto';
 import {
-  SOW,
-  IntentAnalysis,
-  Task,
   Deliverable,
-  Timeline,
+  IntentAnalysis,
   Milestone,
   Phase,
   Risk,
+  SOW,
+  Task,
   TaskDecomposition,
+  Timeline,
 } from './types';
 
 export class SOWGenerator {
@@ -662,15 +662,15 @@ export class SOWGenerator {
   }
 
   private assessRiskImpact(_riskId: string): 'low' | 'medium' | 'high' | 'critical' {
-    if (riskId.includes('production') || riskId.includes('security')) return 'critical';
-    if (riskId.includes('data') || riskId.includes('performance')) return 'high';
-    if (riskId.includes('integration') || riskId.includes('migration')) return 'medium';
+    if (riskId.includes('production') || riskId.includes('security')) {return 'critical';}
+    if (riskId.includes('data') || riskId.includes('performance')) {return 'high';}
+    if (riskId.includes('integration') || riskId.includes('migration')) {return 'medium';}
     return 'low';
   }
 
   private assessRiskProbability(_complexity: string): 'low' | 'medium' | 'high' {
-    if (complexity === 'very_complex') return 'high';
-    if (complexity === 'complex') return 'medium';
+    if (complexity === 'very_complex') {return 'high';}
+    if (complexity === 'complex') {return 'medium';}
     return 'low';
   }
 

@@ -85,14 +85,14 @@ export abstract class BaseProvider implements AIProvider {
       body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
     };
     const reader = typedResponse.body?.getReader();
-    if (!reader) return;
+    if (!reader) {return;}
 
     const decoder = new TextDecoder();
 
     try {
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {break;}
 
         const chunk = decoder.decode(value);
         const lines = chunk.split('\n').filter((line) => line.trim());
@@ -100,12 +100,12 @@ export abstract class BaseProvider implements AIProvider {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
-            if (data === '[DONE]') return;
+            if (data === '[DONE]') {return;}
 
             try {
               const parsed = JSON.parse(data) as Record<string, unknown>;
               const content = this.extractStreamContent(parsed);
-              if (content) yield content;
+              if (content) {yield content;}
             } catch (e: unknown) {
               // Skip invalid JSON
             }

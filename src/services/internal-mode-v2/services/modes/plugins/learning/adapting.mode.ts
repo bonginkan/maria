@@ -441,10 +441,10 @@ export default class AdaptingMode extends BaseMode {
   private identifyDomain(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('code') || inputLower.includes('software')) return 'technical';
-    if (inputLower.includes('process') || inputLower.includes('workflow')) return 'process';
-    if (inputLower.includes('business') || inputLower.includes('strategy')) return 'business';
-    if (inputLower.includes('design') || inputLower.includes('user')) return 'design';
+    if (inputLower.includes('code') || inputLower.includes('software')) {return 'technical';}
+    if (inputLower.includes('process') || inputLower.includes('workflow')) {return 'process';}
+    if (inputLower.includes('business') || inputLower.includes('strategy')) {return 'business';}
+    if (inputLower.includes('design') || inputLower.includes('user')) {return 'design';}
 
     return 'general';
   }
@@ -459,11 +459,11 @@ export default class AdaptingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('budget')) constraints.push('budget');
-    if (inputLower.includes('time')) constraints.push('time');
-    if (inputLower.includes('resource')) constraints.push('resources');
-    if (inputLower.includes('technical')) constraints.push('technical');
-    if (inputLower.includes('regulation')) constraints.push('regulatory');
+    if (inputLower.includes('budget')) {constraints.push('budget');}
+    if (inputLower.includes('time')) {constraints.push('time');}
+    if (inputLower.includes('resource')) {constraints.push('resources');}
+    if (inputLower.includes('technical')) {constraints.push('technical');}
+    if (inputLower.includes('regulation')) {constraints.push('regulatory');}
 
     return constraints;
   }
@@ -471,9 +471,9 @@ export default class AdaptingMode extends BaseMode {
   private assessCurrentPerformance(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('poor') || inputLower.includes('bad')) return 'poor';
-    if (inputLower.includes('excellent') || inputLower.includes('great')) return 'excellent';
-    if (inputLower.includes('good')) return 'good';
+    if (inputLower.includes('poor') || inputLower.includes('bad')) {return 'poor';}
+    if (inputLower.includes('excellent') || inputLower.includes('great')) {return 'excellent';}
+    if (inputLower.includes('good')) {return 'good';}
 
     return 'average';
   }
@@ -490,10 +490,10 @@ export default class AdaptingMode extends BaseMode {
     const stakeholders: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('user')) stakeholders.push('users');
-    if (inputLower.includes('team')) stakeholders.push('team');
-    if (inputLower.includes('customer')) stakeholders.push('customers');
-    if (inputLower.includes('management')) stakeholders.push('management');
+    if (inputLower.includes('user')) {stakeholders.push('users');}
+    if (inputLower.includes('team')) {stakeholders.push('team');}
+    if (inputLower.includes('customer')) {stakeholders.push('customers');}
+    if (inputLower.includes('management')) {stakeholders.push('management');}
 
     return stakeholders;
   }
@@ -501,9 +501,9 @@ export default class AdaptingMode extends BaseMode {
   private classifyChangeType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('small') || inputLower.includes('minor')) return 'incremental';
-    if (inputLower.includes('major') || inputLower.includes('significant')) return 'radical';
-    if (inputLower.includes('experiment') || inputLower.includes('try')) return 'experimental';
+    if (inputLower.includes('small') || inputLower.includes('minor')) {return 'incremental';}
+    if (inputLower.includes('major') || inputLower.includes('significant')) {return 'radical';}
+    if (inputLower.includes('experiment') || inputLower.includes('try')) {return 'experimental';}
 
     return 'incremental';
   }
@@ -511,16 +511,16 @@ export default class AdaptingMode extends BaseMode {
   private determineChangeScope(input: string): string {
     const wordCount = input.split(/\s+/).length;
 
-    if (wordCount > 100) return 'broad';
-    if (wordCount > 50) return 'moderate';
+    if (wordCount > 100) {return 'broad';}
+    if (wordCount > 50) {return 'moderate';}
     return 'narrow';
   }
 
   private assessChangeUrgency(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('urgent') || inputLower.includes('asap')) return 'high';
-    if (inputLower.includes('soon') || inputLower.includes('quickly')) return 'medium';
+    if (inputLower.includes('urgent') || inputLower.includes('asap')) {return 'high';}
+    if (inputLower.includes('soon') || inputLower.includes('quickly')) {return 'medium';}
 
     return 'low';
   }
@@ -529,10 +529,10 @@ export default class AdaptingMode extends BaseMode {
     const drivers: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('feedback')) drivers.push('user feedback');
-    if (inputLower.includes('performance')) drivers.push('performance issues');
-    if (inputLower.includes('requirement')) drivers.push('new requirements');
-    if (inputLower.includes('competition')) drivers.push('competitive pressure');
+    if (inputLower.includes('feedback')) {drivers.push('user feedback');}
+    if (inputLower.includes('performance')) {drivers.push('performance issues');}
+    if (inputLower.includes('requirement')) {drivers.push('new requirements');}
+    if (inputLower.includes('competition')) {drivers.push('competitive pressure');}
 
     return drivers;
   }
@@ -556,9 +556,9 @@ export default class AdaptingMode extends BaseMode {
   }
 
   private selectAdaptationStrategy(requirements: unknown): string {
-    if (requirements.urgency === 'high') return 'aggressive';
-    if (requirements.scope === 'broad') return 'incremental';
-    if (requirements.type === 'experimental') return 'experimental';
+    if (requirements.urgency === 'high') {return 'aggressive';}
+    if (requirements.scope === 'broad') {return 'incremental';}
+    if (requirements.type === 'experimental') {return 'experimental';}
 
     return 'incremental';
   }
@@ -574,8 +574,8 @@ export default class AdaptingMode extends BaseMode {
   }
 
   private estimateAdaptationTimeline(requirements: unknown): string {
-    if (requirements.urgency === 'high') return '1-2 weeks';
-    if (requirements.scope === 'broad') return '1-2 months';
+    if (requirements.urgency === 'high') {return '1-2 weeks';}
+    if (requirements.scope === 'broad') {return '1-2 months';}
     return '2-4 weeks';
   }
 
@@ -641,9 +641,9 @@ export default class AdaptingMode extends BaseMode {
   private categorizeLearning(input: string, modifications: unknown[]): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('code') || inputLower.includes('technical')) return 'technical';
-    if (inputLower.includes('process') || inputLower.includes('workflow')) return 'process';
-    if (inputLower.includes('user') || inputLower.includes('experience')) return 'user experience';
+    if (inputLower.includes('code') || inputLower.includes('technical')) {return 'technical';}
+    if (inputLower.includes('process') || inputLower.includes('workflow')) {return 'process';}
+    if (inputLower.includes('user') || inputLower.includes('experience')) {return 'user experience';}
 
     return 'general';
   }
@@ -690,8 +690,8 @@ export default class AdaptingMode extends BaseMode {
   private assessUrgency(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('urgent') || inputLower.includes('critical')) return 'high';
-    if (inputLower.includes('soon') || inputLower.includes('important')) return 'medium';
+    if (inputLower.includes('urgent') || inputLower.includes('critical')) {return 'high';}
+    if (inputLower.includes('soon') || inputLower.includes('important')) {return 'medium';}
 
     return 'low';
   }
@@ -699,8 +699,8 @@ export default class AdaptingMode extends BaseMode {
   private assessComplexity(input: string): string {
     const wordCount = input.split(/\s+/).length;
 
-    if (wordCount > 100) return 'high';
-    if (wordCount > 50) return 'medium';
+    if (wordCount > 100) {return 'high';}
+    if (wordCount > 50) {return 'medium';}
     return 'low';
   }
 }

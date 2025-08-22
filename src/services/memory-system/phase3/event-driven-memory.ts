@@ -7,9 +7,9 @@
 
 import { EventEmitter } from 'events';
 import {
+  EventMetadata,
   MemoryEvent,
   MemoryEventType,
-  EventMetadata,
   ReasoningTrace,
 } from '../types/memory-interfaces';
 import { KnowledgeGraphEngine } from './knowledge-graph-engine';
@@ -177,7 +177,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
    * Process events in batch
    */
   private async processBatch(): Promise<void> {
-    if (this.processing || this.eventQueue.isEmpty()) return;
+    if (this.processing || this.eventQueue.isEmpty()) {return;}
 
     this.processing = true;
     const batch: MemoryEvent[] = [];

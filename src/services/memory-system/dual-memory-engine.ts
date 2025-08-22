@@ -8,17 +8,17 @@
 import { System1MemoryManager } from './system1-memory';
 import { System2MemoryManager } from './system2-memory';
 import type {
+  CodePattern,
+  CoordinatorConfig,
+  Enhancement,
+  KnowledgeNode,
   MemoryEvent,
+  PerformanceConfig,
+  QualityMetrics,
+  ReasoningTrace,
   System1Config,
   System2Config,
-  CoordinatorConfig,
-  PerformanceConfig,
-  KnowledgeNode,
-  ReasoningTrace,
-  CodePattern,
   UserPreferenceSet,
-  QualityMetrics,
-  Enhancement,
 } from './types/memory-interfaces';
 
 export interface DualMemoryEngineConfig {
@@ -307,11 +307,11 @@ export class DualMemoryEngine {
     let complexity = 0.3; // Base complexity
 
     // Query length factor
-    if (query.query.length > 100) complexity += 0.2;
-    if (query.query.length > 200) complexity += 0.2;
+    if (query.query.length > 100) {complexity += 0.2;}
+    if (query.query.length > 200) {complexity += 0.2;}
 
     // Context complexity
-    if (query.context && Object.keys(query.context).length > 3) complexity += 0.2;
+    if (query.context && Object.keys(query.context).length > 3) {complexity += 0.2;}
 
     // Type complexity
     switch (query.type) {

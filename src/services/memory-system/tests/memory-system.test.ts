@@ -3,7 +3,7 @@
  * Tests all 4 phases of the memory implementation
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 // Phase 1: Core Memory Architecture
 import { DualMemoryEngine } from '../dual-memory-engine';

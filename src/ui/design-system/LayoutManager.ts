@@ -119,7 +119,7 @@ export class LayoutManager {
 
     if (actualLength > width) {
       // 切り詰め処理（安全な境界）
-      return this.truncateString(text, width - 3) + '...';
+      return `${this.truncateString(text, width - 3)  }...`;
     }
 
     const padding = width - actualLength;
@@ -248,7 +248,7 @@ export class LayoutManager {
     let width = 0;
     for (const char of str) {
       const code = char.codePointAt(0);
-      if (!code) continue;
+      if (!code) {continue;}
 
       // 全角文字判定（簡易）
       if (code > 0x3000 && code < 0x9fff) {
@@ -272,7 +272,7 @@ export class LayoutManager {
 
     for (const char of str) {
       const charWidth = this.getStringWidth(char);
-      if (width + charWidth > maxWidth) break;
+      if (width + charWidth > maxWidth) {break;}
 
       result += char;
       width += charWidth;

@@ -223,7 +223,7 @@ export class PermissionsCommand extends BaseCommand {
 
     for (const category of categories) {
       const perms = config.permissions.filter((p) => p.category === category);
-      if (perms.length === 0) continue;
+      if (perms.length === 0) {continue;}
 
       message += `## ${this.getCategoryEmoji(category)} ${category.toUpperCase()}\n\n`;
 

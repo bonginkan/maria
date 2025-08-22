@@ -174,7 +174,7 @@ export class PrioritySystem {
     if (isLocal) {
       const privacyBonus = (this.config.preferences['privacyRequirement'] / 100) * 30;
       breakdown['privacy'] = privacyBonus;
-      if (privacyBonus > 10) reasoning.push('Local provider (privacy)');
+      if (privacyBonus > 10) {reasoning.push('Local provider (privacy)');}
     } else {
       // Cloud providers get penalty for high privacy requirements
       if (this.config.preferences['privacyRequirement'] > 80) {

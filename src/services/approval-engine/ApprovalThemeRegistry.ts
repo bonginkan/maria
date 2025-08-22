@@ -3,7 +3,7 @@
  * Predefined approval themes for different categories of development tasks
  */
 
-import { ApprovalTheme, ApprovalCategory, RiskLevel } from './types';
+import { ApprovalCategory, ApprovalTheme, RiskLevel } from './types';
 
 export class ApprovalThemeRegistry {
   private static themes: ApprovalTheme[] = [

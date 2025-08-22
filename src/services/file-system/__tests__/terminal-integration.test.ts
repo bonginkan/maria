@@ -3,7 +3,7 @@
  * Tests for Phase 2 file system integration components
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { terminalDetector } from '../terminal-integration/TerminalDetector';
 import { terminalManager } from '../terminal-integration/TerminalManager';
 import { permissionManager } from '../security/PermissionManager';

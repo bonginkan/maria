@@ -4,8 +4,8 @@
  */
 
 import crypto from 'crypto';
-import { ApprovalCommit, ApprovalDiff, ApprovalState, ApprovalChange } from './types';
-import { ApprovalResponse, RiskLevel, ApprovalCategory } from '../approval-engine/types';
+import { ApprovalChange, ApprovalCommit, ApprovalDiff, ApprovalState } from './types';
+import { ApprovalCategory, ApprovalResponse, RiskLevel } from '../approval-engine/types';
 
 export class ApprovalCommitManager {
   /**
@@ -414,7 +414,7 @@ export class ApprovalCommitManager {
 
     while (queue.length > 0) {
       const parentId = queue.shift()!;
-      if (ancestors.includes(parentId)) continue;
+      if (ancestors.includes(parentId)) {continue;}
 
       ancestors.push(parentId);
       const parent = allCommits.get(parentId);

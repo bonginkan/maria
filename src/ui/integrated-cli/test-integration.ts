@@ -3,14 +3,14 @@
  * 統合CLIシステム全体のテスト
  */
 import {
-  IntegratedCLIManager,
   ActiveReporter,
-  ProgressTracker,
-  TaskBreakdownDisplay,
   ApprovalPrompt,
-  KeyboardShortcutHandler,
   createIntegratedCLI,
   DEFAULT_CONFIG,
+  IntegratedCLIManager,
+  KeyboardShortcutHandler,
+  ProgressTracker,
+  TaskBreakdownDisplay,
   Utils,
 } from './index.js';
 

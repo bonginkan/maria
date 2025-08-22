@@ -1,6 +1,6 @@
-import { modelManager, GenerationOptions } from './model-manager';
+import { GenerationOptions, modelManager } from './model-manager';
 import { promises as fs } from 'fs';
-import { join, resolve, extname, dirname } from 'path';
+import { dirname, extname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';
 

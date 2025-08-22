@@ -262,12 +262,12 @@ export class TerminalDetector {
   private detectShellType(): TerminalCapabilities['shellType'] {
     const shell = process.env.SHELL || process.env.ComSpec || '';
 
-    if (shell.includes('zsh')) return 'zsh';
-    if (shell.includes('bash')) return 'bash';
-    if (shell.includes('fish')) return 'fish';
-    if (shell.includes('cmd')) return 'cmd';
-    if (shell.includes('powershell') || shell.includes('pwsh')) return 'powershell';
-    if (shell.includes('sh')) return 'sh';
+    if (shell.includes('zsh')) {return 'zsh';}
+    if (shell.includes('bash')) {return 'bash';}
+    if (shell.includes('fish')) {return 'fish';}
+    if (shell.includes('cmd')) {return 'cmd';}
+    if (shell.includes('powershell') || shell.includes('pwsh')) {return 'powershell';}
+    if (shell.includes('sh')) {return 'sh';}
 
     return 'unknown';
   }

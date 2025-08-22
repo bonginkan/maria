@@ -84,7 +84,7 @@ class ImageCommand {
     console.log(chalk.blue.bold('🖼️ AI画像生成'));
     console.log(chalk.gray(`プロンプト: ${prompt}`));
     console.log();
-    console.log(chalk.cyan('📊 設定:') + ` スタイル=${style} サイズ=${size} 品質=${quality}`);
+    console.log(`${chalk.cyan('📊 設定:')  } スタイル=${style} サイズ=${size} 品質=${quality}`);
 
     if (batch > 1 || variations > 1) {
       console.log(chalk.yellow(`📦 バッチ生成: ${batch}×${variations} = ${batch * variations}枚`));
@@ -122,7 +122,7 @@ class ImageCommand {
     let spinnerIndex = 0;
 
     this.progressInterval = setInterval(() => {
-      if (!this.progress) return;
+      if (!this.progress) {return;}
 
       // Clear current line and move cursor to beginning
       process.stdout.clearLine(0);
@@ -218,7 +218,7 @@ class ImageCommand {
 
       console.log();
       console.log(
-        chalk.green('💡 ヒント:') + ' 画像ファイルをダブルクリックしてプレビューできます',
+        `${chalk.green('💡 ヒント:')  } 画像ファイルをダブルクリックしてプレビューできます`,
       );
     } else {
       this.showError(result.error || '不明なエラー');

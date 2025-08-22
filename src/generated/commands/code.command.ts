@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { _Command, RequireAuth, RateLimit, Cache, _Validate } from '../decorators';
-import { _CommandContext, CommandOptions, _CommandResult } from '../types';
+import { _Command, _Validate, Cache, RateLimit, RequireAuth } from '../decorators';
+import { _CommandContext, _CommandResult, CommandOptions } from '../types';
 import { z } from 'zod';
 import { AIRouterService } from '../../services/ai-router';
 import { IntentAnalyzerService } from '../../services/intent-analyzer';
@@ -389,7 +389,7 @@ export class CodeCommand extends BaseCommand<CodeOptions> {
   }
 
   private generateTestFileName(fileName: string): string {
-    if (!fileName) return `test_${Date.now()}.test.js`;
+    if (!fileName) {return `test_${Date.now()}.test.js`;}
 
     const parts = fileName.split('.');
     const extension = parts.pop();

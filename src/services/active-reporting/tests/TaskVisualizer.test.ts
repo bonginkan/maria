@@ -2,9 +2,9 @@
  * Task Visualizer Tests
  * Test suite for CLI visualization components
  */
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { TaskVisualizer } from '../TaskVisualizer';
-import { Task, SOW, ProgressMetrics } from '../types';
+import { ProgressMetrics, SOW, Task } from '../types';
 
 describe('TaskVisualizer', () => {
   let visualizer: TaskVisualizer;

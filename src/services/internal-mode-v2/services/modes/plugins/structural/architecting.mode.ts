@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -193,9 +193,9 @@ export class ArchitectingMode extends BaseMode {
     confidence += patternRefs.length * 0.12;
 
     // Context indicators
-    if (context.metadata?.requiresArchitecture) confidence += 0.25;
-    if (context.metadata?.systemDesign) confidence += 0.2;
-    if (context.metadata?.structuralPlanning) confidence += 0.15;
+    if (context.metadata?.requiresArchitecture) {confidence += 0.25;}
+    if (context.metadata?.systemDesign) {confidence += 0.2;}
+    if (context.metadata?.structuralPlanning) {confidence += 0.15;}
 
     // Architectural terms
     const archTerms = ['scalable', 'modular', 'distributed', 'layered', 'service-oriented'];
@@ -411,8 +411,8 @@ export class ArchitectingMode extends BaseMode {
 
   private determineArchitecturalScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 200) return 'enterprise';
-    if (wordCount > 100) return 'application';
+    if (wordCount > 200) {return 'enterprise';}
+    if (wordCount > 100) {return 'application';}
     return 'component';
   }
 
@@ -420,11 +420,11 @@ export class ArchitectingMode extends BaseMode {
     const constraints = [];
     const input = context.input.toLowerCase();
 
-    if (input.includes('budget')) constraints.push('budget_constraint');
-    if (input.includes('time')) constraints.push('time_constraint');
-    if (input.includes('legacy')) constraints.push('legacy_system_constraint');
-    if (input.includes('compliance')) constraints.push('compliance_constraint');
-    if (input.includes('security')) constraints.push('security_constraint');
+    if (input.includes('budget')) {constraints.push('budget_constraint');}
+    if (input.includes('time')) {constraints.push('time_constraint');}
+    if (input.includes('legacy')) {constraints.push('legacy_system_constraint');}
+    if (input.includes('compliance')) {constraints.push('compliance_constraint');}
+    if (input.includes('security')) {constraints.push('security_constraint');}
 
     return constraints;
   }
@@ -432,9 +432,9 @@ export class ArchitectingMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.8;
 
-    if (results.quality.overall > 0.8) confidence += 0.1;
-    if (results.patterns.length > 2) confidence += 0.05;
-    if (results.components.length > 3) confidence += 0.05;
+    if (results.quality.overall > 0.8) {confidence += 0.1;}
+    if (results.patterns.length > 2) {confidence += 0.05;}
+    if (results.components.length > 3) {confidence += 0.05;}
 
     return Math.min(confidence, 1.0);
   }
@@ -471,9 +471,9 @@ export class ArchitectingMode extends BaseMode {
 
   private identifyStakeholders(input: string): string[] {
     const stakeholders = [];
-    if (input.includes('user')) stakeholders.push('end_users');
-    if (input.includes('admin')) stakeholders.push('administrators');
-    if (input.includes('developer')) stakeholders.push('developers');
+    if (input.includes('user')) {stakeholders.push('end_users');}
+    if (input.includes('admin')) {stakeholders.push('administrators');}
+    if (input.includes('developer')) {stakeholders.push('developers');}
     return stakeholders;
   }
 
@@ -486,8 +486,8 @@ export class ArchitectingMode extends BaseMode {
   }
 
   private determineSystemScope(input: string): string {
-    if (input.includes('enterprise')) return 'enterprise';
-    if (input.includes('application')) return 'application';
+    if (input.includes('enterprise')) {return 'enterprise';}
+    if (input.includes('application')) {return 'application';}
     return 'component';
   }
 
@@ -537,19 +537,19 @@ export class ArchitectingMode extends BaseMode {
 
   private identifyComponents(input: string): string[] {
     const components = [];
-    if (input.includes('user')) components.push('user_management');
-    if (input.includes('data')) components.push('data_service');
-    if (input.includes('auth')) components.push('authentication');
-    if (input.includes('api')) components.push('api_gateway');
+    if (input.includes('user')) {components.push('user_management');}
+    if (input.includes('data')) {components.push('data_service');}
+    if (input.includes('auth')) {components.push('authentication');}
+    if (input.includes('api')) {components.push('api_gateway');}
     return components.length > 0
       ? components
       : ['core_service', 'data_layer', 'presentation_layer'];
   }
 
   private determineComponentType(component: string, context: ModeContext): string {
-    if (component.includes('service')) return 'service';
-    if (component.includes('layer')) return 'layer';
-    if (component.includes('gateway')) return 'gateway';
+    if (component.includes('service')) {return 'service';}
+    if (component.includes('layer')) {return 'layer';}
+    if (component.includes('gateway')) {return 'gateway';}
     return 'module';
   }
 

@@ -3,7 +3,7 @@
  */
 
 import 'reflect-metadata';
-import { ServiceMetadata, METADATA_KEYS } from '../types';
+import { METADATA_KEYS, ServiceMetadata } from '../types';
 import { ServiceRegistry } from '../ServiceRegistry';
 
 /**

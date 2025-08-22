@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { generateNeo4jJWT, verifyNeo4jJWT, getNeo4jBloomURL } from './jwt';
+import { describe, expect, it } from 'vitest';
+import { generateNeo4jJWT, getNeo4jBloomURL, verifyNeo4jJWT } from './jwt';
 
 describe('JWT Utils', () => {
   const testSecret = 'test-secret-key';

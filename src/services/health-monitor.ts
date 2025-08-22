@@ -115,7 +115,7 @@ export class HealthMonitor extends EventEmitter {
    * Start health monitoring
    */
   start(): void {
-    if (this.isRunning) return;
+    if (this.isRunning) {return;}
 
     this.isRunning = true;
     this.startTime = Date.now();
@@ -135,7 +135,7 @@ export class HealthMonitor extends EventEmitter {
    * Stop health monitoring
    */
   stop(): void {
-    if (!this.isRunning) return;
+    if (!this.isRunning) {return;}
 
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
@@ -173,7 +173,7 @@ export class HealthMonitor extends EventEmitter {
     let lastError: Error | undefined;
 
     const currentHealth = this.healthData.get(name);
-    if (!currentHealth) return;
+    if (!currentHealth) {return;}
 
     while (attempts < this.config.retryAttempts) {
       try {
@@ -265,7 +265,7 @@ export class HealthMonitor extends EventEmitter {
    */
   private updateMetrics(name: string, responseTime: number, success: boolean): void {
     const health = this.healthData.get(name);
-    if (!health) return;
+    if (!health) {return;}
 
     const metadata = health.metadata;
     metadata.totalRequests++;

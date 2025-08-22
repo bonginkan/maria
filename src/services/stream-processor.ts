@@ -5,7 +5,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { Transform, Readable, pipeline } from 'stream';
+import { pipeline, Readable, Transform } from 'stream';
 import { logger } from '../utils/logger';
 
 export interface StreamMetrics {
@@ -262,7 +262,7 @@ export class StreamProcessor extends EventEmitter {
    * Check if backpressure should be applied
    */
   private shouldApplyBackpressure(): boolean {
-    if (!this.options.highWaterMark) return false;
+    if (!this.options.highWaterMark) {return false;}
 
     const bufferSize = this.buffer.reduce((sum, buf) => sum + buf.length, 0);
     const threshold = this.options.highWaterMark * this.options.backpressureThreshold;
@@ -274,7 +274,7 @@ export class StreamProcessor extends EventEmitter {
    * Handle backpressure
    */
   private async handleBackpressure(): Promise<void> {
-    if (this.backpressureActive) return;
+    if (this.backpressureActive) {return;}
 
     this.backpressureActive = true;
     this.emit('backpressure:active');

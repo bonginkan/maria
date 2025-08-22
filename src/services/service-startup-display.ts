@@ -37,7 +37,7 @@ export class ServiceStartupDisplay {
   }
 
   startDisplay(): void {
-    if (this.displayStarted) return;
+    if (this.displayStarted) {return;}
     this.displayStarted = true;
 
     console.log('');
@@ -124,7 +124,7 @@ export class ServiceStartupDisplay {
 
     const bar = chalk.green('█'.repeat(filled)) + chalk.gray('░'.repeat(empty));
 
-    return `[${bar}] ${chalk.cyan(progress.toString().padStart(3) + '%')}`;
+    return `[${bar}] ${chalk.cyan(`${progress.toString().padStart(3)  }%`)}`;
   }
 
   complete(primaryProvider?: string): void {

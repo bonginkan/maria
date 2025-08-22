@@ -10,26 +10,26 @@ import { InternalModeService } from './InternalModeService';
 import { DualMemoryEngine } from '../memory-system/dual-memory-engine';
 import { MemoryCoordinator } from '../memory-system/memory-coordinator';
 import type {
-  ModeDefinition,
+  ModeConfig,
   ModeContext,
+  ModeDefinition,
+  ModeHistoryEntry,
   ModeRecognitionResult,
   ModeTransition,
-  ModeConfig,
-  ModeHistoryEntry,
 } from './types';
 import type {
-  MemoryAwareCognitiveMode,
+  AdaptationRecord,
   CognitivePattern,
-  PatternRecognitionResult,
+  MemoryAwareCognitiveMode,
   MemoryInsight,
   ModeMemoryState,
-  AdaptationRecord,
+  PatternRecognitionResult,
 } from '../memory-system/types/cognitive-patterns';
 import type {
   MemoryEvent,
-  UserPreferenceSet,
-  ReasoningTrace,
   QualityMetrics,
+  ReasoningTrace,
+  UserPreferenceSet,
 } from '../memory-system/types/memory-interfaces';
 
 export interface MemoryAwareModeConfig extends ModeConfig {
@@ -689,9 +689,9 @@ export class MemoryAwareModeService extends EventEmitter {
 
   private mapModeToCategory(mode: ModeDefinition): any {
     // Map mode to cognitive category based on its characteristics
-    if (mode.name.includes('Debug')) return 'validation';
-    if (mode.name.includes('Think')) return 'reasoning';
-    if (mode.name.includes('Creative')) return 'creative';
+    if (mode.name.includes('Debug')) {return 'validation';}
+    if (mode.name.includes('Think')) {return 'reasoning';}
+    if (mode.name.includes('Creative')) {return 'creative';}
     return 'reasoning'; // Default
   }
 
@@ -845,7 +845,7 @@ export class MemoryAwareModeService extends EventEmitter {
 
   async getMemoryInsightsForMode(modeId: string): Promise<MemoryInsight[]> {
     const mode = this.memoryAwareModes.get(modeId);
-    if (!mode) return [];
+    if (!mode) {return [];}
 
     return this.getMemoryInsights(`mode:${modeId}`, { modeId });
   }

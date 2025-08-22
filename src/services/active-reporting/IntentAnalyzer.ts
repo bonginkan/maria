@@ -180,9 +180,9 @@ export class IntentAnalyzer {
     }
 
     // Check request length (longer requests tend to be more complex)
-    if (request.length > 500) complexityScore += 3;
-    else if (request.length > 200) complexityScore += 2;
-    else if (request.length > 100) complexityScore += 1;
+    if (request.length > 500) {complexityScore += 3;}
+    else if (request.length > 200) {complexityScore += 2;}
+    else if (request.length > 100) {complexityScore += 1;}
 
     // Check for multiple requirements (and, also, with, including)
     const multipleRequirements = (
@@ -191,9 +191,9 @@ export class IntentAnalyzer {
     complexityScore += multipleRequirements * 2;
 
     // Determine complexity level
-    if (complexityScore >= 15) return 'very_complex';
-    if (complexityScore >= 10) return 'complex';
-    if (complexityScore >= 5) return 'moderate';
+    if (complexityScore >= 15) {return 'very_complex';}
+    if (complexityScore >= 10) {return 'complex';}
+    if (complexityScore >= 5) {return 'moderate';}
     return 'simple';
   }
 

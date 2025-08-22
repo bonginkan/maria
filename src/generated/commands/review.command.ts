@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { _Command, RequireAuth, RateLimit, Validate, _Cache } from '../decorators';
-import { _CommandContext, CommandOptions, _CommandResult } from '../types';
+import { _Cache, _Command, RateLimit, RequireAuth, Validate } from '../decorators';
+import { _CommandContext, _CommandResult, CommandOptions } from '../types';
 import { z } from 'zod';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger';
@@ -442,7 +442,7 @@ Format issues as JSON array with: { line, severity, message, _suggestion }`;
       const grouped = this.groupIssuesBySeverity(review.issues);
 
       for (const [severity, issues] of Object.entries(grouped)) {
-        if (issues.length === 0) continue;
+        if (issues.length === 0) {continue;}
 
         const severityIcon = this.getSeverityIcon(severity);
         const severityColor = this.getSeverityColor(severity);
@@ -483,7 +483,7 @@ Format issues as JSON array with: { line, severity, message, _suggestion }`;
     if (options.score) {
       const scoreColor =
         overallScore >= 80 ? chalk.green : overallScore >= 60 ? chalk.yellow : chalk.red;
-      console.log(chalk.bold(`\n  Overall Score: ${scoreColor(overallScore + '/100')}`));
+      console.log(chalk.bold(`\n  Overall Score: ${scoreColor(`${overallScore  }/100`)}`));
     }
   }
 
@@ -491,7 +491,7 @@ Format issues as JSON array with: { line, severity, message, _suggestion }`;
     return issues.reduce(
       (acc, issue) => {
         const severity = issue.severity || 'medium';
-        if (!acc[severity]) acc[severity] = [];
+        if (!acc[severity]) {acc[severity] = [];}
         acc[severity].push(issue);
         return acc;
       },
@@ -601,7 +601,7 @@ Format issues as JSON array with: { line, severity, message, _suggestion }`;
   }
 
   private calculateOverallScore(reviews: unknown[]): number {
-    if (reviews.length === 0) return 100;
+    if (reviews.length === 0) {return 100;}
 
     const totalScore = reviews.reduce((sum, review) => sum + review.score, 0);
     return Math.round(totalScore / reviews.length);

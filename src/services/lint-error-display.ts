@@ -189,8 +189,8 @@ export class LintErrorDisplayService {
     const { content, lineCount, type, language } = pastedContent;
 
     // Display header with metadata
-    console.log('\n' + chalk.cyan('📋 Pasted Content Analysis'));
-    console.log(chalk.gray('=' + '='.repeat(50)));
+    console.log(`\n${  chalk.cyan('📋 Pasted Content Analysis')}`);
+    console.log(chalk.gray(`=${  '='.repeat(50)}`));
     console.log(
       chalk.gray(`Type: ${type} | Lines: ${lineCount} | Language: ${language || 'auto-detected'}`),
     );
@@ -250,7 +250,7 @@ export class LintErrorDisplayService {
       if (line.match(/\d+:\d+/)) {
         formattedLine = formattedLine.replace(
           /(\d+):(\d+)/,
-          chalk.cyan('$1') + ':' + chalk.cyan('$2'),
+          `${chalk.cyan('$1')  }:${  chalk.cyan('$2')}`,
         );
       }
 

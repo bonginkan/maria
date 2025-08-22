@@ -238,7 +238,7 @@ export class AgentsCommand extends BaseCommand {
 
       message += chalk.gray(`Total: ${filteredAgents.length} agents\n\n`);
       message += chalk.gray('Status Name                 Type               Statistics\n');
-      message += chalk.gray('─'.repeat(70)) + '\n';
+      message += `${chalk.gray('─'.repeat(70))  }\n`;
       message += filteredAgents.map(formatAgent).join('\n');
 
       if (filteredAgents.length > 0) {

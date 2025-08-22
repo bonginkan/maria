@@ -6,15 +6,15 @@
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
 import {
+  Achievement,
+  Blocker,
+  CurrentWork,
+  ExecutionMetrics,
+  PlannedWork,
+  ProactiveReport,
+  ProgressReport,
   SOW,
   Task,
-  ProgressReport,
-  ProactiveReport,
-  ExecutionMetrics,
-  Blocker,
-  Achievement,
-  CurrentWork,
-  PlannedWork,
 } from '../types';
 
 export class ActiveReportingIntegration extends EventEmitter {
@@ -365,9 +365,9 @@ export class ActiveReportingIntegration extends EventEmitter {
 
     for (const checkpoint of checkpoints) {
       if (checkpoint <= milestone) {
-        visualization += chalk.green(`[${checkpoint}%]`) + '──';
+        visualization += `${chalk.green(`[${checkpoint}%]`)  }──`;
       } else {
-        visualization += chalk.gray(`[${checkpoint}%]`) + '──';
+        visualization += `${chalk.gray(`[${checkpoint}%]`)  }──`;
       }
     }
 

@@ -237,7 +237,7 @@ export class AutoModeController extends EventEmitter {
 
     try {
       for (const task of phase.tasks) {
-        if (!this.isRunning) break;
+        if (!this.isRunning) {break;}
 
         this.updateProgress({ currentTask: task.description });
 

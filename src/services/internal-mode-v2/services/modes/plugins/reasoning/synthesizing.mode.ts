@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -189,9 +189,9 @@ export class SynthesizingMode extends BaseMode {
     confidence += integrationMatches.length * 0.08;
 
     // Context indicators
-    if (context.metadata?.requiresSynthesis) confidence += 0.25;
-    if (context.metadata?.multipleSourcesAvailable) confidence += 0.2;
-    if (context.metadata?.complexIntegration) confidence += 0.15;
+    if (context.metadata?.requiresSynthesis) {confidence += 0.25;}
+    if (context.metadata?.multipleSourcesAvailable) {confidence += 0.2;}
+    if (context.metadata?.complexIntegration) {confidence += 0.15;}
 
     // Diversity indicators
     const diversityTerms = ['different', 'various', 'multiple', 'diverse', 'varied', 'disparate'];
@@ -378,8 +378,8 @@ export class SynthesizingMode extends BaseMode {
 
     const complexityCount = complexityIndicators.filter(Boolean).length;
 
-    if (complexityCount >= 3) return 'high';
-    if (complexityCount >= 2) return 'medium';
+    if (complexityCount >= 3) {return 'high';}
+    if (complexityCount >= 2) {return 'medium';}
     return 'low';
   }
 
@@ -390,17 +390,17 @@ export class SynthesizingMode extends BaseMode {
 
   private determineIntegrationScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 200) return 'comprehensive';
-    if (wordCount > 100) return 'moderate';
+    if (wordCount > 200) {return 'comprehensive';}
+    if (wordCount > 100) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.75;
 
-    if (results.coherence.score > 0.8) confidence += 0.1;
-    if (results.insights.length > 2) confidence += 0.08;
-    if (results.quality.overall > 0.8) confidence += 0.07;
+    if (results.coherence.score > 0.8) {confidence += 0.1;}
+    if (results.insights.length > 2) {confidence += 0.08;}
+    if (results.quality.overall > 0.8) {confidence += 0.07;}
 
     return Math.min(confidence, 1.0);
   }

@@ -508,7 +508,7 @@ export class CodeRAGService extends EventEmitter {
     chunk: CodeChunk,
     context?: { currentFile?: string; workflowId?: string; agentRole?: string },
   ): boolean {
-    if (!context) return false;
+    if (!context) {return false;}
 
     // Check if chunk is from the same file or related files
     if (context.currentFile) {

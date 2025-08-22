@@ -549,12 +549,12 @@ export default class BrainstormingMode extends BaseMode {
   private identifyIdeationTarget(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('app') || inputLower.includes('application')) return 'mobile_app';
-    if (inputLower.includes('website') || inputLower.includes('web')) return 'website';
-    if (inputLower.includes('product') || inputLower.includes('service')) return 'product_service';
-    if (inputLower.includes('business') || inputLower.includes('company')) return 'business';
-    if (inputLower.includes('process') || inputLower.includes('workflow')) return 'process';
-    if (inputLower.includes('feature') || inputLower.includes('functionality')) return 'feature';
+    if (inputLower.includes('app') || inputLower.includes('application')) {return 'mobile_app';}
+    if (inputLower.includes('website') || inputLower.includes('web')) {return 'website';}
+    if (inputLower.includes('product') || inputLower.includes('service')) {return 'product_service';}
+    if (inputLower.includes('business') || inputLower.includes('company')) {return 'business';}
+    if (inputLower.includes('process') || inputLower.includes('workflow')) {return 'process';}
+    if (inputLower.includes('feature') || inputLower.includes('functionality')) {return 'feature';}
 
     return 'general';
   }
@@ -640,10 +640,10 @@ export default class BrainstormingMode extends BaseMode {
   private identifyTargetAudience(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('user') || inputLower.includes('customer')) return 'users_customers';
-    if (inputLower.includes('student') || inputLower.includes('learner')) return 'students';
-    if (inputLower.includes('business') || inputLower.includes('company')) return 'businesses';
-    if (inputLower.includes('developer') || inputLower.includes('programmer')) return 'developers';
+    if (inputLower.includes('user') || inputLower.includes('customer')) {return 'users_customers';}
+    if (inputLower.includes('student') || inputLower.includes('learner')) {return 'students';}
+    if (inputLower.includes('business') || inputLower.includes('company')) {return 'businesses';}
+    if (inputLower.includes('developer') || inputLower.includes('programmer')) {return 'developers';}
 
     return 'general';
   }
@@ -673,8 +673,8 @@ export default class BrainstormingMode extends BaseMode {
   private determineScope(input: string): string {
     const wordCount = input.split(/\s+/).length;
 
-    if (wordCount < 10) return 'narrow';
-    if (wordCount < 25) return 'medium';
+    if (wordCount < 10) {return 'narrow';}
+    if (wordCount < 25) {return 'medium';}
     return 'broad';
   }
 
@@ -709,9 +709,9 @@ export default class BrainstormingMode extends BaseMode {
   }
 
   private categorizeIdea(idea: unknown, context: unknown): string {
-    if (idea.type === 'reverse') return 'disruptive';
-    if (idea.originality > 0.7) return 'highly_original';
-    if (idea.feasibility > 0.7) return 'practical';
+    if (idea.type === 'reverse') {return 'disruptive';}
+    if (idea.originality > 0.7) {return 'highly_original';}
+    if (idea.feasibility > 0.7) {return 'practical';}
     return 'balanced';
   }
 
@@ -720,21 +720,21 @@ export default class BrainstormingMode extends BaseMode {
   }
 
   private estimateImpact(idea: unknown, context: unknown): string {
-    if (idea.originality > 0.6 && idea.feasibility > 0.5) return 'high';
-    if (idea.originality > 0.4 || idea.feasibility > 0.6) return 'medium';
+    if (idea.originality > 0.6 && idea.feasibility > 0.5) {return 'high';}
+    if (idea.originality > 0.4 || idea.feasibility > 0.6) {return 'medium';}
     return 'low';
   }
 
   private estimateEffort(idea: unknown, context: unknown): string {
-    if (idea.feasibility > 0.7) return 'low';
-    if (idea.feasibility > 0.4) return 'medium';
+    if (idea.feasibility > 0.7) {return 'low';}
+    if (idea.feasibility > 0.4) {return 'medium';}
     return 'high';
   }
 
   private calculateSimilarity(idea1: unknown, idea2: unknown): number {
     // Simplified similarity calculation
-    if (idea1.title === idea2.title) return 1.0;
-    if (idea1.type === idea2.type && idea1.category === idea2.category) return 0.6;
+    if (idea1.title === idea2.title) {return 1.0;}
+    if (idea1.type === idea2.type && idea1.category === idea2.category) {return 0.6;}
     return 0.1;
   }
 
@@ -750,9 +750,9 @@ export default class BrainstormingMode extends BaseMode {
   private identifyPros(idea: unknown, context: unknown): string[] {
     const pros: string[] = [];
 
-    if (idea.originality > 0.6) pros.push('Highly original approach');
-    if (idea.feasibility > 0.6) pros.push('Feasible to implement');
-    if (idea.potential_impact === 'high') pros.push('High potential impact');
+    if (idea.originality > 0.6) {pros.push('Highly original approach');}
+    if (idea.feasibility > 0.6) {pros.push('Feasible to implement');}
+    if (idea.potential_impact === 'high') {pros.push('High potential impact');}
 
     return pros;
   }
@@ -760,9 +760,9 @@ export default class BrainstormingMode extends BaseMode {
   private identifycons(idea: unknown, context: unknown): string[] {
     const cons: string[] = [];
 
-    if (idea.originality < 0.4) cons.push('Limited originality');
-    if (idea.feasibility < 0.4) cons.push('Implementation challenges');
-    if (idea.implementation_effort === 'high') cons.push('High implementation effort');
+    if (idea.originality < 0.4) {cons.push('Limited originality');}
+    if (idea.feasibility < 0.4) {cons.push('Implementation challenges');}
+    if (idea.implementation_effort === 'high') {cons.push('High implementation effort');}
 
     return cons;
   }
@@ -778,7 +778,7 @@ export default class BrainstormingMode extends BaseMode {
   }
 
   private calculateCreativityScore(ideas: unknown[]): number {
-    if (ideas.length === 0) return 0;
+    if (ideas.length === 0) {return 0;}
 
     const avgOriginality = ideas.reduce((sum, idea) => sum + idea.originality, 0) / ideas.length;
     const diversityBonus = Math.min(ideas.length / 10, 0.3);

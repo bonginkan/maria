@@ -4,7 +4,7 @@
  * Comprehensive tests for Knowledge Graph and Event-Driven Architecture
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { KnowledgeGraphEngine } from '../knowledge-graph-engine';
 import { EventDrivenMemorySystem } from '../event-driven-memory';
 import { GraphVisualizer } from '../graph-visualizer';

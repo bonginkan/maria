@@ -124,18 +124,18 @@ export class VisualModeDisplayEngine {
     if (this.visualizationLevel === 'detailed') {
       // Detailed progress with border
       console.log();
-      console.log(chalk.gray('┌' + '─'.repeat(width - 2) + '┐'));
+      console.log(chalk.gray(`┌${  '─'.repeat(width - 2)  }┐`));
       console.log(
-        chalk.gray('│') +
-          ` ${chalk.yellow('Progress:')} ${progress} ${chalk.green(`${percent.toFixed(1)}%`)}${' '.repeat(width - progressWidth - 20)}` +
-          chalk.gray('│'),
+        `${chalk.gray('│') 
+          } ${chalk.yellow('Progress:')} ${progress} ${chalk.green(`${percent.toFixed(1)}%`)}${' '.repeat(width - progressWidth - 20)}${ 
+          chalk.gray('│')}`,
       );
       console.log(
-        chalk.gray('│') +
-          ` ${chalk.cyan('Current:')} ${message}${' '.repeat(Math.max(0, width - message.length - 12))}` +
-          chalk.gray('│'),
+        `${chalk.gray('│') 
+          } ${chalk.cyan('Current:')} ${message}${' '.repeat(Math.max(0, width - message.length - 12))}${ 
+          chalk.gray('│')}`,
       );
-      console.log(chalk.gray('└' + '─'.repeat(width - 2) + '┘'));
+      console.log(chalk.gray(`└${  '─'.repeat(width - 2)  }┘`));
     } else {
       // Simple progress line
       process.stdout.write(
@@ -218,7 +218,7 @@ export class VisualModeDisplayEngine {
    * Show mode execution result
    */
   async showModeResult(mode: CodingMode, result: any): Promise<void> {
-    if (this.visualizationLevel === 'minimal') return;
+    if (this.visualizationLevel === 'minimal') {return;}
 
     console.log(chalk.green(`  ✅ ${mode.name} completed`));
 
@@ -318,9 +318,9 @@ export class VisualModeDisplayEngine {
     const width = 88;
 
     console.log();
-    console.log(chalk.yellow('╔' + '═'.repeat(width - 2) + '╗'));
+    console.log(chalk.yellow(`╔${  '═'.repeat(width - 2)  }╗`));
     console.log(chalk.yellow(`║${this.center('⚠️ USER INTERVENTION REQUIRED', width - 2)}║`));
-    console.log(chalk.yellow('╠' + '═'.repeat(width - 2) + '╣'));
+    console.log(chalk.yellow(`╠${  '═'.repeat(width - 2)  }╣`));
     console.log(
       chalk.yellow(
         `║  ${chalk.white('Autonomous recovery failed. Please choose an action:')}${' '.repeat(width - 58)}║`,
@@ -330,7 +330,7 @@ export class VisualModeDisplayEngine {
     console.log(chalk.yellow(`║    [S] Skip this task${' '.repeat(width - 27)}║`));
     console.log(chalk.yellow(`║    [M] Manual intervention${' '.repeat(width - 32)}║`));
     console.log(chalk.yellow(`║    [A] Abort execution${' '.repeat(width - 28)}║`));
-    console.log(chalk.yellow('╚' + '═'.repeat(width - 2) + '╝'));
+    console.log(chalk.yellow(`╚${  '═'.repeat(width - 2)  }╝`));
   }
 
   /**
@@ -373,12 +373,12 @@ export class VisualModeDisplayEngine {
       if (currentLine.length + word.length + 1 <= width) {
         currentLine += (currentLine ? ' ' : '') + word;
       } else {
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {lines.push(currentLine);}
         currentLine = word;
       }
     }
 
-    if (currentLine) lines.push(currentLine);
+    if (currentLine) {lines.push(currentLine);}
     return lines;
   }
 
@@ -404,7 +404,7 @@ export class VisualModeDisplayEngine {
    * Start spinner animation
    */
   private startSpinner(): void {
-    if (this.animationInterval) return;
+    if (this.animationInterval) {return;}
 
     this.animationInterval = setInterval(() => {
       process.stdout.write(`\r  ${chalk.cyan(this.spinnerFrames[this.currentFrame])} Working...`);
@@ -419,7 +419,7 @@ export class VisualModeDisplayEngine {
     if (this.animationInterval) {
       clearInterval(this.animationInterval);
       this.animationInterval = null;
-      process.stdout.write('\r' + ' '.repeat(20) + '\r');
+      process.stdout.write(`\r${  ' '.repeat(20)  }\r`);
     }
   }
 

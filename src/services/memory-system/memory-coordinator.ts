@@ -9,12 +9,12 @@ import { System1MemoryManager } from './system1-memory';
 import { System2MemoryManager } from './system2-memory';
 import { DualMemoryEngine } from './dual-memory-engine';
 import type {
-  MemoryEvent,
   CoordinatorConfig,
-  KnowledgeNode,
-  QualityMetrics,
-  PerformanceMetrics,
   EventMetadata,
+  KnowledgeNode,
+  MemoryEvent,
+  PerformanceMetrics,
+  QualityMetrics,
 } from './types/memory-interfaces';
 
 export interface SystemConflict {
@@ -767,10 +767,10 @@ export class MemoryCoordinator {
   getMetrics(): CoordinationMetrics {
     // Update system health
     const avgLatency = this.metrics.averageSyncTime;
-    if (avgLatency < 50) this.metrics.systemHealth = 'excellent';
-    else if (avgLatency < 100) this.metrics.systemHealth = 'good';
-    else if (avgLatency < 200) this.metrics.systemHealth = 'fair';
-    else this.metrics.systemHealth = 'poor';
+    if (avgLatency < 50) {this.metrics.systemHealth = 'excellent';}
+    else if (avgLatency < 100) {this.metrics.systemHealth = 'good';}
+    else if (avgLatency < 200) {this.metrics.systemHealth = 'fair';}
+    else {this.metrics.systemHealth = 'poor';}
 
     return { ...this.metrics };
   }

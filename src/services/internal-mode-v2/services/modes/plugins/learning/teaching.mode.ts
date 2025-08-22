@@ -507,11 +507,11 @@ export default class TeachingMode extends BaseMode {
   private determineLearnerLevel(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('beginner') || inputLower.includes('new to')) return 'beginner';
+    if (inputLower.includes('beginner') || inputLower.includes('new to')) {return 'beginner';}
     if (inputLower.includes('intermediate') || inputLower.includes('some experience'))
-      return 'intermediate';
-    if (inputLower.includes('advanced') || inputLower.includes('experienced')) return 'advanced';
-    if (inputLower.includes('expert') || inputLower.includes('professional')) return 'expert';
+      {return 'intermediate';}
+    if (inputLower.includes('advanced') || inputLower.includes('experienced')) {return 'advanced';}
+    if (inputLower.includes('expert') || inputLower.includes('professional')) {return 'expert';}
 
     return 'intermediate'; // Default assumption
   }
@@ -519,9 +519,9 @@ export default class TeachingMode extends BaseMode {
   private assessLearnerBackground(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('technical') || inputLower.includes('programming')) return 'technical';
-    if (inputLower.includes('business') || inputLower.includes('management')) return 'business';
-    if (inputLower.includes('academic') || inputLower.includes('research')) return 'academic';
+    if (inputLower.includes('technical') || inputLower.includes('programming')) {return 'technical';}
+    if (inputLower.includes('business') || inputLower.includes('management')) {return 'business';}
+    if (inputLower.includes('academic') || inputLower.includes('research')) {return 'academic';}
 
     return 'general';
   }
@@ -529,9 +529,9 @@ export default class TeachingMode extends BaseMode {
   private identifyLearningStyle(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('visual') || inputLower.includes('diagram')) return 'visual';
-    if (inputLower.includes('hands-on') || inputLower.includes('practice')) return 'kinesthetic';
-    if (inputLower.includes('step by step') || inputLower.includes('detailed')) return 'sequential';
+    if (inputLower.includes('visual') || inputLower.includes('diagram')) {return 'visual';}
+    if (inputLower.includes('hands-on') || inputLower.includes('practice')) {return 'kinesthetic';}
+    if (inputLower.includes('step by step') || inputLower.includes('detailed')) {return 'sequential';}
 
     return 'multimodal';
   }
@@ -539,8 +539,8 @@ export default class TeachingMode extends BaseMode {
   private assessLearnerMotivation(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('urgent') || inputLower.includes('quickly')) return 'high';
-    if (inputLower.includes('interested') || inputLower.includes('curious')) return 'medium';
+    if (inputLower.includes('urgent') || inputLower.includes('quickly')) {return 'high';}
+    if (inputLower.includes('interested') || inputLower.includes('curious')) {return 'medium';}
 
     return 'medium';
   }
@@ -550,9 +550,9 @@ export default class TeachingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('time') || inputLower.includes('quick'))
-      constraints.push('time_constraint');
+      {constraints.push('time_constraint');}
     if (inputLower.includes('simple') || inputLower.includes('basic'))
-      constraints.push('complexity_constraint');
+      {constraints.push('complexity_constraint');}
 
     return constraints;
   }
@@ -569,9 +569,9 @@ export default class TeachingMode extends BaseMode {
   private assessPriorKnowledge(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('no experience') || inputLower.includes('never')) return 'none';
-    if (inputLower.includes('some') || inputLower.includes('little')) return 'limited';
-    if (inputLower.includes('familiar') || inputLower.includes('know')) return 'moderate';
+    if (inputLower.includes('no experience') || inputLower.includes('never')) {return 'none';}
+    if (inputLower.includes('some') || inputLower.includes('little')) {return 'limited';}
+    if (inputLower.includes('familiar') || inputLower.includes('know')) {return 'moderate';}
 
     return 'unknown';
   }
@@ -609,16 +609,16 @@ export default class TeachingMode extends BaseMode {
       inputLower.includes(indicator),
     ).length;
 
-    if (complexCount > simpleCount) return 'high';
-    if (simpleCount > complexCount) return 'low';
+    if (complexCount > simpleCount) {return 'high';}
+    if (simpleCount > complexCount) {return 'low';}
     return 'medium';
   }
 
   private defineTopicScope(input: string): string {
     const wordCount = input.split(/\s+/).length;
 
-    if (wordCount > 50) return 'comprehensive';
-    if (wordCount > 25) return 'moderate';
+    if (wordCount > 50) {return 'comprehensive';}
+    if (wordCount > 25) {return 'moderate';}
     return 'focused';
   }
 
@@ -626,9 +626,9 @@ export default class TeachingMode extends BaseMode {
     const prerequisites: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('programming')) prerequisites.push('Basic programming concepts');
-    if (inputLower.includes('math')) prerequisites.push('Basic mathematics');
-    if (inputLower.includes('technical')) prerequisites.push('Technical literacy');
+    if (inputLower.includes('programming')) {prerequisites.push('Basic programming concepts');}
+    if (inputLower.includes('math')) {prerequisites.push('Basic mathematics');}
+    if (inputLower.includes('technical')) {prerequisites.push('Technical literacy');}
 
     return prerequisites.length > 0 ? prerequisites : ['General knowledge'];
   }

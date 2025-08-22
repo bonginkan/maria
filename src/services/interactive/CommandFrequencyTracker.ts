@@ -53,7 +53,7 @@ export class CommandFrequencyTracker extends EventEmitter {
    * 初期化
    */
   public async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     try {
       await this.loadUsageData();
@@ -74,7 +74,7 @@ export class CommandFrequencyTracker extends EventEmitter {
     context: string = 'general',
     success: boolean = true,
   ): void {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized) {return;}
 
     const now = new Date();
 

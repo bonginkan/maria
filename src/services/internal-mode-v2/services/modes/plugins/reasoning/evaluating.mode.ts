@@ -507,14 +507,14 @@ export default class EvaluatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('option') || inputLower.includes('alternative'))
-      return 'option_evaluation';
+      {return 'option_evaluation';}
     if (inputLower.includes('quality') || inputLower.includes('performance'))
-      return 'quality_assessment';
+      {return 'quality_assessment';}
     if (inputLower.includes('cost') || inputLower.includes('benefit'))
-      return 'cost_benefit_analysis';
-    if (inputLower.includes('risk') || inputLower.includes('safety')) return 'risk_assessment';
+      {return 'cost_benefit_analysis';}
+    if (inputLower.includes('risk') || inputLower.includes('safety')) {return 'risk_assessment';}
     if (inputLower.includes('requirement') || inputLower.includes('criteria'))
-      return 'compliance_evaluation';
+      {return 'compliance_evaluation';}
 
     return 'general_evaluation';
   }
@@ -522,10 +522,10 @@ export default class EvaluatingMode extends BaseMode {
   private identifyEvaluationDomain(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('technical') || inputLower.includes('technology')) return 'technical';
-    if (inputLower.includes('business') || inputLower.includes('financial')) return 'business';
-    if (inputLower.includes('user') || inputLower.includes('experience')) return 'user_experience';
-    if (inputLower.includes('process') || inputLower.includes('operational')) return 'operational';
+    if (inputLower.includes('technical') || inputLower.includes('technology')) {return 'technical';}
+    if (inputLower.includes('business') || inputLower.includes('financial')) {return 'business';}
+    if (inputLower.includes('user') || inputLower.includes('experience')) {return 'user_experience';}
+    if (inputLower.includes('process') || inputLower.includes('operational')) {return 'operational';}
 
     return 'general';
   }
@@ -534,10 +534,10 @@ export default class EvaluatingMode extends BaseMode {
     const objectives: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('best')) objectives.push('Identify optimal solution');
-    if (inputLower.includes('compare')) objectives.push('Compare alternatives');
-    if (inputLower.includes('quality')) objectives.push('Assess quality levels');
-    if (inputLower.includes('recommend')) objectives.push('Provide recommendation');
+    if (inputLower.includes('best')) {objectives.push('Identify optimal solution');}
+    if (inputLower.includes('compare')) {objectives.push('Compare alternatives');}
+    if (inputLower.includes('quality')) {objectives.push('Assess quality levels');}
+    if (inputLower.includes('recommend')) {objectives.push('Provide recommendation');}
 
     return objectives.length > 0 ? objectives : ['Comprehensive evaluation'];
   }
@@ -546,10 +546,10 @@ export default class EvaluatingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('budget')) constraints.push('Budget limitations');
-    if (inputLower.includes('time')) constraints.push('Time constraints');
-    if (inputLower.includes('resource')) constraints.push('Resource limitations');
-    if (inputLower.includes('regulation')) constraints.push('Regulatory requirements');
+    if (inputLower.includes('budget')) {constraints.push('Budget limitations');}
+    if (inputLower.includes('time')) {constraints.push('Time constraints');}
+    if (inputLower.includes('resource')) {constraints.push('Resource limitations');}
+    if (inputLower.includes('regulation')) {constraints.push('Regulatory requirements');}
 
     return constraints;
   }
@@ -558,10 +558,10 @@ export default class EvaluatingMode extends BaseMode {
     const stakeholders: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('user')) stakeholders.push('users');
-    if (inputLower.includes('customer')) stakeholders.push('customers');
-    if (inputLower.includes('management')) stakeholders.push('management');
-    if (inputLower.includes('team')) stakeholders.push('team_members');
+    if (inputLower.includes('user')) {stakeholders.push('users');}
+    if (inputLower.includes('customer')) {stakeholders.push('customers');}
+    if (inputLower.includes('management')) {stakeholders.push('management');}
+    if (inputLower.includes('team')) {stakeholders.push('team_members');}
 
     return stakeholders.length > 0 ? stakeholders : ['decision_makers'];
   }
@@ -569,9 +569,9 @@ export default class EvaluatingMode extends BaseMode {
   private determineEvaluationTimeline(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('urgent') || inputLower.includes('immediate')) return 'immediate';
-    if (inputLower.includes('week')) return 'weekly';
-    if (inputLower.includes('month')) return 'monthly';
+    if (inputLower.includes('urgent') || inputLower.includes('immediate')) {return 'immediate';}
+    if (inputLower.includes('week')) {return 'weekly';}
+    if (inputLower.includes('month')) {return 'monthly';}
 
     return 'standard';
   }
@@ -580,8 +580,8 @@ export default class EvaluatingMode extends BaseMode {
     const wordCount = input.split(/\s+/).length;
     const conceptCount = this.countConcepts(input);
 
-    if (wordCount > 100 || conceptCount > 8) return 'high';
-    if (wordCount > 50 || conceptCount > 4) return 'medium';
+    if (wordCount > 100 || conceptCount > 8) {return 'high';}
+    if (wordCount > 50 || conceptCount > 4) {return 'medium';}
     return 'low';
   }
 
@@ -691,14 +691,14 @@ export default class EvaluatingMode extends BaseMode {
   private determineAnalysisDepth(alternatives: unknown[], criteria: unknown[]): string {
     const complexity = alternatives.length * criteria.length;
 
-    if (complexity > 20) return 'comprehensive';
-    if (complexity > 10) return 'detailed';
+    if (complexity > 20) {return 'comprehensive';}
+    if (complexity > 10) {return 'detailed';}
     return 'standard';
   }
 
   private selectAnalysisMethodology(alternatives: unknown[], criteria: unknown[]): string {
-    if (alternatives.length > 5 || criteria.length > 8) return 'multi_criteria_decision_analysis';
-    if (criteria.some((c) => c.type === 'quantitative')) return 'weighted_scoring';
+    if (alternatives.length > 5 || criteria.length > 8) {return 'multi_criteria_decision_analysis';}
+    if (criteria.some((c) => c.type === 'quantitative')) {return 'weighted_scoring';}
     return 'comparative_analysis';
   }
 
@@ -739,8 +739,8 @@ export default class EvaluatingMode extends BaseMode {
     const hasQuantitative = criteria.some((c) => c.type === 'quantitative');
     const hasWeights = criteria.every((c) => c.weight !== undefined);
 
-    if (hasQuantitative && hasWeights) return 'weighted_quantitative';
-    if (hasWeights) return 'weighted_qualitative';
+    if (hasQuantitative && hasWeights) {return 'weighted_quantitative';}
+    if (hasWeights) {return 'weighted_qualitative';}
     return 'simple_scoring';
   }
 
@@ -790,8 +790,8 @@ export default class EvaluatingMode extends BaseMode {
   }
 
   private determineRecommendationType(scoring: unknown): string {
-    if (scoring.confidence > 0.8) return 'strong_recommendation';
-    if (scoring.confidence > 0.6) return 'conditional_recommendation';
+    if (scoring.confidence > 0.8) {return 'strong_recommendation';}
+    if (scoring.confidence > 0.6) {return 'conditional_recommendation';}
     return 'exploratory_recommendation';
   }
 

@@ -488,11 +488,11 @@ export default class InnovatingMode extends BaseMode {
   private classifyInnovationType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('product')) return 'product_innovation';
-    if (inputLower.includes('process')) return 'process_innovation';
-    if (inputLower.includes('service')) return 'service_innovation';
-    if (inputLower.includes('business model')) return 'business_model_innovation';
-    if (inputLower.includes('technology')) return 'technology_innovation';
+    if (inputLower.includes('product')) {return 'product_innovation';}
+    if (inputLower.includes('process')) {return 'process_innovation';}
+    if (inputLower.includes('service')) {return 'service_innovation';}
+    if (inputLower.includes('business model')) {return 'business_model_innovation';}
+    if (inputLower.includes('technology')) {return 'technology_innovation';}
 
     return 'comprehensive_innovation';
   }
@@ -500,9 +500,9 @@ export default class InnovatingMode extends BaseMode {
   private defineInnovationScope(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('incremental')) return 'incremental';
-    if (inputLower.includes('radical') || inputLower.includes('breakthrough')) return 'radical';
-    if (inputLower.includes('disruptive')) return 'disruptive';
+    if (inputLower.includes('incremental')) {return 'incremental';}
+    if (inputLower.includes('radical') || inputLower.includes('breakthrough')) {return 'radical';}
+    if (inputLower.includes('disruptive')) {return 'disruptive';}
 
     return 'transformational';
   }
@@ -511,11 +511,11 @@ export default class InnovatingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('budget')) constraints.push('Budget limitations');
-    if (inputLower.includes('time')) constraints.push('Time constraints');
-    if (inputLower.includes('technology')) constraints.push('Technology constraints');
-    if (inputLower.includes('regulation')) constraints.push('Regulatory constraints');
-    if (inputLower.includes('resource')) constraints.push('Resource constraints');
+    if (inputLower.includes('budget')) {constraints.push('Budget limitations');}
+    if (inputLower.includes('time')) {constraints.push('Time constraints');}
+    if (inputLower.includes('technology')) {constraints.push('Technology constraints');}
+    if (inputLower.includes('regulation')) {constraints.push('Regulatory constraints');}
+    if (inputLower.includes('resource')) {constraints.push('Resource constraints');}
 
     return constraints;
   }
@@ -534,10 +534,10 @@ export default class InnovatingMode extends BaseMode {
     const stakeholders: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('user')) stakeholders.push('users');
-    if (inputLower.includes('customer')) stakeholders.push('customers');
-    if (inputLower.includes('partner')) stakeholders.push('partners');
-    if (inputLower.includes('investor')) stakeholders.push('investors');
+    if (inputLower.includes('user')) {stakeholders.push('users');}
+    if (inputLower.includes('customer')) {stakeholders.push('customers');}
+    if (inputLower.includes('partner')) {stakeholders.push('partners');}
+    if (inputLower.includes('investor')) {stakeholders.push('investors');}
 
     return stakeholders.length > 0
       ? stakeholders
@@ -548,9 +548,9 @@ export default class InnovatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('immediate') || inputLower.includes('urgent'))
-      return 'immediate (0-6 months)';
-    if (inputLower.includes('short term')) return 'short term (6-18 months)';
-    if (inputLower.includes('long term')) return 'long term (2-5 years)';
+      {return 'immediate (0-6 months)';}
+    if (inputLower.includes('short term')) {return 'short term (6-18 months)';}
+    if (inputLower.includes('long term')) {return 'long term (2-5 years)';}
 
     return 'medium term (1-2 years)';
   }
@@ -691,8 +691,8 @@ export default class InnovatingMode extends BaseMode {
       (idea: unknown) => idea.innovation_level === 'very_high',
     ).length;
 
-    if (highInnovationCount > 2) return 'very_high';
-    if (highInnovationCount > 1) return 'high';
+    if (highInnovationCount > 2) {return 'very_high';}
+    if (highInnovationCount > 1) {return 'high';}
     return 'moderate';
   }
 

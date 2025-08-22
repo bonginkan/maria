@@ -3,7 +3,7 @@
  * Verifies the implemented components work together
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 // Import only the successfully implemented components
 import { WorkspaceMemoryManager } from '../team/workspace-memory-manager';
@@ -417,7 +417,7 @@ describe('MARIA Memory System - Integration Tests', () => {
         const status = passed ? '✅' : '❌';
         console.log(`${status} ${operation}: ${duration}ms (target: <${target}ms)`);
         
-        if (!passed) allPassed = false;
+        if (!passed) {allPassed = false;}
       }
       
       expect(allPassed).toBe(true);

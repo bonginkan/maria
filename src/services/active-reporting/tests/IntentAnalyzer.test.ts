@@ -2,7 +2,7 @@
  * Intent Analyzer Tests
  * Test suite for natural language intent recognition
  */
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { IntentAnalyzer } from '../IntentAnalyzer';
 
 describe('IntentAnalyzer', () => {

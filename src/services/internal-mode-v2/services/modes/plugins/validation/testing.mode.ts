@@ -470,13 +470,13 @@ export default class TestingMode extends BaseMode {
   private identifyTestType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('unit')) return 'unit_testing';
-    if (inputLower.includes('integration')) return 'integration_testing';
-    if (inputLower.includes('system')) return 'system_testing';
-    if (inputLower.includes('acceptance')) return 'acceptance_testing';
-    if (inputLower.includes('performance')) return 'performance_testing';
-    if (inputLower.includes('security')) return 'security_testing';
-    if (inputLower.includes('usability')) return 'usability_testing';
+    if (inputLower.includes('unit')) {return 'unit_testing';}
+    if (inputLower.includes('integration')) {return 'integration_testing';}
+    if (inputLower.includes('system')) {return 'system_testing';}
+    if (inputLower.includes('acceptance')) {return 'acceptance_testing';}
+    if (inputLower.includes('performance')) {return 'performance_testing';}
+    if (inputLower.includes('security')) {return 'security_testing';}
+    if (inputLower.includes('usability')) {return 'usability_testing';}
 
     return 'comprehensive_testing';
   }
@@ -484,10 +484,10 @@ export default class TestingMode extends BaseMode {
   private defineTestScope(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('component')) return 'component_level';
-    if (inputLower.includes('module')) return 'module_level';
-    if (inputLower.includes('system')) return 'system_level';
-    if (inputLower.includes('end-to-end')) return 'end_to_end';
+    if (inputLower.includes('component')) {return 'component_level';}
+    if (inputLower.includes('module')) {return 'module_level';}
+    if (inputLower.includes('system')) {return 'system_level';}
+    if (inputLower.includes('end-to-end')) {return 'end_to_end';}
 
     return 'feature_level';
   }
@@ -496,10 +496,10 @@ export default class TestingMode extends BaseMode {
     const objectives: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('functionality')) objectives.push('Verify functionality');
-    if (inputLower.includes('performance')) objectives.push('Validate performance');
-    if (inputLower.includes('security')) objectives.push('Ensure security');
-    if (inputLower.includes('usability')) objectives.push('Confirm usability');
+    if (inputLower.includes('functionality')) {objectives.push('Verify functionality');}
+    if (inputLower.includes('performance')) {objectives.push('Validate performance');}
+    if (inputLower.includes('security')) {objectives.push('Ensure security');}
+    if (inputLower.includes('usability')) {objectives.push('Confirm usability');}
 
     return objectives.length > 0
       ? objectives
@@ -509,9 +509,9 @@ export default class TestingMode extends BaseMode {
   private selectTestApproach(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('automated')) return 'automated';
-    if (inputLower.includes('manual')) return 'manual';
-    if (inputLower.includes('exploratory')) return 'exploratory';
+    if (inputLower.includes('automated')) {return 'automated';}
+    if (inputLower.includes('manual')) {return 'manual';}
+    if (inputLower.includes('exploratory')) {return 'exploratory';}
 
     return 'hybrid';
   }
@@ -524,11 +524,11 @@ export default class TestingMode extends BaseMode {
     const types: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('functional')) types.push('Functional Testing');
-    if (inputLower.includes('performance')) types.push('Performance Testing');
-    if (inputLower.includes('security')) types.push('Security Testing');
-    if (inputLower.includes('usability')) types.push('Usability Testing');
-    if (inputLower.includes('compatibility')) types.push('Compatibility Testing');
+    if (inputLower.includes('functional')) {types.push('Functional Testing');}
+    if (inputLower.includes('performance')) {types.push('Performance Testing');}
+    if (inputLower.includes('security')) {types.push('Security Testing');}
+    if (inputLower.includes('usability')) {types.push('Usability Testing');}
+    if (inputLower.includes('compatibility')) {types.push('Compatibility Testing');}
 
     return types.length > 0 ? types : ['Functional Testing', 'Integration Testing'];
   }

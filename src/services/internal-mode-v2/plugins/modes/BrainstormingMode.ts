@@ -6,10 +6,10 @@
 import {
   BaseModePlugin,
   ModeContext,
-  ModeResult,
   ModeDisplayConfig,
-  ModeTrigger,
+  ModeResult,
   ModeTransition,
+  ModeTrigger,
 } from '../BaseModePlugin';
 import { Service } from '../../core';
 
@@ -501,20 +501,20 @@ export class BrainstormingMode extends BaseModePlugin {
     // Boost for creative words
     if (
       /unconventional|innovative|creative|unique|novel|original/.test(
-        (title + ' ' + description).toLowerCase(),
+        (`${title  } ${  description}`).toLowerCase(),
       )
     ) {
       novelty += 0.3;
     }
 
     // Boost for analogical thinking
-    if (/inspired|like|similar to|as if/.test((title + ' ' + description).toLowerCase())) {
+    if (/inspired|like|similar to|as if/.test((`${title  } ${  description}`).toLowerCase())) {
       novelty += 0.2;
     }
 
     // Boost for combination of keywords
     const keywordCount = keywords.filter((k) =>
-      (title + ' ' + description).toLowerCase().includes(k),
+      (`${title  } ${  description}`).toLowerCase().includes(k),
     ).length;
     novelty += Math.min(keywordCount * 0.1, 0.2);
 
@@ -579,7 +579,7 @@ export class BrainstormingMode extends BaseModePlugin {
    * Calculate overall novelty score
    */
   private calculateNoveltyScore(ideas: unknown[]): number {
-    if (ideas.length === 0) return 0;
+    if (ideas.length === 0) {return 0;}
 
     const avgNovelty = ideas.reduce((sum, idea) => sum + idea.novelty, 0) / ideas.length;
     const diversityBonus = new Set(ideas.map((i) => i.category)).size * 0.05;
@@ -609,7 +609,7 @@ export class BrainstormingMode extends BaseModePlugin {
     }
 
     // Penalty for very short input
-    if (input.length < 50) confidence -= 0.2;
+    if (input.length < 50) {confidence -= 0.2;}
 
     return Math.min(Math.max(confidence, 0.3), 0.95);
   }

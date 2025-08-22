@@ -154,7 +154,7 @@ export class AvatarDialogueService {
           break;
         }
       }
-      if (detectedMood.current !== 'neutral') break;
+      if (detectedMood.current !== 'neutral') {break;}
     }
 
     // Intent detection

@@ -6,21 +6,21 @@
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import {
-  IAgent,
+  AgentStatus as _AgentStatus,
+  AgentMessage,
+  AgentResult,
   AgentRole,
   AgentTask,
-  AgentResult,
-  AgentMessage,
-  AgentStatus as _AgentStatus,
-  OrchestratorConfig,
   ExecutionPlan,
+  IAgent,
+  OrchestratorConfig,
   TaskNode,
 } from './types';
 import {
-  EnhancedCommunicationBroker,
   DataSynthesisEngine,
   EnhancedAgentMessage,
   EnhancedAgentResult,
+  EnhancedCommunicationBroker,
   SynthesizedOutput,
 } from './enhanced-communication';
 import { mcpService as _mcpService } from '../services/mcp-integration';
@@ -451,7 +451,7 @@ export class CentralOrchestrator extends EventEmitter {
     const visiting = new Set<string>();
 
     const visit = (taskId: string) => {
-      if (visited.has(taskId)) return;
+      if (visited.has(taskId)) {return;}
       if (visiting.has(taskId)) {
         throw new Error('Circular dependency detected');
       }

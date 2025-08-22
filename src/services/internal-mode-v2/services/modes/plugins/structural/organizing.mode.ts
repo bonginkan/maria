@@ -239,12 +239,12 @@ export default class OrganizingMode extends BaseMode {
     };
 
     // Determine strategy based on content analysis
-    if (analysis.priority.detected) return 'priority';
+    if (analysis.priority.detected) {return 'priority';}
     if (analysis.contentType === 'timeline' || input.toLowerCase().includes('time'))
-      return 'chronological';
-    if (analysis.itemCount > 10) return 'categorical';
-    if (analysis.complexity === 'high') return 'hierarchical';
-    if (input.toLowerCase().includes('alphabet')) return 'alphabetical';
+      {return 'chronological';}
+    if (analysis.itemCount > 10) {return 'categorical';}
+    if (analysis.complexity === 'high') {return 'hierarchical';}
+    if (input.toLowerCase().includes('alphabet')) {return 'alphabetical';}
 
     return 'categorical'; // Default strategy
   }
@@ -401,10 +401,10 @@ export default class OrganizingMode extends BaseMode {
   private identifyContentType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('timeline') || inputLower.includes('schedule')) return 'timeline';
-    if (inputLower.includes('list') || inputLower.includes('items')) return 'list';
-    if (inputLower.includes('project') || inputLower.includes('task')) return 'project';
-    if (inputLower.includes('data') || inputLower.includes('information')) return 'data';
+    if (inputLower.includes('timeline') || inputLower.includes('schedule')) {return 'timeline';}
+    if (inputLower.includes('list') || inputLower.includes('items')) {return 'list';}
+    if (inputLower.includes('project') || inputLower.includes('task')) {return 'project';}
+    if (inputLower.includes('data') || inputLower.includes('information')) {return 'data';}
 
     return 'general';
   }
@@ -425,8 +425,8 @@ export default class OrganizingMode extends BaseMode {
     const wordCount = input.split(/\s+/).length;
     const lineCount = input.split('\n').length;
 
-    if (wordCount > 200 || lineCount > 10) return 'high';
-    if (wordCount > 100 || lineCount > 5) return 'medium';
+    if (wordCount > 200 || lineCount > 10) {return 'high';}
+    if (wordCount > 100 || lineCount > 5) {return 'medium';}
     return 'low';
   }
 
@@ -442,10 +442,10 @@ export default class OrganizingMode extends BaseMode {
   private identifyRelationships(input: string): string[] {
     const relationships: string[] = [];
 
-    if (input.includes('depends on')) relationships.push('dependency');
-    if (input.includes('related to')) relationships.push('association');
-    if (input.includes('part of')) relationships.push('composition');
-    if (input.includes('similar to')) relationships.push('similarity');
+    if (input.includes('depends on')) {relationships.push('dependency');}
+    if (input.includes('related to')) {relationships.push('association');}
+    if (input.includes('part of')) {relationships.push('composition');}
+    if (input.includes('similar to')) {relationships.push('similarity');}
 
     return relationships;
   }
@@ -465,8 +465,8 @@ export default class OrganizingMode extends BaseMode {
     const complexity = this.assessContentComplexity(input);
 
     if (strategy === 'hierarchical') {
-      if (complexity === 'high') return 4;
-      if (complexity === 'medium') return 3;
+      if (complexity === 'high') {return 4;}
+      if (complexity === 'medium') {return 3;}
       return 2;
     }
 
@@ -583,8 +583,8 @@ export default class OrganizingMode extends BaseMode {
   private assessStructuralComplexity(input: string): string {
     const itemCount = this.countDistinctItems(input);
 
-    if (itemCount > 15) return 'high';
-    if (itemCount > 8) return 'medium';
+    if (itemCount > 15) {return 'high';}
+    if (itemCount > 8) {return 'medium';}
     return 'low';
   }
 

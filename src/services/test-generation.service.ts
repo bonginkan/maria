@@ -624,21 +624,21 @@ BEGIN TEST GENERATION:
     for (const line of lines) {
       if (line.includes('passed') || line.includes('✓')) {
         const match = line.match(/(\d+)\s*(passed|✓)/);
-        if (match) results.passed = parseInt(match[1]);
+        if (match) {results.passed = parseInt(match[1]);}
       }
       if (line.includes('failed') || line.includes('✗')) {
         const match = line.match(/(\d+)\s*(failed|✗)/);
-        if (match) results.failed = parseInt(match[1]);
+        if (match) {results.failed = parseInt(match[1]);}
       }
       if (line.includes('skipped') || line.includes('pending')) {
         const match = line.match(/(\d+)\s*(skipped|pending)/);
-        if (match) results.skipped = parseInt(match[1]);
+        if (match) {results.skipped = parseInt(match[1]);}
       }
       if (line.includes('Time:') || line.includes('Duration:')) {
         const match = line.match(/(\d+\.?\d*)\s*(s|ms)/);
         if (match) {
           results.duration = parseFloat(match[1]);
-          if (match[2] === 'ms') results.duration /= 1000;
+          if (match[2] === 'ms') {results.duration /= 1000;}
         }
       }
     }

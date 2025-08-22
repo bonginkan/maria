@@ -3,7 +3,7 @@
  * Handles command execution logging
  */
 
-import { IMiddleware, CommandArgs, CommandContext, CommandResult, ISlashCommand } from '../types';
+import { CommandArgs, CommandContext, CommandResult, IMiddleware, ISlashCommand } from '../types';
 import { logger } from '../../utils/logger';
 
 export class LoggingMiddleware implements IMiddleware {

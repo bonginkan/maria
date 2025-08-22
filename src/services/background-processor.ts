@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { UIStateManager, BackgroundTask } from './ui-state-manager.js';
+import { BackgroundTask, UIStateManager } from './ui-state-manager.js';
 import { logger } from '../utils/logger.js';
 import chalk from 'chalk';
 
@@ -158,7 +158,7 @@ export class BackgroundProcessor extends EventEmitter {
 
       // Clean up
       clearInterval(progressInterval);
-      if (timeoutId) clearTimeout(timeoutId);
+      if (timeoutId) {clearTimeout(timeoutId);}
 
       // Mark as completed
       this.updateTaskProgress(sessionId, task.id, 100);

@@ -2,7 +2,7 @@
  * Active Reporting System - Integration Tests
  * Tests the complete workflow from user request to task completion
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActiveReportingService } from '../ActiveReportingService';
 import { activeReportingCommand } from '../../../commands/active-reporting';
 

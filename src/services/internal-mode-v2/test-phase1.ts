@@ -5,15 +5,15 @@
 
 import 'reflect-metadata';
 import {
-  ServiceRegistry,
-  ServiceBus,
-  ServiceLoader,
   BaseService,
-  Service,
   EventHandler,
-  ServiceState,
-  ServiceEvent,
   IService,
+  Service,
+  ServiceBus,
+  ServiceEvent,
+  ServiceLoader,
+  ServiceRegistry,
+  ServiceState,
 } from './core';
 
 // Test Service 1 - Simple service

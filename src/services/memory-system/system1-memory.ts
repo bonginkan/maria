@@ -6,21 +6,21 @@
  */
 
 import type {
-  System1Memory,
-  KnowledgeNode,
-  ConceptGraph,
-  ConceptEdge,
-  InteractionHistory,
-  SessionRecord,
-  CommandHistory,
-  UsagePattern,
-  PatternLibrary,
-  CodePattern,
   AntiPattern,
-  UserPreferenceSet,
-  System1Config,
+  CodePattern,
+  CommandHistory,
+  ConceptEdge,
+  ConceptGraph,
+  InteractionHistory,
+  KnowledgeNode,
   MemoryEvent,
   NodeMetadata,
+  PatternLibrary,
+  SessionRecord,
+  System1Config,
+  System1Memory,
+  UsagePattern,
+  UserPreferenceSet,
 } from './types/memory-interfaces';
 
 export class System1MemoryManager implements System1Memory {
@@ -152,7 +152,7 @@ export class System1MemoryManager implements System1Memory {
 
   async updateKnowledgeNode(id: string, updates: Partial<KnowledgeNode>): Promise<boolean> {
     const node = this.knowledgeNodes.get(id);
-    if (!node) return false;
+    if (!node) {return false;}
 
     Object.assign(node, updates);
     node.lastAccessed = new Date();
@@ -199,7 +199,7 @@ export class System1MemoryManager implements System1Memory {
     while (queue.length > 0) {
       const { id, depth } = queue.shift()!;
 
-      if (visited.has(id) || depth >= maxDepth) continue;
+      if (visited.has(id) || depth >= maxDepth) {continue;}
       visited.add(id);
 
       // Find all edges from this node
@@ -431,7 +431,7 @@ export class System1MemoryManager implements System1Memory {
   }
 
   private calculateCosineSimilarity(a: number[], b: number[]): number {
-    if (a.length !== b.length) return 0;
+    if (a.length !== b.length) {return 0;}
 
     let dotProduct = 0;
     let normA = 0;
@@ -600,7 +600,7 @@ export class System1MemoryManager implements System1Memory {
 
     for (let i = 0; i < patterns.length; i++) {
       const currentPattern = patterns[i];
-      if (!currentPattern || processed.has(currentPattern.id)) continue;
+      if (!currentPattern || processed.has(currentPattern.id)) {continue;}
 
       const similar = patterns
         .slice(i + 1)

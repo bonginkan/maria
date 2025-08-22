@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'events';
 import { CodeEntity, ConceptEntity, EntityType } from './entity-extractor';
-import { KnowledgeGraph, GraphNode, Relationship, TraversalOptions } from './graph-builder';
+import { GraphNode, KnowledgeGraph, Relationship, TraversalOptions } from './graph-builder';
 
 export interface SearchQuery {
   text: string;
@@ -200,7 +200,7 @@ export class SemanticSearchEngine extends EventEmitter {
     options: Partial<SearchOptions> = {},
   ): Promise<SearchResult[]> {
     const node = this.graph.getNode(entityId);
-    if (!node) return [];
+    if (!node) {return [];}
 
     const opts = this.getDefaultOptions(options);
     const similar: SearchResult[] = [];
@@ -284,7 +284,7 @@ export class SemanticSearchEngine extends EventEmitter {
 
       for (const entityId of conceptEntityIds) {
         const node = this.graph.getNode(entityId);
-        if (!node) continue;
+        if (!node) {continue;}
 
         const relevance = this.calculateConceptRelevance(node, terms);
         if (relevance > opts.minRelevance) {
@@ -381,11 +381,11 @@ export class SemanticSearchEngine extends EventEmitter {
       const entityIds = this.termIndex.get(term.toLowerCase()) || new Set();
 
       for (const entityId of entityIds) {
-        if (processedEntityIds.has(entityId)) continue;
+        if (processedEntityIds.has(entityId)) {continue;}
         processedEntityIds.add(entityId);
 
         const node = this.graph.getNode(entityId);
-        if (!node) continue;
+        if (!node) {continue;}
 
         const result = this.createSearchResult(node, expansion);
         candidates.push(result);
@@ -436,12 +436,12 @@ export class SemanticSearchEngine extends EventEmitter {
 
   private async findVectorSimilar(entityId: string, maxResults: number): Promise<SearchResult[]> {
     const targetVector = this.vectorIndex.get(entityId);
-    if (!targetVector) return [];
+    if (!targetVector) {return [];}
 
     const similar: Array<{ entityId: string; similarity: number }> = [];
 
     for (const [otherEntityId, vectorIndex] of this.vectorIndex) {
-      if (otherEntityId === entityId) continue;
+      if (otherEntityId === entityId) {continue;}
 
       const similarity = this.calculateVectorSimilarity(targetVector.vector, vectorIndex.vector);
       if (similarity > 0.4) {
@@ -495,13 +495,13 @@ export class SemanticSearchEngine extends EventEmitter {
 
   private async findConceptSimilar(entityId: string): Promise<SearchResult[]> {
     const node = this.graph.getNode(entityId);
-    if (!node) return [];
+    if (!node) {return [];}
 
     const results: SearchResult[] = [];
     const nodeTags = new Set(node.metadata.tags);
 
     for (const [otherEntityId, otherNode] of this.graph.getAllNodes()) {
-      if (otherEntityId === entityId) continue;
+      if (otherEntityId === entityId) {continue;}
 
       const otherTags = new Set(otherNode.metadata.tags);
       const commonTags = [...nodeTags].filter((tag) => otherTags.has(tag));
@@ -630,7 +630,7 @@ export class SemanticSearchEngine extends EventEmitter {
     results: SearchResult[],
     filters: SearchFilter[],
   ): Promise<SearchResult[]> {
-    if (filters.length === 0) return results;
+    if (filters.length === 0) {return results;}
 
     return results.filter((result) => {
       return filters.every((filter) => this.applyFilter(result, filter));
@@ -804,13 +804,13 @@ export class SemanticSearchEngine extends EventEmitter {
   }
 
   private calculateVectorSimilarity(vector1: number[], vector2: number[]): number {
-    if (vector1.length !== vector2.length) return 0;
+    if (vector1.length !== vector2.length) {return 0;}
 
     const dotProduct = vector1.reduce((sum, val, i) => sum + val * vector2[i], 0);
     const magnitude1 = Math.sqrt(vector1.reduce((sum, val) => sum + val * val, 0));
     const magnitude2 = Math.sqrt(vector2.reduce((sum, val) => sum + val * val, 0));
 
-    if (magnitude1 === 0 || magnitude2 === 0) return 0;
+    if (magnitude1 === 0 || magnitude2 === 0) {return 0;}
 
     return dotProduct / (magnitude1 * magnitude2);
   }

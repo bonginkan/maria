@@ -145,7 +145,7 @@ class VoiceAvatarInterface {
 
     // Handle keyboard input for voice controls
     process.stdin.on('keypress', (_str, key) => {
-      if (!key) return;
+      if (!key) {return;}
 
       // Space key for push-to-talk
       if (key.name === 'space' && this.session.voiceMode.enabled) {
@@ -227,13 +227,13 @@ class VoiceAvatarInterface {
 
   private showVoiceControls(): void {
     const voiceStatus = this.session.voiceMode.enabled
-      ? chalk.green('●') + ' Voice ON'
-      : chalk.gray('○') + ' Voice OFF';
+      ? `${chalk.green('●')  } Voice ON`
+      : `${chalk.gray('○')  } Voice OFF`;
 
     const controls = ['[V] Toggle Voice', '[SPACE] Push-to-Talk', '[ESC] Exit'];
 
     console.log(chalk.white('┌─────────────────────────────────────────────────────────┐'));
-    console.log(chalk.white('│ ') + voiceStatus + '  ' + controls.join('  ') + chalk.white('  │'));
+    console.log(`${chalk.white('│ ') + voiceStatus  }  ${  controls.join('  ')  }${chalk.white('  │')}`);
     console.log(chalk.white('└─────────────────────────────────────────────────────────┘'));
   }
 
@@ -249,8 +249,8 @@ class VoiceAvatarInterface {
     const indicator = '█'.repeat(bars) + '░'.repeat(maxBars - bars);
 
     let color = chalk.green;
-    if (level > 0.8) color = chalk.red;
-    else if (level > 0.6) color = chalk.yellow;
+    if (level > 0.8) {color = chalk.red;}
+    else if (level > 0.6) {color = chalk.yellow;}
 
     process.stdout.write(`\r🎤 ${color(indicator)} ${Math.floor(level * 100)}%`);
   }
@@ -295,7 +295,7 @@ class VoiceAvatarInterface {
   }
 
   private async stopVoiceRecording(): Promise<void> {
-    if (!this.voiceInput || !this.speechRecognition) return;
+    if (!this.voiceInput || !this.speechRecognition) {return;}
 
     this.session.voiceMode.isRecording = false;
     this.session.voiceMode.isProcessing = true;
@@ -352,7 +352,7 @@ class VoiceAvatarInterface {
     if (this.session.lines.length > 0) {
       console.log();
       this.session.lines.forEach((line) => {
-        console.log(chalk.white('  ' + line));
+        console.log(chalk.white(`  ${  line}`));
       });
       console.log();
     }
@@ -362,7 +362,7 @@ class VoiceAvatarInterface {
     const boxWidth = 80;
     const border = '─'.repeat(boxWidth - 4);
 
-    console.log(chalk.white('┌─' + border + '─┐'));
+    console.log(chalk.white(`┌─${  border  }─┐`));
 
     // Word wrap for long messages
     const words = message.split(' ');
@@ -373,23 +373,23 @@ class VoiceAvatarInterface {
       if ((currentLine + word).length <= boxWidth - 6) {
         currentLine += (currentLine ? ' ' : '') + word;
       } else {
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {lines.push(currentLine);}
         currentLine = word;
       }
     });
-    if (currentLine) lines.push(currentLine);
+    if (currentLine) {lines.push(currentLine);}
 
     lines.forEach((line) => {
       const padding = ' '.repeat(Math.max(0, boxWidth - 6 - line.length));
       console.log(chalk.white('│ ') + chalk.white(line) + padding + chalk.white(' │'));
     });
 
-    console.log(chalk.white('└─' + border + '─┘'));
+    console.log(chalk.white(`└─${  border  }─┘`));
     console.log();
   }
 
   private startAnimations(): void {
-    if (!this.session.animator) return;
+    if (!this.session.animator) {return;}
 
     // Blinking animation
     this.blinkTimer = setInterval(
@@ -425,13 +425,13 @@ class VoiceAvatarInterface {
 
     console.log();
     lines.forEach((line) => {
-      console.log(chalk.white('  ' + line));
+      console.log(chalk.white(`  ${  line}`));
     });
     console.log();
   }
 
   private async simulateTalking(message: string): Promise<void> {
-    if (!this.session.animator) return;
+    if (!this.session.animator) {return;}
 
     const talkingSequence = this.session.animator.getTalkingSequence();
     let frameIndex = 0;
@@ -470,10 +470,10 @@ class VoiceAvatarInterface {
   }
 
   private promptUser(): void {
-    if (!this.session.isActive || !this.session.rl) return;
+    if (!this.session.isActive || !this.session.rl) {return;}
 
     this.session.rl.question(chalk.green('> '), async (input) => {
-      if (!this.session.isActive) return;
+      if (!this.session.isActive) {return;}
 
       const userInput = input.trim();
       if (!userInput) {

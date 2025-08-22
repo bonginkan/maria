@@ -4,7 +4,7 @@
  */
 
 import chalk from 'chalk';
-import { UNIFIED_COLORS, TEXT_HIERARCHY } from '../design-system/UnifiedColorPalette.js';
+import { TEXT_HIERARCHY, UNIFIED_COLORS } from '../design-system/UnifiedColorPalette.js';
 import { MINIMAL_ICONS } from '../design-system/MinimalIconRegistry.js';
 import { DESIGN_CONSTANTS } from '../optimized-design-system.js';
 import { LayoutManager } from '../design-system/LayoutManager.js';
@@ -334,8 +334,8 @@ export class StatusBarRenderer {
    * 使用率に応じた色を取得
    */
   private static getUsageColor(usage: number): (text: string) => string {
-    if (usage < 50) return UNIFIED_COLORS.SUCCESS;
-    if (usage < 75) return UNIFIED_COLORS.WARNING;
+    if (usage < 50) {return UNIFIED_COLORS.SUCCESS;}
+    if (usage < 75) {return UNIFIED_COLORS.WARNING;}
     return UNIFIED_COLORS.ERROR;
   }
 

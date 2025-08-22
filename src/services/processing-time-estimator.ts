@@ -109,12 +109,12 @@ export class ProcessingTimeEstimator {
    */
   updateETA(processId: string, currentProgress: number): ETADisplay | null {
     const process = this.currentProcesses.get(processId);
-    if (!process) return null;
+    if (!process) {return null;}
 
     const elapsed = Date.now() - process.startTime.getTime();
     const progressRatio = currentProgress / 100;
 
-    if (progressRatio <= 0) return null;
+    if (progressRatio <= 0) {return null;}
 
     // 現在の速度を計算
     const speed = progressRatio / (elapsed / 1000); // progress per second
@@ -165,7 +165,7 @@ export class ProcessingTimeEstimator {
    */
   completeProcessing(processId: string, success: boolean = true): ProcessingMetrics | null {
     const process = this.currentProcesses.get(processId);
-    if (!process) return null;
+    if (!process) {return null;}
 
     const actualDuration = Date.now() - process.startTime.getTime();
     process.actualDuration = actualDuration;
@@ -249,14 +249,14 @@ export class ProcessingTimeEstimator {
     parameters: string[],
   ): EstimationFactor | null {
     const history = this.historicalData.get(command);
-    if (!history || history.length < 3) return null;
+    if (!history || history.length < 3) {return null;}
 
     // 類似のパラメータを持つ過去の実行を検索
     const similarExecutions = history.filter(
       (metrics) => this.calculateParameterSimilarity(metrics.parameters, parameters) > 0.7,
     );
 
-    if (similarExecutions.length === 0) return null;
+    if (similarExecutions.length === 0) {return null;}
 
     const averageDuration =
       similarExecutions.reduce(
@@ -321,7 +321,7 @@ export class ProcessingTimeEstimator {
       (p) => p.includes('.') && (p.includes('/') || p.includes('\\')),
     );
 
-    if (fileParams.length === 0) return null;
+    if (fileParams.length === 0) {return null;}
 
     // 仮の計算（実際にはファイルサイズを取得）
     const estimatedSizeImpact = fileParams.length * 1000; // ファイル1個につき1秒
@@ -336,7 +336,7 @@ export class ProcessingTimeEstimator {
 
   private calculateNetworkFactor(command: string): EstimationFactor | null {
     const networkCommands = ['/model', '/image', '/video', '/review'];
-    if (!networkCommands.includes(command)) return null;
+    if (!networkCommands.includes(command)) {return null;}
 
     const networkSpeed = this.getNetworkSpeed(); // 'fast' | 'medium' | 'slow'
     const networkImpact =
@@ -367,10 +367,10 @@ export class ProcessingTimeEstimator {
   private categorizeTime(
     milliseconds: number,
   ): 'instant' | 'fast' | 'medium' | 'slow' | 'very-slow' {
-    if (milliseconds < 1000) return 'instant';
-    if (milliseconds < 5000) return 'fast';
-    if (milliseconds < 15000) return 'medium';
-    if (milliseconds < 60000) return 'slow';
+    if (milliseconds < 1000) {return 'instant';}
+    if (milliseconds < 5000) {return 'fast';}
+    if (milliseconds < 15000) {return 'medium';}
+    if (milliseconds < 60000) {return 'slow';}
     return 'very-slow';
   }
 
@@ -414,7 +414,7 @@ export class ProcessingTimeEstimator {
   }
 
   private updateEstimationAccuracy(metrics: ProcessingMetrics): void {
-    if (!metrics.actualDuration) return;
+    if (!metrics.actualDuration) {return;}
 
     const accuracy =
       1 - Math.abs(metrics.estimatedDuration - metrics.actualDuration) / metrics.actualDuration;

@@ -353,12 +353,12 @@ function generateSummary(metrics: ReviewMetrics): string {
 }
 
 function displayReviewResults(review: ReviewResult): void {
-  console.log('\n' + chalk.bold('📊 Review Summary'));
+  console.log(`\n${  chalk.bold('📊 Review Summary')}`);
   console.log(chalk.gray('─'.repeat(50)));
   console.log(review.summary);
 
   if (review.issues.length > 0) {
-    console.log('\n' + chalk.bold('🔍 Issues Found:'));
+    console.log(`\n${  chalk.bold('🔍 Issues Found:')}`);
 
     // Group issues by severity
     const critical = review.issues.filter((i) => i.severity === 'critical');
@@ -403,7 +403,7 @@ function displayReviewResults(review: ReviewResult): void {
   }
 
   if (review.suggestions.length > 0) {
-    console.log('\n' + chalk.bold('💡 Suggestions:'));
+    console.log(`\n${  chalk.bold('💡 Suggestions:')}`);
     review.suggestions.forEach((suggestion) => {
       console.log(chalk.cyan(`  • ${suggestion}`));
     });
@@ -422,7 +422,7 @@ function displayReviewResults(review: ReviewResult): void {
     scoreEmoji = '⚠️';
   }
 
-  console.log('\n' + chalk.bold('📈 Code Quality:'));
+  console.log(`\n${  chalk.bold('📈 Code Quality:')}`);
   console.log(scoreColor(`  ${scoreEmoji} Score: ${score}/100`));
 
   // Progress bar

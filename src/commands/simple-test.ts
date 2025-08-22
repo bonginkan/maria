@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 import React from 'react';
-import { render, Text, Box } from 'ink';
+import { Box, render, Text } from 'ink';
 
 interface TestComponentProps {}
 

@@ -297,7 +297,7 @@ export class UserPatternAnalyzerService extends BaseService {
   private async updateUserAnalytics(userId: string): Promise<void> {
     const userPatterns = this.userPatterns.get(userId) || [];
 
-    if (userPatterns.length === 0) return;
+    if (userPatterns.length === 0) {return;}
 
     const successfulPatterns = userPatterns.filter((p) => p.success);
     const commandFrequency = this.calculateCommandFrequency(userPatterns);
@@ -445,7 +445,7 @@ export class UserPatternAnalyzerService extends BaseService {
   }
 
   private calculateAccuracyImprovement(patterns: UserPattern[]): number {
-    if (patterns.length < 10) return 0;
+    if (patterns.length < 10) {return 0;}
 
     const sortedPatterns = patterns.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
     const firstHalf = sortedPatterns.slice(0, Math.floor(patterns.length / 2));

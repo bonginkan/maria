@@ -97,21 +97,21 @@ export function displayStartupLogo(): void {
   console.log(chalk.gray('Type anytime to interrupt current processing'));
   console.log('');
   console.log('You can:');
-  console.log(chalk.gray('• ') + 'Type naturally for AI assistance');
-  console.log(chalk.gray('• ') + 'Use slash commands for specific actions');
-  console.log(chalk.gray('• ') + 'Interrupt anytime with new instructions');
+  console.log(`${chalk.gray('• ')  }Type naturally for AI assistance`);
+  console.log(`${chalk.gray('• ')  }Use slash commands for specific actions`);
+  console.log(`${chalk.gray('• ')  }Interrupt anytime with new instructions`);
   console.log('');
   console.log(
-    chalk.gray('Examples: ') +
-      chalk.yellow('/code') +
-      ', ' +
-      chalk.yellow('/test') +
-      ', ' +
-      chalk.yellow('/review') +
-      ', ' +
-      chalk.yellow('/video') +
-      ', ' +
-      chalk.yellow('/image'),
+    `${chalk.gray('Examples: ') +
+      chalk.yellow('/code') 
+      }, ${ 
+      chalk.yellow('/test') 
+      }, ${ 
+      chalk.yellow('/review') 
+      }, ${ 
+      chalk.yellow('/video') 
+      }, ${ 
+      chalk.yellow('/image')}`,
   );
   console.log('');
 }

@@ -1063,9 +1063,9 @@ export class EnterpriseSecurityManager extends EventEmitter {
         return sum + levelValue;
       }, 0) / factors.length;
 
-    if (averageLevel >= 3.5) return 'critical';
-    if (averageLevel >= 2.5) return 'high';
-    if (averageLevel >= 1.5) return 'medium';
+    if (averageLevel >= 3.5) {return 'critical';}
+    if (averageLevel >= 2.5) {return 'high';}
+    if (averageLevel >= 1.5) {return 'medium';}
     return 'low';
   }
 

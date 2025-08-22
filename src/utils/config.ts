@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { parse } from 'toml';
 import { homedir } from 'os';
@@ -134,7 +134,7 @@ export function loadConfig(): MariaConfig {
       }
     }
     const parentDir = join(currentDir, '..');
-    if (parentDir === currentDir) break;
+    if (parentDir === currentDir) {break;}
     currentDir = parentDir;
   }
 

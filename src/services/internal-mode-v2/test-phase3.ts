@@ -5,14 +5,14 @@
 
 import 'reflect-metadata';
 import {
-  ServiceRegistry,
-  ServiceBus,
-  ModePluginRegistry,
-  ModeTransitionEngine,
-  ThinkingMode,
   AnalyzingMode,
   BrainstormingMode,
   ModeContext,
+  ModePluginRegistry,
+  ModeTransitionEngine,
+  ServiceBus,
+  ServiceRegistry,
+  ThinkingMode,
 } from './core';
 
 async function runPhase3Tests(): Promise<void> {
@@ -296,7 +296,7 @@ async function runPhase3Tests(): Promise<void> {
       sessionStats
         ? {
             totalTransitions: sessionStats.totalTransitions,
-            successRate: sessionStats.successRate.toFixed(1) + '%',
+            successRate: `${sessionStats.successRate.toFixed(1)  }%`,
             uniqueModes: sessionStats.uniqueModesUsed.length,
           }
         : 'No stats available',

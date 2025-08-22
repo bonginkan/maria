@@ -3,7 +3,7 @@
  * 推論されたコマンドを内部的に実行し、ユーザーに適切なフィードバックを提供
  */
 
-import { IntentClassifier, InferredCommand } from './intent-classifier';
+import { InferredCommand, IntentClassifier } from './intent-classifier';
 import { ContextManager } from './context-manager';
 import { SlashCommandHandler } from '../slash-command-handler';
 import { logger } from '../../utils/logger';

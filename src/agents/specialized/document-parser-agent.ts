@@ -136,7 +136,7 @@ export class DocumentParserAgent extends BaseAgent {
         }
         currentSection = { title: line.trim(), content: '' };
       } else {
-        currentSection.content += line + '\n';
+        currentSection.content += `${line  }\n`;
       }
     }
 

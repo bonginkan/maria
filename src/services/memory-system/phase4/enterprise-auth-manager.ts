@@ -1094,8 +1094,8 @@ export class EnterpriseAuthManager extends EventEmitter {
   }
 
   private matchesPattern(pattern: string, resource: string): boolean {
-    if (pattern === '*') return true;
-    if (pattern === resource) return true;
+    if (pattern === '*') {return true;}
+    if (pattern === resource) {return true;}
 
     // Simple glob pattern matching
     const regex = new RegExp(pattern.replace(/\*/g, '.*'));
@@ -1117,7 +1117,7 @@ export class EnterpriseAuthManager extends EventEmitter {
     );
 
     for (const policy of sortedPolicies) {
-      if (policy.enforcement === 'disabled') continue;
+      if (policy.enforcement === 'disabled') {continue;}
 
       const evaluation = await this.evaluatePolicy(policy, user, resource, action, context);
 
@@ -1249,7 +1249,7 @@ export class EnterpriseAuthManager extends EventEmitter {
     attributeName: string,
     expectedAttributes?: Record<string, any>,
   ): boolean {
-    if (!expectedAttributes) return true;
+    if (!expectedAttributes) {return true;}
 
     for (const [key, value] of Object.entries(expectedAttributes)) {
       const userValue = user.attributes[key];

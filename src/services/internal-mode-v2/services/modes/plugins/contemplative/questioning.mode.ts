@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -164,9 +164,9 @@ export class QuestioningMode extends BaseMode {
     const challengingMatches = challengingTerms.filter((term) => input.includes(term));
     confidence += challengingMatches.length * 0.1;
 
-    if (context.metadata?.requiresQuestioning) confidence += 0.25;
-    if (context.metadata?.criticalThinking) confidence += 0.2;
-    if (context.metadata?.assumptionChallenge) confidence += 0.15;
+    if (context.metadata?.requiresQuestioning) {confidence += 0.25;}
+    if (context.metadata?.criticalThinking) {confidence += 0.2;}
+    if (context.metadata?.assumptionChallenge) {confidence += 0.15;}
 
     const questionMarkCount = (input.match(/\?/g) || []).length;
     confidence += Math.min(questionMarkCount * 0.1, 0.2);
@@ -368,9 +368,9 @@ export class QuestioningMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.75;
 
-    if (results.questions.length > 5) confidence += 0.08;
-    if (results.depth.level > 3) confidence += 0.1;
-    if (results.assumptions.challenged.length > 2) confidence += 0.07;
+    if (results.questions.length > 5) {confidence += 0.08;}
+    if (results.depth.level > 3) {confidence += 0.1;}
+    if (results.assumptions.challenged.length > 2) {confidence += 0.07;}
 
     return Math.min(confidence, 1.0);
   }
@@ -428,9 +428,9 @@ export class QuestioningMode extends BaseMode {
   }
 
   private classifyQuestioningType(input: string): string {
-    if (input.includes('assumption')) return 'assumption_challenging';
-    if (input.includes('evidence')) return 'evidence_based';
-    if (input.includes('perspective')) return 'perspective_shifting';
+    if (input.includes('assumption')) {return 'assumption_challenging';}
+    if (input.includes('evidence')) {return 'evidence_based';}
+    if (input.includes('perspective')) {return 'perspective_shifting';}
     return 'general_inquiry';
   }
 

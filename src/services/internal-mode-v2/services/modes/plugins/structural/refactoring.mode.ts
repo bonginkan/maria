@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -177,9 +177,9 @@ export class RefactoringMode extends BaseMode {
     const structuralMatches = structuralTerms.filter((term) => input.includes(term));
     confidence += structuralMatches.length * 0.1;
 
-    if (context.metadata?.requiresRefactoring) confidence += 0.25;
-    if (context.metadata?.codeQualityIssues) confidence += 0.2;
-    if (context.metadata?.maintainabilityProblems) confidence += 0.15;
+    if (context.metadata?.requiresRefactoring) {confidence += 0.25;}
+    if (context.metadata?.codeQualityIssues) {confidence += 0.2;}
+    if (context.metadata?.maintainabilityProblems) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -382,17 +382,17 @@ export class RefactoringMode extends BaseMode {
 
   private determineRefactoringScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 200) return 'extensive';
-    if (wordCount > 100) return 'moderate';
+    if (wordCount > 200) {return 'extensive';}
+    if (wordCount > 100) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.77;
 
-    if (results.effectiveness > 0.8) confidence += 0.1;
-    if (results.quality.improvement_score > 0.15) confidence += 0.08;
-    if (results.risk.level === 'low') confidence += 0.05;
+    if (results.effectiveness > 0.8) {confidence += 0.1;}
+    if (results.quality.improvement_score > 0.15) {confidence += 0.08;}
+    if (results.risk.level === 'low') {confidence += 0.05;}
 
     return Math.min(confidence, 1.0);
   }

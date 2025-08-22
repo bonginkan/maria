@@ -6,7 +6,7 @@
 import chalk from 'chalk';
 import { InternalMode } from './ModeIndicator.js';
 import { OptimizedAnimations } from '../animations/OptimizedAnimations.js';
-import { UNIFIED_COLORS, TEXT_HIERARCHY } from '../design-system/UnifiedColorPalette.js';
+import { TEXT_HIERARCHY, UNIFIED_COLORS } from '../design-system/UnifiedColorPalette.js';
 import { OptimizedProgress } from '../components/OptimizedProgress.js';
 
 /**
@@ -147,7 +147,7 @@ export class ResponseRenderer {
    * タスク進捗を表示
    */
   private renderTaskProgress(): void {
-    if (!this.activeTask) return;
+    if (!this.activeTask) {return;}
 
     const { taskName, current, total, status, detail } = this.activeTask;
 
@@ -360,7 +360,7 @@ export class ResponseRenderer {
   addContent(content: string): void {
     this.messageHistory.push({
       mode: this.currentMode,
-      content: content,
+      content,
       timestamp: new Date(),
     });
   }

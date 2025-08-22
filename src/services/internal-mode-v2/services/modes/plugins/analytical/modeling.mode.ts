@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -159,9 +159,9 @@ export class ModelingMode extends BaseMode {
     const diagramMatches = diagramTerms.filter((term) => input.includes(term));
     confidence += diagramMatches.length * 0.12;
 
-    if (context.metadata?.requiresModeling) confidence += 0.25;
-    if (context.metadata?.systemRepresentation) confidence += 0.2;
-    if (context.metadata?.abstractionNeeded) confidence += 0.15;
+    if (context.metadata?.requiresModeling) {confidence += 0.25;}
+    if (context.metadata?.systemRepresentation) {confidence += 0.2;}
+    if (context.metadata?.abstractionNeeded) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -345,17 +345,17 @@ export class ModelingMode extends BaseMode {
 
   private determineModelingScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 200) return 'comprehensive';
-    if (wordCount > 100) return 'moderate';
+    if (wordCount > 200) {return 'comprehensive';}
+    if (wordCount > 100) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.78;
 
-    if (results.accuracy > 0.85) confidence += 0.1;
-    if (results.validation.score > 0.8) confidence += 0.08;
-    if (results.models.length > 2) confidence += 0.04;
+    if (results.accuracy > 0.85) {confidence += 0.1;}
+    if (results.validation.score > 0.8) {confidence += 0.08;}
+    if (results.models.length > 2) {confidence += 0.04;}
 
     return Math.min(confidence, 1.0);
   }
@@ -388,9 +388,9 @@ export class ModelingMode extends BaseMode {
 
   // Helper methods
   private identifyDomainType(input: string): string {
-    if (input.includes('business')) return 'business_domain';
-    if (input.includes('technical') || input.includes('system')) return 'technical_domain';
-    if (input.includes('data')) return 'data_domain';
+    if (input.includes('business')) {return 'business_domain';}
+    if (input.includes('technical') || input.includes('system')) {return 'technical_domain';}
+    if (input.includes('data')) {return 'data_domain';}
     return 'general_domain';
   }
 

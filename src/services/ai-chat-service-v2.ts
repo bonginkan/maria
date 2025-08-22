@@ -1,9 +1,9 @@
 import {
-  IAIProvider,
   Message as AIMessage,
   AIProviderRegistry,
-  registerAllProviders,
+  IAIProvider,
   initializeProvider,
+  registerAllProviders,
 } from '../providers/index.js';
 import { getAIProviderConfig, getProviderForModel } from '../providers/config.js';
 
@@ -32,7 +32,7 @@ export class AIChatServiceV2 {
   private initialized = false;
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     // Register all providers
     registerAllProviders();
@@ -439,7 +439,7 @@ export class AIChatServiceV2 {
   }
 
   getProviderInfo(): { provider: string; model: string; available: string[] } | null {
-    if (!this.provider) return null;
+    if (!this.provider) {return null;}
 
     return {
       provider: this.provider.name,

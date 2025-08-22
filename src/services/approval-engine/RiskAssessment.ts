@@ -4,12 +4,12 @@
  */
 
 import {
-  RiskLevel,
-  RiskAssessmentResult,
-  TaskContext,
-  ProposedAction,
-  TrustLevel,
   ApprovalCategory,
+  ProposedAction,
+  RiskAssessmentResult,
+  RiskLevel,
+  TaskContext,
+  TrustLevel,
 } from './types';
 
 interface RiskFactor {
@@ -303,9 +303,9 @@ export class RiskAssessment {
    * Convert risk score to risk level
    */
   private static scoreToRiskLevel(score: number): RiskLevel {
-    if (score >= this.riskThresholds.critical) return 'critical';
-    if (score >= this.riskThresholds.high) return 'high';
-    if (score >= this.riskThresholds.medium) return 'medium';
+    if (score >= this.riskThresholds.critical) {return 'critical';}
+    if (score >= this.riskThresholds.high) {return 'high';}
+    if (score >= this.riskThresholds.medium) {return 'medium';}
     return 'low';
   }
 
@@ -358,13 +358,13 @@ export class RiskAssessment {
     trustLevel: TrustLevel,
   ): boolean {
     // Never auto-approve critical risk
-    if (riskLevel === 'critical') return false;
+    if (riskLevel === 'critical') {return false;}
 
     // Never auto-approve if security factors are present
     const hasSecurityFactors = factors.some(
       (factor) => factor.category === 'Security Impact' && factor.risk !== 'low',
     );
-    if (hasSecurityFactors) return false;
+    if (hasSecurityFactors) {return false;}
 
     // Trust level based auto-approval
     switch (trustLevel) {

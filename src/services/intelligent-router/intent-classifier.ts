@@ -244,9 +244,9 @@ export class IntentClassifier {
     }
 
     // スタイル検出
-    if (/アニメ|anime|cartoon/i.test(input)) params['style'] = 'anime';
-    if (/リアル|realistic|実写/i.test(input)) params['style'] = 'realistic';
-    if (/3D/i.test(input)) params['style'] = '3d';
+    if (/アニメ|anime|cartoon/i.test(input)) {params['style'] = 'anime';}
+    if (/リアル|realistic|実写/i.test(input)) {params['style'] = 'realistic';}
+    if (/3D/i.test(input)) {params['style'] = '3d';}
 
     // 時間検出
     const durationMatch = input.match(/(\d+)\s*(秒|seconds?)/);
@@ -274,10 +274,10 @@ export class IntentClassifier {
     }
 
     // スタイル検出
-    if (/イラスト|illustration/i.test(input)) params['style'] = 'illustration';
-    if (/写真|photo|realistic/i.test(input)) params['style'] = 'photorealistic';
-    if (/ロゴ|logo/i.test(input)) params['style'] = 'logo';
-    if (/アニメ|anime/i.test(input)) params['style'] = 'anime';
+    if (/イラスト|illustration/i.test(input)) {params['style'] = 'illustration';}
+    if (/写真|photo|realistic/i.test(input)) {params['style'] = 'photorealistic';}
+    if (/ロゴ|logo/i.test(input)) {params['style'] = 'logo';}
+    if (/アニメ|anime/i.test(input)) {params['style'] = 'anime';}
 
     // バッチサイズ検出
     const batchMatch = input.match(/(\d+)\s*(枚|個|つ|images?)/);
@@ -311,19 +311,19 @@ export class IntentClassifier {
       .trim();
 
     // 言語検出
-    if (/typescript|ts/i.test(input)) params['language'] = 'typescript';
-    if (/javascript|js/i.test(input)) params['language'] = 'javascript';
-    if (/python|py/i.test(input)) params['language'] = 'python';
-    if (/java(?!script)/i.test(input)) params['language'] = 'java';
-    if (/go|golang/i.test(input)) params['language'] = 'go';
-    if (/rust/i.test(input)) params['language'] = 'rust';
+    if (/typescript|ts/i.test(input)) {params['language'] = 'typescript';}
+    if (/javascript|js/i.test(input)) {params['language'] = 'javascript';}
+    if (/python|py/i.test(input)) {params['language'] = 'python';}
+    if (/java(?!script)/i.test(input)) {params['language'] = 'java';}
+    if (/go|golang/i.test(input)) {params['language'] = 'go';}
+    if (/rust/i.test(input)) {params['language'] = 'rust';}
 
     // フレームワーク検出
-    if (/react/i.test(input)) params['framework'] = 'react';
-    if (/next/i.test(input)) params['framework'] = 'nextjs';
-    if (/express/i.test(input)) params['framework'] = 'express';
-    if (/django/i.test(input)) params['framework'] = 'django';
-    if (/spring/i.test(input)) params['framework'] = 'spring';
+    if (/react/i.test(input)) {params['framework'] = 'react';}
+    if (/next/i.test(input)) {params['framework'] = 'nextjs';}
+    if (/express/i.test(input)) {params['framework'] = 'express';}
+    if (/django/i.test(input)) {params['framework'] = 'django';}
+    if (/spring/i.test(input)) {params['framework'] = 'spring';}
 
     return params;
   }
@@ -335,9 +335,9 @@ export class IntentClassifier {
     const params: Record<string, unknown> = {};
 
     // テストタイプ検出
-    if (/単体|unit/i.test(input)) params['type'] = 'unit';
-    if (/統合|integration/i.test(input)) params['type'] = 'integration';
-    if (/e2e|end.to.end/i.test(input)) params['type'] = 'e2e';
+    if (/単体|unit/i.test(input)) {params['type'] = 'unit';}
+    if (/統合|integration/i.test(input)) {params['type'] = 'integration';}
+    if (/e2e|end.to.end/i.test(input)) {params['type'] = 'e2e';}
 
     // カバレッジ目標
     const coverageMatch = input.match(/(\d+)\s*%/);
@@ -355,13 +355,13 @@ export class IntentClassifier {
     const params: Record<string, unknown> = {};
 
     // レビュー深度
-    if (/詳細|detailed|深く/i.test(input)) params['depth'] = 'detailed';
-    if (/簡単|quick|さっと/i.test(input)) params['depth'] = 'quick';
+    if (/詳細|detailed|深く/i.test(input)) {params['depth'] = 'detailed';}
+    if (/簡単|quick|さっと/i.test(input)) {params['depth'] = 'quick';}
 
     // フォーカスエリア
-    if (/セキュリティ|security/i.test(input)) params['focus'] = 'security';
-    if (/パフォーマンス|performance/i.test(input)) params['focus'] = 'performance';
-    if (/可読性|readability/i.test(input)) params['focus'] = 'readability';
+    if (/セキュリティ|security/i.test(input)) {params['focus'] = 'security';}
+    if (/パフォーマンス|performance/i.test(input)) {params['focus'] = 'performance';}
+    if (/可読性|readability/i.test(input)) {params['focus'] = 'readability';}
 
     return params;
   }
@@ -379,13 +379,13 @@ export class IntentClassifier {
     }
 
     // コミットタイプ検出
-    if (/feat|機能/i.test(input)) params['type'] = 'feat';
-    if (/fix|修正/i.test(input)) params['type'] = 'fix';
-    if (/docs|ドキュメント/i.test(input)) params['type'] = 'docs';
-    if (/style|スタイル/i.test(input)) params['type'] = 'style';
-    if (/refactor|リファクタリング/i.test(input)) params['type'] = 'refactor';
-    if (/test|テスト/i.test(input)) params['type'] = 'test';
-    if (/chore|雑務/i.test(input)) params['type'] = 'chore';
+    if (/feat|機能/i.test(input)) {params['type'] = 'feat';}
+    if (/fix|修正/i.test(input)) {params['type'] = 'fix';}
+    if (/docs|ドキュメント/i.test(input)) {params['type'] = 'docs';}
+    if (/style|スタイル/i.test(input)) {params['type'] = 'style';}
+    if (/refactor|リファクタリング/i.test(input)) {params['type'] = 'refactor';}
+    if (/test|テスト/i.test(input)) {params['type'] = 'test';}
+    if (/chore|雑務/i.test(input)) {params['type'] = 'chore';}
 
     return params;
   }
@@ -397,15 +397,15 @@ export class IntentClassifier {
     const params: Record<string, unknown> = {};
 
     // ターゲット環境検出
-    if (/本番|production|prod/i.test(input)) params['target'] = 'production';
-    if (/ステージング|staging|stage/i.test(input)) params['target'] = 'staging';
-    if (/開発|development|dev/i.test(input)) params['target'] = 'development';
+    if (/本番|production|prod/i.test(input)) {params['target'] = 'production';}
+    if (/ステージング|staging|stage/i.test(input)) {params['target'] = 'staging';}
+    if (/開発|development|dev/i.test(input)) {params['target'] = 'development';}
 
     // プラットフォーム検出
-    if (/vercel/i.test(input)) params['platform'] = 'vercel';
-    if (/aws/i.test(input)) params['platform'] = 'aws';
-    if (/gcp|google cloud/i.test(input)) params['platform'] = 'gcp';
-    if (/azure/i.test(input)) params['platform'] = 'azure';
+    if (/vercel/i.test(input)) {params['platform'] = 'vercel';}
+    if (/aws/i.test(input)) {params['platform'] = 'aws';}
+    if (/gcp|google cloud/i.test(input)) {params['platform'] = 'gcp';}
+    if (/azure/i.test(input)) {params['platform'] = 'azure';}
 
     return params;
   }

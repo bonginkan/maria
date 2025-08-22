@@ -622,7 +622,7 @@ export class OperationLogger {
    */
   private async writeDirectly(entry: LogEntry): Promise<void> {
     try {
-      const line = JSON.stringify(entry) + '\n';
+      const line = `${JSON.stringify(entry)  }\n`;
       await fs.promises.appendFile(this.logFile, line);
     } catch (error) {
       console.warn('Failed to write log entry:', error);
@@ -634,7 +634,7 @@ export class OperationLogger {
    */
   private async writeSecurityLog(entry: Record<string, unknown>): Promise<void> {
     try {
-      const line = JSON.stringify(entry) + '\n';
+      const line = `${JSON.stringify(entry)  }\n`;
       await fs.promises.appendFile(this.securityLogFile, line);
     } catch (error) {
       console.warn('Failed to write security log:', error);
@@ -646,7 +646,7 @@ export class OperationLogger {
    */
   private async writeBatchEntries(entries: LogEntry[]): Promise<void> {
     try {
-      const content = entries.map((entry) => JSON.stringify(entry)).join('\n') + '\n';
+      const content = `${entries.map((entry) => JSON.stringify(entry)).join('\n')  }\n`;
       await fs.promises.appendFile(this.logFile, content);
     } catch (error) {
       console.warn('Failed to write batch entries:', error);

@@ -54,12 +54,12 @@ export class EnhancedCli {
   }
 
   table(data: Record<string, unknown>[]): void {
-    if (this.options.quiet) return;
+    if (this.options.quiet) {return;}
     console.table(data);
   }
 
   json(data: unknown, pretty = true): void {
-    if (this.options.quiet) return;
+    if (this.options.quiet) {return;}
     console.log(pretty ? JSON.stringify(data, null, 2) : JSON.stringify(data));
   }
 }

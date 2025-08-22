@@ -4,7 +4,7 @@
  */
 // @ts-nocheck - Complex type interactions requiring gradual type migration
 
-import { execSync, spawn, exec } from 'child_process';
+import { exec, execSync, spawn } from 'child_process';
 import { promises as fs } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';

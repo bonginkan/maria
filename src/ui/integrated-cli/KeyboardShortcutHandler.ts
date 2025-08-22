@@ -157,7 +157,7 @@ export class KeyboardShortcutHandler {
    * キーボードリスニングを開始
    */
   startListening(): void {
-    if (this.isListening) return;
+    if (this.isListening) {return;}
 
     this.isListening = true;
 
@@ -185,7 +185,7 @@ export class KeyboardShortcutHandler {
    * キーボードリスニングを停止
    */
   stopListening(): void {
-    if (!this.isListening) return;
+    if (!this.isListening) {return;}
 
     this.isListening = false;
 
@@ -206,7 +206,7 @@ export class KeyboardShortcutHandler {
    * キープレスを処理
    */
   private async handleKeyPress(str: string, key: unknown): Promise<void> {
-    if (!key) return;
+    if (!key) {return;}
 
     const combination = this.buildKeyCombination(key);
     const keyString = this.combinationToString(combination);
@@ -273,10 +273,10 @@ export class KeyboardShortcutHandler {
    */
   private shouldExecuteShortcut(shortcut: KeyboardShortcut): boolean {
     // 無効化されている場合
-    if (!shortcut.enabled) return false;
+    if (!shortcut.enabled) {return false;}
 
     // グローバルショートカットの場合
-    if (shortcut.global) return true;
+    if (shortcut.global) {return true;}
 
     // コンテキストチェック
     if (shortcut.context && shortcut.context.length > 0) {
@@ -305,10 +305,10 @@ export class KeyboardShortcutHandler {
   private combinationToString(combination: KeyCombination): string {
     const parts: string[] = [];
 
-    if (combination.ctrl) parts.push('ctrl');
-    if (combination.meta) parts.push('meta');
-    if (combination.alt) parts.push('alt');
-    if (combination.shift) parts.push('shift');
+    if (combination.ctrl) {parts.push('ctrl');}
+    if (combination.meta) {parts.push('meta');}
+    if (combination.alt) {parts.push('alt');}
+    if (combination.shift) {parts.push('shift');}
 
     parts.push(combination.key);
 

@@ -6,10 +6,10 @@
 import {
   BaseModePlugin,
   ModeContext,
-  ModeResult,
   ModeDisplayConfig,
-  ModeTrigger,
+  ModeResult,
   ModeTransition,
+  ModeTrigger,
 } from '../BaseModePlugin';
 import { Service } from '../../core';
 
@@ -188,7 +188,7 @@ export class ThinkingMode extends BaseModePlugin {
     // Extract key concepts, questions, and important statements
     sentences.forEach((sentence) => {
       const trimmed = sentence.trim();
-      if (trimmed.length < 10) return;
+      if (trimmed.length < 10) {return;}
 
       // Identify questions
       if (/[?？]/.test(trimmed) || /what|how|why|when|where|who/.test(trimmed.toLowerCase())) {
@@ -218,8 +218,8 @@ export class ThinkingMode extends BaseModePlugin {
     let score = 0;
 
     // Length factor
-    if (input.length > 200) score += 2;
-    else if (input.length > 100) score += 1;
+    if (input.length > 200) {score += 2;}
+    else if (input.length > 100) {score += 1;}
 
     // Question complexity
     const questionCount = (input.match(/[?？]/g) || []).length;
@@ -241,8 +241,8 @@ export class ThinkingMode extends BaseModePlugin {
       );
     score += Math.min(Math.floor(conceptWords.length / 5), 2);
 
-    if (score >= 5) return 'high';
-    if (score >= 3) return 'medium';
+    if (score >= 5) {return 'high';}
+    if (score >= 3) {return 'medium';}
     return 'low';
   }
 
@@ -292,11 +292,11 @@ export class ThinkingMode extends BaseModePlugin {
     let confidence = 0.5; // Base confidence
 
     // Boost for clear structure
-    if (keyPointCount > 2) confidence += 0.2;
-    if (keyPointCount > 4) confidence += 0.1;
+    if (keyPointCount > 2) {confidence += 0.2;}
+    if (keyPointCount > 4) {confidence += 0.1;}
 
     // Boost for specific questions or problems
-    if (/[?？]/.test(input)) confidence += 0.15;
+    if (/[?？]/.test(input)) {confidence += 0.15;}
 
     // Boost for technical content
     if (/code|program|function|algorithm|debug/.test(input.toLowerCase())) {
@@ -304,8 +304,8 @@ export class ThinkingMode extends BaseModePlugin {
     }
 
     // Penalty for very short or vague input
-    if (input.length < 50) confidence -= 0.2;
-    if (/just|maybe|perhaps|might/.test(input.toLowerCase())) confidence -= 0.1;
+    if (input.length < 50) {confidence -= 0.2;}
+    if (/just|maybe|perhaps|might/.test(input.toLowerCase())) {confidence -= 0.1;}
 
     return Math.min(Math.max(confidence, 0.1), 0.95);
   }

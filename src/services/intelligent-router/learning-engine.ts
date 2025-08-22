@@ -6,7 +6,7 @@
 // @ts-nocheck - Machine learning engine with complex dynamic data structures - Complex type interactions requiring gradual type migration
 
 import { InferredCommand } from './intent-classifier';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { EventEmitter } from 'events';
@@ -555,7 +555,7 @@ export class LearningEngine extends EventEmitter {
     this.model.patterns.forEach((p) => {
       const current = failureRates.get(p.command) || { success: 0, total: 0 };
       current.total++;
-      if (p.success) current.success++;
+      if (p.success) {current.success++;}
       failureRates.set(p.command, current);
     });
 

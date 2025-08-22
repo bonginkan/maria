@@ -3,7 +3,7 @@
  * Handles authentication checks for commands
  */
 
-import { IMiddleware, CommandContext, CommandResult } from '../types';
+import { CommandContext, CommandResult, IMiddleware } from '../types';
 import { logger } from '../../utils/logger';
 
 export class AuthMiddleware implements IMiddleware {

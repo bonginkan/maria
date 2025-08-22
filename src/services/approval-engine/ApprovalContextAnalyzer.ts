@@ -4,11 +4,11 @@
  */
 
 import {
-  TaskContext,
-  ApprovalTheme,
-  ApprovalPoint,
   ApprovalCategory,
+  ApprovalPoint,
+  ApprovalTheme,
   RiskLevel,
+  TaskContext,
   TrustLevel,
 } from './types';
 import { ApprovalThemeRegistry } from './ApprovalThemeRegistry';
@@ -301,10 +301,10 @@ export class ApprovalContextAnalyzer {
 
     // Determine overall risk level
     let risk: RiskLevel;
-    if (riskScore >= 8) risk = 'critical';
-    else if (riskScore >= 5) risk = 'high';
-    else if (riskScore >= 3) risk = 'medium';
-    else risk = 'low';
+    if (riskScore >= 8) {risk = 'critical';}
+    else if (riskScore >= 5) {risk = 'high';}
+    else if (riskScore >= 3) {risk = 'medium';}
+    else {risk = 'low';}
 
     return { risk, factors: riskFactors };
   }
@@ -337,9 +337,9 @@ export class ApprovalContextAnalyzer {
 
     // For other trust levels, filter based on what requires confirmation
     return themes.filter((theme) => {
-      if (theme.impact === 'critical') return true;
-      if (theme.impact === 'high' && context.userTrustLevel !== TrustLevel.TRUSTED) return true;
-      if (theme.requiresConfirmation && context.userTrustLevel === TrustLevel.LEARNING) return true;
+      if (theme.impact === 'critical') {return true;}
+      if (theme.impact === 'high' && context.userTrustLevel !== TrustLevel.TRUSTED) {return true;}
+      if (theme.requiresConfirmation && context.userTrustLevel === TrustLevel.LEARNING) {return true;}
       return false;
     });
   }

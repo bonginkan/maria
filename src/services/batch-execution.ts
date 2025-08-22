@@ -168,7 +168,7 @@ export class BatchExecutionEngine {
       console.log(chalk.yellow('DRY RUN MODE - Commands will not be executed\n'));
       commands.forEach((cmd, i) => {
         console.log(chalk.gray(`${i + 1}. ${cmd.command} ${cmd.args.join(' ')}`));
-        if (cmd.condition) console.log(chalk.gray(`   IF: ${cmd.condition}`));
+        if (cmd.condition) {console.log(chalk.gray(`   IF: ${cmd.condition}`));}
       });
 
       this.isExecuting = false;

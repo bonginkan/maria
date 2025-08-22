@@ -374,7 +374,7 @@ export class HistoryService extends BaseService {
     const userEntries = this.entries.filter((e) => e.userId === userId);
     const userSessions = Array.from(this.sessions.values()).filter((s) => s.userId === userId);
 
-    if (userEntries.length === 0) return;
+    if (userEntries.length === 0) {return;}
 
     // Calculate mode preferences
     const modeUsage = new Map<string, number>();
@@ -430,7 +430,7 @@ export class HistoryService extends BaseService {
       .filter((e) => e.confidence !== undefined)
       .sort((a, b) => a.timestamp - b.timestamp);
 
-    if (confidenceEntries.length < 2) return 0;
+    if (confidenceEntries.length < 2) {return 0;}
 
     // Calculate trend in confidence over time
     const recentEntries = confidenceEntries.slice(-20); // Last 20 entries
@@ -448,7 +448,7 @@ export class HistoryService extends BaseService {
    */
   private calculateAverageDuration(entries: HistoryEntry[]): number {
     const durationsEntries = entries.filter((e) => e.duration !== undefined);
-    if (durationsEntries.length === 0) return 0;
+    if (durationsEntries.length === 0) {return 0;}
 
     return durationsEntries.reduce((sum, e) => sum + e.duration!, 0) / durationsEntries.length;
   }
@@ -458,7 +458,7 @@ export class HistoryService extends BaseService {
    */
   private calculateAverageConfidence(entries: HistoryEntry[]): number {
     const confidenceEntries = entries.filter((e) => e.confidence !== undefined);
-    if (confidenceEntries.length === 0) return 0;
+    if (confidenceEntries.length === 0) {return 0;}
 
     return confidenceEntries.reduce((sum, e) => sum + e.confidence!, 0) / confidenceEntries.length;
   }

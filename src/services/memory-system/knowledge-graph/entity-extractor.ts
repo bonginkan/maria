@@ -782,11 +782,11 @@ export class EntityExtractor extends EventEmitter {
   }
 
   private parseImportNames(importString: string): string[] {
-    if (!importString) return [];
+    if (!importString) {return [];}
 
     // Remove braces and split by comma
     const cleaned = importString.replace(/[{}]/g, '').trim();
-    if (!cleaned) return [];
+    if (!cleaned) {return [];}
 
     return cleaned.split(',').map((name) => {
       // Handle renamed imports (e.g., "foo as bar")
@@ -922,9 +922,9 @@ export class EntityExtractor extends EventEmitter {
   }
 
   private detectVisibility(definition: string): 'public' | 'private' | 'protected' | 'internal' {
-    if (definition.includes('private')) return 'private';
-    if (definition.includes('protected')) return 'protected';
-    if (definition.includes('internal')) return 'internal';
+    if (definition.includes('private')) {return 'private';}
+    if (definition.includes('protected')) {return 'protected';}
+    if (definition.includes('internal')) {return 'internal';}
     return 'public';
   }
 
@@ -1033,19 +1033,19 @@ export class EntityExtractor extends EventEmitter {
 
   private countParameters(signature: string): number {
     const paramMatch = signature.match(/\([^)]*\)/);
-    if (!paramMatch) return 0;
+    if (!paramMatch) {return 0;}
 
     const params = paramMatch[0];
-    if (params === '()') return 0;
+    if (params === '()') {return 0;}
 
     // Count commas + 1, but handle complex types
     let count = 1;
     let depth = 0;
 
     for (const char of params) {
-      if (char === '<' || char === '(' || char === '{') depth++;
-      else if (char === '>' || char === ')' || char === '}') depth--;
-      else if (char === ',' && depth === 0) count++;
+      if (char === '<' || char === '(' || char === '{') {depth++;}
+      else if (char === '>' || char === ')' || char === '}') {depth--;}
+      else if (char === ',' && depth === 0) {count++;}
     }
 
     return count;

@@ -182,7 +182,7 @@ export class DoctorCommand extends BaseCommand {
     await this.addCheck('Git Installation', 'critical', async () => {
       try {
         const { stdout } = await execAsync('git --version');
-        return { status: 'pass', message: stdout.trim() + ' ✓' };
+        return { status: 'pass', message: `${stdout.trim()  } ✓` };
       } catch {
         return {
           status: 'fail',
@@ -564,7 +564,7 @@ export class DoctorCommand extends BaseCommand {
 
     for (const category of categories) {
       const categoryChecks = this.checks.filter((c) => c.category === category);
-      if (categoryChecks.length === 0) continue;
+      if (categoryChecks.length === 0) {continue;}
 
       const categoryColor = getCategoryColor(category);
       report += `${categoryColor(category.toUpperCase())} Checks:\n`;

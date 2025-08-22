@@ -5,13 +5,13 @@
 
 import { EventEmitter } from 'events';
 import {
-  IAgent,
+  AgentMessage,
+  AgentMetrics,
+  AgentResult,
   AgentRole,
   AgentStatus,
   AgentTask,
-  AgentResult,
-  AgentMessage,
-  AgentMetrics,
+  IAgent,
 } from './types';
 import { logger } from '../utils/logger';
 

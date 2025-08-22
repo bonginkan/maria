@@ -4,10 +4,10 @@
  */
 
 import {
-  commandInfo,
   commandCategories,
   CommandCategory,
   CommandInfo,
+  commandInfo,
 } from '../lib/command-groups';
 import { logger } from '../utils/logger';
 import chalk from 'chalk';
@@ -162,13 +162,13 @@ export class CommandCandidateService {
     output += chalk.bold.cyan(
       `\n🔍 Command Suggestions for "${originalInput}" (${candidates.length})\n`,
     );
-    output += chalk.gray('─'.repeat(60)) + '\n';
+    output += `${chalk.gray('─'.repeat(60))  }\n`;
 
     // Group by category for better organization
     const grouped = this.groupCandidatesByCategory(candidates);
 
     for (const [category, commands] of Object.entries(grouped)) {
-      if (commands.length === 0) continue;
+      if (commands.length === 0) {continue;}
 
       // Category header
       const categoryName = commandCategories[category as CommandCategory] || category;
@@ -206,7 +206,7 @@ export class CommandCandidateService {
     }
 
     // Footer with Shift key instructions
-    output += chalk.gray('─'.repeat(60)) + '\n';
+    output += `${chalk.gray('─'.repeat(60))  }\n`;
     output += chalk.yellow(
       '💡 Press Tab to autocomplete • Shift+Tab for more details • Esc to cancel\n',
     );
@@ -319,9 +319,9 @@ export class CommandCandidateService {
     const empty = '░'.repeat(5 - bars);
 
     let color = chalk.red;
-    if (similarity >= 80) color = chalk.green;
-    else if (similarity >= 60) color = chalk.yellow;
-    else if (similarity >= 40) color = chalk.yellow;
+    if (similarity >= 80) {color = chalk.green;}
+    else if (similarity >= 60) {color = chalk.yellow;}
+    else if (similarity >= 40) {color = chalk.yellow;}
 
     return color(`${filled}${empty} ${similarity.toFixed(0)}%`);
   }
@@ -337,8 +337,8 @@ export class CommandCandidateService {
       .fill(null)
       .map(() => Array(str1.length + 1).fill(null));
 
-    for (let i = 0; i <= str1.length; i++) matrix[0]![i] = i;
-    for (let j = 0; j <= str2.length; j++) matrix[j]![0] = j;
+    for (let i = 0; i <= str1.length; i++) {matrix[0]![i] = i;}
+    for (let j = 0; j <= str2.length; j++) {matrix[j]![0] = j;}
 
     for (let j = 1; j <= str2.length; j++) {
       for (let i = 1; i <= str1.length; i++) {
@@ -359,7 +359,7 @@ export class CommandCandidateService {
    */
   getRelatedCommands(commandName: string): CommandCandidate[] {
     const command = this.allCommands.find((cmd) => cmd.name === commandName);
-    if (!command) return [];
+    if (!command) {return [];}
 
     return this.allCommands
       .filter((cmd) => cmd.category === command.category && cmd.name !== commandName)
@@ -395,9 +395,9 @@ export class CommandCandidateService {
 ${chalk.yellow('🤔 No exact matches found for')} ${chalk.white(`"${input}"`)}
 
 ${chalk.bold('💡 Suggestions:')}
-• Check spelling: ${chalk.cyan('/' + input.replace(/[^a-zA-Z]/g, ''))}
-• Try shorter terms: ${chalk.cyan('/' + input.slice(0, 3))}
-• Use wildcards: ${chalk.cyan('/' + input + '*')}
+• Check spelling: ${chalk.cyan(`/${  input.replace(/[^a-zA-Z]/g, '')}`)}
+• Try shorter terms: ${chalk.cyan(`/${  input.slice(0, 3)}`)}
+• Use wildcards: ${chalk.cyan(`/${  input  }*`)}
 
 ${chalk.bold('📚 Popular Commands:')}
 • ${chalk.cyan('/help')} - Show all commands

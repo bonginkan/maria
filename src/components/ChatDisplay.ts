@@ -53,14 +53,14 @@ export class ChatDisplay {
       borderChar = '*';
     }
 
-    console.log('\n' + borderColor('+' + borderChar.repeat(boxWidth - 2) + '+'));
+    console.log(`\n${  borderColor(`+${  borderChar.repeat(boxWidth - 2)  }+`)}`);
 
     // Add content type indicator
     if (hasImages || hasUrls || hasPastedContent) {
       let indicator = '';
-      if (hasImages) indicator += '🖼️  IMAGE ';
-      if (hasUrls) indicator += '🔗 URL ';
-      if (hasPastedContent) indicator += '📋 PASTE ';
+      if (hasImages) {indicator += '🖼️  IMAGE ';}
+      if (hasUrls) {indicator += '🔗 URL ';}
+      if (hasPastedContent) {indicator += '📋 PASTE ';}
 
       const indicatorPadding = boxWidth - indicator.length - 4;
       console.log(
@@ -69,7 +69,7 @@ export class ChatDisplay {
           ' '.repeat(Math.max(0, indicatorPadding)) +
           borderColor(' |'),
       );
-      console.log(borderColor('|' + borderChar.repeat(boxWidth - 2) + '|'));
+      console.log(borderColor(`|${  borderChar.repeat(boxWidth - 2)  }|`));
     }
 
     lines.forEach((line) => {
@@ -81,7 +81,7 @@ export class ChatDisplay {
           borderColor(' |'),
       );
     });
-    console.log(borderColor('+' + borderChar.repeat(boxWidth - 2) + '+'));
+    console.log(borderColor(`+${  borderChar.repeat(boxWidth - 2)  }+`));
 
     this.messages.push({
       role: 'user',
@@ -92,7 +92,7 @@ export class ChatDisplay {
 
   // Display AI response without border with enhanced formatting
   displayAssistantResponse(content: string) {
-    console.log('\n' + chalk.blue('[AI] MARIA Response:'));
+    console.log(`\n${  chalk.blue('[AI] MARIA Response:')}`);
     console.log(chalk.blue('='.repeat(30)));
 
     // Check if content contains structured data
@@ -141,7 +141,7 @@ export class ChatDisplay {
       }
       console.log(`${statusIcons[step.status]} ${prefix}`);
       if (step.content) {
-        console.log(chalk.gray('   ' + step.content));
+        console.log(chalk.gray(`   ${  step.content}`));
       }
     }
   }
@@ -149,7 +149,7 @@ export class ChatDisplay {
   // Display code with syntax highlighting
   displayCode(code: string, language: string = 'typescript') {
     console.log();
-    console.log(chalk.gray('```' + language));
+    console.log(chalk.gray(`\`\`\`${  language}`));
 
     try {
       const highlighted = highlight(code, { language });
@@ -206,7 +206,7 @@ export class ChatDisplay {
         const formatted = line.replace(
           /([^\s]+\.[a-z]+):(\d+):(\d+)/g,
           (_, file, line, col) =>
-            chalk.cyan(file) + ':' + chalk.yellow(line) + ':' + chalk.yellow(col),
+            `${chalk.cyan(file)  }:${  chalk.yellow(line)  }:${  chalk.yellow(col)}`,
         );
         console.log(formatted);
       }
@@ -272,9 +272,9 @@ export class ChatDisplay {
 
   // Display quick actions
   displayQuickActions(actions: string[]) {
-    if (actions.length === 0) return;
+    if (actions.length === 0) {return;}
 
-    console.log('\n' + chalk.bold.yellow('💡 Quick Actions:'));
+    console.log(`\n${  chalk.bold.yellow('💡 Quick Actions:')}`);
     actions.forEach((action, index) => {
       console.log(chalk.yellow(`   ${index + 1}. ${action}`));
     });

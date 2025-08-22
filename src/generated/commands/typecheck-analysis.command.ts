@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { _CommandContext, CommandResult, _CommandArgs } from './types';
+import { _CommandArgs, _CommandContext, CommandResult } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
@@ -661,21 +661,21 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
   }
   
   private displayResults(result: TypeCheckResult): void {
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════')}`);
     console.log(chalk.bold.cyan('                 TYPESCRIPT TYPE ANALYSIS REPORT            '));
     console.log(chalk.bold('═══════════════════════════════════════════════════════════\n'));
     
     // Summary
     console.log(chalk.bold('📊 Summary:'));
-    console.log(chalk.gray('├─') + ` Files analyzed: ${chalk.cyan(result.filesAnalyzed)}`);
-    console.log(chalk.gray('├─') + ` Type errors: ${chalk.red(result.totalErrors)}`);
-    console.log(chalk.gray('├─') + ` Type warnings: ${chalk.yellow(result.totalWarnings)}`);
-    console.log(chalk.gray('├─') + ` Suggestions: ${chalk.blue(result.totalSuggestions)}`);
+    console.log(`${chalk.gray('├─')  } Files analyzed: ${chalk.cyan(result.filesAnalyzed)}`);
+    console.log(`${chalk.gray('├─')  } Type errors: ${chalk.red(result.totalErrors)}`);
+    console.log(`${chalk.gray('├─')  } Type warnings: ${chalk.yellow(result.totalWarnings)}`);
+    console.log(`${chalk.gray('├─')  } Suggestions: ${chalk.blue(result.totalSuggestions)}`);
     if (result.typeCoverage > 0) {
-      console.log(chalk.gray('├─') + ` Type coverage: ${chalk.green(result.typeCoverage + '%')}`);
+      console.log(`${chalk.gray('├─')  } Type coverage: ${chalk.green(`${result.typeCoverage  }%`)}`);
     }
-    console.log(chalk.gray('├─') + ` Strict mode: ${result.strictModeEnabled ? chalk.green('✓ Enabled') : chalk.yellow('✗ Disabled')}`);
-    console.log(chalk.gray('└─') + ` Scan duration: ${chalk.green(result.scanDuration + 'ms')}\n`);
+    console.log(`${chalk.gray('├─')  } Strict mode: ${result.strictModeEnabled ? chalk.green('✓ Enabled') : chalk.yellow('✗ Disabled')}`);
+    console.log(`${chalk.gray('└─')  } Scan duration: ${chalk.green(`${result.scanDuration  }ms`)}\n`);
     
     // Compiler options
     if (Object.keys(result.compilerOptions).length > 0) {
@@ -749,7 +749,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
       }
     }
     
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════\n'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════\n')}`);
   }
   
   private async autoFixTypeErrors(errors: TypeError[]): Promise<number> {
@@ -757,7 +757,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
     
     // Group fixes by file
     for (const error of errors) {
-      if (!error.fixable || !error.file) continue;
+      if (!error.fixable || !error.file) {continue;}
       
       const fixes = fileFixMap.get(error.file) || [];
       

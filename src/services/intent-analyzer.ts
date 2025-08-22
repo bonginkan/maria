@@ -223,9 +223,9 @@ export class IntentAnalyzer {
 
     // テンプレート抽出
     if (taskType === 'paper') {
-      if (/IEEE/i.test(input)) parameters.template = 'IEEE';
-      else if (/ACM/i.test(input)) parameters.template = 'ACM';
-      else if (/空白|blank/i.test(input)) parameters.template = 'blank';
+      if (/IEEE/i.test(input)) {parameters.template = 'IEEE';}
+      else if (/ACM/i.test(input)) {parameters.template = 'ACM';}
+      else if (/空白|blank/i.test(input)) {parameters.template = 'blank';}
     }
 
     // 数量抽出（スライドの枚数など）

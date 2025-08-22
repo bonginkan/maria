@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as os from 'os';
 import prompts from 'prompts';
 // import { logger } from '../utils/logger.js';
-import { isObject, assertIsObject } from '../utils/type-guards.js';
+import { assertIsObject, isObject } from '../utils/type-guards.js';
 
 interface MariaConfig {
   defaultProvider?: string;
@@ -206,7 +206,7 @@ async function initializeConfig(): Promise<void> {
     });
 
     if (apiKey) {
-      if (!config.apiKeys) config['apiKeys'] = {};
+      if (!config.apiKeys) {config['apiKeys'] = {};}
       config.apiKeys[provider as keyof typeof config.apiKeys] = apiKey;
     }
   }
@@ -300,7 +300,7 @@ async function setConfigValue(key: string, value: string): Promise<void> {
 
   for (let i = 0; i < keys.length - 1; i++) {
     const k = keys[i];
-    if (!k) continue;
+    if (!k) {continue;}
     if (!(k in target) || !isObject(target[k])) {
       target[k] = {};
     }
@@ -309,13 +309,13 @@ async function setConfigValue(key: string, value: string): Promise<void> {
   }
 
   const lastKey = keys[keys.length - 1];
-  if (!lastKey) return;
+  if (!lastKey) {return;}
 
   // Parse value
   let parsedValue: unknown = value;
-  if (value === 'true') parsedValue = true;
-  else if (value === 'false') parsedValue = false;
-  else if (!isNaN(Number(value))) parsedValue = Number(value);
+  if (value === 'true') {parsedValue = true;}
+  else if (value === 'false') {parsedValue = false;}
+  else if (!isNaN(Number(value))) {parsedValue = Number(value);}
 
   target[lastKey] = parsedValue;
 
@@ -330,11 +330,11 @@ async function listConfig(): Promise<void> {
 
   // Display configuration in readable format
   function displayObject(obj: unknown, indent: string = ''): void {
-    if (!isObject(obj)) return;
+    if (!isObject(obj)) {return;}
     for (const [key, value] of Object.entries(obj)) {
       if (typeof value === 'object' && value !== null) {
         console.log(chalk.cyan(`${indent}${key}:`));
-        displayObject(value, indent + '  ');
+        displayObject(value, `${indent  }  `);
       } else {
         const displayValue =
           key.toLowerCase().includes('key') ||

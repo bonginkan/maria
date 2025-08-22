@@ -8,16 +8,16 @@
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
 import {
-  ModeDefinition,
+  ModeConfig,
   ModeContext,
+  ModeDefinition,
+  ModeHistoryEntry,
   ModeRecognitionResult,
   ModeTransition,
-  ModeConfig,
-  ModeHistoryEntry,
-  UserPattern,
   ModeTriggerType,
+  UserPattern,
 } from './types';
-import { ModeDefinitionRegistry, getModeRegistry } from './ModeDefinitionRegistry';
+import { getModeRegistry, ModeDefinitionRegistry } from './ModeDefinitionRegistry';
 import { ModeRecognitionEngine } from './ModeRecognitionEngine';
 import { ModeDisplayManager } from './ModeDisplayManager';
 import { ModeHistoryTracker } from './ModeHistoryTracker';
@@ -63,7 +63,7 @@ export class InternalModeService extends EventEmitter {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     try {
       console.log(chalk.cyan('🧠 Initializing Internal Mode Service...'));
@@ -232,7 +232,7 @@ export class InternalModeService extends EventEmitter {
    * Provide feedback on mode accuracy
    */
   async provideFeedback(modeId: string, wasCorrect: boolean, userInput?: string): Promise<void> {
-    if (!this.config.feedbackEnabled) return;
+    if (!this.config.feedbackEnabled) {return;}
 
     try {
       await this.historyTracker.recordFeedback(modeId, wasCorrect, userInput);

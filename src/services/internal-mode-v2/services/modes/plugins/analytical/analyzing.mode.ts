@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -139,8 +139,8 @@ export class AnalyzingMode extends BaseMode {
     confidence += patternMatches.length * 0.2;
 
     // Context complexity assessment
-    if (context.metadata?.complexity === 'high') confidence += 0.15;
-    if (context.metadata?.requiresDeepAnalysis) confidence += 0.2;
+    if (context.metadata?.complexity === 'high') {confidence += 0.15;}
+    if (context.metadata?.requiresDeepAnalysis) {confidence += 0.2;}
 
     // Subject matter indicators
     const analyticalSubjects = [
@@ -286,9 +286,9 @@ export class AnalyzingMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.7;
 
-    if (results.insights.length > 2) confidence += 0.1;
-    if (results.perspectives.length > 3) confidence += 0.1;
-    if (results.synthesis.confidence > 0.8) confidence += 0.1;
+    if (results.insights.length > 2) {confidence += 0.1;}
+    if (results.perspectives.length > 3) {confidence += 0.1;}
+    if (results.synthesis.confidence > 0.8) {confidence += 0.1;}
 
     return Math.min(confidence, 1.0);
   }
@@ -310,9 +310,9 @@ export class AnalyzingMode extends BaseMode {
   }
 
   private classifySubjectType(input: string): string {
-    if (input.includes('system')) return 'system';
-    if (input.includes('process')) return 'process';
-    if (input.includes('data')) return 'data';
+    if (input.includes('system')) {return 'system';}
+    if (input.includes('process')) {return 'process';}
+    if (input.includes('data')) {return 'data';}
     return 'general';
   }
 
@@ -381,8 +381,8 @@ export class AnalyzingMode extends BaseMode {
 
     const totalComplexity = indicators.reduce((sum, val) => sum + val, 0);
 
-    if (totalComplexity > 15) return 'high';
-    if (totalComplexity > 8) return 'medium';
+    if (totalComplexity > 15) {return 'high';}
+    if (totalComplexity > 8) {return 'medium';}
     return 'low';
   }
 

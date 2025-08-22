@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'events';
 import { logger } from '../utils/logger.js';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 

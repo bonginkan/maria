@@ -25,7 +25,7 @@ export class ModeHistoryTracker extends EventEmitter {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     // Load persisted data if available
     await this.loadPersistedData();

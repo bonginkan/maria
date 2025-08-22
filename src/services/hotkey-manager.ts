@@ -7,7 +7,7 @@ import { SlashCommandHandler } from './slash-command-handler';
 import { ConversationContext } from '../types/conversation';
 import { logger } from '../utils/logger';
 import chalk from 'chalk';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -230,13 +230,13 @@ export class HotkeyManager {
       name?: string;
       sequence?: string;
     };
-    if (keyObj.ctrl) modifiers.push('ctrl');
-    if (keyObj.shift) modifiers.push('shift');
-    if (keyObj.meta) modifiers.push('meta');
-    if (keyObj.alt) modifiers.push('alt');
+    if (keyObj.ctrl) {modifiers.push('ctrl');}
+    if (keyObj.shift) {modifiers.push('shift');}
+    if (keyObj.meta) {modifiers.push('meta');}
+    if (keyObj.alt) {modifiers.push('alt');}
 
     const keyName = keyObj.name || keyObj.sequence;
-    if (!keyName) return { handled: false };
+    if (!keyName) {return { handled: false };}
 
     const bindingKey = modifiers.length > 0 ? `${modifiers.sort().join('+')}+${keyName}` : keyName;
 
@@ -343,7 +343,7 @@ export class HotkeyManager {
       // Sort by modifiers count, then by key
       const aModCount = a.modifiers.length;
       const bModCount = b.modifiers.length;
-      if (aModCount !== bModCount) return aModCount - bModCount;
+      if (aModCount !== bModCount) {return aModCount - bModCount;}
       return a.key.localeCompare(b.key);
     });
   }
@@ -355,10 +355,10 @@ export class HotkeyManager {
     const parts = [];
 
     // Add modifiers in consistent order
-    if (binding.modifiers.includes('ctrl')) parts.push('Ctrl');
-    if (binding.modifiers.includes('alt')) parts.push('Alt');
-    if (binding.modifiers.includes('shift')) parts.push('Shift');
-    if (binding.modifiers.includes('meta')) parts.push('Cmd/Win');
+    if (binding.modifiers.includes('ctrl')) {parts.push('Ctrl');}
+    if (binding.modifiers.includes('alt')) {parts.push('Alt');}
+    if (binding.modifiers.includes('shift')) {parts.push('Shift');}
+    if (binding.modifiers.includes('meta')) {parts.push('Cmd/Win');}
 
     // Add key
     parts.push(binding.key.toUpperCase());
@@ -374,17 +374,17 @@ export class HotkeyManager {
       .toLowerCase()
       .split('+')
       .map((p) => p.trim());
-    if (parts.length === 0) return null;
+    if (parts.length === 0) {return null;}
 
     const key = parts[parts.length - 1];
-    if (!key) return null;
+    if (!key) {return null;}
 
     const modifiers = parts
       .slice(0, -1)
       .filter((m) => ['ctrl', 'alt', 'shift', 'meta', 'cmd', 'win'].includes(m))
       .map((m) => {
         // Normalize cmd/win to meta
-        if (m === 'cmd' || m === 'win') return 'meta';
+        if (m === 'cmd' || m === 'win') {return 'meta';}
         return m;
       });
 

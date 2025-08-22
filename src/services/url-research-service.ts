@@ -53,7 +53,7 @@ export class URLResearchService {
         let url = match[0];
         // Add protocol if missing
         if (!url.startsWith('http') && !url.startsWith('git@')) {
-          url = 'https://' + url;
+          url = `https://${  url}`;
         }
         urls.push(url.trim());
       }
@@ -239,8 +239,8 @@ export class URLResearchService {
    * Display research results
    */
   public displayResearchResults(result: ResearchResult): void {
-    console.log('\n' + chalk.cyan.bold('🔬 Deep Research Results'));
-    console.log(chalk.gray('=' + '='.repeat(50)));
+    console.log(`\n${  chalk.cyan.bold('🔬 Deep Research Results')}`);
+    console.log(chalk.gray(`=${  '='.repeat(50)}`));
 
     // Basic info
     console.log(chalk.white.bold(`🔗 URL: ${result.originalUrl}`));
@@ -256,12 +256,12 @@ export class URLResearchService {
     }
 
     // Summary
-    console.log('\n' + chalk.yellow.bold('📋 Summary:'));
+    console.log(`\n${  chalk.yellow.bold('📋 Summary:')}`);
     console.log(chalk.white(result.analysis.summary));
 
     // Key insights
     if (result.keyInsights.length > 0) {
-      console.log('\n' + chalk.green.bold('💡 Key Insights:'));
+      console.log(`\n${  chalk.green.bold('💡 Key Insights:')}`);
       result.keyInsights.forEach((insight, index) => {
         console.log(chalk.green(`   ${index + 1}. ${insight}`));
       });
@@ -269,7 +269,7 @@ export class URLResearchService {
 
     // Actionable items
     if (result.actionableItems.length > 0) {
-      console.log('\n' + chalk.blue.bold('🎯 Actionable Items:'));
+      console.log(`\n${  chalk.blue.bold('🎯 Actionable Items:')}`);
       result.actionableItems.forEach((item, index) => {
         console.log(chalk.blue(`   ${index + 1}. ${item}`));
       });
@@ -277,25 +277,25 @@ export class URLResearchService {
 
     // Keywords
     if (result.analysis.keywords.length > 0) {
-      console.log('\n' + chalk.magenta.bold('🔑 Keywords:'));
+      console.log(`\n${  chalk.magenta.bold('🔑 Keywords:')}`);
       console.log(chalk.magenta(`   ${result.analysis.keywords.join(', ')}`));
     }
 
     // Code blocks
     if (result.analysis.codeBlocks.length > 0) {
-      console.log('\n' + chalk.cyan.bold('💻 Code Examples:'));
+      console.log(`\n${  chalk.cyan.bold('💻 Code Examples:')}`);
       console.log(chalk.gray(`   Found ${result.analysis.codeBlocks.length} code block(s)`));
     }
 
     // Related URLs
     if (result.relatedUrls.length > 0) {
-      console.log('\n' + chalk.yellow.bold('🔗 Related Resources:'));
+      console.log(`\n${  chalk.yellow.bold('🔗 Related Resources:')}`);
       result.relatedUrls.slice(0, 3).forEach((url, index) => {
         console.log(chalk.yellow(`   ${index + 1}. ${url}`));
       });
     }
 
-    console.log('\n' + chalk.green('✅ Research completed successfully!'));
+    console.log(`\n${  chalk.green('✅ Research completed successfully!')}`);
   }
 
   /**
@@ -308,7 +308,7 @@ export class URLResearchService {
     } catch {
       // Try adding protocol
       try {
-        new URL('https://' + url);
+        new URL(`https://${  url}`);
         return true;
       } catch {
         return false;

@@ -197,15 +197,15 @@ export class ConflictResolver {
       try {
         // Check for concurrent write conflicts
         const writeConflict = await this.detectWriteConflict(filePath);
-        if (writeConflict) conflicts.push(writeConflict);
+        if (writeConflict) {conflicts.push(writeConflict);}
 
         // Check for move/rename conflicts
         const moveConflict = await this.detectMoveConflict(filePath);
-        if (moveConflict) conflicts.push(moveConflict);
+        if (moveConflict) {conflicts.push(moveConflict);}
 
         // Check for permission conflicts
         const permissionConflict = await this.detectPermissionConflict(filePath);
-        if (permissionConflict) conflicts.push(permissionConflict);
+        if (permissionConflict) {conflicts.push(permissionConflict);}
       } catch (error) {
         console.debug(`Failed to detect conflicts for ${filePath}:`, error);
       }
@@ -509,7 +509,7 @@ export class ConflictResolver {
     // Check for conflicting operations
     const conflictingLocks = existingLocks.filter((lock) => {
       // Same process can have multiple locks
-      if (lock.processId === processId) return false;
+      if (lock.processId === processId) {return false;}
 
       // Check for conflicting operations
       return this.areOperationsConflicting(operation, lock.operation);
@@ -590,7 +590,7 @@ export class ConflictResolver {
    */
   private async detectMoveConflict(filePath: string): Promise<FileConflict | null> {
     const locks = this.fileLocks.get(path.resolve(filePath));
-    if (!locks) return null;
+    if (!locks) {return null;}
 
     const moveLocks = locks.filter(
       (lock) => lock.operation === 'move' || lock.operation === 'rename',
@@ -608,7 +608,7 @@ export class ConflictResolver {
    */
   private async detectPermissionConflict(filePath: string): Promise<FileConflict | null> {
     const locks = this.fileLocks.get(path.resolve(filePath));
-    if (!locks) return null;
+    if (!locks) {return null;}
 
     const permissionLocks = locks.filter((lock) => lock.operation === 'chmod');
 

@@ -120,7 +120,7 @@ export class ProgressTracker {
    */
   addSubTask(taskId: string, subTask: SubTask): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     task.subTasks.push(subTask);
     task.totalWeight += subTask.weight;
@@ -134,7 +134,7 @@ export class ProgressTracker {
    */
   updateProgress(taskId: string, progress: number, message?: string): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     const oldProgress = task.progress || 0;
     task.progress = Math.max(0, Math.min(100, progress));
@@ -149,10 +149,10 @@ export class ProgressTracker {
    */
   updateSubTaskProgress(taskId: string, subTaskId: string, progress: number): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     const subTask = task.subTasks.find((st) => st.id === subTaskId);
-    if (!subTask) return;
+    if (!subTask) {return;}
 
     subTask.progress = Math.max(0, Math.min(100, progress));
     if (progress >= 100) {
@@ -169,9 +169,9 @@ export class ProgressTracker {
    */
   private updateTaskProgress(taskId: string): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
-    if (task.subTasks.length === 0) return;
+    if (task.subTasks.length === 0) {return;}
 
     // 重み付き平均で進捗を計算
     const weightedProgress = task.subTasks.reduce((sum, subTask) => {
@@ -187,7 +187,7 @@ export class ProgressTracker {
    */
   completeTask(taskId: string, message?: string): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     task.status = 'completed';
     task.progress = 100;
@@ -208,7 +208,7 @@ export class ProgressTracker {
    */
   errorTask(taskId: string, message: string): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     task.status = 'error';
     task.error = message;
@@ -223,9 +223,9 @@ export class ProgressTracker {
    */
   addBlocker(taskId: string, blocker: string): void {
     const task = this.tasks.get(taskId);
-    if (!task) return;
+    if (!task) {return;}
 
-    if (!task.blockers) task.blockers = [];
+    if (!task.blockers) {task.blockers = [];}
     task.blockers.push(blocker);
     task.lastUpdate = new Date();
   }
@@ -235,7 +235,7 @@ export class ProgressTracker {
    */
   removeBlocker(taskId: string, blocker: string): void {
     const task = this.tasks.get(taskId);
-    if (!task || !task.blockers) return;
+    if (!task || !task.blockers) {return;}
 
     const index = task.blockers.indexOf(blocker);
     if (index > -1) {
@@ -474,7 +474,7 @@ export class ProgressTracker {
       (t) => t.status === 'in_progress' && t.velocity,
     );
 
-    if (activeTasks.length === 0) return 0;
+    if (activeTasks.length === 0) {return 0;}
 
     return activeTasks.reduce((sum, t) => sum + (t.velocity || 0), 0) / activeTasks.length;
   }

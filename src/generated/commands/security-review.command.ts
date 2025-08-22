@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { _CommandContext, CommandResult, _CommandArgs } from './types';
+import { _CommandArgs, _CommandContext, CommandResult } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
@@ -685,7 +685,7 @@ export class SecurityReviewCommand extends BaseCommand {
     const severityOrder = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
     return issues.sort((a, b) => {
       const severityDiff = severityOrder[a.severity] - severityOrder[b.severity];
-      if (severityDiff !== 0) return severityDiff;
+      if (severityDiff !== 0) {return severityDiff;}
       
       // Secondary sort by confidence
       const confidenceOrder = { high: 0, medium: 1, low: 2 };
@@ -770,7 +770,7 @@ export class SecurityReviewCommand extends BaseCommand {
   }
   
   private displayResults(report: SecurityReport): void {
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════')}`);
     console.log(chalk.bold.red('                   SECURITY ANALYSIS REPORT                 '));
     console.log(chalk.bold('═══════════════════════════════════════════════════════════\n'));
     
@@ -781,18 +781,18 @@ export class SecurityReviewCommand extends BaseCommand {
     
     // Summary
     console.log(chalk.bold('\n📊 Summary:'));
-    console.log(chalk.gray('├─') + ` Files analyzed: ${chalk.cyan(report.filesAnalyzed)}`);
-    console.log(chalk.gray('├─') + ` Total issues: ${chalk.yellow(report.totalIssues)}`);
-    console.log(chalk.gray('├─') + ` Critical: ${chalk.red(report.critical)}`);
-    console.log(chalk.gray('├─') + ` High: ${chalk.magenta(report.high)}`);
-    console.log(chalk.gray('├─') + ` Medium: ${chalk.yellow(report.medium)}`);
-    console.log(chalk.gray('├─') + ` Low: ${chalk.blue(report.low)}`);
-    console.log(chalk.gray('└─') + ` Scan duration: ${chalk.green(report.scanDuration + 'ms')}\n`);
+    console.log(`${chalk.gray('├─')  } Files analyzed: ${chalk.cyan(report.filesAnalyzed)}`);
+    console.log(`${chalk.gray('├─')  } Total issues: ${chalk.yellow(report.totalIssues)}`);
+    console.log(`${chalk.gray('├─')  } Critical: ${chalk.red(report.critical)}`);
+    console.log(`${chalk.gray('├─')  } High: ${chalk.magenta(report.high)}`);
+    console.log(`${chalk.gray('├─')  } Medium: ${chalk.yellow(report.medium)}`);
+    console.log(`${chalk.gray('├─')  } Low: ${chalk.blue(report.low)}`);
+    console.log(`${chalk.gray('└─')  } Scan duration: ${chalk.green(`${report.scanDuration  }ms`)}\n`);
     
     // Compliance
     console.log(chalk.bold('📋 Compliance Status:'));
-    console.log(chalk.gray('├─') + ` OWASP Top 10: ${report.compliance.owasp >= 80 ? chalk.green('✓') : chalk.red('✗')} ${report.compliance.owasp}%`);
-    console.log(chalk.gray('└─') + ` CWE Coverage: ${report.compliance.cwe >= 80 ? chalk.green('✓') : chalk.red('✗')} ${report.compliance.cwe}%\n`);
+    console.log(`${chalk.gray('├─')  } OWASP Top 10: ${report.compliance.owasp >= 80 ? chalk.green('✓') : chalk.red('✗')} ${report.compliance.owasp}%`);
+    console.log(`${chalk.gray('└─')  } CWE Coverage: ${report.compliance.cwe >= 80 ? chalk.green('✓') : chalk.red('✗')} ${report.compliance.cwe}%\n`);
     
     // Top Issues
     if (report.issues.length > 0) {
@@ -835,7 +835,7 @@ export class SecurityReviewCommand extends BaseCommand {
       console.log(chalk.green('  4. Regular security audits and dependency updates'));
     }
     
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════\n'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════\n')}`);
   }
   
   private getSeverityColor(severity: SecurityIssue['severity']): (text: string) => string {

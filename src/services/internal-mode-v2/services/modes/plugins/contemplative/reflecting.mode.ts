@@ -495,15 +495,15 @@ export default class ReflectingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('project') || inputLower.includes('outcome'))
-      return 'project_reflection';
+      {return 'project_reflection';}
     if (inputLower.includes('decision') || inputLower.includes('choice'))
-      return 'decision_reflection';
+      {return 'decision_reflection';}
     if (inputLower.includes('experience') || inputLower.includes('journey'))
-      return 'experience_reflection';
+      {return 'experience_reflection';}
     if (inputLower.includes('relationship') || inputLower.includes('interaction'))
-      return 'relationship_reflection';
+      {return 'relationship_reflection';}
     if (inputLower.includes('learning') || inputLower.includes('growth'))
-      return 'learning_reflection';
+      {return 'learning_reflection';}
 
     return 'general_reflection';
   }
@@ -511,9 +511,9 @@ export default class ReflectingMode extends BaseMode {
   private determineReflectionScope(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('team') || inputLower.includes('organization')) return 'collective';
-    if (inputLower.includes('personal') || inputLower.includes('individual')) return 'personal';
-    if (inputLower.includes('system') || inputLower.includes('process')) return 'systemic';
+    if (inputLower.includes('team') || inputLower.includes('organization')) {return 'collective';}
+    if (inputLower.includes('personal') || inputLower.includes('individual')) {return 'personal';}
+    if (inputLower.includes('system') || inputLower.includes('process')) {return 'systemic';}
 
     return 'contextual';
   }
@@ -521,9 +521,9 @@ export default class ReflectingMode extends BaseMode {
   private identifyTimeframe(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('recent') || inputLower.includes('just')) return 'recent';
-    if (inputLower.includes('past year') || inputLower.includes('months')) return 'medium_term';
-    if (inputLower.includes('career') || inputLower.includes('life')) return 'long_term';
+    if (inputLower.includes('recent') || inputLower.includes('just')) {return 'recent';}
+    if (inputLower.includes('past year') || inputLower.includes('months')) {return 'medium_term';}
+    if (inputLower.includes('career') || inputLower.includes('life')) {return 'long_term';}
 
     return 'unspecified';
   }
@@ -532,10 +532,10 @@ export default class ReflectingMode extends BaseMode {
     const stakeholders: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('team')) stakeholders.push('team members');
-    if (inputLower.includes('customer')) stakeholders.push('customers');
-    if (inputLower.includes('management')) stakeholders.push('management');
-    if (inputLower.includes('user')) stakeholders.push('users');
+    if (inputLower.includes('team')) {stakeholders.push('team members');}
+    if (inputLower.includes('customer')) {stakeholders.push('customers');}
+    if (inputLower.includes('management')) {stakeholders.push('management');}
+    if (inputLower.includes('user')) {stakeholders.push('users');}
 
     return stakeholders;
   }
@@ -543,11 +543,11 @@ export default class ReflectingMode extends BaseMode {
   private identifyReflectionDomain(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('technical') || inputLower.includes('code')) return 'technical';
-    if (inputLower.includes('business') || inputLower.includes('strategy')) return 'business';
-    if (inputLower.includes('personal') || inputLower.includes('career')) return 'personal';
+    if (inputLower.includes('technical') || inputLower.includes('code')) {return 'technical';}
+    if (inputLower.includes('business') || inputLower.includes('strategy')) {return 'business';}
+    if (inputLower.includes('personal') || inputLower.includes('career')) {return 'personal';}
     if (inputLower.includes('relationship') || inputLower.includes('social'))
-      return 'interpersonal';
+      {return 'interpersonal';}
 
     return 'general';
   }
@@ -556,8 +556,8 @@ export default class ReflectingMode extends BaseMode {
     const wordCount = input.split(/\s+/).length;
     const conceptCount = this.countConcepts(input);
 
-    if (wordCount > 100 || conceptCount > 5) return 'high';
-    if (wordCount > 50 || conceptCount > 3) return 'medium';
+    if (wordCount > 100 || conceptCount > 5) {return 'high';}
+    if (wordCount > 50 || conceptCount > 3) {return 'medium';}
     return 'low';
   }
 
@@ -574,8 +574,8 @@ export default class ReflectingMode extends BaseMode {
 
     const emotionalCount = emotionalTerms.filter((term) => inputLower.includes(term)).length;
 
-    if (emotionalCount > 2) return 'high';
-    if (emotionalCount > 0) return 'medium';
+    if (emotionalCount > 2) {return 'high';}
+    if (emotionalCount > 0) {return 'medium';}
     return 'low';
   }
 
@@ -696,9 +696,9 @@ export default class ReflectingMode extends BaseMode {
   }
 
   private categorizeWisdom(insights: unknown): string {
-    if (insights.categories.includes('process insights')) return 'process_improvement';
-    if (insights.categories.includes('relationship insights')) return 'interpersonal_wisdom';
-    if (insights.categories.includes('strategic insights')) return 'strategic_wisdom';
+    if (insights.categories.includes('process insights')) {return 'process_improvement';}
+    if (insights.categories.includes('relationship insights')) {return 'interpersonal_wisdom';}
+    if (insights.categories.includes('strategic insights')) {return 'strategic_wisdom';}
     return 'personal_growth';
   }
 

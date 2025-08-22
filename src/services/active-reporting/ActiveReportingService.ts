@@ -7,18 +7,18 @@ import { EventEmitter } from 'events';
 import * as crypto from 'crypto';
 import chalk from 'chalk';
 import {
-  Task,
-  SOW,
-  ProgressReport,
+  CollaborativePlan as _CollaborativePlan,
+  ActiveReportingConfig,
+  DecisionPoint,
   HourensouReport,
   IntentAnalysis,
-  TaskDecomposition,
-  ProgressMetrics,
-  ActiveReportingConfig,
-  ServiceState,
-  DecisionPoint,
-  CollaborativePlan as _CollaborativePlan,
   ProactiveReportTrigger,
+  ProgressMetrics,
+  ProgressReport,
+  ServiceState,
+  SOW,
+  Task,
+  TaskDecomposition,
 } from './types';
 import { IntentAnalyzer } from './IntentAnalyzer';
 import { SOWGenerator } from './SOWGenerator';
@@ -90,7 +90,7 @@ export class ActiveReportingService extends EventEmitter {
    * Initialize the service
    */
   public async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     console.log(chalk.cyan('✨ Initializing Active Reporting Service...'));
 
@@ -385,7 +385,7 @@ export class ActiveReportingService extends EventEmitter {
     progress?: number,
   ): Promise<void> {
     const task = this.state.activeTasks.find((t) => t.id === taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     const oldStatus = task.status;
     task.status = status;
@@ -618,7 +618,7 @@ export class ActiveReportingService extends EventEmitter {
    * Calculate overall progress
    */
   private calculateOverallProgress(): number {
-    if (this.state.metrics.tasksTotal === 0) return 0;
+    if (this.state.metrics.tasksTotal === 0) {return 0;}
     return Math.round((this.state.metrics.tasksCompleted / this.state.metrics.tasksTotal) * 100);
   }
 
@@ -822,7 +822,7 @@ export class ActiveReportingService extends EventEmitter {
     const blocker = {
       id: crypto.randomUUID(),
       title: description,
-      description: description,
+      description,
       severity: 'high' as const,
       affectedTasks: this.getCurrentTasks().map((t) => t.id),
       reportedAt: new Date(),

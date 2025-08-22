@@ -5,7 +5,7 @@
  * Tests file existence, structure, and basic functionality
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync, statSync } from 'fs';
 import { join } from 'path';
 

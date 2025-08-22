@@ -10,11 +10,11 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { DualMemoryEngine } from '../dual-memory-engine';
 import type {
-  MemoryEvent,
-  UserPreferenceSet,
   CodePattern,
   KnowledgeNode,
+  MemoryEvent,
   ReasoningTrace,
+  UserPreferenceSet,
 } from '../types/memory-interfaces';
 
 export interface SessionData {
@@ -313,11 +313,11 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private async updatePatterns(userId: string, interaction: Interaction): Promise<void> {
     const profile = this.profiles.get(userId);
-    if (!profile) return;
+    if (!profile) {return;}
 
     // Extract behavior pattern
     const behaviorPattern = this.extractBehaviorPattern(interaction);
-    if (!behaviorPattern) return;
+    if (!behaviorPattern) {return;}
 
     // Find or create pattern
     const existingPattern = profile.patterns.find((p) => p.pattern === behaviorPattern.pattern);
@@ -599,7 +599,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   async getPersonalizedSuggestions(userId: string, context: any): Promise<string[]> {
     const profile = this.profiles.get(userId);
-    if (!profile) return [];
+    if (!profile) {return [];}
 
     const suggestions: string[] = [];
 
@@ -662,14 +662,14 @@ export class CrossSessionLearningEngine extends EventEmitter {
    * Calculate improvement rate
    */
   private calculateImprovementRate(learnings: Learning[]): number {
-    if (learnings.length === 0) return 0;
+    if (learnings.length === 0) {return 0;}
 
     const improvements = learnings
       .flatMap((l) => l.outcomes)
       .map((o) => o.improvement || 0)
       .filter((i) => i > 0);
 
-    if (improvements.length === 0) return 0;
+    if (improvements.length === 0) {return 0;}
 
     return improvements.reduce((a, b) => a + b, 0) / improvements.length;
   }
@@ -679,7 +679,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private calculateImprovement(learning: Learning): number {
     const recentOutcomes = learning.outcomes.slice(-5);
-    if (recentOutcomes.length < 2) return 0;
+    if (recentOutcomes.length < 2) {return 0;}
 
     const recentSuccess = recentOutcomes.filter((o) => o.success).length / recentOutcomes.length;
     const overallSuccess =
@@ -696,7 +696,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
       .filter((s) => s.userId === userId)
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
 
-    if (userSessions.length < 2) return 1;
+    if (userSessions.length < 2) {return 1;}
 
     // Compare preferences across sessions
     let stability = 0;

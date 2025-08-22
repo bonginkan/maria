@@ -7,12 +7,12 @@
 
 import { EventEmitter } from 'events';
 import {
-  ModeDefinition,
-  ModeContext,
-  ModeRecognitionResult,
-  ModeConfig,
-  ModeTriggerType,
   DEFAULT_TRIGGER_WEIGHTS,
+  ModeConfig,
+  ModeContext,
+  ModeDefinition,
+  ModeRecognitionResult,
+  ModeTriggerType,
 } from './types';
 import { ModeDefinitionRegistry } from './ModeDefinitionRegistry';
 import { getIntelligentRouter } from '../intelligent-router/IntelligentRouterService';
@@ -54,7 +54,7 @@ export class ModeRecognitionEngine extends EventEmitter {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     await this.nlpProcessor.initialize();
     this.initialized = true;
@@ -397,7 +397,7 @@ export class ModeRecognitionEngine extends EventEmitter {
   }
 
   private scoreCurrentModeCondition(condition: TriggerCondition, context: ModeContext): number {
-    if (!context.currentMode) return 0;
+    if (!context.currentMode) {return 0;}
     return condition.value === context.currentMode.id ? 1.0 : 0;
   }
 
@@ -421,7 +421,7 @@ export class ModeRecognitionEngine extends EventEmitter {
   }
 
   private scoreProjectContextCondition(condition: TriggerCondition, context: ModeContext): number {
-    if (!context.projectContext) return 0;
+    if (!context.projectContext) {return 0;}
 
     switch (condition.field) {
       case 'type':
@@ -452,7 +452,7 @@ export class ModeRecognitionEngine extends EventEmitter {
   }
 
   private findBestMatch(modeScores: ModeScore[]): ModeScore | null {
-    if (modeScores.length === 0) return null;
+    if (modeScores.length === 0) {return null;}
 
     const bestScore = modeScores[0];
 

@@ -555,11 +555,11 @@ export class EnterpriseAuditLogger extends EventEmitter {
       uniqueUsers.add(event.userId);
 
       // Count results
-      if (event.result === 'success') successfulEvents++;
-      if (event.result === 'failure') failedEvents++;
+      if (event.result === 'success') {successfulEvents++;}
+      if (event.result === 'failure') {failedEvents++;}
 
       // Count risk events
-      if ((event.metadata.riskScore || 0) > 0.7) riskEvents++;
+      if ((event.metadata.riskScore || 0) > 0.7) {riskEvents++;}
 
       // Count compliance violations
       if (event.metadata.complianceFlags?.includes('violation')) {
@@ -726,10 +726,10 @@ export class EnterpriseAuditLogger extends EventEmitter {
   }
 
   private calculateSeverity(event: AuditEvent): number {
-    if (event.result === 'failure') return 7;
-    if (event.metadata.riskScore && event.metadata.riskScore > 0.8) return 8;
-    if (event.eventType === 'security_event') return 9;
-    if (event.eventType === 'data_deletion') return 6;
+    if (event.result === 'failure') {return 7;}
+    if (event.metadata.riskScore && event.metadata.riskScore > 0.8) {return 8;}
+    if (event.eventType === 'security_event') {return 9;}
+    if (event.eventType === 'data_deletion') {return 6;}
     return 3;
   }
 
@@ -819,16 +819,16 @@ export class EnterpriseAuditLogger extends EventEmitter {
 
   private getDeviceId(): string {
     // In production, use device fingerprinting
-    return 'device_' + crypto.randomBytes(8).toString('hex');
+    return `device_${  crypto.randomBytes(8).toString('hex')}`;
   }
 
   private calculateRiskScore(metadata?: Partial<AuditMetadata>): number {
     let score = 0.1; // Base risk
 
     // Increase risk for certain conditions
-    if (metadata?.dataClassification === 'restricted') score += 0.3;
-    if (metadata?.dataClassification === 'pii') score += 0.2;
-    if (metadata?.dataClassification === 'phi') score += 0.3;
+    if (metadata?.dataClassification === 'restricted') {score += 0.3;}
+    if (metadata?.dataClassification === 'pii') {score += 0.2;}
+    if (metadata?.dataClassification === 'phi') {score += 0.3;}
 
     // Location-based risk
     if (metadata?.location && !['US', 'EU'].includes(metadata.location)) {

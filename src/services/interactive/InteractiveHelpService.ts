@@ -69,7 +69,7 @@ export class InteractiveHelpService extends EventEmitter {
    * 初期化
    */
   public async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     try {
       // コマンド一覧を取得
@@ -134,7 +134,7 @@ export class InteractiveHelpService extends EventEmitter {
    * ナビゲーションアクションを処理
    */
   public handleNavigation(action: NavigationAction): void {
-    if (!this.state.isActive) return;
+    if (!this.state.isActive) {return;}
 
     switch (action.type) {
       case 'up':
@@ -417,7 +417,7 @@ export class InteractiveHelpService extends EventEmitter {
    */
   private selectCurrentCommand(): void {
     const selectedCommand = this.state.filteredCommands[this.state.selectedIndex];
-    if (!selectedCommand) return;
+    if (!selectedCommand) {return;}
 
     // 使用頻度を更新
     this.frequencyTracker.recordUsage(selectedCommand.name);
@@ -465,7 +465,7 @@ export class InteractiveHelpService extends EventEmitter {
    * キープレスを処理
    */
   private handleKeyPress(key: string, modifiers: string[]): void {
-    if (!this.state.isActive) return;
+    if (!this.state.isActive) {return;}
 
     const hasCtrl = modifiers.includes('ctrl');
     const hasShift = modifiers.includes('shift');

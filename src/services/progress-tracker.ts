@@ -185,7 +185,7 @@ export class ProgressTracker extends EventEmitter {
    * 全体の進捗率を計算
    */
   private calculateOverallProgress(mission: MissionProgress): number {
-    if (mission.totalTasks === 0) return 0;
+    if (mission.totalTasks === 0) {return 0;}
 
     let totalProgress = 0;
     mission.tasks.forEach((task) => {

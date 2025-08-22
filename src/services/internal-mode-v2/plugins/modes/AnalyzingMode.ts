@@ -6,10 +6,10 @@
 import {
   BaseModePlugin,
   ModeContext,
-  ModeResult,
   ModeDisplayConfig,
-  ModeTrigger,
+  ModeResult,
   ModeTransition,
+  ModeTrigger,
 } from '../BaseModePlugin';
 import { Service } from '../../core';
 
@@ -185,9 +185,9 @@ export class AnalyzingMode extends BaseModePlugin {
     let score = 0;
 
     // Input length factor
-    if (input.length > 500) score += 3;
-    else if (input.length > 200) score += 2;
-    else if (input.length > 100) score += 1;
+    if (input.length > 500) {score += 3;}
+    else if (input.length > 200) {score += 2;}
+    else if (input.length > 100) {score += 1;}
 
     // Complexity indicators
     if (/systematic|comprehensive|thorough|detailed|exhaustive/.test(input.toLowerCase())) {
@@ -207,8 +207,8 @@ export class AnalyzingMode extends BaseModePlugin {
       score += 1;
     }
 
-    if (score >= 6) return 'deep';
-    if (score >= 3) return 'intermediate';
+    if (score >= 6) {return 'deep';}
+    if (score >= 3) {return 'intermediate';}
     return 'surface';
   }
 
@@ -425,8 +425,8 @@ export class AnalyzingMode extends BaseModePlugin {
     let confidence = 0.6; // Base confidence for analytical mode
 
     // Component quality factor
-    if (components.length > 5) confidence += 0.15;
-    if (components.length > 8) confidence += 0.1;
+    if (components.length > 5) {confidence += 0.15;}
+    if (components.length > 8) {confidence += 0.1;}
 
     // Pattern detection factor
     confidence += Math.min(patterns.length * 0.05, 0.15);
@@ -435,8 +435,8 @@ export class AnalyzingMode extends BaseModePlugin {
     confidence += Math.min(insights.length * 0.04, 0.12);
 
     // Input structure factor
-    if (input.length > 200) confidence += 0.1;
-    if (input.includes('analyze') || input.includes('examine')) confidence += 0.08;
+    if (input.length > 200) {confidence += 0.1;}
+    if (input.includes('analyze') || input.includes('examine')) {confidence += 0.08;}
 
     // High-significance components boost
     const highSigComponents = components.filter((c) => c.significance > 0.7);

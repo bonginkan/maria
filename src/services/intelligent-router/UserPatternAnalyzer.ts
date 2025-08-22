@@ -13,7 +13,7 @@ export class UserPatternAnalyzer {
   private initialized: boolean = false;
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     // Load patterns from storage if available
     this.loadPatterns();
@@ -80,7 +80,7 @@ export class UserPatternAnalyzer {
       return p.success && this.calculateSimilarity(p.input, input) > 0.7;
     });
 
-    if (similarPatterns.length === 0) return null;
+    if (similarPatterns.length === 0) {return null;}
 
     // Count occurrences of each command
     const commandCounts = new Map<string, number>();
@@ -106,7 +106,7 @@ export class UserPatternAnalyzer {
     const longer = str1.length > str2.length ? str1 : str2;
     const shorter = str1.length > str2.length ? str2 : str1;
 
-    if (longer.length === 0) return 1.0;
+    if (longer.length === 0) {return 1.0;}
 
     const distance = this.levenshteinDistance(longer, shorter);
     return (longer.length - distance) / longer.length;

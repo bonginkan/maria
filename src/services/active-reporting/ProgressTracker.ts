@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { Task, ProgressMetrics } from './types';
+import { ProgressMetrics, Task } from './types';
 
 export class ProgressTracker extends EventEmitter {
   private trackedTasks: Map<string, TrackedTask>;
@@ -52,7 +52,7 @@ export class ProgressTracker extends EventEmitter {
    */
   public startTask(taskId: string): void {
     const tracked = this.trackedTasks.get(taskId);
-    if (!tracked) return;
+    if (!tracked) {return;}
 
     tracked.startTime = new Date();
     this.startTimes.set(taskId, tracked.startTime);
@@ -67,7 +67,7 @@ export class ProgressTracker extends EventEmitter {
    */
   public updateTaskProgress(taskId: string, progress: number): void {
     const tracked = this.trackedTasks.get(taskId);
-    if (!tracked) return;
+    if (!tracked) {return;}
 
     tracked.task.progress = Math.min(100, Math.max(0, progress));
     tracked.lastUpdate = new Date();
@@ -90,7 +90,7 @@ export class ProgressTracker extends EventEmitter {
    */
   public completeTask(taskId: string): void {
     const tracked = this.trackedTasks.get(taskId);
-    if (!tracked) return;
+    if (!tracked) {return;}
 
     tracked.endTime = new Date();
     tracked.task.status = 'completed';
@@ -110,7 +110,7 @@ export class ProgressTracker extends EventEmitter {
    */
   public blockTask(taskId: string, reason?: string): void {
     const tracked = this.trackedTasks.get(taskId);
-    if (!tracked) return;
+    if (!tracked) {return;}
 
     tracked.task.status = 'blocked';
     if (reason) {
@@ -158,7 +158,7 @@ export class ProgressTracker extends EventEmitter {
     const completedTasks = this.getTasksByStatus('completed');
     const totalTime = completedTasks.reduce((sum, task) => sum + (task.actualTime || 0), 0);
 
-    if (totalTime === 0) return 0;
+    if (totalTime === 0) {return 0;}
 
     return completedTasks.length / (totalTime / 60); // tasks per hour
   }
@@ -200,7 +200,7 @@ export class ProgressTracker extends EventEmitter {
     criticalTasks.forEach((task) => {
       if (task.actualTime && task.estimatedTime) {
         const delay = task.actualTime - task.estimatedTime;
-        if (delay > 0) totalDelay += delay;
+        if (delay > 0) {totalDelay += delay;}
       }
     });
 
@@ -219,7 +219,7 @@ export class ProgressTracker extends EventEmitter {
 
     activeTasks.forEach((task) => {
       const tracked = this.trackedTasks.get(task.id);
-      if (!tracked || !tracked.startTime) return;
+      if (!tracked || !tracked.startTime) {return;}
 
       // Calculate progress based on time spent vs estimated
       if (task.estimatedTime) {
@@ -267,7 +267,7 @@ export class ProgressTracker extends EventEmitter {
    */
   private calculateConfidenceLevel(): number {
     const completedTasks = this.getTasksByStatus('completed');
-    if (completedTasks.length === 0) return 50; // Default confidence
+    if (completedTasks.length === 0) {return 50;} // Default confidence
 
     let totalAccuracy = 0;
     let validComparisons = 0;
@@ -280,7 +280,7 @@ export class ProgressTracker extends EventEmitter {
       }
     });
 
-    if (validComparisons === 0) return 50;
+    if (validComparisons === 0) {return 50;}
 
     return Math.round((totalAccuracy / validComparisons) * 100);
   }

@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { _Command, RequireAuth, RateLimit, _Validate } from '../decorators';
-import { _CommandContext, CommandOptions, _CommandResult } from '../types';
+import { _Command, _Validate, RateLimit, RequireAuth } from '../decorators';
+import { _CommandContext, _CommandResult, CommandOptions } from '../types';
 import { z } from 'zod';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger';
@@ -557,11 +557,11 @@ export class ModelCommand extends BaseCommand<ModelOptions> {
     // Display as table
     console.log(
       chalk.bold(
-        'Model'.padEnd(25) +
+        `${'Model'.padEnd(25) +
           'Provider'.padEnd(12) +
           '$/1K'.padEnd(10) +
-          '$/1M'.padEnd(10) +
-          'Context',
+          '$/1M'.padEnd(10) 
+          }Context`,
       ),
     );
     console.log(chalk.gray('-'.repeat(70)));

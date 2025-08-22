@@ -207,7 +207,7 @@ export class HooksCommand extends BaseCommand {
 
     return {
       success: true,
-      message: header + '\n' + hooksList + footer,
+      message: `${header  }\n${  hooksList  }${footer}`,
     };
   }
 
@@ -436,7 +436,7 @@ export class HooksCommand extends BaseCommand {
     };
 
     try {
-      const logLine = JSON.stringify(logEntry) + '\n';
+      const logLine = `${JSON.stringify(logEntry)  }\n`;
       await fs.appendFile(this.logsPath, logLine);
     } catch (error) {
       // Ignore logging errors to avoid infinite loops
@@ -495,7 +495,7 @@ export class HooksCommand extends BaseCommand {
 
       return {
         success: true,
-        message: header + '\n' + chalk.gray('─'.repeat(80)) + '\n' + logsList,
+        message: `${header  }\n${  chalk.gray('─'.repeat(80))  }\n${  logsList}`,
       };
     } catch (error) {
       return {

@@ -5,15 +5,15 @@
 import { _EventEmitter } from 'events';
 import chalk from 'chalk';
 import {
-  Task,
-  SOW as _SOW,
-  ProgressReport as _ProgressReport,
-  ProactiveReport,
-  ReportTrigger,
-  Blocker,
   Milestone as _Milestone,
+  ProgressReport as _ProgressReport,
+  SOW as _SOW,
+  Blocker,
   DecisionPoint,
+  ProactiveReport,
   Recommendation,
+  ReportTrigger,
+  Task,
 } from './types';
 import { _TaskVisualizer } from './TaskVisualizer';
 import { _ProgressTracker } from './ProgressTracker';
@@ -126,10 +126,10 @@ export class ProactiveReporter extends EventEmitter {
    * Check if a report should be triggered
    */
   public checkTriggers(event: string, _data: unknown): void {
-    if (!this.isReportingEnabled) return;
+    if (!this.isReportingEnabled) {return;}
 
     for (const [_id, trigger] of this.triggers) {
-      if (!trigger.enabled) continue;
+      if (!trigger.enabled) {continue;}
 
       if (this.shouldTriggerReport(trigger, event, data)) {
         this.generateReport(trigger, data);
@@ -332,7 +332,7 @@ export class ProactiveReporter extends EventEmitter {
   private displayReport(_report: ProactiveReport): void {
     const _priorityColor = this.getPriorityColor(report.priority);
 
-    console.log(chalk.cyan('\n' + '═'.repeat(124)));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)}`));
     console.log(priorityColor(this.centerText(report.title, 124)));
     console.log(chalk.cyan('═'.repeat(124)));
 
@@ -354,7 +354,7 @@ export class ProactiveReporter extends EventEmitter {
       });
     }
 
-    console.log(chalk.cyan('\n' + '═'.repeat(124) + '\n'));
+    console.log(chalk.cyan(`\n${  '═'.repeat(124)  }\n`));
   }
 
   /**
@@ -471,7 +471,7 @@ export class ProactiveReporter extends EventEmitter {
    * Calculate remaining time for a task
    */
   private calculateTimeRemaining(_task: Task): number {
-    if (!task.estimatedTime) return 0;
+    if (!task.estimatedTime) {return 0;}
     const _completedTime = task.actualTime || 0;
     const _progressRatio = task.progress / 100;
     const _estimatedTotalTime =

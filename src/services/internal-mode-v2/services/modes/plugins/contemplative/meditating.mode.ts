@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -180,9 +180,9 @@ export class MeditatingMode extends BaseMode {
     confidence += philosophicalMatches.length * 0.08;
 
     // Context indicators
-    if (context.metadata?.requiresDeepThought) confidence += 0.25;
-    if (context.metadata?.philosophicalNature) confidence += 0.2;
-    if (context.metadata?.complexityLevel === 'high') confidence += 0.15;
+    if (context.metadata?.requiresDeepThought) {confidence += 0.25;}
+    if (context.metadata?.philosophicalNature) {confidence += 0.2;}
+    if (context.metadata?.complexityLevel === 'high') {confidence += 0.15;}
 
     // Mindfulness language
     const mindfulnessTerms = ['awareness', 'present', 'observe', 'notice', 'witness'];
@@ -415,9 +415,9 @@ export class MeditatingMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.75;
 
-    if (results.insights.length > 2) confidence += 0.1;
-    if (results.awareness.level > 0.8) confidence += 0.1;
-    if (results.integration.score > 0.7) confidence += 0.05;
+    if (results.insights.length > 2) {confidence += 0.1;}
+    if (results.awareness.level > 0.8) {confidence += 0.1;}
+    if (results.integration.score > 0.7) {confidence += 0.05;}
 
     return Math.min(confidence, 1.0);
   }

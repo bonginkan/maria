@@ -4,14 +4,14 @@
  */
 
 import {
-  ISlashCommand,
   CommandArgs,
-  CommandContext,
-  CommandResult,
   CommandCategory,
+  CommandContext,
+  CommandExample,
   CommandMetadata,
   CommandPermission,
-  CommandExample,
+  CommandResult,
+  ISlashCommand,
   ValidationResult,
 } from './types';
 import { logger } from '../utils/logger';
@@ -95,7 +95,7 @@ export abstract class BaseCommand implements ISlashCommand {
 
     for (let i = 0; i < raw.length; i++) {
       const arg = raw[i];
-      if (!arg) continue;
+      if (!arg) {continue;}
 
       // Parse flags (--flag or -f)
       if (arg.startsWith('--')) {

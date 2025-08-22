@@ -14,7 +14,7 @@ import { MemoryCoordinator } from './memory-system/memory-coordinator';
 
 // 新しいデザインシステムのインポート
 import { TEXT_HIERARCHY } from '../ui/design-system/UnifiedColorPalette.js';
-import { printSuccess, printError } from '../utils/ui.js';
+import { printError, printSuccess } from '../utils/ui.js';
 // Human-in-the-Loop Approval System
 import { ApprovalEngine } from './approval-engine/ApprovalEngine';
 import { QuickApprovalInterface } from './quick-approval/QuickApprovalInterface';
@@ -135,7 +135,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
         try {
           const message = await getUserInput(rl);
 
-          if (!message || !running) break;
+          if (!message || !running) {break;}
 
           // Handle special commands
           if (message.startsWith('/') && !waitingForCodeInput) {
@@ -147,7 +147,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
               waitingForCodeInput = true;
               continue;
             }
-            if (handled) continue;
+            if (handled) {continue;}
           }
 
           // Handle waiting for code input after /code command
@@ -188,7 +188,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
             for await (const chunk of stream) {
               if (isFirstChunk) {
                 // Clear the "thinking" message only when first chunk arrives
-                process.stdout.write('\r' + TEXT_HIERARCHY.SUBTITLE('MARIA: '));
+                process.stdout.write(`\r${  TEXT_HIERARCHY.SUBTITLE('MARIA: ')}`);
                 isFirstChunk = false;
               }
               process.stdout.write(chunk);
@@ -548,24 +548,24 @@ function showHelp(): void {
   console.log(chalk.blue('\n📖 MARIA Commands:\n'));
 
   console.log(chalk.yellow('🚀 Development:'));
-  console.log(chalk.cyan('/code') + '          - Generate code from description');
-  console.log(chalk.cyan('/test') + '          - Generate tests for code');
-  console.log(chalk.cyan('/review') + '        - Review and improve code');
-  console.log(chalk.cyan('/paper') + '         - Process research papers to code (Multi-Agent)');
-  console.log(chalk.cyan('/model') + '         - Show/select AI models');
-  console.log(chalk.cyan('/mode') + '          - Show/set operation & internal cognitive modes');
+  console.log(`${chalk.cyan('/code')  }          - Generate code from description`);
+  console.log(`${chalk.cyan('/test')  }          - Generate tests for code`);
+  console.log(`${chalk.cyan('/review')  }        - Review and improve code`);
+  console.log(`${chalk.cyan('/paper')  }         - Process research papers to code (Multi-Agent)`);
+  console.log(`${chalk.cyan('/model')  }         - Show/select AI models`);
+  console.log(`${chalk.cyan('/mode')  }          - Show/set operation & internal cognitive modes`);
   console.log('');
 
   console.log(chalk.yellow('🔍 Code Quality Analysis:'));
-  console.log(chalk.cyan('/bug') + '           - Bug analysis and fix suggestions');
-  console.log(chalk.cyan('/lint') + '          - ESLint analysis and auto-fix');
-  console.log(chalk.cyan('/typecheck') + '     - TypeScript type safety analysis');
-  console.log(chalk.cyan('/security-review') + ' - Security vulnerability assessment');
+  console.log(`${chalk.cyan('/bug')  }           - Bug analysis and fix suggestions`);
+  console.log(`${chalk.cyan('/lint')  }          - ESLint analysis and auto-fix`);
+  console.log(`${chalk.cyan('/typecheck')  }     - TypeScript type safety analysis`);
+  console.log(`${chalk.cyan('/security-review')  } - Security vulnerability assessment`);
   console.log('');
 
   console.log(chalk.yellow('🤝 Human-in-the-Loop Approval:'));
   console.log(
-    chalk.cyan('/approve') + '        - Show current approval request or manage approvals',
+    `${chalk.cyan('/approve')  }        - Show current approval request or manage approvals`,
   );
   console.log(chalk.gray('  Keyboard Shortcuts:'));
   console.log(chalk.gray('  • Shift+Tab     - Quick approve (いいよ)'));
@@ -576,44 +576,44 @@ function showHelp(): void {
   console.log('');
 
   console.log(chalk.yellow('⚙️  Configuration:'));
-  console.log(chalk.cyan('/setup') + '         - First-time environment setup wizard');
-  console.log(chalk.cyan('/settings') + '      - Environment variable setup');
-  console.log(chalk.cyan('/config') + '        - Show configuration');
+  console.log(`${chalk.cyan('/setup')  }         - First-time environment setup wizard`);
+  console.log(`${chalk.cyan('/settings')  }      - Environment variable setup`);
+  console.log(`${chalk.cyan('/config')  }        - Show configuration`);
   console.log('');
 
   console.log(chalk.yellow('🎨 Media Generation:'));
-  console.log(chalk.cyan('/image') + '         - Generate images');
-  console.log(chalk.cyan('/video') + '         - Generate videos');
-  console.log(chalk.cyan('/avatar') + '        - Interactive ASCII avatar');
-  console.log(chalk.cyan('/voice') + '         - Voice chat mode');
+  console.log(`${chalk.cyan('/image')  }         - Generate images`);
+  console.log(`${chalk.cyan('/video')  }         - Generate videos`);
+  console.log(`${chalk.cyan('/avatar')  }        - Interactive ASCII avatar`);
+  console.log(`${chalk.cyan('/voice')  }         - Voice chat mode`);
   console.log('');
 
   console.log(chalk.yellow('📁 Project Management:'));
-  console.log(chalk.cyan('/init') + '          - Initialize new project');
-  console.log(chalk.cyan('/add-dir') + '       - Add directory to project');
-  console.log(chalk.cyan('/memory') + '        - Manage project memory');
-  console.log(chalk.cyan('/export') + '        - Export project data');
+  console.log(`${chalk.cyan('/init')  }          - Initialize new project`);
+  console.log(`${chalk.cyan('/add-dir')  }       - Add directory to project`);
+  console.log(`${chalk.cyan('/memory')  }        - Manage project memory`);
+  console.log(`${chalk.cyan('/export')  }        - Export project data`);
   console.log('');
 
   console.log(chalk.yellow('🤖 Agent Management:'));
-  console.log(chalk.cyan('/agents') + '        - Manage AI agents');
-  console.log(chalk.cyan('/mcp') + '           - MCP integrations');
-  console.log(chalk.cyan('/ide') + '           - IDE integration setup');
-  console.log(chalk.cyan('/install-github-app') + ' - Install GitHub app');
+  console.log(`${chalk.cyan('/agents')  }        - Manage AI agents`);
+  console.log(`${chalk.cyan('/mcp')  }           - MCP integrations`);
+  console.log(`${chalk.cyan('/ide')  }           - IDE integration setup`);
+  console.log(`${chalk.cyan('/install-github-app')  } - Install GitHub app`);
   console.log('');
 
   console.log(chalk.yellow('⚙️  System:'));
-  console.log(chalk.cyan('/status') + '        - Show system status');
-  console.log(chalk.cyan('/health') + '        - Check system health');
-  console.log(chalk.cyan('/doctor') + '        - System diagnostics');
-  console.log(chalk.cyan('/models') + '        - List available models');
-  console.log(chalk.cyan('/priority') + '      - Set priority mode');
+  console.log(`${chalk.cyan('/status')  }        - Show system status`);
+  console.log(`${chalk.cyan('/health')  }        - Check system health`);
+  console.log(`${chalk.cyan('/doctor')  }        - System diagnostics`);
+  console.log(`${chalk.cyan('/models')  }        - List available models`);
+  console.log(`${chalk.cyan('/priority')  }      - Set priority mode`);
   console.log('');
 
   console.log(chalk.yellow('📝 Session:'));
-  console.log(chalk.cyan('/clear') + '         - Clear screen');
-  console.log(chalk.cyan('/help') + '          - Show this help');
-  console.log(chalk.cyan('/exit') + '          - Exit session');
+  console.log(`${chalk.cyan('/clear')  }         - Clear screen`);
+  console.log(`${chalk.cyan('/help')  }          - Show this help`);
+  console.log(`${chalk.cyan('/exit')  }          - Exit session`);
   console.log('');
 }
 
@@ -1004,7 +1004,7 @@ async function showAvatar(): Promise<void> {
     console.log(chalk.gray('Full interactive avatar with animations is coming soon!\n'));
   } catch (error) {
     console.log(chalk.red('❌ Could not load avatar file'));
-    console.log(chalk.gray('Avatar file should be at: ' + avatarPath));
+    console.log(chalk.gray(`Avatar file should be at: ${  avatarPath}`));
   }
 }
 
@@ -1014,10 +1014,10 @@ async function handleSOWCommand(args: string[]): Promise<void> {
   if (args.length === 0) {
     // Show SOW templates and options
     console.log(chalk.yellow('Available SOW Templates:'));
-    console.log(chalk.cyan('• /sow project <name>') + ' - Generate project-based SOW');
-    console.log(chalk.cyan('• /sow consulting') + ' - Generate consulting services SOW');
-    console.log(chalk.cyan('• /sow development') + ' - Generate software development SOW');
-    console.log(chalk.cyan('• /sow maintenance') + ' - Generate maintenance & support SOW');
+    console.log(`${chalk.cyan('• /sow project <name>')  } - Generate project-based SOW`);
+    console.log(`${chalk.cyan('• /sow consulting')  } - Generate consulting services SOW`);
+    console.log(`${chalk.cyan('• /sow development')  } - Generate software development SOW`);
+    console.log(`${chalk.cyan('• /sow maintenance')  } - Generate maintenance & support SOW`);
     console.log('');
     console.log(chalk.gray('Example: /sow project "Website Redesign"'));
     return;
@@ -1047,10 +1047,10 @@ async function handleBugCommand(args: string[]): Promise<void> {
 
   if (args.length === 0) {
     console.log(chalk.yellow('Bug Assistant Options:'));
-    console.log(chalk.cyan('• /bug report') + ' - Start interactive bug report');
-    console.log(chalk.cyan('• /bug analyze') + ' - Analyze error logs/stack traces');
-    console.log(chalk.cyan('• /bug fix <description>') + ' - Get fix suggestions');
-    console.log(chalk.cyan('• /bug search <keywords>') + ' - Search for similar issues');
+    console.log(`${chalk.cyan('• /bug report')  } - Start interactive bug report`);
+    console.log(`${chalk.cyan('• /bug analyze')  } - Analyze error logs/stack traces`);
+    console.log(`${chalk.cyan('• /bug fix <description>')  } - Get fix suggestions`);
+    console.log(`${chalk.cyan('• /bug search <keywords>')  } - Search for similar issues`);
     console.log('');
     console.log(chalk.gray('Example: /bug fix "TypeError: Cannot read property"'));
     return;
@@ -1363,10 +1363,10 @@ async function handleLintCommand(args: string[]): Promise<void> {
 
   if (args.length === 0) {
     console.log(chalk.yellow('Lint Analysis Options:'));
-    console.log(chalk.cyan('• /lint check') + ' - Run comprehensive lint analysis');
-    console.log(chalk.cyan('• /lint fix') + ' - Auto-fix linting issues');
-    console.log(chalk.cyan('• /lint report') + ' - Generate detailed lint report');
-    console.log(chalk.cyan('• /lint rules') + ' - Show active linting rules');
+    console.log(`${chalk.cyan('• /lint check')  } - Run comprehensive lint analysis`);
+    console.log(`${chalk.cyan('• /lint fix')  } - Auto-fix linting issues`);
+    console.log(`${chalk.cyan('• /lint report')  } - Generate detailed lint report`);
+    console.log(`${chalk.cyan('• /lint rules')  } - Show active linting rules`);
     console.log('');
     console.log(chalk.gray('Example: /lint check'));
     return;
@@ -1455,10 +1455,10 @@ async function handleTypecheckCommand(args: string[]): Promise<void> {
 
   if (args.length === 0) {
     console.log(chalk.yellow('TypeScript Analysis Options:'));
-    console.log(chalk.cyan('• /typecheck analyze') + ' - Run comprehensive type analysis');
-    console.log(chalk.cyan('• /typecheck coverage') + ' - Calculate type coverage');
-    console.log(chalk.cyan('• /typecheck strict') + ' - Check strict mode compliance');
-    console.log(chalk.cyan('• /typecheck config') + ' - Optimize TSConfig settings');
+    console.log(`${chalk.cyan('• /typecheck analyze')  } - Run comprehensive type analysis`);
+    console.log(`${chalk.cyan('• /typecheck coverage')  } - Calculate type coverage`);
+    console.log(`${chalk.cyan('• /typecheck strict')  } - Check strict mode compliance`);
+    console.log(`${chalk.cyan('• /typecheck config')  } - Optimize TSConfig settings`);
     console.log('');
     console.log(chalk.gray('Example: /typecheck analyze'));
     return;
@@ -1546,12 +1546,12 @@ async function handleSecurityReviewCommand(args: string[]): Promise<void> {
 
   if (args.length === 0) {
     console.log(chalk.yellow('Security Review Options:'));
-    console.log(chalk.cyan('• /security-review scan') + ' - Run comprehensive security scan');
+    console.log(`${chalk.cyan('• /security-review scan')  } - Run comprehensive security scan`);
     console.log(
-      chalk.cyan('• /security-review audit') + ' - Audit dependencies for vulnerabilities',
+      `${chalk.cyan('• /security-review audit')  } - Audit dependencies for vulnerabilities`,
     );
-    console.log(chalk.cyan('• /security-review owasp') + ' - OWASP Top 10 compliance check');
-    console.log(chalk.cyan('• /security-review report') + ' - Generate security assessment report');
+    console.log(`${chalk.cyan('• /security-review owasp')  } - OWASP Top 10 compliance check`);
+    console.log(`${chalk.cyan('• /security-review report')  } - Generate security assessment report`);
     console.log('');
     console.log(chalk.gray('Example: /security-review scan'));
     return;
@@ -1745,15 +1745,15 @@ async function handleModeCommand(args: string[]): Promise<void> {
     const currentMode = modeService.getCurrentMode();
 
     console.log(chalk.blue('\n📋 Mode Status:\n'));
-    console.log(chalk.cyan('Operation Mode:') + ' chat (default)');
+    console.log(`${chalk.cyan('Operation Mode:')  } chat (default)`);
 
     if (currentMode) {
       console.log(
-        chalk.cyan('Internal Mode:') + ` ✽ ${currentMode.name} - ${currentMode.description}`,
+        `${chalk.cyan('Internal Mode:')  } ✽ ${currentMode.name} - ${currentMode.description}`,
       );
-      console.log(chalk.cyan('Category:') + ` ${currentMode.category}`);
+      console.log(`${chalk.cyan('Category:')  } ${currentMode.category}`);
     } else {
-      console.log(chalk.cyan('Internal Mode:') + ' Not initialized');
+      console.log(`${chalk.cyan('Internal Mode:')  } Not initialized`);
     }
 
     console.log('');
@@ -1790,7 +1790,7 @@ async function handleInternalModeCommands(args: string[], modeService: unknown):
       console.log(chalk.blue('\n🧠 Current Internal Mode:\n'));
       console.log(`✽ ${chalk.white(currentMode.name)}`);
       console.log(chalk.gray(currentMode.description));
-      console.log(chalk.cyan('Category:') + ` ${currentMode.category}`);
+      console.log(`${chalk.cyan('Category:')  } ${currentMode.category}`);
       console.log('');
     } else {
       console.log(chalk.yellow('🧠 No internal mode currently active'));
@@ -1925,12 +1925,12 @@ async function handleApprovalCommand(args: string[]): Promise<void> {
   if (args.length === 0) {
     // Show approval system overview
     console.log(chalk.yellow('Approval System Commands:'));
-    console.log(chalk.cyan('• /approve --show') + '      - Show current approval request');
-    console.log(chalk.cyan('• /approve --queue') + '     - Show approval queue');
-    console.log(chalk.cyan('• /approve --action=<X>') + ' - Respond to current request');
-    console.log(chalk.cyan('• /approve --status') + '    - Show approval system status');
-    console.log(chalk.cyan('• /approve --log') + '       - Show approval history');
-    console.log(chalk.cyan('• /approve --trust') + '     - Show trust level and settings');
+    console.log(`${chalk.cyan('• /approve --show')  }      - Show current approval request`);
+    console.log(`${chalk.cyan('• /approve --queue')  }     - Show approval queue`);
+    console.log(`${chalk.cyan('• /approve --action=<X>')  } - Respond to current request`);
+    console.log(`${chalk.cyan('• /approve --status')  }    - Show approval system status`);
+    console.log(`${chalk.cyan('• /approve --log')  }       - Show approval history`);
+    console.log(`${chalk.cyan('• /approve --trust')  }     - Show trust level and settings`);
     console.log('');
     console.log(chalk.gray('Actions: approve, reject, trust, review'));
     console.log(chalk.gray('Quick shortcuts: Shift+Tab (approve), Ctrl+Y/N/R/T'));
@@ -2009,14 +2009,14 @@ async function handleApprovalCommand(args: string[]): Promise<void> {
       );
       console.log(`${chalk.cyan('Learning:')} ${config.learningEnabled ? 'Enabled' : 'Disabled'}`);
 
-      console.log('\n' + chalk.yellow('📊 Statistics:'));
+      console.log(`\n${  chalk.yellow('📊 Statistics:')}`);
       console.log(`${chalk.cyan('Total Requests:')} ${stats.totalRequests}`);
       console.log(`${chalk.cyan('Auto Approvals:')} ${stats.autoApprovals}`);
       console.log(`${chalk.cyan('Manual Approvals:')} ${stats.manualApprovals}`);
       console.log(`${chalk.cyan('Rejections:')} ${stats.rejections}`);
       console.log(`${chalk.cyan('Avg Decision Time:')} ${Math.round(stats.averageDecisionTime)}ms`);
 
-      console.log('\n' + chalk.yellow('📈 Repository Stats:'));
+      console.log(`\n${  chalk.yellow('📈 Repository Stats:')}`);
       console.log(`${chalk.cyan('Total Commits:')} ${repoStats.repository.totalCommits}`);
       console.log(`${chalk.cyan('Total Branches:')} ${repoStats.repository.totalBranches}`);
       console.log(
@@ -2061,7 +2061,7 @@ async function handleApprovalCommand(args: string[]): Promise<void> {
         `${chalk.cyan('Require Approval For:')} ${trustSettings.requireApprovalFor.join(', ')}`,
       );
 
-      console.log('\n' + chalk.yellow('📊 Learning Metrics:'));
+      console.log(`\n${  chalk.yellow('📊 Learning Metrics:')}`);
       console.log(
         `${chalk.cyan('Successful Tasks:')} ${trustSettings.learningMetrics.successfulTasks}`,
       );
@@ -2072,7 +2072,7 @@ async function handleApprovalCommand(args: string[]): Promise<void> {
         `${chalk.cyan('User Satisfaction:')} ${trustSettings.learningMetrics.userSatisfaction}`,
       );
 
-      console.log('\n' + chalk.yellow('⚙️  Preferences:'));
+      console.log(`\n${  chalk.yellow('⚙️  Preferences:')}`);
       console.log(
         `${chalk.cyan('Quick Approval:')} ${trustSettings.preferences.preferQuickApproval}`,
       );
@@ -2160,12 +2160,12 @@ function parseApprovalFlags(args: string[]): {
   const flags: Record<string, unknown> = {};
 
   args.forEach((arg) => {
-    if (arg === '--show') flags.show = true;
-    else if (arg === '--queue') flags.queue = true;
-    else if (arg === '--status') flags.status = true;
-    else if (arg === '--log') flags.log = true;
-    else if (arg === '--trust') flags.trust = true;
-    else if (arg === '--quick') flags.quick = true;
+    if (arg === '--show') {flags.show = true;}
+    else if (arg === '--queue') {flags.queue = true;}
+    else if (arg === '--status') {flags.status = true;}
+    else if (arg === '--log') {flags.log = true;}
+    else if (arg === '--trust') {flags.trust = true;}
+    else if (arg === '--quick') {flags.quick = true;}
     else if (arg.startsWith('--action=')) {
       flags.action = arg.split('=')[1];
     }

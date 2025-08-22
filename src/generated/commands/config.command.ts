@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { _Command, RequireAuth, RateLimit, _Validate } from '../decorators';
-import { _CommandContext, CommandOptions, _CommandResult } from '../types';
+import { _Command, _Validate, RateLimit, RequireAuth } from '../decorators';
+import { _CommandContext, _CommandResult, CommandOptions } from '../types';
 import { z } from 'zod';
 import chalk from 'chalk';
 import { logger } from '../../utils/logger';
@@ -563,8 +563,8 @@ export class ConfigCommand extends BaseCommand<ConfigOptions> {
   }
 
   private getConfigScope(options: ConfigOptions): 'global' | 'local' {
-    if (options.global) return 'global';
-    if (options.local) return 'local';
+    if (options.global) {return 'global';}
+    if (options.local) {return 'local';}
     return 'global'; // Default to global
   }
 

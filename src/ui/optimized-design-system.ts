@@ -195,7 +195,7 @@ export class OptimizedComponents {
     }
 
     if (options.label) {
-      output = TEXT_HIERARCHY.CAPTION(options.label) + ' ' + output;
+      output = `${TEXT_HIERARCHY.CAPTION(options.label)  } ${  output}`;
     }
 
     console.log(output);

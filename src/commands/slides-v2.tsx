@@ -213,9 +213,9 @@ export const slidesCommand = new Command('slides')
       slidesId: options.sync,
     };
 
-    if (options.content) command.action = 'content';
-    else if (options.visuals) command.action = 'visuals';
-    else if (options.sync) command.action = 'sync';
+    if (options.content) {command.action = 'content';}
+    else if (options.visuals) {command.action = 'visuals';}
+    else if (options.sync) {command.action = 'sync';}
 
     if (
       options.interactive ||

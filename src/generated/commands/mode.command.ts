@@ -20,9 +20,9 @@ import * as path from 'path';
 import * as os from 'os';
 import { 
   getInternalModeService, 
-  InternalModeUtils,
+  ModeConfig as InternalModeConfig,
   ModeDefinition as InternalModeDefinition,
-  ModeConfig as InternalModeConfig
+  InternalModeUtils
 } from '../../services/internal-mode';
 
 type OperationMode = 'interactive' | 'command' | 'auto' | 'mission' | 'vim' | 'expert';

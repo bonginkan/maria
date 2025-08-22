@@ -5,15 +5,15 @@
 
 import {
   AIProvider,
-  AIResponse,
-  Message,
-  ChatOptions,
-  VisionResponse,
-  TaskType,
   AIProviderError,
-  hasVisionCapability,
+  AIResponse,
+  ChatOptions,
   hasCodeCapability,
+  hasVisionCapability,
+  Message,
   ModelInfo,
+  TaskType,
+  VisionResponse,
 } from '../interfaces/ai-provider';
 
 // Request types
@@ -330,10 +330,10 @@ export class AIRouter {
 
     for (let i = currentIndex + 1; i < priorityOrder.length; i++) {
       const nextProvider = priorityOrder[i];
-      if (!nextProvider) continue;
+      if (!nextProvider) {continue;}
       const provider = this.providers.get(nextProvider);
 
-      if (!provider) continue;
+      if (!provider) {continue;}
 
       try {
         if (await provider.validateConnection()) {

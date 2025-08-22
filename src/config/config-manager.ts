@@ -3,7 +3,7 @@
  * Manages MARIA configuration settings
  */
 
-import { PriorityMode, Config } from '../types';
+import { Config, PriorityMode } from '../types';
 import { MariaAIConfig } from '../maria-ai';
 
 export class ConfigManager {

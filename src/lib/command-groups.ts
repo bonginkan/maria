@@ -179,7 +179,7 @@ export function getCommandInfo(commandName: string): CommandInfo | undefined {
 
 export function getRelatedCommands(commandName: string): CommandInfo[] {
   const command = commandInfo[commandName];
-  if (!command) return [];
+  if (!command) {return [];}
 
   return Object.values(commandInfo)
     .filter((cmd) => cmd.category === command.category && cmd.name !== commandName)

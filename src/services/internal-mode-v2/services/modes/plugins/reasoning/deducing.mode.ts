@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -157,9 +157,9 @@ export class DeducingMode extends BaseMode {
     );
     confidence += conditionalMatches.length * 0.1;
 
-    if (context.metadata?.requiresDeduction) confidence += 0.25;
-    if (context.metadata?.logicalReasoning) confidence += 0.2;
-    if (context.metadata?.inferenceNeeded) confidence += 0.15;
+    if (context.metadata?.requiresDeduction) {confidence += 0.25;}
+    if (context.metadata?.logicalReasoning) {confidence += 0.2;}
+    if (context.metadata?.inferenceNeeded) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -358,8 +358,8 @@ export class DeducingMode extends BaseMode {
 
     const complexityCount = complexityIndicators.filter(Boolean).length;
 
-    if (complexityCount >= 3) return 'high';
-    if (complexityCount >= 2) return 'medium';
+    if (complexityCount >= 3) {return 'high';}
+    if (complexityCount >= 2) {return 'medium';}
     return 'low';
   }
 
@@ -370,17 +370,17 @@ export class DeducingMode extends BaseMode {
 
   private determineDeductionScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 150) return 'comprehensive';
-    if (wordCount > 75) return 'moderate';
+    if (wordCount > 150) {return 'comprehensive';}
+    if (wordCount > 75) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.78;
 
-    if (results.validity.overall_score > 0.85) confidence += 0.1;
-    if (results.soundness.score > 0.8) confidence += 0.08;
-    if (results.conclusions.length > 1) confidence += 0.04;
+    if (results.validity.overall_score > 0.85) {confidence += 0.1;}
+    if (results.soundness.score > 0.8) {confidence += 0.08;}
+    if (results.conclusions.length > 1) {confidence += 0.04;}
 
     return Math.min(confidence, 1.0);
   }
@@ -544,9 +544,9 @@ export class DeducingMode extends BaseMode {
 
   private determineValidityLevel(context: ModeContext): string {
     const score = this.calculateValidityScore(context);
-    if (score >= 0.9) return 'highly_valid';
-    if (score >= 0.8) return 'valid';
-    if (score >= 0.7) return 'mostly_valid';
+    if (score >= 0.9) {return 'highly_valid';}
+    if (score >= 0.8) {return 'valid';}
+    if (score >= 0.7) {return 'mostly_valid';}
     return 'questionable_validity';
   }
 
@@ -572,9 +572,9 @@ export class DeducingMode extends BaseMode {
 
   private determineSoundnessLevel(context: ModeContext): string {
     const score = this.calculateSoundnessScore(context);
-    if (score >= 0.9) return 'highly_sound';
-    if (score >= 0.8) return 'sound';
-    if (score >= 0.7) return 'mostly_sound';
+    if (score >= 0.9) {return 'highly_sound';}
+    if (score >= 0.8) {return 'sound';}
+    if (score >= 0.7) {return 'mostly_sound';}
     return 'questionable_soundness';
   }
 

@@ -382,15 +382,15 @@ export default class ResearchingMode extends BaseMode {
 
   private defineResearchScope(input: string): string {
     const wordCount = input.split(/\s+/).length;
-    if (wordCount < 5) return 'narrow';
-    if (wordCount < 15) return 'moderate';
+    if (wordCount < 5) {return 'narrow';}
+    if (wordCount < 15) {return 'moderate';}
     return 'broad';
   }
 
   private selectResearchMethodology(input: string): string {
-    if (this.isTechnicalQuery(input)) return 'technical_analysis';
-    if (this.isBusinessQuery(input)) return 'market_research';
-    if (this.isScientificQuery(input)) return 'scientific_method';
+    if (this.isTechnicalQuery(input)) {return 'technical_analysis';}
+    if (this.isBusinessQuery(input)) {return 'market_research';}
+    if (this.isScientificQuery(input)) {return 'scientific_method';}
     return 'general_inquiry';
   }
 
@@ -429,15 +429,15 @@ export default class ResearchingMode extends BaseMode {
   }
 
   private categorizeInformation(input: string): string {
-    if (this.isTechnicalQuery(input)) return 'technical';
-    if (this.isBusinessQuery(input)) return 'business';
-    if (this.isScientificQuery(input)) return 'scientific';
+    if (this.isTechnicalQuery(input)) {return 'technical';}
+    if (this.isBusinessQuery(input)) {return 'business';}
+    if (this.isScientificQuery(input)) {return 'scientific';}
     return 'general';
   }
 
   private calculateAnalysisDepth(findings: unknown[]): string {
-    if (findings.length > 4) return 'comprehensive';
-    if (findings.length > 2) return 'thorough';
+    if (findings.length > 4) {return 'comprehensive';}
+    if (findings.length > 2) {return 'thorough';}
     return 'basic';
   }
 
@@ -466,9 +466,9 @@ export default class ResearchingMode extends BaseMode {
     const wordCount = input.split(/\s+/).length;
     const questionCount = (input.match(/\?/g) || []).length;
 
-    if (wordCount < 5) return 'simple';
-    if (wordCount < 15 && questionCount <= 1) return 'moderate';
-    if (wordCount < 30) return 'complex';
+    if (wordCount < 5) {return 'simple';}
+    if (wordCount < 15 && questionCount <= 1) {return 'moderate';}
+    if (wordCount < 30) {return 'complex';}
     return 'extensive';
   }
 

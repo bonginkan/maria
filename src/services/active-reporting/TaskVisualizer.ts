@@ -5,12 +5,12 @@
 
 import chalk from 'chalk';
 import {
-  Task,
-  SOW,
-  ProgressMetrics,
-  HourensouReport,
-  ProgressReport,
   DecisionPoint,
+  HourensouReport,
+  ProgressMetrics,
+  ProgressReport,
+  SOW,
+  Task,
 } from './types';
 
 export class TaskVisualizer {
@@ -40,7 +40,7 @@ export class TaskVisualizer {
     const lines: string[] = [];
 
     // Header
-    lines.push(this.createHeader('SOW: ' + sow.title));
+    lines.push(this.createHeader(`SOW: ${  sow.title}`));
     lines.push('');
 
     // Objective
@@ -263,7 +263,7 @@ export class TaskVisualizer {
     lines.push(this.createHeader('Decision Required'));
     lines.push('');
 
-    lines.push(chalk.yellow('❓ ' + decision.question));
+    lines.push(chalk.yellow(`❓ ${  decision.question}`));
     lines.push('');
 
     lines.push(chalk.gray('Context:'));
@@ -274,7 +274,7 @@ export class TaskVisualizer {
       lines.push(chalk.cyan('Options:'));
       decision.options.forEach((option, _index) => {
         const _letter = String.fromCharCode(97 + index); // a, _b, c...
-        lines.push(`  ${chalk.bold(letter + ')')} ${option.label}`);
+        lines.push(`  ${chalk.bold(`${letter  })`)} ${option.label}`);
         lines.push(chalk.gray(`     ${option.description}`));
 
         if (option.pros && option.pros.length > 0) {
@@ -477,7 +477,7 @@ export class TaskVisualizer {
 
   private createConfidenceIndicator(_confidence: number): string {
     const _stars = Math.round(confidence / 20);
-    return '★'.repeat(stars) + '☆'.repeat(5 - stars) + ` (${confidence}%)`;
+    return `${'★'.repeat(stars) + '☆'.repeat(5 - stars)  } (${confidence}%)`;
   }
 
   private createMetricsGrid(_metrics: ProgressMetrics): string {
@@ -487,8 +487,8 @@ export class TaskVisualizer {
     lines.push(`  │ Tasks Completed     │ ${String(metrics.tasksCompleted).padStart(18)} │`);
     lines.push(`  │ Tasks Total         │ ${String(metrics.tasksTotal).padStart(18)} │`);
     lines.push('  ├─────────────────────┼─────────────────────┤');
-    lines.push(`  │ Time Spent          │ ${(metrics.timeSpent + ' min').padStart(18)} │`);
-    lines.push(`  │ Time Estimated      │ ${(metrics.timeEstimated + ' min').padStart(18)} │`);
+    lines.push(`  │ Time Spent          │ ${(`${metrics.timeSpent  } min`).padStart(18)} │`);
+    lines.push(`  │ Time Estimated      │ ${(`${metrics.timeEstimated  } min`).padStart(18)} │`);
     lines.push('  └─────────────────────┴─────────────────────┘');
 
     return lines.join('\n');
@@ -580,9 +580,9 @@ export class TaskVisualizer {
     words.forEach((_word) => {
       if ((currentLine + word).length > maxWidth) {
         lines.push(' '.repeat(indent) + currentLine.trim());
-        currentLine = word + ' ';
+        currentLine = `${word  } `;
       } else {
-        currentLine += word + ' ';
+        currentLine += `${word  } `;
       }
     });
 

@@ -3,7 +3,7 @@
  * Routes AI requests to optimal providers based on task type and priority
  */
 
-import { AIRequest, AIResponse, TaskType, PriorityMode } from '../types';
+import { AIRequest, AIResponse, PriorityMode, TaskType } from '../types';
 import { AIProviderManager } from '../providers/manager';
 import { ConfigManager } from '../config/config-manager';
 import { getRecommendedModel } from '../config/models';
@@ -189,7 +189,7 @@ export class IntelligentRouter {
 
   private async getModelsForProvider(providerName: string): Promise<string[]> {
     const provider = this.providerManager.getProvider(providerName);
-    if (!provider) return [];
+    if (!provider) {return [];}
 
     try {
       const models = await provider.getModels();

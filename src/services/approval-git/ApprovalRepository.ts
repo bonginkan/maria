@@ -586,7 +586,7 @@ export class ApprovalRepositoryManager extends EventEmitter {
    * Get commits between two points
    */
   private getCommitsBetween(base: string, head: string): string[] {
-    if (!base || !head) return [];
+    if (!base || !head) {return [];}
 
     const commits: string[] = [];
     const visited = new Set<string>();
@@ -594,7 +594,7 @@ export class ApprovalRepositoryManager extends EventEmitter {
 
     while (queue.length > 0) {
       const commitId = queue.shift()!;
-      if (visited.has(commitId) || commitId === base) continue;
+      if (visited.has(commitId) || commitId === base) {continue;}
 
       visited.add(commitId);
       commits.push(commitId);
@@ -615,7 +615,7 @@ export class ApprovalRepositoryManager extends EventEmitter {
     const branch = this.repository.branches.get(branchName);
     const mainBranch = this.getMainBranch();
 
-    if (!branch || !mainBranch.head) return false;
+    if (!branch || !mainBranch.head) {return false;}
 
     // Simplified check - in reality would do proper merge-base analysis
     return branch.head !== mainBranch.head && !this.isCommitInBranch(branch.head, mainBranch.name);
@@ -628,7 +628,7 @@ export class ApprovalRepositoryManager extends EventEmitter {
     const branch = this.repository.branches.get(branchName);
     const mainBranch = this.getMainBranch();
 
-    if (!branch || !mainBranch.head) return false;
+    if (!branch || !mainBranch.head) {return false;}
 
     return this.isCommitInBranch(branch.head, mainBranch.name);
   }
@@ -638,7 +638,7 @@ export class ApprovalRepositoryManager extends EventEmitter {
    */
   private isCommitInBranch(commitId: string, branchName: string): boolean {
     const branch = this.repository.branches.get(branchName);
-    if (!branch) return false;
+    if (!branch) {return false;}
 
     return branch.approvalPath.some((commit) => commit.id === commitId);
   }

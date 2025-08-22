@@ -95,7 +95,7 @@ class AvatarInterface {
     if (this.session.lines.length > 0) {
       console.log();
       this.session.lines.forEach((line) => {
-        console.log(chalk.white('  ' + line));
+        console.log(chalk.white(`  ${  line}`));
       });
       console.log();
     }
@@ -105,7 +105,7 @@ class AvatarInterface {
     const boxWidth = 80;
     const border = '─'.repeat(boxWidth - 4);
 
-    console.log(chalk.white('┌─' + border + '─┐'));
+    console.log(chalk.white(`┌─${  border  }─┐`));
 
     // Word wrap for long messages
     const words = message.split(' ');
@@ -116,23 +116,23 @@ class AvatarInterface {
       if ((currentLine + word).length <= boxWidth - 6) {
         currentLine += (currentLine ? ' ' : '') + word;
       } else {
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {lines.push(currentLine);}
         currentLine = word;
       }
     });
-    if (currentLine) lines.push(currentLine);
+    if (currentLine) {lines.push(currentLine);}
 
     lines.forEach((line) => {
       const padding = ' '.repeat(Math.max(0, boxWidth - 6 - line.length));
       console.log(chalk.white('│ ') + chalk.white(line) + padding + chalk.white(' │'));
     });
 
-    console.log(chalk.white('└─' + border + '─┘'));
+    console.log(chalk.white(`└─${  border  }─┘`));
     console.log();
   }
 
   private startAnimations(): void {
-    if (!this.session.animator) return;
+    if (!this.session.animator) {return;}
 
     // Blinking animation
     this.blinkTimer = setInterval(
@@ -170,13 +170,13 @@ class AvatarInterface {
 
     console.log();
     lines.forEach((line) => {
-      console.log(chalk.white('  ' + line));
+      console.log(chalk.white(`  ${  line}`));
     });
     console.log();
   }
 
   private async simulateTalking(message: string): Promise<void> {
-    if (!this.session.animator) return;
+    if (!this.session.animator) {return;}
 
     const talkingSequence = this.session.animator.getTalkingSequence();
     let frameIndex = 0;
@@ -217,10 +217,10 @@ class AvatarInterface {
   }
 
   private promptUser(): void {
-    if (!this.session.isActive || !this.session.rl) return;
+    if (!this.session.isActive || !this.session.rl) {return;}
 
     this.session.rl.question(chalk.green('> '), async (input) => {
-      if (!this.session.isActive) return;
+      if (!this.session.isActive) {return;}
 
       const userInput = input.trim();
       if (!userInput) {

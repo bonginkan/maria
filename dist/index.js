@@ -29888,7 +29888,7 @@ async function listModels(provider) {
 \u{1F4CB} Available Models (${filtered.length}):
 `));
     filtered.forEach((model) => {
-      const status = model.available ? "\u2705" : "\u26A0\uFE0F";
+      const status = model.available ? "\u2705" : "\u274C";
       const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : "";
       console.log(`${status} ${chalk13__default.default.bold(model.name)} - ${model.provider}${pricing}`);
       console.log(`   ${chalk13__default.default.gray(model.description)}`);

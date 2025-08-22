@@ -224,7 +224,7 @@ export class AliasSystem {
   resolveAlias(input: string): { command: string; args: string[] } | null {
     const parts = input.split(' ');
     const aliasName = parts[0];
-    if (!aliasName) return null;
+    if (!aliasName) {return null;}
 
     const additionalArgs = parts.slice(1);
 

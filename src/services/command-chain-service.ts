@@ -218,7 +218,7 @@ export class CommandChainService {
     if (firstLine.length <= maxLength) {
       return firstLine;
     }
-    return firstLine.substring(0, maxLength) + '...';
+    return `${firstLine.substring(0, maxLength)  }...`;
   }
 
   /**

@@ -4,7 +4,7 @@
  */
 
 import { IAIProvider } from './ai-provider';
-import { PriorityMode, ModelInfo } from '../types/index';
+import { ModelInfo, PriorityMode } from '../types/index';
 import { OpenAIProvider } from './openai-provider';
 import { AnthropicProvider } from './anthropic-provider';
 import { GoogleAIProvider } from './google-ai-provider';
@@ -78,21 +78,21 @@ export class AIProviderManager {
 
     // Local providers
     if (localProviders && localProviders['lmstudio'] !== false) {
-      if (process.env['DEBUG']) console.log('🔄 Initializing LM Studio provider...');
+      if (process.env['DEBUG']) {console.log('🔄 Initializing LM Studio provider...');}
       const provider = new LMStudioProvider();
       await provider.initialize('lmstudio');
       this.providers.set('lmstudio', provider);
     }
 
     if (localProviders && localProviders['ollama'] !== false) {
-      if (process.env['DEBUG']) console.log('🔄 Initializing Ollama provider...');
+      if (process.env['DEBUG']) {console.log('🔄 Initializing Ollama provider...');}
       const provider = new OllamaProvider();
       await provider.initialize('ollama');
       this.providers.set('ollama', provider);
     }
 
     if (localProviders && localProviders['vllm'] !== false) {
-      if (process.env['DEBUG']) console.log('🔄 Initializing vLLM provider...');
+      if (process.env['DEBUG']) {console.log('🔄 Initializing vLLM provider...');}
       const provider = new VLLMProvider();
       await provider.initialize('vllm');
       this.providers.set('vllm', provider);
@@ -115,16 +115,16 @@ export class AIProviderManager {
 
     const checks = Array.from(this.providers.entries()).map(async ([name, provider]) => {
       try {
-        if (process.env['DEBUG']) console.log(`  • Checking ${name}...`);
+        if (process.env['DEBUG']) {console.log(`  • Checking ${name}...`);}
         const isAvailable = await (provider.validateConnection?.() ?? Promise.resolve(true));
         if (isAvailable) {
           this.availableProviders.add(name);
-          if (process.env['DEBUG']) console.log(`    ✅ ${name} is available`);
+          if (process.env['DEBUG']) {console.log(`    ✅ ${name} is available`);}
         } else {
-          if (process.env['DEBUG']) console.log(`    ❌ ${name} is not available`);
+          if (process.env['DEBUG']) {console.log(`    ❌ ${name} is not available`);}
         }
       } catch (error: unknown) {
-        if (process.env['DEBUG']) console.log(`    ❌ ${name} failed: ${error}`);
+        if (process.env['DEBUG']) {console.log(`    ❌ ${name} failed: ${error}`);}
       }
     });
 
@@ -208,7 +208,7 @@ export class AIProviderManager {
     priorityMode: PriorityMode = 'auto',
   ): string | undefined {
     const available = this.getAvailableProviders();
-    if (available.length === 0) return undefined;
+    if (available.length === 0) {return undefined;}
 
     const priorityOrder = this.getPriorityOrder(priorityMode);
 

@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { _CommandContext, CommandResult, _CommandArgs } from './types';
+import { _CommandArgs, _CommandContext, CommandResult } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
@@ -594,11 +594,11 @@ export class LintAnalysisCommand extends BaseCommand {
   }
   
   private categorizeRule(ruleId: string): string {
-    if (ruleId.includes('import') || ruleId.includes('require')) return 'imports';
-    if (ruleId.includes('naming') || ruleId.includes('camel') || ruleId.includes('pascal')) return 'naming';
-    if (ruleId.includes('indent') || ruleId.includes('space') || ruleId.includes('quote')) return 'style';
-    if (ruleId.includes('unused') || ruleId.includes('console') || ruleId.includes('debug')) return 'quality';
-    if (ruleId.includes('security') || ruleId.includes('xss') || ruleId.includes('eval')) return 'security';
+    if (ruleId.includes('import') || ruleId.includes('require')) {return 'imports';}
+    if (ruleId.includes('naming') || ruleId.includes('camel') || ruleId.includes('pascal')) {return 'naming';}
+    if (ruleId.includes('indent') || ruleId.includes('space') || ruleId.includes('quote')) {return 'style';}
+    if (ruleId.includes('unused') || ruleId.includes('console') || ruleId.includes('debug')) {return 'quality';}
+    if (ruleId.includes('security') || ruleId.includes('xss') || ruleId.includes('eval')) {return 'security';}
     return 'general';
   }
   
@@ -662,18 +662,18 @@ export class LintAnalysisCommand extends BaseCommand {
   }
   
   private displayResults(result: LintResult): void {
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════')}`);
     console.log(chalk.bold.cyan('                    LINT ANALYSIS REPORT                    '));
     console.log(chalk.bold('═══════════════════════════════════════════════════════════\n'));
     
     // Summary
     console.log(chalk.bold('📊 Summary:'));
-    console.log(chalk.gray('├─') + ` Files analyzed: ${chalk.cyan(result.filesAnalyzed)}`);
-    console.log(chalk.gray('├─') + ` Total errors: ${chalk.red(result.totalErrors)}`);
-    console.log(chalk.gray('├─') + ` Total warnings: ${chalk.yellow(result.totalWarnings)}`);
-    console.log(chalk.gray('├─') + ` Fixable issues: ${chalk.green(result.fixableCount)}`);
-    console.log(chalk.gray('├─') + ` Rules violated: ${chalk.magenta(result.rulesViolated.size)}`);
-    console.log(chalk.gray('└─') + ` Scan duration: ${chalk.green(result.scanDuration + 'ms')}\n`);
+    console.log(`${chalk.gray('├─')  } Files analyzed: ${chalk.cyan(result.filesAnalyzed)}`);
+    console.log(`${chalk.gray('├─')  } Total errors: ${chalk.red(result.totalErrors)}`);
+    console.log(`${chalk.gray('├─')  } Total warnings: ${chalk.yellow(result.totalWarnings)}`);
+    console.log(`${chalk.gray('├─')  } Fixable issues: ${chalk.green(result.fixableCount)}`);
+    console.log(`${chalk.gray('├─')  } Rules violated: ${chalk.magenta(result.rulesViolated.size)}`);
+    console.log(`${chalk.gray('└─')  } Scan duration: ${chalk.green(`${result.scanDuration  }ms`)}\n`);
     
     // Rules violated
     if (result.rulesViolated.size > 0) {
@@ -684,7 +684,7 @@ export class LintAnalysisCommand extends BaseCommand {
       for (const rule of ruleArray) {
         const errors = [...result.errors, ...result.warnings].filter(e => e.rule === rule);
         const category = errors[0]?.category || 'general';
-        if (!ruleGroups[category]) ruleGroups[category] = [];
+        if (!ruleGroups[category]) {ruleGroups[category] = [];}
         ruleGroups[category].push(`${rule} (${errors.length})`);
       }
       
@@ -738,7 +738,7 @@ export class LintAnalysisCommand extends BaseCommand {
       console.log(chalk.yellow(`\n💡 ${result.fixableCount} issues can be automatically fixed with --fix`));
     }
     
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════\n'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════\n')}`);
   }
   
   private async autoFixErrors(errors: LintError[]): Promise<number> {
@@ -746,7 +746,7 @@ export class LintAnalysisCommand extends BaseCommand {
     
     // Group fixes by file
     for (const error of errors) {
-      if (!error.fixable || !error.file) continue;
+      if (!error.fixable || !error.file) {continue;}
       
       const fixes = fileFixMap.get(error.file) || [];
       
@@ -825,12 +825,12 @@ export class LintAnalysisCommand extends BaseCommand {
         for (const fix of fixes) {
           const lineIndex = fix.line - 1;
           if (lineIndex >= 0 && lineIndex < lines.length) {
-            let line = lines[lineIndex];
+            const line = lines[lineIndex];
             
             switch (fix.fix) {
               case ';':
                 if (!line.trimEnd().endsWith(';')) {
-                  lines[lineIndex] = line.trimEnd() + ';';
+                  lines[lineIndex] = `${line.trimEnd()  };`;
                   totalFixed++;
                 }
                 break;
@@ -885,7 +885,7 @@ export class LintAnalysisCommand extends BaseCommand {
     
     for (const error of [...result.errors, ...result.warnings]) {
       const category = error.category;
-      if (!rulesByCategory[category]) rulesByCategory[category] = [];
+      if (!rulesByCategory[category]) {rulesByCategory[category] = [];}
       
       const existing = rulesByCategory[category].find(r => r.rule === error.rule);
       if (existing) {

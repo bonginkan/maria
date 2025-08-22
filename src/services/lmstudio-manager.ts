@@ -3,12 +3,12 @@
  * Phase 1: 基礎検出システム + 自動起動システム
  */
 
-import { spawn, ChildProcess } from 'child_process';
+import { ChildProcess, spawn } from 'child_process';
 import { existsSync } from 'fs';
 import axios from 'axios';
 import { LMStudioDetector } from './lmstudio-detector';
-import { LMStudioHealthChecker, HealthStatus } from './lmstudio-health';
-import { LMStudioConfigManager, LMStudioConfig } from './lmstudio-config';
+import { HealthStatus, LMStudioHealthChecker } from './lmstudio-health';
+import { LMStudioConfig, LMStudioConfigManager } from './lmstudio-config';
 
 export interface LMStudioStatus {
   isRunning: boolean;

@@ -7,7 +7,7 @@
 
 import { BaseCommand } from '../ui/base-command';
 import { ProgressIndicator } from '../ui/progress-indicator';
-import { readConfig, MariaConfig } from '../utils/config';
+import { MariaConfig, readConfig } from '../utils/config';
 import type { CommandCategory } from '../lib/command-groups';
 import * as os from 'os';
 
@@ -391,7 +391,7 @@ export class StatusEnhancedCommand extends BaseCommand {
   private async getProjectStatus(
     context: CommandContext,
   ): Promise<SystemStatus['project'] | undefined> {
-    if (!context.projectPath) return undefined;
+    if (!context.projectPath) {return undefined;}
 
     return {
       path: context.projectPath,

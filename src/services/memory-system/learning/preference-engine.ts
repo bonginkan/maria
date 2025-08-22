@@ -656,7 +656,7 @@ export class PreferenceEngine extends EventEmitter {
 
   private async checkAdaptationRules(profile: PreferenceProfile): Promise<void> {
     for (const rule of this.adaptationRules) {
-      if (!rule.enabled) continue;
+      if (!rule.enabled) {continue;}
 
       if (this.evaluateCondition(rule.condition, profile)) {
         await this.applyAction(rule.action, profile);
@@ -699,7 +699,7 @@ export class PreferenceEngine extends EventEmitter {
   }
 
   private compareValue(value: unknown, operator: string, threshold?: number): boolean {
-    if (typeof value !== 'number' || threshold === undefined) return false;
+    if (typeof value !== 'number' || threshold === undefined) {return false;}
 
     switch (operator) {
       case 'greater':
@@ -720,7 +720,7 @@ export class PreferenceEngine extends EventEmitter {
     // Navigate to target property
     for (let i = 0; i < targetPath.length - 1; i++) {
       target = target[targetPath[i]];
-      if (!target) return;
+      if (!target) {return;}
     }
 
     const property = targetPath[targetPath.length - 1];
@@ -1081,7 +1081,7 @@ export class PreferenceEngine extends EventEmitter {
 
   async removeOverride(userId: string, overrideId: string): Promise<void> {
     const profile = this.profiles.get(userId);
-    if (!profile) return;
+    if (!profile) {return;}
 
     profile.overrides = profile.overrides.filter((o) => o.id !== overrideId);
 

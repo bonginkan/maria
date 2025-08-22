@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'events';
 import { BackgroundProcessor } from './background-processor.js';
-import { UIStateManager, BackgroundTask } from './ui-state-manager.js';
+import { BackgroundTask, UIStateManager } from './ui-state-manager.js';
 import { SlashCommandHandler } from './slash-command-handler.js';
 import { ConversationContext } from '../types/conversation.js';
 import { logger } from '../utils/logger.js';
@@ -138,14 +138,14 @@ export class ProcessManager extends EventEmitter {
         // Context-based adjustments
         // if (context.isUrgent) score += 30; // Property not available
         // if (context.isInteractive) score += 20; // Property not available
-        if (context.hasErrors) score += 30;
-        if (context.currentTask) score += 20;
+        if (context.hasErrors) {score += 30;}
+        if (context.currentTask) {score += 20;}
 
         // Normalize to priority level
         let level: TaskPriority['level'] = 'normal';
-        if (score >= 80) level = 'high';
-        else if (score >= 65) level = 'high';
-        else if (score < 40) level = 'low';
+        if (score >= 80) {level = 'high';}
+        else if (score >= 65) {level = 'high';}
+        else if (score < 40) {level = 'low';}
 
         return { level, score };
       },
@@ -446,7 +446,7 @@ export class ProcessManager extends EventEmitter {
    * Format duration in human readable format
    */
   private formatDuration(ms: number): string {
-    if (ms < 1000) return `${ms}ms`;
+    if (ms < 1000) {return `${ms}ms`;}
 
     const seconds = Math.floor(ms / 1000);
     const minutes = Math.floor(seconds / 60);
@@ -494,7 +494,7 @@ export class ProcessManager extends EventEmitter {
       message,
       details: {
         runningTasks: backgroundStats.runningProcesses,
-        failureRate: failureRate,
+        failureRate,
         averageResponseTime: this.stats.averageDuration,
       },
     };

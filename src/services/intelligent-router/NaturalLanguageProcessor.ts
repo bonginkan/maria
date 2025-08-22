@@ -29,7 +29,7 @@ export class NaturalLanguageProcessor {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     // Initialize any async resources if needed
     this.initialized = true;
@@ -124,7 +124,7 @@ export class NaturalLanguageProcessor {
 
     patterns.forEach((pattern) => {
       const matches = text.match(pattern);
-      if (matches) tokens.push(...matches);
+      if (matches) {tokens.push(...matches);}
     });
 
     return tokens;
@@ -158,7 +158,7 @@ export class NaturalLanguageProcessor {
 
     patterns.forEach((pattern) => {
       const matches = text.match(pattern);
-      if (matches) tokens.push(...matches);
+      if (matches) {tokens.push(...matches);}
     });
 
     return tokens;
@@ -175,11 +175,11 @@ export class NaturalLanguageProcessor {
       let stem = token;
 
       // Remove common suffixes
-      if (stem.endsWith('ing')) stem = stem.slice(0, -3);
-      else if (stem.endsWith('ed')) stem = stem.slice(0, -2);
-      else if (stem.endsWith('ly')) stem = stem.slice(0, -2);
-      else if (stem.endsWith('es')) stem = stem.slice(0, -2);
-      else if (stem.endsWith('s') && stem.length > 3) stem = stem.slice(0, -1);
+      if (stem.endsWith('ing')) {stem = stem.slice(0, -3);}
+      else if (stem.endsWith('ed')) {stem = stem.slice(0, -2);}
+      else if (stem.endsWith('ly')) {stem = stem.slice(0, -2);}
+      else if (stem.endsWith('es')) {stem = stem.slice(0, -2);}
+      else if (stem.endsWith('s') && stem.length > 3) {stem = stem.slice(0, -1);}
 
       return stem;
     });
@@ -538,7 +538,7 @@ export class NaturalLanguageProcessor {
   async detectIntent(processedInput: ProcessedInput): Promise<string[]> {
     // Extract potential intents based on keywords
     const intents: string[] = [];
-    const keywords = processedInput.keywords.join(' ') + ' ' + processedInput.normalized;
+    const keywords = `${processedInput.keywords.join(' ')  } ${  processedInput.normalized}`;
 
     // Code-related intents
     if (/\b(write|create|generate|implement|build|code|program|develop)\b/i.test(keywords)) {

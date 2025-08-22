@@ -102,7 +102,7 @@ export class FileSystemCommands {
         files.forEach((file, index) => {
           const name = file.isDirectory ? chalk.blue(file.name) : file.name;
           output += name.padEnd(18);
-          if ((index + 1) % columns === 0) output += '\n';
+          if ((index + 1) % columns === 0) {output += '\n';}
         });
       }
 
@@ -340,7 +340,7 @@ export class FileSystemCommands {
       let output = '';
       for (const file of args) {
         const content = await fileSystemService.readFile(file);
-        output += content + '\n';
+        output += `${content  }\n`;
       }
 
       return {
@@ -401,8 +401,8 @@ export class FileSystemCommands {
 
       if (typeIndex !== -1 && typeIndex + 1 < args.length) {
         const typeArg = args[typeIndex + 1];
-        if (typeArg === 'f') options.type = 'file';
-        else if (typeArg === 'd') options.type = 'directory';
+        if (typeArg === 'f') {options.type = 'file';}
+        else if (typeArg === 'd') {options.type = 'directory';}
       }
 
       const files = await fileSystemService.findFiles(searchPath, options);
@@ -530,7 +530,7 @@ export class FileSystemCommands {
     maxDepth: number,
     currentDepth: number,
   ): Promise<string> {
-    if (currentDepth >= maxDepth) return '';
+    if (currentDepth >= maxDepth) {return '';}
 
     let result = '';
     try {
@@ -542,7 +542,7 @@ export class FileSystemCommands {
         const connector = isLast ? '└── ' : '├── ';
         const name = file.isDirectory ? chalk.blue(file.name) : file.name;
 
-        result += prefix + connector + name + '\n';
+        result += `${prefix + connector + name  }\n`;
 
         if (file.isDirectory && currentDepth < maxDepth - 1) {
           const newPrefix = prefix + (isLast ? '    ' : '│   ');

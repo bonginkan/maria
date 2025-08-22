@@ -133,7 +133,7 @@ export class AlgorithmExtractorAgent extends BaseAgent {
 
   private extractSteps(content: string, startMarker: string): string[] {
     const startIndex = content.indexOf(startMarker);
-    if (startIndex === -1) return [];
+    if (startIndex === -1) {return [];}
 
     const subsequentContent = content.substring(startIndex);
     const lines = subsequentContent.split('\n').slice(0, 20); // Get next 20 lines
@@ -231,7 +231,7 @@ export class AlgorithmExtractorAgent extends BaseAgent {
 
   private async analyzePseudocode(block: string): Promise<AlgorithmExtraction | null> {
     const lines = block.split('\n').filter((l) => l.trim());
-    if (lines.length < 2) return null;
+    if (lines.length < 2) {return null;}
 
     // Try to extract algorithm name from first line
     const firstLine = lines[0];

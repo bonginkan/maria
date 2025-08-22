@@ -210,7 +210,7 @@ export class ModeService extends BaseService {
     const suggestions: { mode: ModeDefinition; score: number }[] = [];
 
     for (const mode of this.modes.values()) {
-      if (!mode.enabled) continue;
+      if (!mode.enabled) {continue;}
 
       let score = 0;
 
@@ -282,7 +282,7 @@ export class ModeService extends BaseService {
    */
   private async recordModeUsage(sessionId: string, modeId: string): Promise<void> {
     const startTime = this.modeStartTimes.get(sessionId);
-    if (!startTime) return;
+    if (!startTime) {return;}
 
     const duration = Date.now() - startTime;
     const stats = this.usageStats.get(modeId);

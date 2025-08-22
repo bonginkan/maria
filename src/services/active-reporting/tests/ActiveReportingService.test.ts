@@ -2,9 +2,9 @@
  * Active Reporting Service Tests
  * Comprehensive test suite for the Active Reporting System
  */
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ActiveReportingService } from '../ActiveReportingService';
-import { IntentAnalysis, Task, SOW } from '../types';
+import { IntentAnalysis, SOW, Task } from '../types';
 
 describe('ActiveReportingService', () => {
   let service: ActiveReportingService;

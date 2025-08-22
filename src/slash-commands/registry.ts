@@ -7,12 +7,12 @@
 import * as path from 'path';
 import { glob } from 'glob';
 import {
-  ISlashCommand,
   CommandArgs,
   CommandContext,
-  CommandResult,
   CommandError,
+  CommandResult,
   IMiddleware,
+  ISlashCommand,
   MiddlewareNext,
 } from './types';
 // import { BaseCommand } from './base-command';
@@ -347,7 +347,7 @@ export class CommandRegistry {
 
     for (let i = 0; i < raw.length; i++) {
       const arg = raw[i];
-      if (!arg) continue;
+      if (!arg) {continue;}
 
       if (arg.startsWith('--')) {
         const key = arg.slice(2);

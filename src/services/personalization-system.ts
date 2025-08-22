@@ -167,7 +167,7 @@ export class PersonalizationSystem extends EventEmitter {
    * Initialize personalization system
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     try {
       // Load user preferences
@@ -195,7 +195,7 @@ export class PersonalizationSystem extends EventEmitter {
   private async loadUserPreferences(): Promise<void> {
     try {
       const userProfile = this.learningEngine.getUserProfile();
-      if (!userProfile) return;
+      if (!userProfile) {return;}
 
       // Adapt settings based on user profile
       if (userProfile.preferences.preferredCommands.length > 0) {
@@ -539,7 +539,7 @@ export class PersonalizationSystem extends EventEmitter {
     try {
       // Update personalization based on recent activity
       const userProfile = this.learningEngine.getUserProfile();
-      if (!userProfile) return;
+      if (!userProfile) {return;}
 
       // Adapt UI density based on command frequency
       const recentCommandRate =

@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -185,9 +185,9 @@ export class NegotiatingMode extends BaseMode {
     confidence += conflictMatches.length * 0.12;
 
     // Context indicators
-    if (context.metadata?.requiresNegotiation) confidence += 0.25;
-    if (context.metadata?.multipleStakeholders) confidence += 0.2;
-    if (context.metadata?.hasConflict) confidence += 0.15;
+    if (context.metadata?.requiresNegotiation) {confidence += 0.25;}
+    if (context.metadata?.multipleStakeholders) {confidence += 0.2;}
+    if (context.metadata?.hasConflict) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -361,42 +361,42 @@ export class NegotiatingMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.7;
 
-    if (results.consensus.level > 0.7) confidence += 0.1;
-    if (results.satisfaction.average > 0.8) confidence += 0.1;
-    if (results.agreements.length > 1) confidence += 0.1;
+    if (results.consensus.level > 0.7) {confidence += 0.1;}
+    if (results.satisfaction.average > 0.8) {confidence += 0.1;}
+    if (results.agreements.length > 1) {confidence += 0.1;}
 
     return Math.min(confidence, 1.0);
   }
 
   // Helper methods for negotiation operations
   private identifyConflictType(input: string): string {
-    if (input.includes('resource')) return 'resource_allocation';
-    if (input.includes('technical')) return 'technical_approach';
-    if (input.includes('timeline')) return 'scheduling';
-    if (input.includes('priority')) return 'prioritization';
+    if (input.includes('resource')) {return 'resource_allocation';}
+    if (input.includes('technical')) {return 'technical_approach';}
+    if (input.includes('timeline')) {return 'scheduling';}
+    if (input.includes('priority')) {return 'prioritization';}
     return 'general_disagreement';
   }
 
   private assessNegotiationUrgency(input: string): string {
-    if (input.includes('urgent') || input.includes('critical')) return 'high';
-    if (input.includes('soon') || input.includes('important')) return 'medium';
+    if (input.includes('urgent') || input.includes('critical')) {return 'high';}
+    if (input.includes('soon') || input.includes('important')) {return 'medium';}
     return 'low';
   }
 
   private assessNegotiationComplexity(input: string): string {
     const wordCount = input.split(/\s+/).length;
-    if (wordCount > 150) return 'high';
-    if (wordCount > 75) return 'medium';
+    if (wordCount > 150) {return 'high';}
+    if (wordCount > 75) {return 'medium';}
     return 'low';
   }
 
   private extractStakeholders(input: string): string[] {
     // Simplified stakeholder extraction
     const stakeholders = [];
-    if (input.includes('team')) stakeholders.push('development_team');
-    if (input.includes('business')) stakeholders.push('business_team');
-    if (input.includes('management')) stakeholders.push('management');
-    if (input.includes('customer')) stakeholders.push('customer');
+    if (input.includes('team')) {stakeholders.push('development_team');}
+    if (input.includes('business')) {stakeholders.push('business_team');}
+    if (input.includes('management')) {stakeholders.push('management');}
+    if (input.includes('customer')) {stakeholders.push('customer');}
     return stakeholders;
   }
 
@@ -405,8 +405,8 @@ export class NegotiatingMode extends BaseMode {
   }
 
   private assessInfluence(stakeholder: string, input: string): string {
-    if (stakeholder.includes('management')) return 'high';
-    if (stakeholder.includes('customer')) return 'high';
+    if (stakeholder.includes('management')) {return 'high';}
+    if (stakeholder.includes('customer')) {return 'high';}
     return 'medium';
   }
 
@@ -443,8 +443,8 @@ export class NegotiatingMode extends BaseMode {
   }
 
   private selectNegotiationStrategy(situation: any): string {
-    if (situation.urgency === 'high') return 'collaborative_expedited';
-    if (situation.complexity === 'high') return 'structured_facilitated';
+    if (situation.urgency === 'high') {return 'collaborative_expedited';}
+    if (situation.complexity === 'high') {return 'structured_facilitated';}
     return 'collaborative_consensus';
   }
 

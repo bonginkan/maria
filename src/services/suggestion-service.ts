@@ -3,7 +3,7 @@
  * Provides intelligent command suggestions based on context and execution history
  */
 
-import { getRelatedCommands, getCommandChain } from '../lib/command-groups';
+import { getCommandChain, getRelatedCommands } from '../lib/command-groups';
 
 export interface CommandSuggestion {
   command: string;
@@ -181,7 +181,7 @@ export class SuggestionService {
    * Format suggestions for display
    */
   formatSuggestions(suggestions: CommandSuggestion[]): string {
-    if (suggestions.length === 0) return '';
+    if (suggestions.length === 0) {return '';}
 
     let output = '\n💡 Suggested next actions:\n';
     suggestions.forEach((sug) => {

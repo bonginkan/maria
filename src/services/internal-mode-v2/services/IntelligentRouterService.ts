@@ -3,7 +3,7 @@
  * Core routing logic for natural language to command mapping
  */
 
-import { BaseService, Service, Inject, ServiceEvent } from '../core';
+import { BaseService, Inject, Service, ServiceEvent } from '../core';
 
 export interface CommandIntent {
   command: string;

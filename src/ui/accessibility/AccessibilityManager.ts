@@ -267,7 +267,7 @@ export class AccessibilityManager {
    * 次の要素にフォーカス
    */
   private focusNext(): void {
-    if (this.focusableElements.length === 0) return;
+    if (this.focusableElements.length === 0) {return;}
 
     this.focusIndex = (this.focusIndex + 1) % this.focusableElements.length;
     this.announceFocus();
@@ -277,7 +277,7 @@ export class AccessibilityManager {
    * 前の要素にフォーカス
    */
   private focusPrevious(): void {
-    if (this.focusableElements.length === 0) return;
+    if (this.focusableElements.length === 0) {return;}
 
     this.focusIndex =
       this.focusIndex === 0 ? this.focusableElements.length - 1 : this.focusIndex - 1;

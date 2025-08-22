@@ -7,14 +7,14 @@
 
 import { EventEmitter } from 'events';
 import type {
-  TeamMember,
-  TaskProgress,
-  FeatureProgress,
   BugTracker,
-  ReviewQueue,
   DeploymentState,
-  Sprint,
+  FeatureProgress,
   Milestone,
+  ReviewQueue,
+  Sprint,
+  TaskProgress,
+  TeamMember,
 } from './workspace-memory-manager';
 
 export interface ProgressMetrics {
@@ -375,13 +375,13 @@ export class TeamProgressTracker extends EventEmitter {
 
   private calculateVelocityTrend(): 'increasing' | 'stable' | 'decreasing' {
     const recentSnapshots = this.progressHistory.slice(-10);
-    if (recentSnapshots.length < 3) return 'stable';
+    if (recentSnapshots.length < 3) {return 'stable';}
 
     const velocities = recentSnapshots.map((s) => s.metrics.velocity.currentSprint.dailyVelocity);
     const trend = this.calculateTrend(velocities);
 
-    if (trend > 0.1) return 'increasing';
-    if (trend < -0.1) return 'decreasing';
+    if (trend > 0.1) {return 'increasing';}
+    if (trend < -0.1) {return 'decreasing';}
     return 'stable';
   }
 
@@ -731,7 +731,7 @@ export class TeamProgressTracker extends EventEmitter {
   }
 
   private calculateTrend(values: number[]): number {
-    if (values.length < 2) return 0;
+    if (values.length < 2) {return 0;}
 
     // Simple linear regression
     const n = values.length;
@@ -811,7 +811,7 @@ export class TeamProgressTracker extends EventEmitter {
 
   private projectSprintCompletion(sprint: Sprint): Date {
     const velocity = this.currentMetrics.velocity.currentSprint;
-    if (velocity.dailyVelocity === 0) return sprint.endDate;
+    if (velocity.dailyVelocity === 0) {return sprint.endDate;}
 
     const daysNeeded = velocity.remainingPoints / velocity.dailyVelocity;
     return new Date(Date.now() + daysNeeded * 24 * 60 * 60 * 1000);
@@ -1051,7 +1051,7 @@ class AnalyticsEngine {
   }
 
   detectAnomalies(data: number[]): Array<{ index: number; value: number; severity: number }> {
-    if (data.length < 3) return [];
+    if (data.length < 3) {return [];}
 
     const anomalies: Array<{ index: number; value: number; severity: number }> = [];
     const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
@@ -1139,7 +1139,7 @@ class AnalyticsEngine {
     const meetingsByDay: Record<string, number[]> = {};
     teamData.forEach((data) => {
       const dayOfWeek = new Date(data.timestamp).toLocaleDateString('en-US', { weekday: 'long' });
-      if (!meetingsByDay[dayOfWeek]) meetingsByDay[dayOfWeek] = [];
+      if (!meetingsByDay[dayOfWeek]) {meetingsByDay[dayOfWeek] = [];}
       meetingsByDay[dayOfWeek].push(data.meetingsCount);
     });
 
@@ -1178,7 +1178,7 @@ class AnalyticsEngine {
 
     teamData.forEach((data) => {
       const hour = new Date(data.timestamp).getHours();
-      if (!hourlyPatterns[hour]) hourlyPatterns[hour] = [];
+      if (!hourlyPatterns[hour]) {hourlyPatterns[hour] = [];}
       hourlyPatterns[hour].push(data.messageVolume);
     });
 
@@ -1223,7 +1223,7 @@ class AnalyticsEngine {
 
     teamData.forEach((data, index) => {
       const weekNumber = Math.floor(index / 7);
-      if (!weeklyAverages[weekNumber]) weeklyAverages[weekNumber] = [];
+      if (!weeklyAverages[weekNumber]) {weeklyAverages[weekNumber] = [];}
       weeklyAverages[weekNumber].push(completionRates[index]);
     });
 
@@ -1274,7 +1274,7 @@ class AnalyticsEngine {
   }
 
   private calculateTrend(values: number[]): number {
-    if (values.length < 2) return 0;
+    if (values.length < 2) {return 0;}
 
     const n = values.length;
     const sumX = (n * (n - 1)) / 2; // Sum of indices 0, 1, 2, ...

@@ -7,12 +7,12 @@
 
 import { EventEmitter } from 'events';
 import {
-  KnowledgeNode,
-  ConceptGraph,
-  ConceptEdge,
   ConceptCluster,
-  NodeMetadata,
+  ConceptEdge,
+  ConceptGraph,
+  KnowledgeNode,
   MemoryEvent,
+  NodeMetadata,
 } from '../types/memory-interfaces';
 
 export interface EntityExtractionResult {
@@ -275,7 +275,7 @@ export class KnowledgeGraphEngine extends EventEmitter {
 
     // Calculate similarity for all nodes
     for (const [nodeId, node] of this.graph.nodes) {
-      if (!node.embedding || node.embedding.length === 0) continue;
+      if (!node.embedding || node.embedding.length === 0) {continue;}
 
       const similarity = this.cosineSimilarity(queryEmbedding, node.embedding);
 
@@ -319,7 +319,7 @@ export class KnowledgeGraphEngine extends EventEmitter {
         return path.map((id) => this.graph.nodes.get(id)!);
       }
 
-      if (visited.has(nodeId)) continue;
+      if (visited.has(nodeId)) {continue;}
       visited.add(nodeId);
 
       // Get connected nodes
@@ -429,7 +429,7 @@ export class KnowledgeGraphEngine extends EventEmitter {
     const assigned = new Set<string>();
 
     for (const node of nodes) {
-      if (assigned.has(node.id)) continue;
+      if (assigned.has(node.id)) {continue;}
 
       const cluster: ConceptCluster = {
         id: this.generateId('cluster'),
@@ -441,7 +441,7 @@ export class KnowledgeGraphEngine extends EventEmitter {
 
       // Find similar nodes
       for (const otherNode of nodes) {
-        if (otherNode.id === node.id || assigned.has(otherNode.id)) continue;
+        if (otherNode.id === node.id || assigned.has(otherNode.id)) {continue;}
 
         const similarity = this.cosineSimilarity(node.embedding, otherNode.embedding);
         if (similarity > this.clusteringThreshold) {
@@ -476,13 +476,13 @@ export class KnowledgeGraphEngine extends EventEmitter {
 
   private assessComplexity(entity: Entity): 'low' | 'medium' | 'high' {
     const text = entity.text;
-    if (text.length < 20) return 'low';
-    if (text.length < 50) return 'medium';
+    if (text.length < 20) {return 'low';}
+    if (text.length < 50) {return 'medium';}
     return 'high';
   }
 
   private calculateExtractionConfidence(entities: Entity[], relationships: Relationship[]): number {
-    if (entities.length === 0) return 0;
+    if (entities.length === 0) {return 0;}
 
     const avgRelationshipConfidence =
       relationships.length > 0
@@ -499,22 +499,22 @@ export class KnowledgeGraphEngine extends EventEmitter {
 
       switch (filter.operator) {
         case 'eq':
-          if (value !== filter.value) return false;
+          if (value !== filter.value) {return false;}
           break;
         case 'neq':
-          if (value === filter.value) return false;
+          if (value === filter.value) {return false;}
           break;
         case 'gt':
-          if (value <= filter.value) return false;
+          if (value <= filter.value) {return false;}
           break;
         case 'lt':
-          if (value >= filter.value) return false;
+          if (value >= filter.value) {return false;}
           break;
         case 'contains':
-          if (!String(value).includes(String(filter.value))) return false;
+          if (!String(value).includes(String(filter.value))) {return false;}
           break;
         case 'in':
-          if (!Array.isArray(filter.value) || !filter.value.includes(value)) return false;
+          if (!Array.isArray(filter.value) || !filter.value.includes(value)) {return false;}
           break;
       }
     }
@@ -540,7 +540,7 @@ export class KnowledgeGraphEngine extends EventEmitter {
   }
 
   private calculateAverageDegree(): number {
-    if (this.graph.nodes.size === 0) return 0;
+    if (this.graph.nodes.size === 0) {return 0;}
 
     let totalDegree = 0;
     for (const nodeId of this.graph.nodes.keys()) {
@@ -558,7 +558,7 @@ export class KnowledgeGraphEngine extends EventEmitter {
 
   private calculateGraphDensity(): number {
     const n = this.graph.nodes.size;
-    if (n < 2) return 0;
+    if (n < 2) {return 0;}
 
     const maxEdges = (n * (n - 1)) / 2;
     return this.graph.edges.size / maxEdges;

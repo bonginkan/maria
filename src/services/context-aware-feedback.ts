@@ -3,7 +3,7 @@
  * AI駆動のコンテキスト認識型フィードバック
  */
 
-import { getStatusIcon, getMessageColor } from '../utils/color-theme';
+import { getMessageColor, getStatusIcon } from '../utils/color-theme';
 
 export interface UserContext {
   currentCommand?: string;
@@ -340,9 +340,9 @@ export class ContextAwareFeedback {
   // Helper methods
   private getTimeOfDay(): 'morning' | 'afternoon' | 'evening' | 'night' {
     const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return 'morning';
-    if (hour >= 12 && hour < 17) return 'afternoon';
-    if (hour >= 17 && hour < 22) return 'evening';
+    if (hour >= 5 && hour < 12) {return 'morning';}
+    if (hour >= 12 && hour < 17) {return 'afternoon';}
+    if (hour >= 17 && hour < 22) {return 'evening';}
     return 'night';
   }
 
@@ -352,14 +352,14 @@ export class ContextAwareFeedback {
   }
 
   private getSuggestedSlashCommand(input: string): string | null {
-    if (input.includes('test')) return 'test';
-    if (input.includes('review')) return 'review';
-    if (input.includes('image') || input.includes('picture')) return 'image';
-    if (input.includes('video')) return 'video';
+    if (input.includes('test')) {return 'test';}
+    if (input.includes('review')) {return 'review';}
+    if (input.includes('image') || input.includes('picture')) {return 'image';}
+    if (input.includes('video')) {return 'video';}
     if (input.includes('code') || input.includes('create') || input.includes('generate'))
-      return 'code';
-    if (input.includes('fix') || input.includes('bug')) return 'bug';
-    if (input.includes('commit')) return 'commit';
+      {return 'code';}
+    if (input.includes('fix') || input.includes('bug')) {return 'bug';}
+    if (input.includes('commit')) {return 'commit';}
     return null;
   }
 }

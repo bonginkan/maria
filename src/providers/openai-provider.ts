@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './ai-provider.js';
+import { BaseAIProvider, CodeReviewResult, CompletionOptions, Message } from './ai-provider.js';
 
 export class OpenAIProvider extends BaseAIProvider {
   readonly name = 'OpenAI';
@@ -42,7 +42,7 @@ export class OpenAIProvider extends BaseAIProvider {
         role: m.role,
         content: m.content,
       })),
-      temperature: temperature,
+      temperature,
       max_tokens: options?.maxTokens,
       top_p: options?.topP,
       stop: options?.stopSequences,
@@ -69,7 +69,7 @@ export class OpenAIProvider extends BaseAIProvider {
         role: m.role,
         content: m.content,
       })),
-      temperature: temperature,
+      temperature,
       max_tokens: options?.maxTokens,
       top_p: options?.topP,
       stop: options?.stopSequences,

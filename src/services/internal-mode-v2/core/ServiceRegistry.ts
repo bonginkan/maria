@@ -102,7 +102,7 @@ export class ServiceRegistry implements IServiceRegistry {
     const result: ServiceMetadata[] = [];
 
     const visit = (serviceId: string) => {
-      if (visited.has(serviceId)) return;
+      if (visited.has(serviceId)) {return;}
       visited.add(serviceId);
 
       const deps = this.dependencyGraph.get(serviceId);
@@ -125,7 +125,7 @@ export class ServiceRegistry implements IServiceRegistry {
    */
   validateDependencies(serviceId: string): string[] {
     const metadata = this.metadata.get(serviceId);
-    if (!metadata || !metadata.dependencies) return [];
+    if (!metadata || !metadata.dependencies) {return [];}
 
     const missing: string[] = [];
     for (const dep of metadata.dependencies) {

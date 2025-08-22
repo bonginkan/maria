@@ -6,7 +6,7 @@
 
 import * as readline from 'readline';
 import chalk from 'chalk';
-import { permissionManager, ElevationRequest, PermissionInfo } from './PermissionManager';
+import { ElevationRequest, PermissionInfo, permissionManager } from './PermissionManager';
 import { terminalManager } from '../terminal-integration/TerminalManager';
 
 export interface PromptOptions {

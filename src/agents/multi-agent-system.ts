@@ -5,24 +5,24 @@
 
 import { CentralOrchestrator } from './orchestrator';
 import {
+  AgentResult,
   AgentRole,
   AgentTask,
-  AgentResult,
-  PaperProcessingRequest,
   ExecutionPlan,
+  PaperProcessingRequest,
   TaskNode,
 } from './types';
 import { SynthesizedOutput } from './enhanced-communication';
 import { codeRAGService } from '../services/coderag-system';
 import { documentProcessor } from '../services/document-processor';
 import {
-  DocumentParserAgent,
   AlgorithmExtractorAgent,
-  CodeGeneratorAgent,
-  LiteratureReviewerAgent,
-  ConceptAnalyzerAgent,
-  QualityAssuranceAgent,
   CitationManagerAgent,
+  CodeGeneratorAgent,
+  ConceptAnalyzerAgent,
+  DocumentParserAgent,
+  LiteratureReviewerAgent,
+  QualityAssuranceAgent,
 } from './specialized';
 import { logger } from '../utils/logger';
 import { v4 as uuidv4 } from 'uuid';

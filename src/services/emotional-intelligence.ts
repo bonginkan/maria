@@ -4,8 +4,8 @@
  */
 
 import {
-  getStatusIcon as _getStatusIcon,
   getMessageColor as _getMessageColor,
+  getStatusIcon as _getStatusIcon,
 } from '../utils/color-theme';
 
 export interface EmotionalState {
@@ -355,7 +355,7 @@ export class EmotionalIntelligence {
     const hour = new Date().getHours();
     const isFirstCommand = this.activityHistory.length <= 1;
 
-    if (!isFirstCommand) return null;
+    if (!isFirstCommand) {return null;}
 
     if (hour >= 6 && hour < 10) {
       return {
@@ -385,17 +385,17 @@ export class EmotionalIntelligence {
 
   private getRecentSuccessRate(): number {
     const recent = this.getRecentActivities(10);
-    if (recent.length === 0) return 0.5;
+    if (recent.length === 0) {return 0.5;}
     return recent.filter((a) => a.success).length / recent.length;
   }
 
   private calculateMood(): 'excellent' | 'good' | 'neutral' | 'tired' | 'frustrated' {
     const { energy, frustration, confidence } = this.currentState;
 
-    if (energy > 80 && frustration < 20 && confidence > 80) return 'excellent';
-    if (energy > 60 && frustration < 40 && confidence > 60) return 'good';
-    if (energy < 30 || frustration > 70) return 'tired';
-    if (frustration > 50 && confidence < 40) return 'frustrated';
+    if (energy > 80 && frustration < 20 && confidence > 80) {return 'excellent';}
+    if (energy > 60 && frustration < 40 && confidence > 60) {return 'good';}
+    if (energy < 30 || frustration > 70) {return 'tired';}
+    if (frustration > 50 && confidence < 40) {return 'frustrated';}
     return 'neutral';
   }
 

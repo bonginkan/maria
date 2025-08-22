@@ -3,7 +3,7 @@
  * Handles input validation for commands
  */
 
-import { IMiddleware, CommandArgs, CommandContext, CommandResult, ISlashCommand } from '../types';
+import { CommandArgs, CommandContext, CommandResult, IMiddleware, ISlashCommand } from '../types';
 import { logger } from '../../utils/logger';
 
 export class ValidationMiddleware implements IMiddleware {

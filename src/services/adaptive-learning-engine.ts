@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'events';
 import { logger } from '../utils/logger.js';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 
@@ -285,7 +285,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
    * Update productivity peaks based on success patterns
    */
   private updateProductivityPeaks(hour: number, success: boolean): void {
-    if (!this.userProfile || !success) return;
+    if (!this.userProfile || !success) {return;}
 
     const peaks = this.userProfile.preferences.productivityPeaks;
     const existingIndex = peaks.indexOf(hour);
@@ -306,7 +306,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
    */
   private getHourSuccessRate(hour: number): number {
     const hourPatterns = this.usagePatterns.filter((p) => p.timeOfDay === hour);
-    if (hourPatterns.length === 0) return 0;
+    if (hourPatterns.length === 0) {return 0;}
 
     const successCount = hourPatterns.filter((p) => p.success).length;
     return successCount / hourPatterns.length;
@@ -316,7 +316,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
    * Check and award achievements
    */
   private checkAchievements(): void {
-    if (!this.userProfile || !this.config.achievementSystem) return;
+    if (!this.userProfile || !this.config.achievementSystem) {return;}
 
     const stats = this.userProfile.statistics;
     const newAchievements: Achievement[] = [];
@@ -511,7 +511,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
    * Get next achievable achievement
    */
   private getNextAchievement(): Achievement | null {
-    if (!this.userProfile) return null;
+    if (!this.userProfile) {return null;}
 
     const stats = this.userProfile.statistics;
 
@@ -562,7 +562,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
       (pattern) => pattern.commandSequence.slice(-3, -1).join(',') === recentSequence,
     );
 
-    if (matchingPatterns.length === 0) return [];
+    if (matchingPatterns.length === 0) {return [];}
 
     // Get next commands from matching patterns
     const nextCommands = new Map<string, number>();
@@ -592,7 +592,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
    * Update user preferences
    */
   updatePreferences(updates: Partial<UserProfile['preferences']>): void {
-    if (!this.userProfile) return;
+    if (!this.userProfile) {return;}
 
     Object.assign(this.userProfile.preferences, updates);
     this.userProfile.lastUpdated = Date.now();
@@ -655,7 +655,7 @@ export class AdaptiveLearningEngine extends EventEmitter {
    * Analyze usage patterns and update learning progress
    */
   private analyzeUsagePatterns(): void {
-    if (!this.userProfile || this.usagePatterns.length === 0) return;
+    if (!this.userProfile || this.usagePatterns.length === 0) {return;}
 
     // Update learning progress based on pattern diversity and success rate
     const uniqueCommands = new Set(this.usagePatterns.flatMap((p) => p.commandSequence)).size;

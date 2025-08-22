@@ -190,10 +190,10 @@ async function generateResponse(message: string): Promise<string> {
 
 function showHelp() {
   console.log(chalk.cyan.bold('\n📚 Available Commands:'));
-  console.log(chalk.yellow('  help     ') + '- Show this help message');
-  console.log(chalk.yellow('  history  ') + '- Show conversation history');
-  console.log(chalk.yellow('  clear    ') + '- Clear chat history');
-  console.log(chalk.yellow('  exit     ') + '- End chat session');
+  console.log(`${chalk.yellow('  help     ')  }- Show this help message`);
+  console.log(`${chalk.yellow('  history  ')  }- Show conversation history`);
+  console.log(`${chalk.yellow('  clear    ')  }- Clear chat history`);
+  console.log(`${chalk.yellow('  exit     ')  }- End chat session`);
   console.log(chalk.gray('\n💡 Tips:'));
   console.log(chalk.gray('  - Use natural language to describe what you want'));
   console.log(chalk.gray('  - Be specific about files, functions, or features'));
@@ -211,7 +211,7 @@ function showHistory(session: ChatSession) {
       const role = msg.role === 'user' ? chalk.blue('You') : chalk.green('🤖 MARIA');
       console.log(
         chalk.gray(`[${time}]`),
-        role + ':',
+        `${role  }:`,
         msg.content.substring(0, 100) + (msg.content.length > 100 ? '...' : ''),
       );
     });
@@ -233,5 +233,5 @@ function showSessionStats(session: ChatSession) {
 }
 
 function generateSessionId(): string {
-  return 'session_' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+  return `session_${  Date.now().toString(36)  }${Math.random().toString(36).substr(2)}`;
 }

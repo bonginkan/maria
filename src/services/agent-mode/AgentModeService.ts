@@ -229,11 +229,11 @@ export class AgentModeService {
     const padding = Math.max(0, width - modeText.length - 4);
 
     console.log('');
-    console.log(chalk.cyan('┌' + '─'.repeat(width - 2) + '┐'));
+    console.log(chalk.cyan(`┌${  '─'.repeat(width - 2)  }┐`));
     console.log(
-      chalk.cyan('│') + ' ' + chalk.yellow(modeText) + ' '.repeat(padding) + ' ' + chalk.cyan('│'),
+      `${chalk.cyan('│')  } ${  chalk.yellow(modeText)  }${' '.repeat(padding)  } ${  chalk.cyan('│')}`,
     );
-    console.log(chalk.cyan('└' + '─'.repeat(width - 2) + '┘'));
+    console.log(chalk.cyan(`└${  '─'.repeat(width - 2)  }┘`));
   }
 
   /**

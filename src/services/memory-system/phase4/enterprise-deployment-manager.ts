@@ -1586,8 +1586,8 @@ export class EnterpriseDeploymentManager extends EventEmitter {
       (s) => s.readyReplicas === s.replicas,
     ).length;
 
-    if (healthyCount === Object.keys(statuses).length) return 'healthy';
-    if (healthyCount > 0) return 'degraded';
+    if (healthyCount === Object.keys(statuses).length) {return 'healthy';}
+    if (healthyCount > 0) {return 'degraded';}
     return 'unhealthy';
   }
 }

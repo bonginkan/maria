@@ -174,7 +174,7 @@ export class IconRegistry {
    */
   static showUsageExample(iconName: keyof typeof CORE_ICONS): void {
     const icon = CORE_ICONS[iconName];
-    if (!icon) return;
+    if (!icon) {return;}
 
     console.log(`${icon.symbol} ${iconName} - ${icon.description}`);
     icon.usage.forEach((usage) => {

@@ -4,7 +4,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { CommandSearchEngine, CommandInfo } from './CommandSearchEngine';
+import { CommandInfo, CommandSearchEngine } from './CommandSearchEngine';
 import { CommandFrequencyTracker } from './CommandFrequencyTracker';
 
 export interface CompletionOptions {
@@ -71,7 +71,7 @@ export class SlashCompletionService extends EventEmitter {
    * 初期化
    */
   public async initialize(commands: CommandInfo[]): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     try {
       this.commands = commands;
@@ -90,7 +90,7 @@ export class SlashCompletionService extends EventEmitter {
    * 補完を開始
    */
   public startCompletion(query: string, context: string = 'general'): void {
-    if (!this.isInitialized) return;
+    if (!this.isInitialized) {return;}
 
     this.state.isActive = true;
     this.state.context = context;
@@ -123,12 +123,12 @@ export class SlashCompletionService extends EventEmitter {
    * クエリを更新（リアルタイム補完）
    */
   public updateQuery(query: string): void {
-    if (!this.state.isActive) return;
+    if (!this.state.isActive) {return;}
 
     // 先頭の/を除去
     const cleanQuery = query.startsWith('/') ? query.slice(1) : query;
 
-    if (cleanQuery === this.state.query) return;
+    if (cleanQuery === this.state.query) {return;}
 
     this.state.query = cleanQuery;
     this.state.selectedIndex = 0;
@@ -149,7 +149,7 @@ export class SlashCompletionService extends EventEmitter {
    * 次の候補を選択（上下キー）
    */
   public selectNext(): void {
-    if (!this.state.isActive || this.state.suggestions.length === 0) return;
+    if (!this.state.isActive || this.state.suggestions.length === 0) {return;}
 
     this.state.selectedIndex = (this.state.selectedIndex + 1) % this.state.suggestions.length;
     this.emit('selectionChanged', this.state.selectedIndex);
@@ -159,7 +159,7 @@ export class SlashCompletionService extends EventEmitter {
    * 前の候補を選択（上下キー）
    */
   public selectPrevious(): void {
-    if (!this.state.isActive || this.state.suggestions.length === 0) return;
+    if (!this.state.isActive || this.state.suggestions.length === 0) {return;}
 
     this.state.selectedIndex =
       this.state.selectedIndex > 0
@@ -173,7 +173,7 @@ export class SlashCompletionService extends EventEmitter {
    * Shiftキーで候補を循環
    */
   public cycleWithShift(): void {
-    if (!this.state.isActive || this.state.suggestions.length === 0) return;
+    if (!this.state.isActive || this.state.suggestions.length === 0) {return;}
 
     this.state.isShiftCycling = true;
     this.state.cycleIndex = (this.state.cycleIndex + 1) % this.state.suggestions.length;
@@ -199,7 +199,7 @@ export class SlashCompletionService extends EventEmitter {
    */
   public executeSelected(): CompletionSuggestion | null {
     const selected = this.getSelectedSuggestion();
-    if (!selected) return null;
+    if (!selected) {return null;}
 
     // 使用頻度を記録
     this.frequencyTracker.recordUsage(selected.command.name, this.state.context);
@@ -215,7 +215,7 @@ export class SlashCompletionService extends EventEmitter {
    */
   public autoComplete(): string | null {
     const selected = this.getSelectedSuggestion();
-    if (!selected) return null;
+    if (!selected) {return null;}
 
     const completion = selected.command.name;
     this.state.query = completion;
@@ -259,7 +259,7 @@ export class SlashCompletionService extends EventEmitter {
     const suggestions: CompletionSuggestion[] = [];
 
     for (const command of searchResults) {
-      if (suggestions.length >= this.options.maxSuggestions) break;
+      if (suggestions.length >= this.options.maxSuggestions) {break;}
 
       const suggestion = this.createCompletionSuggestion(command);
       if (suggestion) {
@@ -321,14 +321,14 @@ export class SlashCompletionService extends EventEmitter {
     }
 
     // スコアが低すぎる場合は除外
-    if (score < 10) return null;
+    if (score < 10) {return null;}
 
     // 使用頻度ボーナス
     if (this.options.enableFrequencyBoost) {
       const frequency = this.frequencyTracker.getCommandFrequency(command.name);
       score += Math.min(20, frequency / 5);
 
-      if (frequency > 50) reason = 'frequent';
+      if (frequency > 50) {reason = 'frequent';}
     }
 
     // 最近使用ボーナス
@@ -337,7 +337,7 @@ export class SlashCompletionService extends EventEmitter {
       const hoursSinceUsed = (Date.now() - lastUsed.getTime()) / (1000 * 60 * 60);
       if (hoursSinceUsed < 24) {
         score += 10;
-        if (hoursSinceUsed < 1) reason = 'recent';
+        if (hoursSinceUsed < 1) {reason = 'recent';}
       }
     }
 
@@ -357,7 +357,7 @@ export class SlashCompletionService extends EventEmitter {
    * マッチした部分をハイライト
    */
   private highlightMatch(text: string, query: string): string {
-    if (!query) return text;
+    if (!query) {return text;}
 
     const regex = new RegExp(`(${this.escapeRegex(query)})`, 'gi');
     return text.replace(regex, '**$1**');

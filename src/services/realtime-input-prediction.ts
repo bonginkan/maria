@@ -171,13 +171,13 @@ export class RealtimeInputPredictor {
     const predictions: PredictionResult[] = [];
     const parts = input.trim().split(/\s+/);
 
-    if (parts.length < 2) return [];
+    if (parts.length < 2) {return [];}
 
     const command = parts[0];
     const currentParam = parts[parts.length - 1];
 
     const pattern = this.commandPatterns.get(command || '');
-    if (!pattern) return [];
+    if (!pattern) {return [];}
 
     // パラメータの予測
     for (const param of pattern.parameters) {

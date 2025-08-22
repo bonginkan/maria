@@ -605,7 +605,7 @@ export class ModeIndicator {
     if (this.isValidMode(mode)) {
       this.currentMode = mode;
       this.modeHistory.push({
-        mode: mode,
+        mode,
         timestamp: new Date(),
       });
       this.notifyUpdate(mode);
@@ -655,7 +655,7 @@ export class ModeIndicator {
    * モードを遷移
    */
   async transitionTo(newMode: InternalMode, animate: boolean = true): Promise<void> {
-    if (this.isAnimating) return;
+    if (this.isAnimating) {return;}
 
     const oldMode = this.currentMode;
 
@@ -697,7 +697,7 @@ export class ModeIndicator {
       const progress = i / steps;
 
       // Clear line and redraw
-      process.stdout.write('\r' + ' '.repeat(80) + '\r');
+      process.stdout.write(`\r${  ' '.repeat(80)  }\r`);
 
       if (progress < 0.5) {
         // Fade out old mode
@@ -711,7 +711,7 @@ export class ModeIndicator {
     }
 
     // Clear the animation line
-    process.stdout.write('\r' + ' '.repeat(80) + '\r');
+    process.stdout.write(`\r${  ' '.repeat(80)  }\r`);
 
     this.isAnimating = false;
   }
@@ -721,12 +721,12 @@ export class ModeIndicator {
    */
   display(inline: boolean = false): void {
     const info = this.modeInfo.get(this.currentMode);
-    if (!info) return;
+    if (!info) {return;}
 
     const modeDisplay = info.color(`[${this.currentMode}]`);
 
     if (inline) {
-      process.stdout.write(modeDisplay + ' ');
+      process.stdout.write(`${modeDisplay  } `);
     } else {
       console.log(modeDisplay);
     }
@@ -737,7 +737,7 @@ export class ModeIndicator {
    */
   displayFloating(x: number = 0, y: number = 0): void {
     const info = this.modeInfo.get(this.currentMode);
-    if (!info) return;
+    if (!info) {return;}
 
     // Save cursor position
     process.stdout.write('\x1b[s');

@@ -5,7 +5,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { _enhancedContextPreservation, DeepContextState } from './enhanced-context-preservation.js';
@@ -359,7 +359,7 @@ export class CrossSessionLearning extends EventEmitter {
    * Calculate progression trend from a series of values
    */
   private calculateProgression(values: number[]): number {
-    if (values.length < 2) return 0;
+    if (values.length < 2) {return 0;}
 
     let progression = 0;
     for (let i = 1; i < values.length; i++) {
@@ -462,9 +462,9 @@ export class CrossSessionLearning extends EventEmitter {
 
     const maxScore = Math.max(formalityScore, directnessScore, verbosityScore);
     let style = 'balanced';
-    if (maxScore === formalityScore) style = 'formal';
-    else if (maxScore === directnessScore) style = 'direct';
-    else if (maxScore === verbosityScore) style = 'verbose';
+    if (maxScore === formalityScore) {style = 'formal';}
+    else if (maxScore === directnessScore) {style = 'direct';}
+    else if (maxScore === verbosityScore) {style = 'verbose';}
 
     return {
       style,
@@ -640,10 +640,10 @@ export class CrossSessionLearning extends EventEmitter {
 
       if (hasQuestions) {
         clarifyingInstances++;
-        if (hasProgress) clarifyingSuccesses++;
+        if (hasProgress) {clarifyingSuccesses++;}
       } else {
         directInstances++;
-        if (hasProgress) directSuccesses++;
+        if (hasProgress) {directSuccesses++;}
       }
     });
 
@@ -921,9 +921,9 @@ export class CrossSessionLearning extends EventEmitter {
    */
   private extractPreferenceFromLearning(learning: string): string {
     // Extract the main subject of the preference
-    if (learning.includes('communication')) return 'communication-style';
-    if (learning.includes('tool')) return 'tool-preference';
-    if (learning.includes('format')) return 'format-preference';
+    if (learning.includes('communication')) {return 'communication-style';}
+    if (learning.includes('tool')) {return 'tool-preference';}
+    if (learning.includes('format')) {return 'format-preference';}
 
     return 'general-preference';
   }
@@ -956,9 +956,9 @@ export class CrossSessionLearning extends EventEmitter {
    * Extract pattern name from learning description
    */
   private extractPatternFromLearning(learning: string): string {
-    if (learning.includes('sequence')) return 'task-sequencing';
-    if (learning.includes('workflow')) return 'workflow-pattern';
-    if (learning.includes('approach')) return 'problem-approach';
+    if (learning.includes('sequence')) {return 'task-sequencing';}
+    if (learning.includes('workflow')) {return 'workflow-pattern';}
+    if (learning.includes('approach')) {return 'problem-approach';}
 
     return 'general-pattern';
   }
@@ -978,7 +978,7 @@ export class CrossSessionLearning extends EventEmitter {
    */
   private calculateLearningMomentum(profile: UserKnowledgeProfile): number {
     const recentPoints = profile.learningTrajectory.slice(-5);
-    if (recentPoints.length < 2) return 0;
+    if (recentPoints.length < 2) {return 0;}
 
     const momentum = recentPoints.slice(1).reduce((sum, point, index) => {
       return sum + (point.level - recentPoints[index]!.level);
@@ -1039,7 +1039,7 @@ export class CrossSessionLearning extends EventEmitter {
    */
   private async generateCrossSessionInsights(): Promise<void> {
     const profile = this.userProfiles.get(this.currentUserId);
-    if (!profile) return;
+    if (!profile) {return;}
 
     // Analyze learning trends
     const trendInsights = this.analyzeLearningTrends(profile);

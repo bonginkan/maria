@@ -101,11 +101,11 @@ async function checkPythonVersion(): Promise<void> {
       const minorNum = parseInt(minor || '0', 10);
 
       if (majorNum < 3 || (majorNum === 3 && minorNum < 8)) {
-        reject(new Error('Python 3.8+ is required. Current version: ' + output.trim()));
+        reject(new Error(`Python 3.8+ is required. Current version: ${  output.trim()}`));
         return;
       }
 
-      console.log(chalk.green('✅ Python version check passed: ' + output.trim()));
+      console.log(chalk.green(`✅ Python version check passed: ${  output.trim()}`));
       resolve();
     });
 
@@ -121,7 +121,7 @@ async function createVirtualEnvironment(venvPath: string): Promise<void> {
 
     child.on('close', (code) => {
       if (code === 0) {
-        console.log(chalk.green('✅ Virtual environment created at: ' + venvPath));
+        console.log(chalk.green(`✅ Virtual environment created at: ${  venvPath}`));
         resolve();
       } else {
         reject(new Error('Failed to create virtual environment'));
@@ -146,7 +146,7 @@ async function installVllm(venvPath: string): Promise<void> {
       // Install vLLM and dependencies
       const packages = ['vllm', 'torch', 'torchvision', 'torchaudio', 'huggingface_hub'];
 
-      console.log(chalk.cyan('Installing packages: ' + packages.join(', ')));
+      console.log(chalk.cyan(`Installing packages: ${  packages.join(', ')}`));
 
       const installChild = spawn(pipPath, ['install', ...packages], { stdio: 'inherit' });
 
@@ -263,9 +263,9 @@ done
     await fs.writeFile(scriptPath, scriptContent);
     await fs.chmod(scriptPath, 0o755);
 
-    console.log(chalk.green('✅ Startup script created: ' + scriptPath));
+    console.log(chalk.green(`✅ Startup script created: ${  scriptPath}`));
   } catch (error) {
-    console.log(chalk.yellow('⚠️ Could not create startup script: ' + error));
+    console.log(chalk.yellow(`⚠️ Could not create startup script: ${  error}`));
   }
 }
 
@@ -294,7 +294,7 @@ export VLLM_DEFAULT_MODEL="DialoGPT-medium"
     if (!currentContent.includes('MARIA vLLM Configuration')) {
       await fs.appendFile(rcFile, envVars);
       console.log(chalk.green(`✅ Environment variables added to ${rcFile}`));
-      console.log(chalk.yellow('ℹ️ Please restart your terminal or run: source ' + rcFile));
+      console.log(chalk.yellow(`ℹ️ Please restart your terminal or run: source ${  rcFile}`));
     } else {
       console.log(chalk.yellow('⚠️ Environment variables already configured'));
     }
@@ -341,7 +341,7 @@ async function testVllmSetup(
 
     child.on('close', (code) => {
       if (code === 0) {
-        console.log(chalk.green('✅ vLLM import test passed: ' + output.trim()));
+        console.log(chalk.green(`✅ vLLM import test passed: ${  output.trim()}`));
         resolve();
       } else {
         reject(new Error('vLLM import test failed'));

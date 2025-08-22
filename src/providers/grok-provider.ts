@@ -1,6 +1,6 @@
 // Note: Using groq-sdk package for Grok AI (x.ai) integration
 import Groq from 'groq-sdk';
-import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './ai-provider.js';
+import { BaseAIProvider, CodeReviewResult, CompletionOptions, Message } from './ai-provider.js';
 
 export class GrokProvider extends BaseAIProvider {
   readonly name = 'Grok';

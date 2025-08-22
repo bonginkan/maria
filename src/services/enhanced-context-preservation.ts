@@ -5,7 +5,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { readFileSync, writeFileSync, existsSync, mkdirSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { ConversationContext, ConversationMessage } from '../types/conversation.js';
@@ -550,7 +550,7 @@ export class EnhancedContextPreservation extends EventEmitter {
   private calculateRecencyScore(keyword: string, messages: ConversationMessage[]): number {
     const lastMention = messages.filter((m) => m.content.toLowerCase().includes(keyword)).pop();
 
-    if (!lastMention) return 0;
+    if (!lastMention) {return 0;}
 
     const timeSinceLastMention = Date.now() - lastMention.timestamp.getTime();
     const hoursSince = timeSinceLastMention / (1000 * 60 * 60);
@@ -568,10 +568,10 @@ export class EnhancedContextPreservation extends EventEmitter {
 
     messages.forEach((message) => {
       if (message.content.toLowerCase().includes(keyword)) {
-        if (message.content.includes('?')) importance += 0.2; // Questions are important
-        if (message.content.includes('/')) importance += 0.3; // Commands are important
-        if (message.content.includes('!')) importance += 0.1; // Emphasis
-        if (message.role === 'user') importance += 0.2; // User messages are important
+        if (message.content.includes('?')) {importance += 0.2;} // Questions are important
+        if (message.content.includes('/')) {importance += 0.3;} // Commands are important
+        if (message.content.includes('!')) {importance += 0.1;} // Emphasis
+        if (message.role === 'user') {importance += 0.2;} // User messages are important
       }
     });
 
@@ -657,7 +657,7 @@ export class EnhancedContextPreservation extends EventEmitter {
       }
     }
 
-    return content.substring(0, 20) + '...';
+    return `${content.substring(0, 20)  }...`;
   }
 
   /**
@@ -787,7 +787,7 @@ export class EnhancedContextPreservation extends EventEmitter {
    * Calculate conversation momentum
    */
   private calculateConversationMomentum(messages: ConversationMessage[]): number {
-    if (messages.length < 2) return 0;
+    if (messages.length < 2) {return 0;}
 
     const recentMessages = messages.slice(-10); // Last 10 messages
     const timeSpans = recentMessages
@@ -897,9 +897,9 @@ export class EnhancedContextPreservation extends EventEmitter {
   ): 'none' | 'light' | 'medium' | 'heavy' {
     const contextSize = JSON.stringify(context).length;
 
-    if (importance > 0.8) return 'none';
-    if (importance > 0.6 && contextSize < 50000) return 'light';
-    if (importance > 0.4 && contextSize < 100000) return 'medium';
+    if (importance > 0.8) {return 'none';}
+    if (importance > 0.6 && contextSize < 50000) {return 'light';}
+    if (importance > 0.4 && contextSize < 100000) {return 'medium';}
     return 'heavy';
   }
 
@@ -910,10 +910,10 @@ export class EnhancedContextPreservation extends EventEmitter {
     context: DeepContextState,
     level: 'none' | 'light' | 'medium' | 'heavy',
   ): Promise<DeepContextState> {
-    if (level === 'none') return context;
+    if (level === 'none') {return context;}
 
     const strategy = this.compressionStrategies.get(level);
-    if (!strategy) return context;
+    if (!strategy) {return context;}
 
     return strategy.compressionFunction(context);
   }

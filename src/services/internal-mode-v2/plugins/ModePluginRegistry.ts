@@ -186,7 +186,7 @@ export class ModePluginRegistry extends BaseService {
     // Evaluate all enabled plugins
     for (const [pluginId, plugin] of this.plugins.entries()) {
       const metadata = this.pluginMetadata.get(pluginId);
-      if (!metadata?.enabled) continue;
+      if (!metadata?.enabled) {continue;}
 
       try {
         const confidence = await plugin.canHandle(context);

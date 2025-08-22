@@ -77,7 +77,7 @@ export class IntelligentRouterService extends EventEmitter {
   }
 
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     try {
       console.log(chalk.cyan('🧠 Initializing Intelligent Router...'));
@@ -187,7 +187,7 @@ export class IntelligentRouterService extends EventEmitter {
   }
 
   async needsConfirmation(intent: CommandIntent): Promise<boolean> {
-    if (!this.config.enableConfirmation) return false;
+    if (!this.config.enableConfirmation) {return false;}
 
     // Need confirmation for low confidence or destructive commands
     const destructiveCommands = ['/delete', '/reset', '/clear', '/exit'];
@@ -229,7 +229,7 @@ export class IntelligentRouterService extends EventEmitter {
   }
 
   async trainOnFeedback(input: string, correctCommand: string, wasCorrect: boolean): Promise<void> {
-    if (!this.config.enableLearning) return;
+    if (!this.config.enableLearning) {return;}
 
     try {
       await this.userPatternAnalyzer.recordFeedback(input, correctCommand, wasCorrect);

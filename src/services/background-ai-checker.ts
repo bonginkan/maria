@@ -25,7 +25,7 @@ export class BackgroundAIChecker {
    * This runs asynchronously and doesn't block the main process
    */
   static async startBackgroundCheck(): Promise<void> {
-    if (this.checking) return;
+    if (this.checking) {return;}
     this.checking = true;
 
     // Run checks in parallel, but don't wait for them

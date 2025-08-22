@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { logger } from '../utils/logger.js';
@@ -555,10 +555,10 @@ export class MultimodalIntelligence extends EventEmitter {
     inputs: MultimodalInput[],
     outputs: ProcessedOutput[],
   ): Promise<CrossModalInsight | null> {
-    if (inputs.length < 2) return null;
+    if (inputs.length < 2) {return null;}
 
     const modalityTypes = [...new Set(inputs.map((i) => i.type))];
-    if (modalityTypes.length < 2) return null;
+    if (modalityTypes.length < 2) {return null;}
 
     return {
       type: 'complementary',
@@ -584,7 +584,7 @@ export class MultimodalIntelligence extends EventEmitter {
     // Look for low correlation strengths that might indicate contradictions
     const lowCorrelations = correlations.filter((c) => c.strength < 0.3);
 
-    if (lowCorrelations.length === 0) return null;
+    if (lowCorrelations.length === 0) {return null;}
 
     return {
       type: 'contradiction',
@@ -608,7 +608,7 @@ export class MultimodalIntelligence extends EventEmitter {
   ): Promise<CrossModalInsight | null> {
     const strongCorrelations = correlations.filter((c) => c.strength > 0.7);
 
-    if (strongCorrelations.length === 0) return null;
+    if (strongCorrelations.length === 0) {return null;}
 
     return {
       type: 'alignment',

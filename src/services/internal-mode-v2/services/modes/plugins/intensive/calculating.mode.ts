@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -190,9 +190,9 @@ export class CalculatingMode extends BaseMode {
     confidence += algorithmicMatches.length * 0.1;
 
     // Context indicators
-    if (context.metadata?.requiresCalculation) confidence += 0.25;
-    if (context.metadata?.mathematicalProblem) confidence += 0.2;
-    if (context.metadata?.algorithmicChallenge) confidence += 0.18;
+    if (context.metadata?.requiresCalculation) {confidence += 0.25;}
+    if (context.metadata?.mathematicalProblem) {confidence += 0.2;}
+    if (context.metadata?.algorithmicChallenge) {confidence += 0.18;}
 
     // Mathematical symbols and operators
     const mathSymbols = ['+', '-', '*', '/', '=', '%', '^', '√', '∑', '∫'];
@@ -373,17 +373,17 @@ export class CalculatingMode extends BaseMode {
 
   private determineAlgorithmicScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 100) return 'comprehensive';
-    if (wordCount > 50) return 'moderate';
+    if (wordCount > 100) {return 'comprehensive';}
+    if (wordCount > 50) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.8;
 
-    if (results.accuracy > 0.95) confidence += 0.1;
-    if (results.efficiency > 0.8) confidence += 0.05;
-    if (results.algorithms.length > 2) confidence += 0.05;
+    if (results.accuracy > 0.95) {confidence += 0.1;}
+    if (results.efficiency > 0.8) {confidence += 0.05;}
+    if (results.algorithms.length > 2) {confidence += 0.05;}
 
     return Math.min(confidence, 1.0);
   }
@@ -405,8 +405,8 @@ export class CalculatingMode extends BaseMode {
 
   // Helper methods for computational operations
   private determinePrecisionLevel(context: ModeContext): number {
-    if (context.input.includes('high precision')) return 0.0000001;
-    if (context.input.includes('low precision')) return 0.01;
+    if (context.input.includes('high precision')) {return 0.0000001;}
+    if (context.input.includes('low precision')) {return 0.01;}
     return this.precisionLevel;
   }
 
@@ -445,18 +445,18 @@ export class CalculatingMode extends BaseMode {
   }
 
   private identifyMathematicalDomain(input: string): string {
-    if (input.includes('linear')) return 'linear_algebra';
-    if (input.includes('calculus')) return 'calculus';
-    if (input.includes('statistics')) return 'statistics';
-    if (input.includes('discrete')) return 'discrete_mathematics';
+    if (input.includes('linear')) {return 'linear_algebra';}
+    if (input.includes('calculus')) {return 'calculus';}
+    if (input.includes('statistics')) {return 'statistics';}
+    if (input.includes('discrete')) {return 'discrete_mathematics';}
     return 'general_mathematics';
   }
 
   private identifyConstraints(input: string): string[] {
     const constraints = [];
-    if (input.includes('time')) constraints.push('time_constraint');
-    if (input.includes('memory')) constraints.push('memory_constraint');
-    if (input.includes('accuracy')) constraints.push('accuracy_constraint');
+    if (input.includes('time')) {constraints.push('time_constraint');}
+    if (input.includes('memory')) {constraints.push('memory_constraint');}
+    if (input.includes('accuracy')) {constraints.push('accuracy_constraint');}
     return constraints;
   }
 
@@ -470,8 +470,8 @@ export class CalculatingMode extends BaseMode {
 
   private estimateComplexity(input: string): string {
     const complexityIndicators = input.split(/\s+/).length;
-    if (complexityIndicators > 50) return 'high';
-    if (complexityIndicators > 25) return 'medium';
+    if (complexityIndicators > 50) {return 'high';}
+    if (complexityIndicators > 25) {return 'medium';}
     return 'low';
   }
 
@@ -655,19 +655,19 @@ export class CalculatingMode extends BaseMode {
   }
 
   private extractAccuracyRequirement(input: string): number {
-    if (input.includes('high accuracy')) return 0.99;
-    if (input.includes('rough')) return 0.8;
+    if (input.includes('high accuracy')) {return 0.99;}
+    if (input.includes('rough')) {return 0.8;}
     return 0.95;
   }
 
   private extractSpeedRequirement(input: string): string {
-    if (input.includes('fast') || input.includes('quick')) return 'high';
-    if (input.includes('slow') || input.includes('careful')) return 'low';
+    if (input.includes('fast') || input.includes('quick')) {return 'high';}
+    if (input.includes('slow') || input.includes('careful')) {return 'low';}
     return 'medium';
   }
 
   private extractScalabilityRequirement(input: string): string {
-    if (input.includes('large scale') || input.includes('big data')) return 'high';
+    if (input.includes('large scale') || input.includes('big data')) {return 'high';}
     return 'medium';
   }
 

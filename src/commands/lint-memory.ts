@@ -17,8 +17,8 @@ import * as path from 'path';
 import { DualMemoryEngine } from '../services/memory-system/dual-memory-engine';
 import { logger } from '../utils/logger';
 import type {
-  MemoryQuery,
   CodePattern,
+  MemoryQuery,
   QualityMetrics,
 } from '../services/memory-system/types/memory-interfaces';
 

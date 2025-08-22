@@ -1,4 +1,4 @@
-import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './ai-provider.js';
+import { BaseAIProvider, CodeReviewResult, CompletionOptions, Message } from './ai-provider.js';
 import fetch from 'node-fetch';
 
 interface VLLMConfig {
@@ -103,7 +103,7 @@ export class VLLMProvider extends BaseAIProvider {
       try {
         return await fn();
       } catch (error: unknown) {
-        if (i === attempts - 1) throw error;
+        if (i === attempts - 1) {throw error;}
         await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
       }
     }
@@ -202,7 +202,7 @@ export class VLLMProvider extends BaseAIProvider {
       body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
     };
     const reader = nodeResponse.body?.getReader();
-    if (!reader) throw new Error('No response body');
+    if (!reader) {throw new Error('No response body');}
 
     const decoder = new TextDecoder();
     let buffer = '';
@@ -210,7 +210,7 @@ export class VLLMProvider extends BaseAIProvider {
     try {
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {break;}
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
@@ -219,7 +219,7 @@ export class VLLMProvider extends BaseAIProvider {
         for (const line of lines) {
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
-            if (data === '[DONE]') return;
+            if (data === '[DONE]') {return;}
 
             try {
               const parsed = JSON.parse(data) as {

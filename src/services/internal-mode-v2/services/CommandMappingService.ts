@@ -518,8 +518,8 @@ export class CommandMappingService extends BaseService {
    */
   private calculateSimilarity(str1: string, str2: string): number {
     // Simple similarity calculation
-    if (str1 === str2) return 1.0;
-    if (str1.includes(str2) || str2.includes(str1)) return 0.8;
+    if (str1 === str2) {return 1.0;}
+    if (str1.includes(str2) || str2.includes(str1)) {return 0.8;}
 
     // Word overlap
     const words1 = str1.split(/\s+/);

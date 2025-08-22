@@ -3,7 +3,7 @@
  * Phase 1: 基礎検出システム
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import * as toml from 'toml';

@@ -4,7 +4,7 @@
  * Phase 2: Terminal Integration & Safety - Week 5
  */
 
-import { terminalDetector, TerminalCapabilities, EnvironmentInfo } from './TerminalDetector';
+import { EnvironmentInfo, TerminalCapabilities, terminalDetector } from './TerminalDetector';
 import { vscodeIntegration, VSCodeIntegration } from './VSCodeIntegration';
 import { cursorIntegration, CursorIntegration } from './CursorIntegration';
 

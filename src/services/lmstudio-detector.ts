@@ -107,7 +107,7 @@ export class LMStudioDetector {
     const paths = pathEnv.split(pathSeparator);
 
     for (const dir of paths) {
-      if (!dir) continue;
+      if (!dir) {continue;}
 
       const fullPath = join(dir, executable);
       if (existsSync(fullPath)) {

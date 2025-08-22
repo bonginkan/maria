@@ -295,7 +295,7 @@ export class PerformanceOptimizer extends EventEmitter {
           ? 2
           : 5;
 
-    if (Math.abs(trend) < threshold) return 'stable';
+    if (Math.abs(trend) < threshold) {return 'stable';}
 
     if (metricType === 'responseTime') {
       return trend < 0 ? 'improving' : 'degrading';
@@ -508,11 +508,11 @@ export class PerformanceOptimizer extends EventEmitter {
     const overallScore = Object.values(components).reduce((a, b) => a + b, 0) / 4;
 
     let overall: SystemHealth['overall'];
-    if (overallScore >= 90) overall = 'excellent';
-    else if (overallScore >= 75) overall = 'good';
-    else if (overallScore >= 60) overall = 'fair';
-    else if (overallScore >= 40) overall = 'poor';
-    else overall = 'critical';
+    if (overallScore >= 90) {overall = 'excellent';}
+    else if (overallScore >= 75) {overall = 'good';}
+    else if (overallScore >= 60) {overall = 'fair';}
+    else if (overallScore >= 40) {overall = 'poor';}
+    else {overall = 'critical';}
 
     return {
       overall,

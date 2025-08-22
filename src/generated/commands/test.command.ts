@@ -1,6 +1,6 @@
 import { BaseCommand } from '../base-command';
-import { _Command, RequireAuth, RateLimit, Cache, _Validate } from '../decorators';
-import { _CommandContext, CommandOptions, _CommandResult } from '../types';
+import { _Command, _Validate, Cache, RateLimit, RequireAuth } from '../decorators';
+import { _CommandContext, _CommandResult, CommandOptions } from '../types';
 import { z } from 'zod';
 import { exec } from 'child_process';
 import { promisify } from 'util';
@@ -151,16 +151,16 @@ export class TestCommand extends BaseCommand<TestOptions> {
     const { dependencies = {}, devDependencies = {} } = packageJson;
     const allDeps = { ...dependencies, ...devDependencies };
 
-    if (allDeps.jest) return 'jest';
-    if (allDeps.mocha) return 'mocha';
-    if (allDeps.vitest) return 'vitest';
-    if (allDeps.ava) return 'ava';
-    if (allDeps.tape) return 'tape';
-    if (allDeps['@playwright/test']) return 'playwright';
-    if (allDeps.cypress) return 'cypress';
-    if (allDeps.pytest) return 'pytest';
-    if (allDeps.unittest) return 'unittest';
-    if (allDeps.rspec) return 'rspec';
+    if (allDeps.jest) {return 'jest';}
+    if (allDeps.mocha) {return 'mocha';}
+    if (allDeps.vitest) {return 'vitest';}
+    if (allDeps.ava) {return 'ava';}
+    if (allDeps.tape) {return 'tape';}
+    if (allDeps['@playwright/test']) {return 'playwright';}
+    if (allDeps.cypress) {return 'cypress';}
+    if (allDeps.pytest) {return 'pytest';}
+    if (allDeps.unittest) {return 'unittest';}
+    if (allDeps.rspec) {return 'rspec';}
 
     return 'jest'; // Default fallback
   }
@@ -250,12 +250,12 @@ export class TestCommand extends BaseCommand<TestOptions> {
       args.push(files.join(' '));
     }
 
-    if (options.coverage) args.push('--coverage');
-    if (options.watch) args.push('--watch');
-    if (options.verbose) args.push('--verbose');
-    if (options.bail) args.push('--bail');
-    if (options.updateSnapshots) args.push('-u');
-    if (!options.parallel) args.push('--runInBand');
+    if (options.coverage) {args.push('--coverage');}
+    if (options.watch) {args.push('--watch');}
+    if (options.verbose) {args.push('--verbose');}
+    if (options.bail) {args.push('--bail');}
+    if (options.updateSnapshots) {args.push('-u');}
+    if (!options.parallel) {args.push('--runInBand');}
 
     return args.join(' ');
   }
@@ -267,10 +267,10 @@ export class TestCommand extends BaseCommand<TestOptions> {
       args.push(files.join(' '));
     }
 
-    if (options.watch) args.push('--watch');
-    if (options.verbose) args.push('--reporter spec');
-    if (options.bail) args.push('--bail');
-    if (options.parallel) args.push('--parallel');
+    if (options.watch) {args.push('--watch');}
+    if (options.verbose) {args.push('--reporter spec');}
+    if (options.bail) {args.push('--bail');}
+    if (options.parallel) {args.push('--parallel');}
     args.push(`--timeout ${options.timeout}`);
 
     return args.join(' ');
@@ -283,10 +283,10 @@ export class TestCommand extends BaseCommand<TestOptions> {
       args.push(files.join(' '));
     }
 
-    if (options.coverage) args.push('--coverage');
-    if (options.watch) args.push('--watch');
-    if (!options.parallel) args.push('--no-threads');
-    if (options.updateSnapshots) args.push('-u');
+    if (options.coverage) {args.push('--coverage');}
+    if (options.watch) {args.push('--watch');}
+    if (!options.parallel) {args.push('--no-threads');}
+    if (options.updateSnapshots) {args.push('-u');}
 
     return args.join(' ');
   }
@@ -298,8 +298,8 @@ export class TestCommand extends BaseCommand<TestOptions> {
       args.push(files.join(' '));
     }
 
-    if (options.verbose) args.push('--reporter=list');
-    if (!options.parallel) args.push('--workers=1');
+    if (options.verbose) {args.push('--reporter=list');}
+    if (!options.parallel) {args.push('--workers=1');}
 
     return args.join(' ');
   }
@@ -317,10 +317,10 @@ export class TestCommand extends BaseCommand<TestOptions> {
       args.push(files.join(' '));
     }
 
-    if (options.coverage) args.push('--cov');
-    if (options.verbose) args.push('-v');
-    if (options.bail) args.push('-x');
-    if (options.parallel) args.push('-n auto');
+    if (options.coverage) {args.push('--cov');}
+    if (options.verbose) {args.push('-v');}
+    if (options.bail) {args.push('-x');}
+    if (options.parallel) {args.push('-n auto');}
 
     return args.join(' ');
   }
@@ -344,10 +344,10 @@ export class TestCommand extends BaseCommand<TestOptions> {
     const failedMatch = output.match(/(\d+) fail(ed|ing)?/i);
     const skippedMatch = output.match(/(\d+) skip(ped)?/i);
 
-    if (totalMatch) results.total = parseInt(totalMatch[1]);
-    if (passedMatch) results.passed = parseInt(passedMatch[1]);
-    if (failedMatch) results.failed = parseInt(failedMatch[1]);
-    if (skippedMatch) results.skipped = parseInt(skippedMatch[1]);
+    if (totalMatch) {results.total = parseInt(totalMatch[1]);}
+    if (passedMatch) {results.passed = parseInt(passedMatch[1]);}
+    if (failedMatch) {results.failed = parseInt(failedMatch[1]);}
+    if (skippedMatch) {results.skipped = parseInt(skippedMatch[1]);}
 
     // Extract failure details
     const failureRegex = /(?:✗|✕|FAIL|FAILED)\s+(.+)/g;
@@ -380,7 +380,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
   }
 
   private displayTestResults(results: unknown): void {
-    console.log('\n' + chalk.bold('Test Results:'));
+    console.log(`\n${  chalk.bold('Test Results:')}`);
     console.log(chalk.green(`  ✓ Passed: ${results.passed}`));
 
     if (results.failed > 0) {
@@ -394,7 +394,7 @@ export class TestCommand extends BaseCommand<TestOptions> {
     console.log(chalk.gray(`  Total: ${results.total}`));
 
     if (results.failures && results.failures.length > 0) {
-      console.log('\n' + chalk.bold.red('Failures:'));
+      console.log(`\n${  chalk.bold.red('Failures:')}`);
       results.failures.forEach((failure: unknown, index: number) => {
         console.log(chalk.red(`  ${index + 1}. ${failure.test}`));
         if (failure.error) {
@@ -409,16 +409,16 @@ export class TestCommand extends BaseCommand<TestOptions> {
   }
 
   private displayCoverageReport(report: unknown): void {
-    if (!report) return;
+    if (!report) {return;}
 
-    console.log('\n' + chalk.bold('Coverage Report:'));
+    console.log(`\n${  chalk.bold('Coverage Report:')}`);
     console.log(chalk.cyan(`  Statements: ${report.statements}%`));
     console.log(chalk.cyan(`  Branches: ${report.branches}%`));
     console.log(chalk.cyan(`  Functions: ${report.functions}%`));
     console.log(chalk.cyan(`  Lines: ${report.lines}%`));
 
     if (report.uncoveredFiles && report.uncoveredFiles.length > 0) {
-      console.log('\n' + chalk.yellow('Uncovered files:'));
+      console.log(`\n${  chalk.yellow('Uncovered files:')}`);
       report.uncoveredFiles.forEach((file: string) => {
         console.log(chalk.yellow(`  - ${file}`));
       });

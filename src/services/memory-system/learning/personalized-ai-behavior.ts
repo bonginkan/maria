@@ -8,7 +8,7 @@
 import { EventEmitter } from 'events';
 import { DualMemoryEngine } from '../dual-memory-engine';
 import { CrossSessionLearningEngine, PersonalizationProfile } from './cross-session-learning';
-import type { UserPreferenceSet, MemoryQuery, MemoryResponse } from '../types/memory-interfaces';
+import type { MemoryQuery, MemoryResponse, UserPreferenceSet } from '../types/memory-interfaces';
 
 export interface AIBehaviorConfig {
   adaptationSpeed: 'slow' | 'moderate' | 'fast';
@@ -443,7 +443,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
     const shortened = sentences.map((s) => {
       if (s.length > 100) {
         // Take first clause
-        return s.split(',')[0] + '.';
+        return `${s.split(',')[0]  }.`;
       }
       return s;
     });
@@ -643,13 +643,13 @@ export class PersonalizedAIBehavior extends EventEmitter {
 
     const allExpertise = [...languageExpertise, ...frameworkExpertise];
 
-    if (allExpertise.length === 0) return 0.5;
+    if (allExpertise.length === 0) {return 0.5;}
 
     return allExpertise.reduce((a, b) => a + b, 0) / allExpertise.length;
   }
 
   private calculateConfidence(adaptations: Adaptation[]): number {
-    if (adaptations.length === 0) return 0.8;
+    if (adaptations.length === 0) {return 0.8;}
 
     const avgConfidence =
       adaptations.reduce((sum, a) => sum + a.confidence, 0) / adaptations.length;
@@ -657,7 +657,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
   }
 
   private explainAdaptations(adaptations: Adaptation[]): string {
-    if (adaptations.length === 0) return '';
+    if (adaptations.length === 0) {return '';}
 
     const explanations = adaptations
       .filter((a) => a.applied)
@@ -777,9 +777,9 @@ export class PersonalizedAIBehavior extends EventEmitter {
   private getExpertiseDescription(profile: PersonalizationProfile): string {
     const expertise = this.calculateExpertiseLevel(profile);
 
-    if (expertise < 0.3) return 'beginner';
-    if (expertise < 0.5) return 'intermediate';
-    if (expertise < 0.7) return 'advanced';
+    if (expertise < 0.3) {return 'beginner';}
+    if (expertise < 0.5) {return 'intermediate';}
+    if (expertise < 0.7) {return 'advanced';}
     return 'expert';
   }
 
@@ -869,7 +869,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
     const metrics = this.learningEngine.getLearningMetrics(userId);
     const behaviorMetrics = this.behaviorMetrics.get(userId);
 
-    if (!behaviorMetrics) return 0;
+    if (!behaviorMetrics) {return 0;}
 
     // Combine various factors
     const factors = [

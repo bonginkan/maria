@@ -792,7 +792,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     request: ExportRequest,
     operation: 'export' | 'import',
   ): Promise<void> {
-    if (!request.compliance) return;
+    if (!request.compliance) {return;}
 
     const engine = this.complianceEngines.get(request.compliance.framework);
     if (engine) {
@@ -807,7 +807,7 @@ export class EnterpriseDataPorter extends EventEmitter {
   }
 
   private applyFilters(data: any[], filters: DataFilter[]): any[] {
-    if (filters.length === 0) return data;
+    if (filters.length === 0) {return data;}
 
     return data.filter((record) => {
       return filters.every((filter) => {
@@ -912,7 +912,7 @@ export class EnterpriseDataPorter extends EventEmitter {
   }
 
   private applyFieldMappings(data: any[], mappings: FieldMapping[]): any[] {
-    if (mappings.length === 0) return data;
+    if (mappings.length === 0) {return data;}
 
     return data.map((record) => {
       const mappedRecord: any = {};
@@ -1223,7 +1223,7 @@ class JSONFormatHandler extends FormatHandler {
 
 class CSVFormatHandler extends FormatHandler {
   async serialize(data: any[], options: any): Promise<string> {
-    if (data.length === 0) return '';
+    if (data.length === 0) {return '';}
 
     const headers = Object.keys(data[0]);
     const rows = data.map((record) =>
@@ -1235,7 +1235,7 @@ class CSVFormatHandler extends FormatHandler {
 
   async deserialize(data: string, options: any): Promise<any[]> {
     const lines = data.split('\n').filter((line) => line.trim());
-    if (lines.length === 0) return [];
+    if (lines.length === 0) {return [];}
 
     const headers = lines[0].split(',');
     const records = lines.slice(1).map((line) => {

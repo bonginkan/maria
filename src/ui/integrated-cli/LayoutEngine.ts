@@ -154,7 +154,7 @@ export class LayoutEngine {
    */
   clearZone(zone: LayoutZone): void {
     const position = this.zones.get(zone);
-    if (!position) return;
+    if (!position) {return;}
 
     // Save cursor position
     process.stdout.write('\x1b[s');
@@ -195,7 +195,7 @@ export class LayoutEngine {
     align: 'left' | 'center' | 'right' = 'left',
   ): void {
     const position = this.zones.get(zone);
-    if (!position) return;
+    if (!position) {return;}
 
     // Save cursor position
     process.stdout.write('\x1b[s');
@@ -218,7 +218,7 @@ export class LayoutEngine {
    */
   drawBorder(zone: LayoutZone, style: 'single' | 'double' | 'rounded' = 'single'): void {
     const position = this.zones.get(zone);
-    if (!position) return;
+    if (!position) {return;}
 
     const chars = this.getBorderChars(style);
     const color = chalk.white;
@@ -312,7 +312,7 @@ export class LayoutEngine {
       }
     }
 
-    return text.substring(0, actualPosition) + '...';
+    return `${text.substring(0, actualPosition)  }...`;
   }
 
   /**
@@ -322,7 +322,7 @@ export class LayoutEngine {
     const textLength = this.stripAnsi(text).length;
     const padding = width - textLength;
 
-    if (padding <= 0) return text;
+    if (padding <= 0) {return text;}
 
     switch (align) {
       case 'center':

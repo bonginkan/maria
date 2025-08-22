@@ -2,7 +2,7 @@
  * Phase 3 Test: Approval System
  * 承認システムとキーボードショートカットのテスト
  */
-import { ApprovalPrompt, ApprovalOption } from './ApprovalPrompt.js';
+import { ApprovalOption, ApprovalPrompt } from './ApprovalPrompt.js';
 import { KeyboardShortcutHandler, ShortcutCategory } from './KeyboardShortcutHandler.js';
 
 /**

@@ -225,7 +225,7 @@ ${chalk.cyan('Examples:')}
         if (document.content.structuredContent.abstract) {
           console.log(chalk.cyan('📝 Abstract:'));
           const abstract = document.content.structuredContent.abstract;
-          console.log(abstract.length > 500 ? abstract.substring(0, 500) + '...' : abstract);
+          console.log(abstract.length > 500 ? `${abstract.substring(0, 500)  }...` : abstract);
           console.log();
         }
 
@@ -309,10 +309,10 @@ ${chalk.cyan('Examples:')}
           const elements = doc.content.extractedElements;
           const summary = [];
           if (elements.algorithms.length > 0)
-            summary.push(`${elements.algorithms.length} algorithms`);
+            {summary.push(`${elements.algorithms.length} algorithms`);}
           if (elements.codeBlocks.length > 0)
-            summary.push(`${elements.codeBlocks.length} code blocks`);
-          if (elements.formulas.length > 0) summary.push(`${elements.formulas.length} formulas`);
+            {summary.push(`${elements.codeBlocks.length} code blocks`);}
+          if (elements.formulas.length > 0) {summary.push(`${elements.formulas.length} formulas`);}
 
           if (summary.length > 0) {
             console.log(chalk.gray(`    Content: ${summary.join(', ')}`));

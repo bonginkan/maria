@@ -268,7 +268,7 @@ export class AtomicOperationManager {
       const allPaths: string[] = [];
       operations.forEach((op) => {
         allPaths.push(op.target);
-        if (op.source) allPaths.push(op.source);
+        if (op.source) {allPaths.push(op.source);}
       });
 
       // Capture original state

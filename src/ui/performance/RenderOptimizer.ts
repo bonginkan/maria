@@ -312,7 +312,7 @@ export class TerminalBuffer {
     if (moveUp > 0) {
       process.stdout.write(`\x1b[${moveUp}A`); // Move up
       process.stdout.write('\x1b[2K'); // Clear line
-      process.stdout.write('\r' + content); // Write new content
+      process.stdout.write(`\r${  content}`); // Write new content
       process.stdout.write(`\x1b[${moveUp}B`); // Move back down
     }
   }
@@ -358,7 +358,7 @@ export class StringBuilder {
    * 改行を追加
    */
   appendLine(str: string = ''): StringBuilder {
-    return this.append(str + '\n');
+    return this.append(`${str  }\n`);
   }
 
   /**

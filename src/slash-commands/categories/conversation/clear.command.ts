@@ -73,10 +73,10 @@ export class ClearCommand extends BaseCommand {
 
       // Build response message
       const clearedItems: string[] = [];
-      if (clearOptions.conversation) clearedItems.push('conversation');
-      if (clearOptions.history) clearedItems.push('all history');
-      if (clearOptions.settings && !keepSettings) clearedItems.push('settings');
-      if (clearOptions.cache) clearedItems.push('cache');
+      if (clearOptions.conversation) {clearedItems.push('conversation');}
+      if (clearOptions.history) {clearedItems.push('all history');}
+      if (clearOptions.settings && !keepSettings) {clearedItems.push('settings');}
+      if (clearOptions.cache) {clearedItems.push('cache');}
 
       const message = this.buildSuccessMessage(clearedItems);
 

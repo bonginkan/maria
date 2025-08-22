@@ -552,10 +552,10 @@ export default class AnalyzingMode extends BaseMode {
   private identifyDataType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('number') || inputLower.includes('metric')) return 'quantitative';
-    if (inputLower.includes('text') || inputLower.includes('description')) return 'qualitative';
-    if (inputLower.includes('time') || inputLower.includes('sequence')) return 'temporal';
-    if (inputLower.includes('network') || inputLower.includes('relationship')) return 'relational';
+    if (inputLower.includes('number') || inputLower.includes('metric')) {return 'quantitative';}
+    if (inputLower.includes('text') || inputLower.includes('description')) {return 'qualitative';}
+    if (inputLower.includes('time') || inputLower.includes('sequence')) {return 'temporal';}
+    if (inputLower.includes('network') || inputLower.includes('relationship')) {return 'relational';}
 
     return 'mixed';
   }
@@ -578,16 +578,16 @@ export default class AnalyzingMode extends BaseMode {
       inputLower.includes(indicator),
     ).length;
 
-    if (qualityScore >= 3) return 'high';
-    if (qualityScore >= 2) return 'medium';
+    if (qualityScore >= 3) {return 'high';}
+    if (qualityScore >= 2) {return 'medium';}
     return 'low';
   }
 
   private evaluateDataCompleteness(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('incomplete') || inputLower.includes('missing')) return 'partial';
-    if (inputLower.includes('complete') || inputLower.includes('comprehensive')) return 'complete';
+    if (inputLower.includes('incomplete') || inputLower.includes('missing')) {return 'partial';}
+    if (inputLower.includes('complete') || inputLower.includes('comprehensive')) {return 'complete';}
 
     return 'unknown';
   }
@@ -596,8 +596,8 @@ export default class AnalyzingMode extends BaseMode {
     const wordCount = input.split(/\s+/).length;
     const conceptCount = this.countConcepts(input);
 
-    if (wordCount > 150 || conceptCount > 10) return 'high';
-    if (wordCount > 75 || conceptCount > 5) return 'medium';
+    if (wordCount > 150 || conceptCount > 10) {return 'high';}
+    if (wordCount > 75 || conceptCount > 5) {return 'medium';}
     return 'low';
   }
 
@@ -605,9 +605,9 @@ export default class AnalyzingMode extends BaseMode {
     const needs: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('clean')) needs.push('data cleaning');
-    if (inputLower.includes('normalize')) needs.push('normalization');
-    if (inputLower.includes('transform')) needs.push('transformation');
+    if (inputLower.includes('clean')) {needs.push('data cleaning');}
+    if (inputLower.includes('normalize')) {needs.push('normalization');}
+    if (inputLower.includes('transform')) {needs.push('transformation');}
 
     return needs;
   }
@@ -615,9 +615,9 @@ export default class AnalyzingMode extends BaseMode {
   private defineAnalysisScope(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('comprehensive') || inputLower.includes('full')) return 'comprehensive';
-    if (inputLower.includes('focused') || inputLower.includes('specific')) return 'focused';
-    if (inputLower.includes('overview') || inputLower.includes('summary')) return 'overview';
+    if (inputLower.includes('comprehensive') || inputLower.includes('full')) {return 'comprehensive';}
+    if (inputLower.includes('focused') || inputLower.includes('specific')) {return 'focused';}
+    if (inputLower.includes('overview') || inputLower.includes('summary')) {return 'overview';}
 
     return 'standard';
   }
@@ -654,9 +654,9 @@ export default class AnalyzingMode extends BaseMode {
     const dependencies: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('depends on')) dependencies.push('functional dependency');
-    if (inputLower.includes('requires')) dependencies.push('requirement dependency');
-    if (inputLower.includes('needs')) dependencies.push('need dependency');
+    if (inputLower.includes('depends on')) {dependencies.push('functional dependency');}
+    if (inputLower.includes('requires')) {dependencies.push('requirement dependency');}
+    if (inputLower.includes('needs')) {dependencies.push('need dependency');}
 
     return dependencies;
   }
@@ -665,10 +665,10 @@ export default class AnalyzingMode extends BaseMode {
     const interfaces: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('api')) interfaces.push('API interface');
+    if (inputLower.includes('api')) {interfaces.push('API interface');}
     if (inputLower.includes('ui') || inputLower.includes('interface'))
-      interfaces.push('User interface');
-    if (inputLower.includes('connection')) interfaces.push('Connection interface');
+      {interfaces.push('User interface');}
+    if (inputLower.includes('connection')) {interfaces.push('Connection interface');}
 
     return interfaces;
   }
@@ -681,9 +681,9 @@ export default class AnalyzingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('limit')) constraints.push('resource limits');
-    if (inputLower.includes('constraint')) constraints.push('system constraints');
-    if (inputLower.includes('restriction')) constraints.push('operational restrictions');
+    if (inputLower.includes('limit')) {constraints.push('resource limits');}
+    if (inputLower.includes('constraint')) {constraints.push('system constraints');}
+    if (inputLower.includes('restriction')) {constraints.push('operational restrictions');}
 
     return constraints;
   }
@@ -725,8 +725,8 @@ export default class AnalyzingMode extends BaseMode {
     // Simplified correlation assessment
     const patternCount = patterns.patterns.length;
 
-    if (patternCount > 5) return 'strong';
-    if (patternCount > 3) return 'moderate';
+    if (patternCount > 5) {return 'strong';}
+    if (patternCount > 3) {return 'moderate';}
     return 'weak';
   }
 
@@ -866,9 +866,9 @@ export default class AnalyzingMode extends BaseMode {
   private detectDataFormat(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('json') || inputLower.includes('xml')) return 'structured';
-    if (inputLower.includes('csv') || inputLower.includes('table')) return 'tabular';
-    if (inputLower.includes('text') || inputLower.includes('document')) return 'unstructured';
+    if (inputLower.includes('json') || inputLower.includes('xml')) {return 'structured';}
+    if (inputLower.includes('csv') || inputLower.includes('table')) {return 'tabular';}
+    if (inputLower.includes('text') || inputLower.includes('document')) {return 'unstructured';}
 
     return 'mixed';
   }
@@ -884,8 +884,8 @@ export default class AnalyzingMode extends BaseMode {
   private estimateDataVolume(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('large') || inputLower.includes('big')) return 'large';
-    if (inputLower.includes('small') || inputLower.includes('limited')) return 'small';
+    if (inputLower.includes('large') || inputLower.includes('big')) {return 'large';}
+    if (inputLower.includes('small') || inputLower.includes('limited')) {return 'small';}
 
     return 'medium';
   }
@@ -898,8 +898,8 @@ export default class AnalyzingMode extends BaseMode {
       inputLower.includes(indicator),
     ).length;
 
-    if (varietyCount > 2) return 'high';
-    if (varietyCount > 0) return 'medium';
+    if (varietyCount > 2) {return 'high';}
+    if (varietyCount > 0) {return 'medium';}
     return 'low';
   }
 
@@ -921,8 +921,8 @@ export default class AnalyzingMode extends BaseMode {
   private calculateHierarchyDepth(input: string): string {
     const levels = this.countHierarchyLevels(input);
 
-    if (levels > 4) return 'deep';
-    if (levels > 2) return 'moderate';
+    if (levels > 4) {return 'deep';}
+    if (levels > 2) {return 'moderate';}
     return 'shallow';
   }
 }

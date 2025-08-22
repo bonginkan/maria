@@ -511,10 +511,10 @@ export class UserPatternAnalyzer extends EventEmitter {
 
   private async detectPatternEvolution(userId: string): Promise<void> {
     const history = this.eventHistory.get(userId) || [];
-    if (history.length < 50) return; // Need sufficient history
+    if (history.length < 50) {return;} // Need sufficient history
 
     const pattern = this.patterns.get(userId);
-    if (!pattern) return;
+    if (!pattern) {return;}
 
     const metrics = this.metricsCache.get(userId) || this.createDefaultMetrics();
 
@@ -1021,7 +1021,7 @@ export class UserPatternAnalyzer extends EventEmitter {
 
   private calculateConsistency(pattern: UserPattern, history: MemoryEvent[]): number {
     // Simplified consistency calculation
-    if (history.length < 10) return 0.5;
+    if (history.length < 10) {return 0.5;}
 
     // Check how consistent recent events are with the pattern
     const recentEvents = history.slice(-20);

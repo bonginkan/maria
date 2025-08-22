@@ -1,12 +1,12 @@
 // @ts-nocheck - Complex type interactions requiring gradual type migration
 // Migration: Using new AI provider system instead of @maria/ai-agents
 import {
-  IAIProvider,
   Message as AIMessage,
   AIProviderRegistry,
-  registerAllProviders,
-  initializeProvider,
   getProviderConfigFromEnv,
+  IAIProvider,
+  initializeProvider,
+  registerAllProviders,
 } from '../providers/index.js';
 import { getAIProviderConfig } from '../providers/config.js';
 
@@ -360,7 +360,7 @@ export class AIChatService {
 
   // Add method to get current provider info
   getProviderInfo(): { provider: string; model: string } | null {
-    if (!this.provider) return null;
+    if (!this.provider) {return null;}
     return {
       provider: this.provider.name,
       model: this.currentModel || this.provider.getDefaultModel(),

@@ -102,7 +102,7 @@ export class ChatContextService extends EventEmitter {
   }
 
   private async compressContext(): Promise<void> {
-    if (this.contextWindow.length <= 2) return;
+    if (this.contextWindow.length <= 2) {return;}
 
     const middleMessages = this.contextWindow.slice(1, -1);
     const summary = await this.generateSummary(middleMessages);
@@ -119,7 +119,7 @@ export class ChatContextService extends EventEmitter {
       const firstMessage = this.contextWindow[0];
       const lastMessage = this.contextWindow[this.contextWindow.length - 1];
 
-      if (!firstMessage || !lastMessage) return;
+      if (!firstMessage || !lastMessage) {return;}
 
       this.contextWindow = [firstMessage, summaryMessage, lastMessage];
       this.recalculateTokens();
@@ -193,7 +193,7 @@ export class ChatContextService extends EventEmitter {
   }
 
   public async persistSession(): Promise<void> {
-    if (!this.config.persistPath) return;
+    if (!this.config.persistPath) {return;}
 
     try {
       await fs.mkdir(this.config.persistPath, { recursive: true });
@@ -216,7 +216,7 @@ export class ChatContextService extends EventEmitter {
   }
 
   public async loadSession(sessionId: string): Promise<boolean> {
-    if (!this.config.persistPath) return false;
+    if (!this.config.persistPath) {return false;}
 
     try {
       const sessionFile = path.join(this.config.persistPath, `${sessionId}.json`);
@@ -287,8 +287,8 @@ export class ChatContextService extends EventEmitter {
 
     let color = '\x1b[32m'; // Green
     if (percentage > 80)
-      color = '\x1b[31m'; // Red
-    else if (percentage > 60) color = '\x1b[33m'; // Yellow
+      {color = '\x1b[31m';} // Red
+    else if (percentage > 60) {color = '\x1b[33m';} // Yellow
 
     return `${color}[${filled}${empty}] ${percentage}% (${stats.totalTokens}/${stats.maxTokens} tokens)\x1b[0m`;
   }

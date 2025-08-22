@@ -9,10 +9,10 @@ import os from 'os';
 import { BaseCommand } from '../../base-command';
 import {
   CommandArgs,
-  CommandContext,
-  CommandResult,
   CommandCategory,
+  CommandContext,
   CommandExample,
+  CommandResult,
 } from '../../types';
 import { logger } from '../../../utils/logger';
 
@@ -438,10 +438,10 @@ export class SetupCommand extends BaseCommand {
     const configuredProviders: string[] = [];
     if (existingEnvFile) {
       const envContent = await fs.readFile(path.join(cwd, '.env.local'), 'utf-8');
-      if (envContent.includes('OPENAI_API_KEY')) configuredProviders.push('openai');
-      if (envContent.includes('ANTHROPIC_API_KEY')) configuredProviders.push('anthropic');
-      if (envContent.includes('GOOGLE_AI_API_KEY')) configuredProviders.push('google');
-      if (envContent.includes('GROQ_API_KEY')) configuredProviders.push('groq');
+      if (envContent.includes('OPENAI_API_KEY')) {configuredProviders.push('openai');}
+      if (envContent.includes('ANTHROPIC_API_KEY')) {configuredProviders.push('anthropic');}
+      if (envContent.includes('GOOGLE_AI_API_KEY')) {configuredProviders.push('google');}
+      if (envContent.includes('GROQ_API_KEY')) {configuredProviders.push('groq');}
     }
 
     return {

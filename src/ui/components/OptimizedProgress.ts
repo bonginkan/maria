@@ -4,7 +4,7 @@
  */
 
 import chalk from 'chalk';
-import { UNIFIED_COLORS, TEXT_HIERARCHY } from '../design-system/UnifiedColorPalette.js';
+import { TEXT_HIERARCHY, UNIFIED_COLORS } from '../design-system/UnifiedColorPalette.js';
 import { MINIMAL_ICONS } from '../design-system/MinimalIconRegistry.js';
 import { DESIGN_CONSTANTS } from '../optimized-design-system.js';
 
@@ -54,7 +54,7 @@ export class OptimizedProgress {
     let output = '';
 
     if (config.label) {
-      output += TEXT_HIERARCHY.CAPTION(config.label) + ' ';
+      output += `${TEXT_HIERARCHY.CAPTION(config.label)  } `;
     }
 
     output += bar;
@@ -148,7 +148,7 @@ export class OptimizedProgress {
     let output = colored;
 
     if (config.label) {
-      output = TEXT_HIERARCHY.CAPTION(config.label) + ' ' + output;
+      output = `${TEXT_HIERARCHY.CAPTION(config.label)  } ${  output}`;
     }
 
     if (config.showPercentage !== false) {
@@ -251,7 +251,7 @@ export class OptimizedProgress {
     const tracker: ProgressTracker = {
       update: (current: number, message?: string) => {
         currentValue = current;
-        if (message) label = message;
+        if (message) {label = message;}
 
         this.renderBar(currentValue, total, { ...config, label });
       },

@@ -8,9 +8,9 @@
 import { EventEmitter } from 'events';
 import { DualMemoryEngine } from '../dual-memory-engine';
 import type {
-  MemoryEvent,
-  KnowledgeNode,
   CodePattern,
+  KnowledgeNode,
+  MemoryEvent,
   ReasoningTrace,
   UserPreferenceSet,
 } from '../types/memory-interfaces';
@@ -330,7 +330,7 @@ export class TeamMemoryManager extends EventEmitter {
 
       for (const event of eventsToSync) {
         const workspace = this.workspaces.get(event.workspace);
-        if (!workspace) continue;
+        if (!workspace) {continue;}
 
         // Sync to all members except the originator
         const otherMembers = workspace.members.filter((m) => m.id !== event.memberId);
@@ -444,10 +444,10 @@ export class TeamMemoryManager extends EventEmitter {
    */
   private async syncToMember(memberId: string, workspaceId: string): Promise<void> {
     const workspace = this.workspaces.get(workspaceId);
-    if (!workspace) return;
+    if (!workspace) {return;}
 
     const engine = this.memberEngines.get(`${memberId}_${workspaceId}`);
-    if (!engine) return;
+    if (!engine) {return;}
 
     // Sync all shared memory to new member
     for (const [contributorId, nodes] of workspace.memoryPool.knowledge) {
@@ -594,7 +594,7 @@ export class TeamMemoryManager extends EventEmitter {
    */
   getMemberContribution(memberId: string, workspaceId: string): number {
     const workspace = this.workspaces.get(workspaceId);
-    if (!workspace) return 0;
+    if (!workspace) {return 0;}
 
     return workspace.memoryPool.statistics.contributionsByMember.get(memberId) || 0;
   }

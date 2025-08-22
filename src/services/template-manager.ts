@@ -7,7 +7,7 @@ import { logger } from '../utils/logger';
 // import.*from.*../lib/command-groups';
 import { join } from 'path';
 import { homedir } from 'os';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 
 export interface CommandTemplate {
   id: string;

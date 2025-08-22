@@ -1,4 +1,4 @@
-import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './ai-provider.js';
+import { BaseAIProvider, CodeReviewResult, CompletionOptions, Message } from './ai-provider.js';
 import fetch from 'node-fetch';
 
 interface OllamaConfig {
@@ -101,7 +101,7 @@ export class OllamaProvider extends BaseAIProvider {
       try {
         return await fn();
       } catch (error: unknown) {
-        if (i === attempts - 1) throw error;
+        if (i === attempts - 1) {throw error;}
         await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
       }
     }
@@ -117,7 +117,7 @@ export class OllamaProvider extends BaseAIProvider {
 
     const payload = {
       model: selectedModel,
-      prompt: prompt,
+      prompt,
       stream: false,
       options: {
         temperature: options?.temperature || 0.7,
@@ -163,7 +163,7 @@ export class OllamaProvider extends BaseAIProvider {
 
     const payload = {
       model: selectedModel,
-      prompt: prompt,
+      prompt,
       stream: true,
       options: {
         temperature: options?.temperature || 0.7,
@@ -196,7 +196,7 @@ export class OllamaProvider extends BaseAIProvider {
       body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
     }; // Node.js fetch response
     const reader = nodeResponse.body?.getReader();
-    if (!reader) throw new Error('No response body');
+    if (!reader) {throw new Error('No response body');}
 
     const decoder = new TextDecoder();
     let buffer = '';
@@ -205,7 +205,7 @@ export class OllamaProvider extends BaseAIProvider {
       const running = true;
       while (running) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {break;}
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
@@ -222,7 +222,7 @@ export class OllamaProvider extends BaseAIProvider {
                   options.streamOptions.onToken(content);
                 }
               }
-              if (parsed['done']) return;
+              if (parsed['done']) {return;}
             } catch {
               // Skip invalid JSON
             }
@@ -353,7 +353,7 @@ export class OllamaProvider extends BaseAIProvider {
       body?: { getReader(): ReadableStreamDefaultReader<Uint8Array> };
     };
     const reader = nodeResponse.body?.getReader();
-    if (!reader) return;
+    if (!reader) {return;}
 
     const decoder = new TextDecoder();
     let buffer = '';
@@ -362,7 +362,7 @@ export class OllamaProvider extends BaseAIProvider {
       const running = true;
       while (running) {
         const { done, value } = await reader.read();
-        if (done) break;
+        if (done) {break;}
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split('\n');
@@ -372,7 +372,7 @@ export class OllamaProvider extends BaseAIProvider {
           if (line.trim()) {
             try {
               const parsed = JSON.parse(line) as Record<string, unknown>;
-              if (parsed['status'] === 'success') return;
+              if (parsed['status'] === 'success') {return;}
               if (parsed['error']) {
                 throw new Error(`Model pull failed: ${parsed['error']}`);
               }

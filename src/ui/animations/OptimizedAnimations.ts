@@ -4,7 +4,7 @@
  */
 
 import chalk from 'chalk';
-import { UNIFIED_COLORS, TEXT_HIERARCHY } from '../design-system/UnifiedColorPalette.js';
+import { TEXT_HIERARCHY, UNIFIED_COLORS } from '../design-system/UnifiedColorPalette.js';
 import { MINIMAL_ICONS } from '../design-system/MinimalIconRegistry.js';
 import { DESIGN_CONSTANTS } from '../optimized-design-system.js';
 

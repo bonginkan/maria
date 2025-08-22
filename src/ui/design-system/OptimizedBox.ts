@@ -4,8 +4,8 @@
  * 画面ずれを完全に防ぐ厳密な幅管理
  */
 
-import { LayoutManager, type LayoutConfig, type Alignment } from './LayoutManager.js';
-import { SEMANTIC_COLORS, BRAND_COLORS, LAYOUT_COLORS } from './UnifiedColorPalette.js';
+import { type Alignment, type LayoutConfig, LayoutManager } from './LayoutManager.js';
+import { BRAND_COLORS, LAYOUT_COLORS, SEMANTIC_COLORS } from './UnifiedColorPalette.js';
 
 // ボックススタイル定義
 export type BoxStyle = 'light' | 'heavy' | 'double' | 'rounded' | 'minimal';
@@ -233,7 +233,7 @@ export class OptimizedBox {
     const shadowColor = SEMANTIC_COLORS.MUTED;
 
     // 右側と下側にシャドウ
-    console.log(' ' + shadowColor(shadowChar.repeat(width)));
+    console.log(` ${  shadowColor(shadowChar.repeat(width))}`);
     console.log(shadowColor(shadowChar.repeat(width + 1)));
   }
 

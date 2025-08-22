@@ -477,7 +477,7 @@ export class InterruptedOperationRecovery {
 
       // Extract operation info from filename pattern
       const match = fileName.match(/maria_(\w+)_(\w+)\.tmp/);
-      if (!match) return null;
+      if (!match) {return null;}
 
       const operation: InterruptedOperation = {
         id: this.generateOperationId(),
@@ -625,7 +625,7 @@ export class InterruptedOperationRecovery {
 
             while (position < sourceStats.size) {
               const { bytesRead } = await sourceHandle.read(buffer, 0, buffer.length, position);
-              if (bytesRead === 0) break;
+              if (bytesRead === 0) {break;}
 
               await targetHandle.write(buffer, 0, bytesRead);
               position += bytesRead;

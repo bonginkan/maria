@@ -3,7 +3,7 @@
  */
 
 import 'reflect-metadata';
-import { ServiceEvent, METADATA_KEYS } from '../types';
+import { METADATA_KEYS, ServiceEvent } from '../types';
 
 interface EventHandlerMetadata {
   eventType: string;

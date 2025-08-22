@@ -5,7 +5,7 @@
 // @ts-nocheck - Complex context management with dynamic types pending refactor - Complex type interactions requiring gradual type migration
 
 import { InferredCommand } from './intent-classifier';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 

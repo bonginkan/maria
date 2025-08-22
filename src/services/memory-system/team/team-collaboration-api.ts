@@ -5,7 +5,7 @@
  */
 
 import { DualMemoryEngine } from '../dual-memory-engine';
-import { TeamMemoryManager, TeamMember, TeamWorkspace } from './team-memory-manager';
+import { TeamMember, TeamMemoryManager, TeamWorkspace } from './team-memory-manager';
 import { CrossSessionLearningEngine, SessionData } from '../learning/cross-session-learning';
 import {
   PersonalizedAIBehavior,
@@ -593,7 +593,7 @@ export class TeamCollaborationAPI extends EventEmitter {
   private calculateAverageRating(memories: SharedMemory[]): number {
     const allRatings = memories.flatMap((m) => m.ratings.map((r) => r.score));
 
-    if (allRatings.length === 0) return 0;
+    if (allRatings.length === 0) {return 0;}
 
     return allRatings.reduce((sum, rating) => sum + rating, 0) / allRatings.length;
   }
@@ -628,7 +628,7 @@ export class TeamCollaborationAPI extends EventEmitter {
 
     // Get workspace statistics
     const stats = this.teamManager.getWorkspaceStatistics(workspaceId);
-    if (!stats) return suggestions;
+    if (!stats) {return suggestions;}
 
     // Suggest based on team activity
     if (stats.totalPatterns > 10) {

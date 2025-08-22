@@ -6,8 +6,8 @@ import * as path from 'path';
 import {
   IService,
   IServiceLoader,
-  ServiceMetadata,
   ServiceLoadError,
+  ServiceMetadata,
   ServiceNotFoundError,
   ServiceState,
 } from './types';

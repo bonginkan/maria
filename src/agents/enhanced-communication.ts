@@ -5,7 +5,7 @@
 
 import { EventEmitter } from 'events';
 // import { v4 as uuidv4 } from 'uuid';
-import { AgentRole, AgentMessage, AgentResult } from './types';
+import { AgentMessage, AgentResult, AgentRole } from './types';
 import { logger } from '../utils/logger';
 
 // Enhanced message types for better data flow

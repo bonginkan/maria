@@ -4,7 +4,7 @@
  */
 
 import chalk from 'chalk';
-import { UNIFIED_COLORS, TEXT_HIERARCHY } from '../design-system/UnifiedColorPalette.js';
+import { TEXT_HIERARCHY, UNIFIED_COLORS } from '../design-system/UnifiedColorPalette.js';
 import { DESIGN_CONSTANTS } from '../optimized-design-system.js';
 
 /**
@@ -74,13 +74,13 @@ export class OptimizedTable {
     const totalWidth = columnWidths.reduce((sum, w) => sum + w, 0) + (headers.length - 1) * 3;
 
     // Top border
-    console.log(UNIFIED_COLORS.MUTED('┌' + '─'.repeat(totalWidth) + '┐'));
+    console.log(UNIFIED_COLORS.MUTED(`┌${  '─'.repeat(totalWidth)  }┐`));
 
     // Headers
     this.renderHeaderRow(headers, columnWidths, config, '│');
 
     // Header separator
-    console.log(UNIFIED_COLORS.MUTED('├' + '─'.repeat(totalWidth) + '┤'));
+    console.log(UNIFIED_COLORS.MUTED(`├${  '─'.repeat(totalWidth)  }┤`));
 
     // Data rows
     data.forEach((row, index) => {
@@ -88,7 +88,7 @@ export class OptimizedTable {
     });
 
     // Bottom border
-    console.log(UNIFIED_COLORS.MUTED('└' + '─'.repeat(totalWidth) + '┘'));
+    console.log(UNIFIED_COLORS.MUTED(`└${  '─'.repeat(totalWidth)  }┘`));
   }
 
   /**
@@ -103,13 +103,13 @@ export class OptimizedTable {
     const totalWidth = columnWidths.reduce((sum, w) => sum + w, 0) + (headers.length - 1) * 3;
 
     // Top border
-    console.log(UNIFIED_COLORS.PRIMARY('╔' + '═'.repeat(totalWidth) + '╗'));
+    console.log(UNIFIED_COLORS.PRIMARY(`╔${  '═'.repeat(totalWidth)  }╗`));
 
     // Headers
     this.renderHeaderRow(headers, columnWidths, config, '║');
 
     // Header separator
-    console.log(UNIFIED_COLORS.PRIMARY('╠' + '═'.repeat(totalWidth) + '╣'));
+    console.log(UNIFIED_COLORS.PRIMARY(`╠${  '═'.repeat(totalWidth)  }╣`));
 
     // Data rows
     data.forEach((row, index) => {
@@ -117,7 +117,7 @@ export class OptimizedTable {
     });
 
     // Bottom border
-    console.log(UNIFIED_COLORS.PRIMARY('╚' + '═'.repeat(totalWidth) + '╝'));
+    console.log(UNIFIED_COLORS.PRIMARY(`╚${  '═'.repeat(totalWidth)  }╝`));
   }
 
   /**
@@ -132,13 +132,13 @@ export class OptimizedTable {
     const totalWidth = columnWidths.reduce((sum, w) => sum + w, 0) + (headers.length - 1) * 3;
 
     // Top border
-    console.log(UNIFIED_COLORS.MUTED('╭' + '─'.repeat(totalWidth) + '╮'));
+    console.log(UNIFIED_COLORS.MUTED(`╭${  '─'.repeat(totalWidth)  }╮`));
 
     // Headers
     this.renderHeaderRow(headers, columnWidths, config, '│');
 
     // Header separator
-    console.log(UNIFIED_COLORS.MUTED('├' + '─'.repeat(totalWidth) + '┤'));
+    console.log(UNIFIED_COLORS.MUTED(`├${  '─'.repeat(totalWidth)  }┤`));
 
     // Data rows
     data.forEach((row, index) => {
@@ -146,7 +146,7 @@ export class OptimizedTable {
     });
 
     // Bottom border
-    console.log(UNIFIED_COLORS.MUTED('╰' + '─'.repeat(totalWidth) + '╯'));
+    console.log(UNIFIED_COLORS.MUTED(`╰${  '─'.repeat(totalWidth)  }╯`));
   }
 
   /**
@@ -195,7 +195,7 @@ export class OptimizedTable {
     const row = cells.join(TEXT_HIERARCHY.CAPTION(' │ '));
 
     if (border) {
-      console.log(UNIFIED_COLORS.MUTED(border) + ' ' + row + ' ' + UNIFIED_COLORS.MUTED(border));
+      console.log(`${UNIFIED_COLORS.MUTED(border)  } ${  row  } ${  UNIFIED_COLORS.MUTED(border)}`);
     } else {
       console.log(row);
     }
@@ -232,7 +232,7 @@ export class OptimizedTable {
     const rowStr = cells.join(TEXT_HIERARCHY.CAPTION(' │ '));
 
     if (border) {
-      console.log(UNIFIED_COLORS.MUTED(border) + ' ' + rowStr + ' ' + UNIFIED_COLORS.MUTED(border));
+      console.log(`${UNIFIED_COLORS.MUTED(border)  } ${  rowStr  } ${  UNIFIED_COLORS.MUTED(border)}`);
     } else {
       console.log(rowStr);
     }
@@ -284,7 +284,7 @@ export class OptimizedTable {
     width: number,
     alignment: 'left' | 'center' | 'right' = 'left',
   ): string {
-    const truncated = text.length > width ? text.substring(0, width - 1) + '…' : text;
+    const truncated = text.length > width ? `${text.substring(0, width - 1)  }…` : text;
 
     switch (alignment) {
       case 'center':
@@ -304,7 +304,7 @@ export class OptimizedTable {
    * コンパクトテーブル（1行表示）
    */
   static renderCompact(data: TableData[], headers?: string[], config: TableConfig = {}): void {
-    if (!data || data.length === 0) return;
+    if (!data || data.length === 0) {return;}
 
     const tableHeaders = headers || Object.keys(data[0]);
     const maxItems = 3; // Show only first 3 columns in compact mode

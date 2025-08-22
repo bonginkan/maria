@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -177,9 +177,9 @@ export class PrototypingMode extends BaseMode {
     confidence += validationMatches.length * 0.1;
 
     // Context indicators
-    if (context.metadata?.requiresPrototyping) confidence += 0.25;
-    if (context.metadata?.iterativeDesign) confidence += 0.2;
-    if (context.metadata?.rapidDevelopment) confidence += 0.15;
+    if (context.metadata?.requiresPrototyping) {confidence += 0.25;}
+    if (context.metadata?.iterativeDesign) {confidence += 0.2;}
+    if (context.metadata?.rapidDevelopment) {confidence += 0.15;}
 
     // Fidelity indicators
     const fidelityTerms = ['low-fi', 'high-fi', 'wireframe', 'mockup', 'interactive'];
@@ -363,17 +363,17 @@ export class PrototypingMode extends BaseMode {
 
   private determineIterationScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 150) return 'extensive';
-    if (wordCount > 75) return 'moderate';
+    if (wordCount > 150) {return 'extensive';}
+    if (wordCount > 75) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.75;
 
-    if (results.quality.overall > 0.8) confidence += 0.1;
-    if (results.validation.score > 0.8) confidence += 0.08;
-    if (results.iterations.effectiveness > 0.7) confidence += 0.07;
+    if (results.quality.overall > 0.8) {confidence += 0.1;}
+    if (results.validation.score > 0.8) {confidence += 0.08;}
+    if (results.iterations.effectiveness > 0.7) {confidence += 0.07;}
 
     return Math.min(confidence, 1.0);
   }
@@ -451,9 +451,9 @@ export class PrototypingMode extends BaseMode {
   }
 
   private identifyPrototypePurpose(input: string): string {
-    if (input.includes('validate')) return 'validation';
-    if (input.includes('test')) return 'testing';
-    if (input.includes('demo')) return 'demonstration';
+    if (input.includes('validate')) {return 'validation';}
+    if (input.includes('test')) {return 'testing';}
+    if (input.includes('demo')) {return 'demonstration';}
     return 'exploration';
   }
 
@@ -467,9 +467,9 @@ export class PrototypingMode extends BaseMode {
 
   private identifyConstraints(input: string): string[] {
     const constraints = [];
-    if (input.includes('time')) constraints.push('time_constraint');
-    if (input.includes('budget')) constraints.push('budget_constraint');
-    if (input.includes('resource')) constraints.push('resource_constraint');
+    if (input.includes('time')) {constraints.push('time_constraint');}
+    if (input.includes('budget')) {constraints.push('budget_constraint');}
+    if (input.includes('resource')) {constraints.push('resource_constraint');}
     return constraints;
   }
 
@@ -479,9 +479,9 @@ export class PrototypingMode extends BaseMode {
 
   private identifyTargetAudience(input: string): string[] {
     const audiences = [];
-    if (input.includes('user')) audiences.push('end_users');
-    if (input.includes('stakeholder')) audiences.push('stakeholders');
-    if (input.includes('developer')) audiences.push('developers');
+    if (input.includes('user')) {audiences.push('end_users');}
+    if (input.includes('stakeholder')) {audiences.push('stakeholders');}
+    if (input.includes('developer')) {audiences.push('developers');}
     return audiences.length > 0 ? audiences : ['general_users'];
   }
 

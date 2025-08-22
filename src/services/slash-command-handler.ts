@@ -4,9 +4,9 @@
  */
 
 import { ConversationContext, ConversationHistory } from '../types/conversation';
-import { GitHubComment, GitHubReview, GitHubPRData, GitHubFeedbackItem } from '../types/common';
+import { GitHubComment, GitHubFeedbackItem, GitHubPRData, GitHubReview } from '../types/common';
 import { logger } from '../utils/logger';
-import { isObject, isArray, getStringProperty } from '../utils/type-guards.js';
+import { getStringProperty, isArray, isObject } from '../utils/type-guards.js';
 import { readConfig, writeConfig } from '../utils/config';
 import { v4 as uuidv4 } from 'uuid';
 import * as fs from 'fs';
@@ -23,7 +23,7 @@ import {
   CommandCategory,
   commandChains,
 } from '../lib/command-groups';
-import { SuggestionService, SuggestionContext } from './suggestion-service';
+import { SuggestionContext, SuggestionService } from './suggestion-service';
 import { CommandChainService } from './command-chain-service';
 import { AliasSystem } from './alias-system';
 import { TemplateManager } from './template-manager';
@@ -33,8 +33,8 @@ import { runInteractiveModelSelector } from '../commands/model-interactive.js';
 import { ChatContextService } from './chat-context.service';
 // import { getInternalModeService } from './internal-mode/InternalModeService';
 // import chalk from 'chalk';
-import { CodeGenerationService, CodeGenerationRequest } from './code-generation.service';
-import { TestGenerationService, TestGenerationRequest } from './test-generation.service';
+import { CodeGenerationRequest, CodeGenerationService } from './code-generation.service';
+import { TestGenerationRequest, TestGenerationService } from './test-generation.service';
 
 export interface SlashCommandResult {
   success: boolean;
@@ -403,8 +403,8 @@ export class SlashCommandHandler {
     };
 
     let message = `Logged out user ${oldUserId}`;
-    if (keepCache) message += ' (cache preserved)';
-    if (keepSettings) message += ' (settings preserved)';
+    if (keepCache) {message += ' (cache preserved)';}
+    if (keepSettings) {message += ' (settings preserved)';}
 
     return {
       success: true,
@@ -1049,7 +1049,7 @@ export class SlashCommandHandler {
     if (commandParts.length > 0) {
       const command = commandParts.join(' ');
       const configObj = config as Record<string, unknown>;
-      if (!configObj['hooks']) configObj['hooks'] = {};
+      if (!configObj['hooks']) {configObj['hooks'] = {};}
       const hooks = configObj['hooks'] as Record<string, unknown>;
       hooks[hookName] = command;
       await writeConfig(config);
@@ -1543,16 +1543,16 @@ ${availableServers.map((server) => `• ${server.name}: ${server.description}`).
     // 詳細な使用量統計
     const stats = {
       session: {
-        cost: cost,
-        tokens: tokens,
+        cost,
+        tokens,
         messages: messageCount,
         duration: `${Math.floor(duration / 60)}m ${duration % 60}s`,
         avgCostPerMessage: messageCount > 0 ? cost / messageCount : 0,
       },
       user: {
         plan: this.userSession.plan,
-        dailyLimit: dailyLimit,
-        remainingCredits: remainingCredits,
+        dailyLimit,
+        remainingCredits,
         usagePercent: Math.round(((dailyLimit - remainingCredits) / dailyLimit) * 100),
       },
       projected: {
@@ -1757,7 +1757,7 @@ ${allFeedback
       // バグレポートの構造化
       const bugReport = {
         type: bugType,
-        description: description,
+        description,
         system: systemInfo,
         context: {
           lastCommands: [], // TODO: コマンド履歴から取得
@@ -1928,9 +1928,9 @@ For latest releases: https://github.com/anthropics/claude-code/releases`;
     }
 
     // 設定ファイルに保存
-    if (!config.cli) config['cli'] = {};
+    if (!config.cli) {config['cli'] = {};}
     config.cli.vimMode = newVimMode;
-    if (!config.cli.keyBindings) config.cli.keyBindings = {};
+    if (!config.cli.keyBindings) {config.cli.keyBindings = {};}
     config.cli.keyBindings['mode'] = newVimMode ? 'vim' : 'emacs';
     await writeConfig(config);
 
@@ -3068,11 +3068,11 @@ Run the steps above to complete your migration!`;
       steps.push('Test local installation: npm run mc -- --version');
 
       if (typedGlobalCheck['npm'])
-        steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
+        {steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');}
       if (typedGlobalCheck['yarn'])
-        steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
+        {steps.push('Remove global Yarn: yarn global remove @maria/code-cli');}
       if (typedGlobalCheck['pnpm'])
-        steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
+        {steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');}
 
       steps.push('Update shell aliases to use: npx @maria/code-cli');
     } else if (typedPlan['recommendedAction'] === 'create-project') {
@@ -3086,11 +3086,11 @@ Run the steps above to complete your migration!`;
       steps.push('Update shell aliases to use local version');
 
       if (typedGlobalCheck['npm'])
-        steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');
+        {steps.push('Remove global NPM: npm uninstall -g @maria/code-cli');}
       if (typedGlobalCheck['yarn'])
-        steps.push('Remove global Yarn: yarn global remove @maria/code-cli');
+        {steps.push('Remove global Yarn: yarn global remove @maria/code-cli');}
       if (typedGlobalCheck['pnpm'])
-        steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');
+        {steps.push('Remove global PNPM: pnpm remove -g @maria/code-cli');}
 
       steps.push('Clean up global config if not needed');
     } else {
@@ -3124,9 +3124,9 @@ Run the steps above to complete your migration!`;
 
     const complexityScore = additions + deletions + fileChanges * 10;
 
-    if (complexityScore < 50) return 'Low';
-    if (complexityScore < 200) return 'Medium';
-    if (complexityScore < 500) return 'High';
+    if (complexityScore < 50) {return 'Low';}
+    if (complexityScore < 200) {return 'Medium';}
+    if (complexityScore < 500) {return 'High';}
     return 'Very High';
   }
 
@@ -3181,7 +3181,7 @@ Run the steps above to complete your migration!`;
   }
 
   private analyzeFeedbackSentiment(feedback: unknown[]): string {
-    if (!feedback.length) return 'Neutral';
+    if (!feedback.length) {return 'Neutral';}
 
     const positiveKeywords = ['good', 'great', 'excellent', 'nice', 'approve', 'perfect', 'clean'];
     const negativeKeywords = ['bad', 'issue', 'problem', 'wrong', 'error', 'fix', 'concern'];
@@ -3196,8 +3196,8 @@ Run the steps above to complete your migration!`;
       negativeCount += negativeKeywords.filter((kw) => body.includes(kw)).length;
     }
 
-    if (positiveCount > negativeCount * 1.5) return 'Positive';
-    if (negativeCount > positiveCount * 1.5) return 'Negative';
+    if (positiveCount > negativeCount * 1.5) {return 'Positive';}
+    if (negativeCount > positiveCount * 1.5) {return 'Negative';}
     return 'Mixed';
   }
 
@@ -3320,7 +3320,7 @@ Run the steps above to complete your migration!`;
     ignorePatterns: string[],
     depth: number = 0,
   ): Promise<void> {
-    if (depth > 3) return; // 深度制限
+    if (depth > 3) {return;} // 深度制限
 
     try {
       const items = fs.readdirSync(currentPath);
@@ -3330,7 +3330,7 @@ Run the steps above to complete your migration!`;
         const relativePath = path.relative(rootPath, itemPath);
 
         // .gitignore パターンチェック
-        if (this.shouldIgnore(relativePath, ignorePatterns)) continue;
+        if (this.shouldIgnore(relativePath, ignorePatterns)) {continue;}
 
         const stat = fs.statSync(itemPath);
 
@@ -3445,14 +3445,14 @@ Run the steps above to complete your migration!`;
           ...(analysis.dependencies.dependencies || []),
           ...(analysis.dependencies.devDependencies || []),
         ];
-        if (allDeps.includes('react')) analysis.techStack.push('React');
-        if (allDeps.includes('vue')) analysis.techStack.push('Vue.js');
-        if (allDeps.includes('express')) analysis.techStack.push('Express');
-        if (allDeps.includes('fastify')) analysis.techStack.push('Fastify');
-        if (allDeps.includes('@trpc/server')) analysis.techStack.push('tRPC');
-        if (allDeps.includes('prisma')) analysis.techStack.push('Prisma');
-        if (allDeps.includes('tailwindcss')) analysis.techStack.push('Tailwind CSS');
-        if (allDeps.includes('typescript')) analysis.techStack.push('TypeScript');
+        if (allDeps.includes('react')) {analysis.techStack.push('React');}
+        if (allDeps.includes('vue')) {analysis.techStack.push('Vue.js');}
+        if (allDeps.includes('express')) {analysis.techStack.push('Express');}
+        if (allDeps.includes('fastify')) {analysis.techStack.push('Fastify');}
+        if (allDeps.includes('@trpc/server')) {analysis.techStack.push('tRPC');}
+        if (allDeps.includes('prisma')) {analysis.techStack.push('Prisma');}
+        if (allDeps.includes('tailwindcss')) {analysis.techStack.push('Tailwind CSS');}
+        if (allDeps.includes('typescript')) {analysis.techStack.push('TypeScript');}
       }
     } catch {
       // Ignore error
@@ -3606,16 +3606,16 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
           }
           break;
         case '--fps':
-          if (value) options['fps'] = parseInt(value);
+          if (value) {options['fps'] = parseInt(value);}
           break;
         case '--frames':
-          if (value) options['frames'] = parseInt(value);
+          if (value) {options['frames'] = parseInt(value);}
           break;
         case '--steps':
-          if (value) options['steps'] = parseInt(value);
+          if (value) {options['steps'] = parseInt(value);}
           break;
         case '--input-image':
-          if (value) options['inputImage'] = value;
+          if (value) {options['inputImage'] = value;}
           break;
         case '--compare':
           options['compare'] = true;
@@ -3687,16 +3687,16 @@ ${analysis.buildSystem.length > 0 ? `### 🔧 ビルドシステム\n${analysis.
           }
           break;
         case '--batch':
-          if (value) options['batch'] = Math.min(4, Math.max(1, parseInt(value)));
+          if (value) {options['batch'] = Math.min(4, Math.max(1, parseInt(value)));}
           break;
         case '--variations':
-          if (value) options['variations'] = Math.min(3, Math.max(1, parseInt(value)));
+          if (value) {options['variations'] = Math.min(3, Math.max(1, parseInt(value)));}
           break;
         case '--guidance':
-          if (value) options['guidance'] = parseFloat(value);
+          if (value) {options['guidance'] = parseFloat(value);}
           break;
         case '--steps':
-          if (value) options['steps'] = parseInt(value);
+          if (value) {options['steps'] = parseInt(value);}
           break;
       }
     }
@@ -4078,7 +4078,7 @@ Usage: /test [target] [options]
             break;
         }
       } else {
-        content += arg + ' ';
+        content += `${arg  } `;
       }
     }
 
@@ -4181,20 +4181,20 @@ Usage: /test [target] [options]
         const pkgContent = await fsPromises.readFile('package.json', 'utf-8');
         const pkg = JSON.parse(pkgContent) as Record<string, unknown>;
         if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['react'])
-          return 'React';
+          {return 'React';}
         if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['vue'])
-          return 'Vue';
+          {return 'Vue';}
         if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['angular'])
-          return 'Angular';
+          {return 'Angular';}
         if (pkg['dependencies'] && (pkg['dependencies'] as Record<string, unknown>)['express'])
-          return 'Express';
+          {return 'Express';}
         return 'Node.js';
       }
 
-      if (files.includes('requirements.txt') || files.includes('setup.py')) return 'Python';
-      if (files.includes('go.mod')) return 'Go';
-      if (files.includes('Cargo.toml')) return 'Rust';
-      if (files.includes('pom.xml') || files.includes('build.gradle')) return 'Java';
+      if (files.includes('requirements.txt') || files.includes('setup.py')) {return 'Python';}
+      if (files.includes('go.mod')) {return 'Go';}
+      if (files.includes('Cargo.toml')) {return 'Rust';}
+      if (files.includes('pom.xml') || files.includes('build.gradle')) {return 'Java';}
     } catch {
       // Ignore error
       // Ignore error
@@ -4226,11 +4226,11 @@ Usage: /test [target] [options]
       const pkg = JSON.parse(pkgContent) as Record<string, unknown>;
 
       if (pkg['devDependencies'] && (pkg['devDependencies'] as Record<string, unknown>)['jest'])
-        return 'Jest';
+        {return 'Jest';}
       if (pkg['devDependencies'] && (pkg['devDependencies'] as Record<string, unknown>)['vitest'])
-        return 'Vitest';
+        {return 'Vitest';}
       if (pkg['devDependencies'] && (pkg['devDependencies'] as Record<string, unknown>)['mocha'])
-        return 'Mocha';
+        {return 'Mocha';}
     } catch {
       // Ignore error
       // Ignore error

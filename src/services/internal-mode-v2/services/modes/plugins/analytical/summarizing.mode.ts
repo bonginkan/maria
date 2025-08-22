@@ -258,9 +258,9 @@ export default class SummarizingMode extends BaseMode {
   private async determineSummaryStructure(input: string, keyPoints: string[]): Promise<string> {
     const wordCount = input.split(/\s+/).length;
 
-    if (wordCount < 50) return 'brief';
-    if (wordCount < 200) return 'structured';
-    if (wordCount < 500) return 'detailed';
+    if (wordCount < 50) {return 'brief';}
+    if (wordCount < 200) {return 'structured';}
+    if (wordCount < 500) {return 'detailed';}
     return 'comprehensive';
   }
 
@@ -415,8 +415,8 @@ export default class SummarizingMode extends BaseMode {
   private assessContentComplexity(input: string): string {
     const avgWordsPerSentence = input.split(/\s+/).length / input.split(/[.!?]+/).length;
 
-    if (avgWordsPerSentence < 10) return 'simple';
-    if (avgWordsPerSentence < 20) return 'moderate';
+    if (avgWordsPerSentence < 10) {return 'simple';}
+    if (avgWordsPerSentence < 20) {return 'moderate';}
     return 'complex';
   }
 
@@ -445,10 +445,10 @@ export default class SummarizingMode extends BaseMode {
   private classifyContentType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('research') || inputLower.includes('study')) return 'research';
-    if (inputLower.includes('report') || inputLower.includes('analysis')) return 'report';
-    if (inputLower.includes('discussion') || inputLower.includes('meeting')) return 'discussion';
-    if (inputLower.includes('document') || inputLower.includes('article')) return 'document';
+    if (inputLower.includes('research') || inputLower.includes('study')) {return 'research';}
+    if (inputLower.includes('report') || inputLower.includes('analysis')) {return 'report';}
+    if (inputLower.includes('discussion') || inputLower.includes('meeting')) {return 'discussion';}
+    if (inputLower.includes('document') || inputLower.includes('article')) {return 'document';}
 
     return 'general';
   }
@@ -456,10 +456,10 @@ export default class SummarizingMode extends BaseMode {
   private identifyStructuralElements(input: string): string[] {
     const elements: string[] = [];
 
-    if (input.includes('\n\n')) elements.push('paragraphs');
-    if (input.match(/^\d+\./m)) elements.push('numbered_list');
-    if (input.match(/^[-*]/m)) elements.push('bullet_list');
-    if (input.match(/^#+/m)) elements.push('headings');
+    if (input.includes('\n\n')) {elements.push('paragraphs');}
+    if (input.match(/^\d+\./m)) {elements.push('numbered_list');}
+    if (input.match(/^[-*]/m)) {elements.push('bullet_list');}
+    if (input.match(/^#+/m)) {elements.push('headings');}
 
     return elements;
   }
@@ -469,19 +469,19 @@ export default class SummarizingMode extends BaseMode {
 
     // Length factor
     const words = sentence.split(/\s+/).length;
-    if (words > 5 && words < 25) importance += 0.1;
+    if (words > 5 && words < 25) {importance += 0.1;}
 
     // Position factor (first and last sentences are often important)
     const sentences = fullText.split(/[.!?]+/).filter((s) => s.trim().length > 0);
     const position = sentences.findIndex((s) => s.trim() === sentence);
-    if (position === 0 || position === sentences.length - 1) importance += 0.2;
+    if (position === 0 || position === sentences.length - 1) {importance += 0.2;}
 
     // Keyword density
     const keywordIndicators = ['important', 'key', 'main', 'significant', 'crucial', 'essential'];
     const hasKeywords = keywordIndicators.some((keyword) =>
       sentence.toLowerCase().includes(keyword),
     );
-    if (hasKeywords) importance += 0.2;
+    if (hasKeywords) {importance += 0.2;}
 
     return Math.min(importance, 1.0);
   }
@@ -497,8 +497,8 @@ export default class SummarizingMode extends BaseMode {
     const avgWordsPerSentence = words / sentences;
 
     // Lower numbers = more readable
-    if (avgWordsPerSentence < 15) return 0.9;
-    if (avgWordsPerSentence < 25) return 0.7;
+    if (avgWordsPerSentence < 15) {return 0.9;}
+    if (avgWordsPerSentence < 25) {return 0.7;}
     return 0.5;
   }
 

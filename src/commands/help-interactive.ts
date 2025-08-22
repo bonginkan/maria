@@ -5,7 +5,7 @@
 
 import * as readline from 'readline';
 import chalk from 'chalk';
-import { commandCategories, getCommandsByCategory, CommandCategory } from '../lib/command-groups';
+import { commandCategories, CommandCategory, getCommandsByCategory } from '../lib/command-groups';
 
 interface CommandOption {
   name: string;
@@ -271,7 +271,7 @@ export class InteractiveHelpSelector {
 
   private showDetailedHelp(): void {
     const selected = this.getActiveCommands()[this.selectedIndex];
-    if (!selected) return;
+    if (!selected) {return;}
 
     console.clear();
     console.log(chalk.bold.cyan(`📖 Detailed Help: ${selected.name}\n`));

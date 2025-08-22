@@ -35,7 +35,7 @@ export class GroqProvider extends BaseProvider {
   }
 
   async getModels(): Promise<ModelInfo[]> {
-    if (this.modelsCache) return this.modelsCache;
+    if (this.modelsCache) {return this.modelsCache;}
 
     const models: ModelInfo[] = [
       {

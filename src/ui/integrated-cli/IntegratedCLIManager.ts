@@ -6,7 +6,7 @@
 import chalk from 'chalk';
 import { InputBox } from './InputBox.js';
 import { ResponseRenderer } from './ResponseRenderer.js';
-import { ModeIndicator, InternalMode } from './ModeIndicator.js';
+import { InternalMode, ModeIndicator } from './ModeIndicator.js';
 import { LayoutEngine, LayoutZone } from './LayoutEngine.js';
 
 /**
@@ -108,7 +108,7 @@ export class IntegratedCLIManager {
     const width = this.layoutEngine.getAvailableWidth();
     const border = chalk.cyan('═'.repeat(width));
 
-    console.log(chalk.cyan('╔' + border.substring(2) + '╗'));
+    console.log(chalk.cyan(`╔${  border.substring(2)  }╗`));
     console.log(
       chalk.cyan('║') +
         this.centerText('MARIA CODE', width - 2, chalk.bold.magenta) +
@@ -119,7 +119,7 @@ export class IntegratedCLIManager {
         this.centerText('Integrated CLI System v1.0', width - 2, chalk.gray) +
         chalk.cyan('║'),
     );
-    console.log(chalk.cyan('╚' + border.substring(2) + '╝'));
+    console.log(chalk.cyan(`╚${  border.substring(2)  }╝`));
     console.log();
   }
 

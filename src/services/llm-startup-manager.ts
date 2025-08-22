@@ -78,7 +78,7 @@ export class LLMStartupManager {
     // Check each service
     for (let i = 0; i < this.services.length; i++) {
       const service = this.services[i];
-      if (!service) continue;
+      if (!service) {continue;}
 
       await this.checkService(service);
       this.displayServices();
@@ -139,7 +139,7 @@ export class LLMStartupManager {
     // Perfect rectangular frame with precise spacing to match screenshot
     const frameWidth = 86;
     const horizontalLine = '═'.repeat(frameWidth - 2);
-    const emptyLine = '║' + ' '.repeat(frameWidth - 2) + '║';
+    const emptyLine = `║${  ' '.repeat(frameWidth - 2)  }║`;
 
     // Helper function to center text in frame
     const centerText = (text: string) => {
@@ -147,13 +147,13 @@ export class LLMStartupManager {
       const padding = Math.max(0, frameWidth - 2 - plainText.length);
       const leftPad = Math.floor(padding / 2);
       const rightPad = padding - leftPad;
-      return '║' + ' '.repeat(leftPad) + text + ' '.repeat(rightPad) + '║';
+      return `║${  ' '.repeat(leftPad)  }${text  }${' '.repeat(rightPad)  }║`;
     };
 
     console.log('\n');
 
     // Top border with bright magenta (matching screenshot exactly)
-    console.log(chalk.magentaBright('╔' + horizontalLine + '╗'));
+    console.log(chalk.magentaBright(`╔${  horizontalLine  }╗`));
     console.log(chalk.magentaBright(emptyLine));
 
     // MARIA ASCII Logo with bright magenta (matching screenshot exactly)
@@ -231,7 +231,7 @@ export class LLMStartupManager {
     console.log(chalk.magentaBright(emptyLine));
 
     // Bottom border
-    console.log(chalk.magentaBright('╚' + horizontalLine + '╝'));
+    console.log(chalk.magentaBright(`╚${  horizontalLine  }╝`));
     console.log('');
   }
 }

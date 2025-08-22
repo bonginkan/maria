@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -175,9 +175,9 @@ export class AuditingMode extends BaseMode {
     const qualityMatches = qualityTerms.filter((term) => input.includes(term));
     confidence += qualityMatches.length * 0.1;
 
-    if (context.metadata?.requiresAudit) confidence += 0.25;
-    if (context.metadata?.complianceCheck) confidence += 0.2;
-    if (context.metadata?.qualityAssurance) confidence += 0.15;
+    if (context.metadata?.requiresAudit) {confidence += 0.25;}
+    if (context.metadata?.complianceCheck) {confidence += 0.2;}
+    if (context.metadata?.qualityAssurance) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -427,17 +427,17 @@ export class AuditingMode extends BaseMode {
 
   private determineAuditScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 150) return 'comprehensive';
-    if (wordCount > 75) return 'moderate';
+    if (wordCount > 150) {return 'comprehensive';}
+    if (wordCount > 75) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.8;
 
-    if (results.thoroughness > 0.85) confidence += 0.1;
-    if (results.compliance.overall_score > 0.8) confidence += 0.05;
-    if (results.findings.length > 2) confidence += 0.05;
+    if (results.thoroughness > 0.85) {confidence += 0.1;}
+    if (results.compliance.overall_score > 0.8) {confidence += 0.05;}
+    if (results.findings.length > 2) {confidence += 0.05;}
 
     return Math.min(confidence, 1.0);
   }
@@ -486,9 +486,9 @@ export class AuditingMode extends BaseMode {
 
   private identifyFocusAreas(input: string): string[] {
     const focusAreas = [];
-    if (input.includes('security')) focusAreas.push('security_controls');
-    if (input.includes('performance')) focusAreas.push('performance_metrics');
-    if (input.includes('compliance')) focusAreas.push('regulatory_compliance');
+    if (input.includes('security')) {focusAreas.push('security_controls');}
+    if (input.includes('performance')) {focusAreas.push('performance_metrics');}
+    if (input.includes('compliance')) {focusAreas.push('regulatory_compliance');}
     return focusAreas.length > 0 ? focusAreas : ['general_quality_assurance'];
   }
 
@@ -671,9 +671,9 @@ export class AuditingMode extends BaseMode {
 
   private determineComplianceLevel(context: ModeContext): string {
     const score = this.calculateComplianceScore(context);
-    if (score >= 0.9) return 'excellent';
-    if (score >= 0.8) return 'good';
-    if (score >= 0.7) return 'satisfactory';
+    if (score >= 0.9) {return 'excellent';}
+    if (score >= 0.8) {return 'good';}
+    if (score >= 0.7) {return 'satisfactory';}
     return 'needs_improvement';
   }
 

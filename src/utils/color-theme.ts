@@ -182,8 +182,8 @@ export function formatText(text: string, style: TextStyle): string {
 
 // Progress bar color based on value
 export function getProgressColor(value: number): string {
-  if (value < 30) return 'red';
-  if (value < 70) return 'yellow';
+  if (value < 30) {return 'red';}
+  if (value < 70) {return 'yellow';}
   return 'green';
 }
 

@@ -7,7 +7,7 @@
 
 import chalk from 'chalk';
 import { KnowledgeGraphEngine } from './knowledge-graph-engine';
-import { ConceptGraph, KnowledgeNode, ConceptEdge } from '../types/memory-interfaces';
+import { ConceptEdge, ConceptGraph, KnowledgeNode } from '../types/memory-interfaces';
 
 export interface VisualizationOptions {
   maxDepth?: number;
@@ -120,12 +120,12 @@ export class GraphVisualizer {
 
     // Render each tree
     for (const rootNode of rootNodes) {
-      if (nodeCount >= maxNodes) break;
+      if (nodeCount >= maxNodes) {break;}
 
       const node = graphData.nodes.find((n) => n.id === rootNode);
-      if (!node) continue;
+      if (!node) {continue;}
 
-      if (this.shouldFilterNode(node, options.filter)) continue;
+      if (this.shouldFilterNode(node, options.filter)) {continue;}
 
       lines.push(
         ...this.renderNode(node, graphData, 0, maxDepth, visited, options, { nodeCount, maxNodes }),
@@ -187,12 +187,12 @@ export class GraphVisualizer {
     const connections = graphData.edges.filter((e: any) => e.source === node.id);
 
     for (const edge of connections) {
-      if (counter.nodeCount >= counter.maxNodes) break;
+      if (counter.nodeCount >= counter.maxNodes) {break;}
 
-      if (this.shouldFilterEdge(edge, options.filter)) continue;
+      if (this.shouldFilterEdge(edge, options.filter)) {continue;}
 
       const targetNode = graphData.nodes.find((n: any) => n.id === edge.target);
-      if (!targetNode) continue;
+      if (!targetNode) {continue;}
 
       // Render edge
       lines.push(this.formatEdgeLine(edge, depth));
@@ -249,13 +249,13 @@ export class GraphVisualizer {
     }
 
     // Render matrix header
-    lines.push('    ' + nodes.map((_, i) => String(i).padStart(3)).join(''));
-    lines.push('   ' + '─'.repeat(nodes.length * 3 + 1));
+    lines.push(`    ${  nodes.map((_, i) => String(i).padStart(3)).join('')}`);
+    lines.push(`   ${  '─'.repeat(nodes.length * 3 + 1)}`);
 
     // Render matrix rows
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
-      const rowLabel = `${i}`.padStart(2) + '│';
+      const rowLabel = `${`${i}`.padStart(2)  }│`;
       const row = matrix[i]
         .map((cell) => (cell === '  ' ? this.colors.muted(cell) : this.colors.primary(cell)))
         .join(' ');
@@ -290,7 +290,7 @@ export class GraphVisualizer {
     // Group nodes by type
     const nodesByType = new Map<string, any[]>();
     for (const node of graphData.nodes) {
-      if (this.shouldFilterNode(node, options.filter)) continue;
+      if (this.shouldFilterNode(node, options.filter)) {continue;}
 
       const type = node.type || 'unknown';
       if (!nodesByType.has(type)) {
@@ -302,7 +302,7 @@ export class GraphVisualizer {
     // Render each type group
     let totalNodes = 0;
     for (const [type, nodes] of nodesByType) {
-      if (totalNodes >= maxNodes) break;
+      if (totalNodes >= maxNodes) {break;}
 
       const symbol = this.symbols[type as keyof typeof this.symbols] || '•';
       lines.push(this.colors.primary(`${symbol} ${type.toUpperCase()} (${nodes.length})`));
@@ -314,8 +314,8 @@ export class GraphVisualizer {
         ).length;
 
         lines.push(
-          `  ${this.colors.accent(node.label)} ` +
-            this.colors.muted(`[${connections} connections]`),
+          `  ${this.colors.accent(node.label)} ${ 
+            this.colors.muted(`[${connections} connections]`)}`,
         );
 
         if (options.showMetadata) {
@@ -368,7 +368,7 @@ export class GraphVisualizer {
     lines.push(`Total Nodes:    ${this.colors.accent(stats.totalNodes.toString())}`);
     lines.push(`Total Edges:    ${this.colors.accent(stats.totalEdges.toString())}`);
     lines.push(`Total Clusters: ${this.colors.accent(stats.totalClusters.toString())}`);
-    lines.push(`Graph Density:  ${this.colors.accent((stats.density * 100).toFixed(2) + '%')}`);
+    lines.push(`Graph Density:  ${this.colors.accent(`${(stats.density * 100).toFixed(2)  }%`)}`);
     lines.push(`Avg Degree:     ${this.colors.accent(stats.averageDegree.toFixed(2))}`);
     lines.push('');
 
@@ -418,7 +418,7 @@ export class GraphVisualizer {
         const symbol = this.symbols[node.type as keyof typeof this.symbols] || '•';
         lines.push(
           `${symbol} ${node.label.padEnd(20)} ` +
-            `${this.colors.accent(node.connections + ' connections')}`,
+            `${this.colors.accent(`${node.connections  } connections`)}`,
         );
       }
       lines.push('');
@@ -447,14 +447,14 @@ export class GraphVisualizer {
 
   private createHeader(title: string): string {
     const padding = Math.floor((this.CONTENT_WIDTH - title.length - 2) / 2);
-    const header = '═'.repeat(padding) + ` ${title} ` + '═'.repeat(padding);
+    const header = `${'═'.repeat(padding)  } ${title} ${  '═'.repeat(padding)}`;
     return this.colors.primary(header.substring(0, this.CONTENT_WIDTH));
   }
 
   private createFooter(graphData: any): string {
     const timestamp = new Date().toISOString();
     const footer = `Generated: ${timestamp} | Nodes: ${graphData.nodes.length} | Edges: ${graphData.edges.length}`;
-    return this.colors.muted('─'.repeat(this.CONTENT_WIDTH) + '\n' + footer);
+    return this.colors.muted(`${'─'.repeat(this.CONTENT_WIDTH)  }\n${  footer}`);
   }
 
   private createBar(value: number, max: number, width: number): string {
@@ -535,7 +535,7 @@ export class GraphVisualizer {
   }
 
   private shouldFilterNode(node: any, filter?: any): boolean {
-    if (!filter) return false;
+    if (!filter) {return false;}
 
     if (filter.nodeTypes && !filter.nodeTypes.includes(node.type)) {
       return true;
@@ -549,7 +549,7 @@ export class GraphVisualizer {
   }
 
   private shouldFilterEdge(edge: any, filter?: any): boolean {
-    if (!filter) return false;
+    if (!filter) {return false;}
 
     if (filter.edgeTypes && !filter.edgeTypes.includes(edge.type)) {
       return true;

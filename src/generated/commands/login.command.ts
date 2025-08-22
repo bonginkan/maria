@@ -224,7 +224,7 @@ Visit: https://maria-code.bonginkan.ai/signup
     // In production, this would make an actual API request
     const mockSession: UserSession = {
       isAuthenticated: true,
-      userId: 'user_' + Math.random().toString(36).substr(2, 9),
+      userId: `user_${  Math.random().toString(36).substr(2, 9)}`,
       email: 'user@example.com',
       plan: token.startsWith('sk_') ? 'pro' : 'free',
       credits: token.startsWith('sk_') ? 10000 : 100,

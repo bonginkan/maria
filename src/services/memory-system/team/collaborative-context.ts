@@ -7,12 +7,12 @@
 
 import { EventEmitter } from 'events';
 import type {
-  ProjectContext,
   CodePattern,
-  QualityStandard,
   Convention,
-  TeamMember,
   ProjectArchitecture,
+  ProjectContext,
+  QualityStandard,
+  TeamMember,
 } from './workspace-memory-manager';
 
 export interface CollaborativeContextState {

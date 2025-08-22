@@ -530,11 +530,11 @@ export default class DebuggingMode extends BaseMode {
   private classifyErrorType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('syntax') || inputLower.includes('parse')) return 'syntax';
-    if (inputLower.includes('runtime') || inputLower.includes('exception')) return 'runtime';
-    if (inputLower.includes('logic') || inputLower.includes('wrong result')) return 'logic';
-    if (inputLower.includes('memory') || inputLower.includes('resource')) return 'resource';
-    if (inputLower.includes('api') || inputLower.includes('service')) return 'integration';
+    if (inputLower.includes('syntax') || inputLower.includes('parse')) {return 'syntax';}
+    if (inputLower.includes('runtime') || inputLower.includes('exception')) {return 'runtime';}
+    if (inputLower.includes('logic') || inputLower.includes('wrong result')) {return 'logic';}
+    if (inputLower.includes('memory') || inputLower.includes('resource')) {return 'resource';}
+    if (inputLower.includes('api') || inputLower.includes('service')) {return 'integration';}
 
     return 'general';
   }
@@ -755,39 +755,39 @@ export default class DebuggingMode extends BaseMode {
   }
 
   private calculateRootCauseConfidence(causes: unknown[], errorAnalysis: unknown): number {
-    if (causes.length === 0) return 0.3;
+    if (causes.length === 0) {return 0.3;}
 
     const primaryCause = causes[0];
     let confidence = primaryCause.likelihood;
 
     // Boost confidence if we have concrete evidence
-    if (errorAnalysis.stackTrace) confidence += 0.1;
-    if (errorAnalysis.errorMessage) confidence += 0.1;
-    if (errorAnalysis.codeSnippet) confidence += 0.05;
+    if (errorAnalysis.stackTrace) {confidence += 0.1;}
+    if (errorAnalysis.errorMessage) {confidence += 0.1;}
+    if (errorAnalysis.codeSnippet) {confidence += 0.05;}
 
     return Math.min(confidence, 0.95);
   }
 
   private calculateSolutionPriority(solution: unknown, index: number): string {
-    if (index === 0 && !solution.isAlternate) return 'high';
-    if (index <= 2) return 'medium';
+    if (index === 0 && !solution.isAlternate) {return 'high';}
+    if (index <= 2) {return 'medium';}
     return 'low';
   }
 
   private estimateImplementationEffort(solution: unknown): string {
     const stepCount = solution.steps?.length || 3;
 
-    if (stepCount <= 2) return 'low';
-    if (stepCount <= 4) return 'medium';
+    if (stepCount <= 2) {return 'low';}
+    if (stepCount <= 4) {return 'medium';}
     return 'high';
   }
 
   private estimateSuccessProbability(solution: unknown, errorAnalysis: unknown): number {
     let probability = 0.7; // Base probability
 
-    if (solution.type === 'immediate') probability += 0.2;
-    if (solution.type === 'diagnostic') probability += 0.1;
-    if (errorAnalysis.severity === 'low') probability += 0.1;
+    if (solution.type === 'immediate') {probability += 0.2;}
+    if (solution.type === 'diagnostic') {probability += 0.1;}
+    if (errorAnalysis.severity === 'low') {probability += 0.1;}
 
     return Math.min(probability, 0.95);
   }
@@ -864,9 +864,9 @@ export default class DebuggingMode extends BaseMode {
     let confidence = 0.6; // Base confidence
 
     // More concrete evidence = higher confidence
-    if (errorAnalysis.stackTrace) confidence += 0.2;
-    if (errorAnalysis.errorMessage) confidence += 0.15;
-    if (errorAnalysis.codeSnippet) confidence += 0.1;
+    if (errorAnalysis.stackTrace) {confidence += 0.2;}
+    if (errorAnalysis.errorMessage) {confidence += 0.15;}
+    if (errorAnalysis.codeSnippet) {confidence += 0.1;}
 
     // More solutions = higher confidence in ability to help
     confidence += Math.min(0.1, solutions.length * 0.02);

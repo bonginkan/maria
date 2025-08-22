@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import { ModeDefinition, ModeConfig } from './types';
+import { ModeConfig, ModeDefinition } from './types';
 
 export class ModeDisplayManager {
   private config: ModeConfig;
@@ -18,7 +18,7 @@ export class ModeDisplayManager {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
     this.initialized = true;
   }
 
@@ -26,7 +26,7 @@ export class ModeDisplayManager {
    * Display a mode with its visual representation
    */
   async showMode(mode: ModeDefinition): Promise<void> {
-    if (!this.config.showTransitions) return;
+    if (!this.config.showTransitions) {return;}
 
     const display = this.formatModeDisplay(mode);
 
@@ -50,7 +50,7 @@ export class ModeDisplayManager {
    * Show mode transition with before/after indication
    */
   async showModeTransition(newMode: ModeDefinition, previousMode?: ModeDefinition): Promise<void> {
-    if (!this.config.showTransitions) return;
+    if (!this.config.showTransitions) {return;}
 
     // Show transition animation if enabled
     if (this.config.animationEnabled && newMode.display.animation) {

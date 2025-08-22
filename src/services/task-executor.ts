@@ -5,7 +5,7 @@
 
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { Task, Mission } from './auto-mode-controller';
+import { Mission, Task } from './auto-mode-controller';
 import { logger } from '../utils/logger';
 
 const execAsync = promisify(exec);

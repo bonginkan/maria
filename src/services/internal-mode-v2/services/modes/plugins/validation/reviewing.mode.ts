@@ -497,13 +497,13 @@ export default class ReviewingMode extends BaseMode {
   private identifyReviewType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('code')) return 'code_review';
-    if (inputLower.includes('design')) return 'design_review';
-    if (inputLower.includes('security')) return 'security_review';
-    if (inputLower.includes('architecture')) return 'architecture_review';
-    if (inputLower.includes('quality')) return 'quality_review';
-    if (inputLower.includes('compliance')) return 'compliance_review';
-    if (inputLower.includes('peer')) return 'peer_review';
+    if (inputLower.includes('code')) {return 'code_review';}
+    if (inputLower.includes('design')) {return 'design_review';}
+    if (inputLower.includes('security')) {return 'security_review';}
+    if (inputLower.includes('architecture')) {return 'architecture_review';}
+    if (inputLower.includes('quality')) {return 'quality_review';}
+    if (inputLower.includes('compliance')) {return 'compliance_review';}
+    if (inputLower.includes('peer')) {return 'peer_review';}
 
     return 'general_review';
   }
@@ -511,11 +511,11 @@ export default class ReviewingMode extends BaseMode {
   private identifyReviewTarget(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('document')) return 'documentation';
-    if (inputLower.includes('code')) return 'source_code';
-    if (inputLower.includes('design')) return 'design_artifacts';
-    if (inputLower.includes('system')) return 'system_architecture';
-    if (inputLower.includes('process')) return 'process_definition';
+    if (inputLower.includes('document')) {return 'documentation';}
+    if (inputLower.includes('code')) {return 'source_code';}
+    if (inputLower.includes('design')) {return 'design_artifacts';}
+    if (inputLower.includes('system')) {return 'system_architecture';}
+    if (inputLower.includes('process')) {return 'process_definition';}
 
     return 'work_product';
   }
@@ -524,10 +524,10 @@ export default class ReviewingMode extends BaseMode {
     const objectives: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('quality')) objectives.push('Ensure quality standards');
-    if (inputLower.includes('compliance')) objectives.push('Verify compliance');
-    if (inputLower.includes('best practice')) objectives.push('Validate best practices');
-    if (inputLower.includes('requirement')) objectives.push('Check requirements adherence');
+    if (inputLower.includes('quality')) {objectives.push('Ensure quality standards');}
+    if (inputLower.includes('compliance')) {objectives.push('Verify compliance');}
+    if (inputLower.includes('best practice')) {objectives.push('Validate best practices');}
+    if (inputLower.includes('requirement')) {objectives.push('Check requirements adherence');}
 
     return objectives.length > 0
       ? objectives
@@ -538,10 +538,10 @@ export default class ReviewingMode extends BaseMode {
     const stakeholders: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('team')) stakeholders.push('development team');
-    if (inputLower.includes('architect')) stakeholders.push('solution architect');
-    if (inputLower.includes('qa')) stakeholders.push('quality assurance');
-    if (inputLower.includes('security')) stakeholders.push('security team');
+    if (inputLower.includes('team')) {stakeholders.push('development team');}
+    if (inputLower.includes('architect')) {stakeholders.push('solution architect');}
+    if (inputLower.includes('qa')) {stakeholders.push('quality assurance');}
+    if (inputLower.includes('security')) {stakeholders.push('security team');}
 
     return stakeholders.length > 0 ? stakeholders : ['reviewer', 'author', 'stakeholders'];
   }
@@ -549,8 +549,8 @@ export default class ReviewingMode extends BaseMode {
   private estimateReviewTimeline(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('quick') || inputLower.includes('brief')) return '2-4 hours';
-    if (inputLower.includes('comprehensive') || inputLower.includes('thorough')) return '1-2 weeks';
+    if (inputLower.includes('quick') || inputLower.includes('brief')) {return '2-4 hours';}
+    if (inputLower.includes('comprehensive') || inputLower.includes('thorough')) {return '1-2 weeks';}
 
     return '1-3 days';
   }
@@ -558,8 +558,8 @@ export default class ReviewingMode extends BaseMode {
   private determineReviewDepth(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('deep') || inputLower.includes('thorough')) return 'comprehensive';
-    if (inputLower.includes('quick') || inputLower.includes('high-level')) return 'overview';
+    if (inputLower.includes('deep') || inputLower.includes('thorough')) {return 'comprehensive';}
+    if (inputLower.includes('quick') || inputLower.includes('high-level')) {return 'overview';}
 
     return 'detailed';
   }
@@ -567,8 +567,8 @@ export default class ReviewingMode extends BaseMode {
   private defineReviewCoverage(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('complete') || inputLower.includes('full')) return 'complete';
-    if (inputLower.includes('sample') || inputLower.includes('partial')) return 'sampling';
+    if (inputLower.includes('complete') || inputLower.includes('full')) {return 'complete';}
+    if (inputLower.includes('sample') || inputLower.includes('partial')) {return 'sampling';}
 
     return 'targeted';
   }
@@ -620,8 +620,8 @@ export default class ReviewingMode extends BaseMode {
   }
 
   private selectReviewApproach(input: string, criteria: unknown[]): string {
-    if (criteria.length > 6) return 'structured_checklist';
-    if (input.toLowerCase().includes('collaborative')) return 'collaborative_review';
+    if (criteria.length > 6) {return 'structured_checklist';}
+    if (input.toLowerCase().includes('collaborative')) {return 'collaborative_review';}
     return 'systematic_inspection';
   }
 
@@ -638,8 +638,8 @@ export default class ReviewingMode extends BaseMode {
     const inputLower = input.toLowerCase();
     const tools: string[] = [];
 
-    if (inputLower.includes('code')) tools.push('Code review tools (GitHub, GitLab)');
-    if (inputLower.includes('document')) tools.push('Document review tools');
+    if (inputLower.includes('code')) {tools.push('Code review tools (GitHub, GitLab)');}
+    if (inputLower.includes('document')) {tools.push('Document review tools');}
     tools.push('Collaboration platforms', 'Issue tracking systems');
 
     return tools;

@@ -231,7 +231,7 @@ export class MigrateInstallerCommand extends BaseCommand {
               );
               if (stdout.includes('@bonginkan/maria')) {
                 detected = true;
-                if (!location) location = 'npm global';
+                if (!location) {location = 'npm global';}
               }
             } catch {
               // Not installed via npm
@@ -243,7 +243,7 @@ export class MigrateInstallerCommand extends BaseCommand {
               const { stdout } = await execAsync('brew list maria-cli 2>/dev/null || echo ""');
               if (stdout.trim()) {
                 detected = true;
-                if (!location) location = 'homebrew';
+                if (!location) {location = 'homebrew';}
               }
             } catch {
               // Not installed via homebrew

@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'events';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { homedir } from 'os';
 import { _crossSessionLearning, UserKnowledgeProfile } from './cross-session-learning.js';

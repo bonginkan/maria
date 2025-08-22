@@ -8,7 +8,7 @@ import chalk from 'chalk';
 import { execSync } from 'child_process';
 import prompts from 'prompts';
 // import { logger } from '../utils/logger.js';
-import { isObject, getStringProperty, getBooleanProperty } from '../utils/type-guards.js';
+import { getBooleanProperty, getStringProperty, isObject } from '../utils/type-guards.js';
 
 export const commitCommand = new Command('commit')
   .description('Generate AI-powered commit messages')
@@ -78,7 +78,7 @@ export const commitCommand = new Command('commit')
         commitMessage = await generateCommitMessage(stagedDiff, stagedFiles, options);
 
         // Show generated message and ask for confirmation
-        console.log('\n' + chalk.bold('Generated Commit Message:'));
+        console.log(`\n${  chalk.bold('Generated Commit Message:')}`);
         console.log(chalk.green(commitMessage));
 
         const { confirm, editedMessage } = await prompts([
@@ -163,21 +163,21 @@ async function generateCommitMessage(
     message += '!';
   }
 
-  message += ': ' + analysis.summary;
+  message += `: ${  analysis.summary}`;
 
   // Add body if there are details
   if (analysis.details.length > 0) {
-    message += '\n\n' + analysis.details.join('\n');
+    message += `\n\n${  analysis.details.join('\n')}`;
   }
 
   // Add breaking change footer if needed
   if (breaking && analysis.breakingChangeDescription) {
-    message += '\n\nBREAKING CHANGE: ' + analysis.breakingChangeDescription;
+    message += `\n\nBREAKING CHANGE: ${  analysis.breakingChangeDescription}`;
   }
 
   // Add co-authors or references if any
   if (analysis.references.length > 0) {
-    message += '\n\n' + analysis.references.join('\n');
+    message += `\n\n${  analysis.references.join('\n')}`;
   }
 
   return message;
@@ -257,10 +257,10 @@ function analyzeChanges(diff: string, files: string): ChangeAnalysis {
   } else {
     // Mixed changes
     const actions = [];
-    if (addedFiles > 0) actions.push(`add ${addedFiles}`);
-    if (modifiedFiles > 0) actions.push(`update ${modifiedFiles}`);
-    if (deletedFiles > 0) actions.push(`remove ${deletedFiles}`);
-    summary = actions.join(', ') + ' files';
+    if (addedFiles > 0) {actions.push(`add ${addedFiles}`);}
+    if (modifiedFiles > 0) {actions.push(`update ${modifiedFiles}`);}
+    if (deletedFiles > 0) {actions.push(`remove ${deletedFiles}`);}
+    summary = `${actions.join(', ')  } files`;
   }
 
   // Generate details
@@ -328,8 +328,8 @@ function analyzeChanges(diff: string, files: string): ChangeAnalysis {
 }
 
 function findCommonPath(paths: string[]): string {
-  if (paths.length === 0) return '';
-  if (paths.length === 1) return paths[0]?.split('/').slice(0, -1).join('/') || '';
+  if (paths.length === 0) {return '';}
+  if (paths.length === 1) {return paths[0]?.split('/').slice(0, -1).join('/') || '';}
 
   const parts = paths[0]?.split('/') || [];
   let common = '';

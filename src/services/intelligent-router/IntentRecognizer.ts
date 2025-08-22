@@ -36,7 +36,7 @@ export class IntentRecognizer {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     // Initialize ML models or other async resources if needed
     this.initialized = true;

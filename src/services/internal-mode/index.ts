@@ -57,7 +57,7 @@ export const InternalModeUtils = {
     const modeService = getInternalModeService();
     const currentMode = modeService.getCurrentMode();
 
-    if (!currentMode) return '✽ 🧠 Thinking…';
+    if (!currentMode) {return '✽ 🧠 Thinking…';}
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { ModeDisplayManager } = require('./ModeDisplayManager');

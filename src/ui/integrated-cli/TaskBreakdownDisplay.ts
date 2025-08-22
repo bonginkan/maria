@@ -5,7 +5,7 @@
 
 import chalk from 'chalk';
 import { Task, TaskStatus } from './ActiveReporter.js';
-import { SubTask, ExtendedTask } from './ProgressTracker.js';
+import { ExtendedTask, SubTask } from './ProgressTracker.js';
 import { InternalMode } from './ModeIndicator.js';
 
 /**
@@ -351,7 +351,7 @@ export class TaskBreakdownDisplay {
       }
 
       if (additionalInfo.length > 0) {
-        result += '\n' + additionalInfo.join('\n');
+        result += `\n${  additionalInfo.join('\n')}`;
       }
     }
 
@@ -503,7 +503,7 @@ export class TaskBreakdownDisplay {
     // タグフィルター
     if (this.filter.tags && this.filter.tags.length > 0) {
       const hasMatchingTag = task.tags?.some((tag) => this.filter.tags!.includes(tag));
-      if (!hasMatchingTag) return false;
+      if (!hasMatchingTag) {return false;}
     }
 
     // モードフィルター
@@ -526,7 +526,7 @@ export class TaskBreakdownDisplay {
       const searchText = this.filter.textFilter.toLowerCase();
       const titleMatch = task.title.toLowerCase().includes(searchText);
       const tagMatch = task.tags?.some((tag) => tag.toLowerCase().includes(searchText));
-      if (!titleMatch && !tagMatch) return false;
+      if (!titleMatch && !tagMatch) {return false;}
     }
 
     return true;
@@ -587,7 +587,7 @@ export class TaskBreakdownDisplay {
   }
 
   private getPriorityColor(priority?: string): typeof chalk {
-    if (!priority) return chalk.white;
+    if (!priority) {return chalk.white;}
 
     const colors: Record<string, typeof chalk> = {
       low: chalk.gray,

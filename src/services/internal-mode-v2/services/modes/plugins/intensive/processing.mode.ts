@@ -465,12 +465,12 @@ export default class ProcessingMode extends BaseMode {
   private classifyProcessingType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('data') || inputLower.includes('dataset')) return 'data_processing';
-    if (inputLower.includes('calculate') || inputLower.includes('math')) return 'computational';
-    if (inputLower.includes('transform') || inputLower.includes('convert')) return 'transformation';
-    if (inputLower.includes('batch') || inputLower.includes('bulk')) return 'batch_processing';
+    if (inputLower.includes('data') || inputLower.includes('dataset')) {return 'data_processing';}
+    if (inputLower.includes('calculate') || inputLower.includes('math')) {return 'computational';}
+    if (inputLower.includes('transform') || inputLower.includes('convert')) {return 'transformation';}
+    if (inputLower.includes('batch') || inputLower.includes('bulk')) {return 'batch_processing';}
     if (inputLower.includes('stream') || inputLower.includes('real-time'))
-      return 'stream_processing';
+      {return 'stream_processing';}
 
     return 'general_processing';
   }
@@ -483,9 +483,9 @@ export default class ProcessingMode extends BaseMode {
       inputLower.includes(indicator),
     ).length;
 
-    if (complexityCount > 2) return 'very_high';
-    if (complexityCount > 1) return 'high';
-    if (complexityCount > 0) return 'medium';
+    if (complexityCount > 2) {return 'very_high';}
+    if (complexityCount > 1) {return 'high';}
+    if (complexityCount > 0) {return 'medium';}
     return 'low';
   }
 
@@ -511,8 +511,8 @@ export default class ProcessingMode extends BaseMode {
   private assessProcessingPriority(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('urgent') || inputLower.includes('asap')) return 'high';
-    if (inputLower.includes('important') || inputLower.includes('critical')) return 'medium';
+    if (inputLower.includes('urgent') || inputLower.includes('asap')) {return 'high';}
+    if (inputLower.includes('important') || inputLower.includes('critical')) {return 'medium';}
     return 'normal';
   }
 
@@ -520,10 +520,10 @@ export default class ProcessingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('memory')) constraints.push('memory_limit');
-    if (inputLower.includes('time')) constraints.push('time_limit');
-    if (inputLower.includes('cpu')) constraints.push('cpu_limit');
-    if (inputLower.includes('network')) constraints.push('network_limit');
+    if (inputLower.includes('memory')) {constraints.push('memory_limit');}
+    if (inputLower.includes('time')) {constraints.push('time_limit');}
+    if (inputLower.includes('cpu')) {constraints.push('cpu_limit');}
+    if (inputLower.includes('network')) {constraints.push('network_limit');}
 
     return constraints;
   }
@@ -541,10 +541,10 @@ export default class ProcessingMode extends BaseMode {
     const dependencies: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('database')) dependencies.push('database_access');
-    if (inputLower.includes('file')) dependencies.push('file_system');
-    if (inputLower.includes('network')) dependencies.push('network_connectivity');
-    if (inputLower.includes('api')) dependencies.push('external_api');
+    if (inputLower.includes('database')) {dependencies.push('database_access');}
+    if (inputLower.includes('file')) {dependencies.push('file_system');}
+    if (inputLower.includes('network')) {dependencies.push('network_connectivity');}
+    if (inputLower.includes('api')) {dependencies.push('external_api');}
 
     return dependencies;
   }
@@ -597,8 +597,8 @@ export default class ProcessingMode extends BaseMode {
   }
 
   private selectOptimizationStrategy(taskAnalysis: unknown): string {
-    if (taskAnalysis.scale === 'massive') return 'distributed_processing';
-    if (taskAnalysis.complexity === 'high') return 'parallel_processing';
+    if (taskAnalysis.scale === 'massive') {return 'distributed_processing';}
+    if (taskAnalysis.complexity === 'high') {return 'parallel_processing';}
     return 'sequential_optimization';
   }
 

@@ -60,7 +60,7 @@ export class LocalGraphService extends EventEmitter {
   }
 
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {return;}
 
     await this.storage.initialize();
     await this.loadGraph();
@@ -183,7 +183,7 @@ export class LocalGraphService extends EventEmitter {
 
   async updateNode(nodeId: string, properties: Record<string, unknown>): Promise<GraphNode | null> {
     const node = this.nodes.get(nodeId);
-    if (!node) return null;
+    if (!node) {return null;}
 
     node.properties = { ...node.properties, ...properties };
     node.updatedAt = new Date().toISOString();
@@ -195,7 +195,7 @@ export class LocalGraphService extends EventEmitter {
 
   async deleteNode(nodeId: string): Promise<boolean> {
     const node = this.nodes.get(nodeId);
-    if (!node) return false;
+    if (!node) {return false;}
 
     // Remove from label index
     for (const label of node.labels) {
@@ -229,7 +229,7 @@ export class LocalGraphService extends EventEmitter {
 
   getNodesByLabel(label: string): GraphNode[] {
     const nodeIds = this.nodesByLabel.get(label);
-    if (!nodeIds) return [];
+    if (!nodeIds) {return [];}
     return Array.from(nodeIds)
       .map((id) => this.nodes.get(id)!)
       .filter(Boolean);
@@ -279,7 +279,7 @@ export class LocalGraphService extends EventEmitter {
 
   async deleteEdge(edgeId: string): Promise<boolean> {
     const edge = this.edges.get(edgeId);
-    if (!edge) return false;
+    if (!edge) {return false;}
 
     // Remove from type index
     this.edgesByType.get(edge.type)?.delete(edgeId);
@@ -301,7 +301,7 @@ export class LocalGraphService extends EventEmitter {
 
   getEdgesByType(type: string): GraphEdge[] {
     const edgeIds = this.edgesByType.get(type);
-    if (!edgeIds) return [];
+    if (!edgeIds) {return [];}
     return Array.from(edgeIds)
       .map((id) => this.edges.get(id)!)
       .filter(Boolean);

@@ -1,8 +1,8 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import {
-  fileSystemService,
   FileOperationOptions,
+  fileSystemService,
   SearchOptions,
 } from '../services/file-system/FileSystemService.js';
 import { formatTable } from '../utils/ui.js';

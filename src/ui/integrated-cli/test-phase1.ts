@@ -4,7 +4,7 @@
  */
 import { InputBox } from './InputBox.js';
 import { ResponseRenderer } from './ResponseRenderer.js';
-import { ModeIndicator, InternalMode } from './ModeIndicator.js';
+import { InternalMode, ModeIndicator } from './ModeIndicator.js';
 import { LayoutEngine, LayoutZone } from './LayoutEngine.js';
 import { IntegratedCLIManager } from './IntegratedCLIManager.js';
 

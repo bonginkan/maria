@@ -138,7 +138,7 @@ async function handleSimplePrompt(prompt: string): Promise<void> {
 
 // Helper functions for research mode
 function validateResearchOptions(options: unknown): void {
-  if (!options || typeof options !== 'object') return;
+  if (!options || typeof options !== 'object') {return;}
 
   const opts = options as Record<string, unknown>;
   const validDepths = ['1', '2', '3'];

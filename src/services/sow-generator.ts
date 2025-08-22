@@ -5,7 +5,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../utils/logger';
-import { SOWDocument, Task, MissionPhase } from './auto-mode-controller';
+import { MissionPhase, SOWDocument, Task } from './auto-mode-controller';
 
 export interface SOWRequest {
   type: 'paper' | 'slides' | 'development' | 'composite';
@@ -349,7 +349,7 @@ export class SOWGenerator {
    * 制約を検証
    */
   private validateConstraints(sow: SOWDocument, constraints?: SOWRequest['constraints']): void {
-    if (!constraints) return;
+    if (!constraints) {return;}
 
     if (constraints.maxCost && sow['estimatedCost'] > constraints.maxCost) {
       logger.warn(`Cost exceeds constraint: ${sow['estimatedCost']} > ${constraints.maxCost}`);

@@ -481,11 +481,11 @@ export default class CoordinatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('large team') || inputLower.includes('many people'))
-      return 'large (10+ members)';
+      {return 'large (10+ members)';}
     if (inputLower.includes('small team') || inputLower.includes('few people'))
-      return 'small (3-5 members)';
+      {return 'small (3-5 members)';}
     if (inputLower.includes('medium') || inputLower.includes('several'))
-      return 'medium (6-9 members)';
+      {return 'medium (6-9 members)';}
 
     return 'medium (6-9 members)';
   }
@@ -494,11 +494,11 @@ export default class CoordinatingMode extends BaseMode {
     const roles: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('developer')) roles.push('Developer');
-    if (inputLower.includes('designer')) roles.push('Designer');
-    if (inputLower.includes('manager')) roles.push('Manager');
-    if (inputLower.includes('analyst')) roles.push('Analyst');
-    if (inputLower.includes('tester')) roles.push('Tester');
+    if (inputLower.includes('developer')) {roles.push('Developer');}
+    if (inputLower.includes('designer')) {roles.push('Designer');}
+    if (inputLower.includes('manager')) {roles.push('Manager');}
+    if (inputLower.includes('analyst')) {roles.push('Analyst');}
+    if (inputLower.includes('tester')) {roles.push('Tester');}
 
     return roles.length > 0 ? roles : ['Team Member', 'Lead', 'Specialist'];
   }
@@ -507,10 +507,10 @@ export default class CoordinatingMode extends BaseMode {
     const skills: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('technical')) skills.push('Technical Skills');
-    if (inputLower.includes('creative')) skills.push('Creative Skills');
-    if (inputLower.includes('analytical')) skills.push('Analytical Skills');
-    if (inputLower.includes('communication')) skills.push('Communication Skills');
+    if (inputLower.includes('technical')) {skills.push('Technical Skills');}
+    if (inputLower.includes('creative')) {skills.push('Creative Skills');}
+    if (inputLower.includes('analytical')) {skills.push('Analytical Skills');}
+    if (inputLower.includes('communication')) {skills.push('Communication Skills');}
 
     return skills.length > 0 ? skills : ['Mixed Skills'];
   }
@@ -518,9 +518,9 @@ export default class CoordinatingMode extends BaseMode {
   private assessTeamAvailability(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('full time') || inputLower.includes('dedicated')) return 'high';
-    if (inputLower.includes('part time') || inputLower.includes('limited')) return 'medium';
-    if (inputLower.includes('busy') || inputLower.includes('constrained')) return 'low';
+    if (inputLower.includes('full time') || inputLower.includes('dedicated')) {return 'high';}
+    if (inputLower.includes('part time') || inputLower.includes('limited')) {return 'medium';}
+    if (inputLower.includes('busy') || inputLower.includes('constrained')) {return 'low';}
 
     return 'medium';
   }
@@ -529,11 +529,11 @@ export default class CoordinatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('collaborative') || inputLower.includes('cooperative'))
-      return 'collaborative';
+      {return 'collaborative';}
     if (inputLower.includes('independent') || inputLower.includes('autonomous'))
-      return 'independent';
+      {return 'independent';}
     if (inputLower.includes('hierarchical') || inputLower.includes('structured'))
-      return 'hierarchical';
+      {return 'hierarchical';}
 
     return 'mixed';
   }
@@ -551,10 +551,10 @@ export default class CoordinatingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('highly collaborative') || inputLower.includes('close cooperation'))
-      return 'high';
+      {return 'high';}
     if (inputLower.includes('some collaboration') || inputLower.includes('moderate'))
-      return 'medium';
-    if (inputLower.includes('minimal') || inputLower.includes('independent')) return 'low';
+      {return 'medium';}
+    if (inputLower.includes('minimal') || inputLower.includes('independent')) {return 'low';}
 
     return 'medium';
   }
@@ -620,8 +620,8 @@ export default class CoordinatingMode extends BaseMode {
   private selectCoordinationStrategy(activityMapping: unknown): string {
     const activityCount = activityMapping.activities.length;
 
-    if (activityCount > 6) return 'matrix_coordination';
-    if (activityCount > 3) return 'hierarchical_coordination';
+    if (activityCount > 6) {return 'matrix_coordination';}
+    if (activityCount > 3) {return 'hierarchical_coordination';}
     return 'direct_coordination';
   }
 
@@ -669,8 +669,8 @@ export default class CoordinatingMode extends BaseMode {
 
     const complexity = factors.reduce((sum, factor) => sum + factor, 0);
 
-    if (complexity > 15) return 'high';
-    if (complexity > 8) return 'medium';
+    if (complexity > 15) {return 'high';}
+    if (complexity > 8) {return 'medium';}
     return 'low';
   }
 
@@ -798,10 +798,10 @@ export default class CoordinatingMode extends BaseMode {
   private extractTimeframe(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('week')) return 'weeks';
-    if (inputLower.includes('month')) return 'months';
-    if (inputLower.includes('quarter')) return 'quarters';
-    if (inputLower.includes('sprint')) return 'sprints';
+    if (inputLower.includes('week')) {return 'weeks';}
+    if (inputLower.includes('month')) {return 'months';}
+    if (inputLower.includes('quarter')) {return 'quarters';}
+    if (inputLower.includes('sprint')) {return 'sprints';}
 
     return 'weeks';
   }

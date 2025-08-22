@@ -15,9 +15,9 @@ import { DualMemoryEngine } from '../services/memory-system/dual-memory-engine';
 import { AIRouterService } from '../services/ai-router';
 import { logger } from '../utils/logger';
 import type {
+  CodePattern,
   MemoryQuery,
   MemoryResponse,
-  CodePattern,
   ReasoningTrace,
   UserPreferenceSet,
 } from '../services/memory-system/types/memory-interfaces';
@@ -357,11 +357,11 @@ async function evaluateCodeQuality(code: string): Promise<number> {
   let quality = 0.5;
 
   // Check for common quality indicators
-  if (code.includes('function') || code.includes('class')) quality += 0.1;
-  if (code.includes('try') || code.includes('catch')) quality += 0.1;
-  if (code.includes('async') || code.includes('await')) quality += 0.1;
-  if (code.includes('/**') || code.includes('//')) quality += 0.1;
-  if (code.length > 100) quality += 0.1;
+  if (code.includes('function') || code.includes('class')) {quality += 0.1;}
+  if (code.includes('try') || code.includes('catch')) {quality += 0.1;}
+  if (code.includes('async') || code.includes('await')) {quality += 0.1;}
+  if (code.includes('/**') || code.includes('//')) {quality += 0.1;}
+  if (code.length > 100) {quality += 0.1;}
 
   return Math.min(quality, 1.0);
 }

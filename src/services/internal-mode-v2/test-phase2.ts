@@ -4,7 +4,7 @@
  */
 
 import 'reflect-metadata';
-import { ServiceRegistry, ServiceBus, ServiceLoader } from './core/index.js';
+import { ServiceBus, ServiceLoader, ServiceRegistry } from './core/index.js';
 
 import { RecognitionService } from './services/recognition/index.js';
 import { ModeService } from './services/modes/index.js';
@@ -97,7 +97,7 @@ async function testPhase2Integration(): Promise<void> {
 
     console.log('Recognition result:', {
       mode: recognitionResult.recommendedMode,
-      confidence: Math.round(recognitionResult.confidence * 100) + '%',
+      confidence: `${Math.round(recognitionResult.confidence * 100)  }%`,
       reasoning: recognitionResult.reasoning,
     });
     console.log('✅ Recognition service working\n');
@@ -186,7 +186,7 @@ async function testPhase2Integration(): Promise<void> {
 
     console.log('Learning prediction:', {
       mode: prediction.recommendedMode,
-      confidence: Math.round(prediction.confidence * 100) + '%',
+      confidence: `${Math.round(prediction.confidence * 100)  }%`,
       reasoning: prediction.reasoning.slice(0, 2),
     });
 
@@ -195,7 +195,7 @@ async function testPhase2Integration(): Promise<void> {
       'Learning stats:',
       learningStats
         ? {
-            adaptationLevel: Math.round(learningStats.adaptationLevel) + '%',
+            adaptationLevel: `${Math.round(learningStats.adaptationLevel)  }%`,
             totalPatterns: learningStats.totalPatterns,
           }
         : 'Not found',
@@ -218,7 +218,7 @@ async function testPhase2Integration(): Promise<void> {
       const serviceNames = ['Recognition', 'Mode', 'Display', 'History', 'Learning'];
       console.log(`${serviceNames[index]} Service:`, {
         service: stat.service,
-        uptime: Math.round(stat.uptime) + 'ms',
+        uptime: `${Math.round(stat.uptime)  }ms`,
       });
     });
     console.log('✅ All service statistics working\n');
@@ -266,7 +266,7 @@ async function testPhase2Integration(): Promise<void> {
     console.log('Complete workflow executed:', {
       input: workflowInput,
       recognizedMode: workflowRecognition.recommendedMode,
-      confidence: Math.round(workflowRecognition.confidence * 100) + '%',
+      confidence: `${Math.round(workflowRecognition.confidence * 100)  }%`,
     });
     console.log('✅ Complete event-driven workflow working\n');
 

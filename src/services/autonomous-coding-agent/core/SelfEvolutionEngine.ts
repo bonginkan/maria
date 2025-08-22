@@ -7,12 +7,12 @@ import { EventEmitter } from 'events';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import {
-  LearningPattern,
+  CodingMode,
   ErrorPattern,
+  ExecutionContext,
+  LearningPattern,
   OptimizationSuggestion,
   Task,
-  CodingMode,
-  ExecutionContext,
 } from '../types';
 
 export interface EvolutionMetrics {
@@ -44,7 +44,7 @@ export class SelfEvolutionEngine extends EventEmitter {
    * Learn from execution pattern
    */
   async learn(pattern: LearningPattern): Promise<void> {
-    if (!this.learningEnabled) return;
+    if (!this.learningEnabled) {return;}
 
     // Store learning pattern
     this.learningPatterns.push(pattern);
@@ -398,10 +398,10 @@ export class SelfEvolutionEngine extends EventEmitter {
     similarity += titleSimilarity * 0.4;
 
     // Priority similarity
-    if (task1.priority === task2.priority) similarity += 0.2;
+    if (task1.priority === task2.priority) {similarity += 0.2;}
 
     // Type similarity (if available)
-    if (task1.assignee === task2.assignee) similarity += 0.2;
+    if (task1.assignee === task2.assignee) {similarity += 0.2;}
 
     // Description similarity (basic)
     const desc1 = task1.description.toLowerCase();
@@ -420,11 +420,11 @@ export class SelfEvolutionEngine extends EventEmitter {
     let similarity = 0;
 
     // Basic context matching (simplified for this implementation)
-    if (pattern.context.includes('project') && context.projectPath) similarity += 0.3;
+    if (pattern.context.includes('project') && context.projectPath) {similarity += 0.3;}
     if (pattern.context.includes('test') && context.currentTask?.title.includes('test'))
-      similarity += 0.3;
+      {similarity += 0.3;}
     if (pattern.context.includes('deploy') && context.currentTask?.title.includes('deploy'))
-      similarity += 0.4;
+      {similarity += 0.4;}
 
     return Math.min(1, similarity);
   }

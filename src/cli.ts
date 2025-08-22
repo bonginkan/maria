@@ -151,7 +151,7 @@ async function askSingle(message: string, config: MariaAIConfig): Promise<void> 
   try {
     console.log(chalk.blue('🤖 Thinking...'));
     const response = await maria.chat(message);
-    console.log('\n' + chalk.green(response.content));
+    console.log(`\n${  chalk.green(response.content)}`);
   } catch (error: unknown) {
     console.error(chalk.red('❌ Error:'), error);
     process.exit(1);
@@ -173,7 +173,7 @@ async function generateCode(
   try {
     console.log(chalk.blue('🔧 Generating code...'));
     const response = await maria.generateCode(prompt, language);
-    console.log('\n' + chalk.green(response.content));
+    console.log(`\n${  chalk.green(response.content)}`);
   } catch (error: unknown) {
     console.error(chalk.red('❌ Error:'), error);
     process.exit(1);
@@ -205,7 +205,7 @@ async function processVision(
     console.log(chalk.blue('👁️  Analyzing image...'));
     const imageBuffer = await fs.readFile(imagePath);
     const response = await maria.vision(imageBuffer, prompt);
-    console.log('\n' + chalk.green(response.content));
+    console.log(`\n${  chalk.green(response.content)}`);
   } catch (error: unknown) {
     console.error(chalk.red('❌ Error:'), error);
     process.exit(1);
@@ -237,7 +237,7 @@ async function listModels(provider?: string): Promise<void> {
     console.log(chalk.blue(`\n📋 Available Models (${filtered.length}):\n`));
 
     filtered.forEach((model) => {
-      const status = model.available ? '✅' : '⚠️';
+      const status = model.available ? '✅' : '❌';
       const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : '';
       console.log(`${status} ${chalk.bold(model.name)} - ${model.provider}${pricing}`);
       console.log(`   ${chalk.gray(model.description)}`);

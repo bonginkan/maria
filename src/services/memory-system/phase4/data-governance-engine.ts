@@ -288,8 +288,8 @@ export class DataGovernanceEngine extends EventEmitter {
 
     // Sort policies by priority
     const sortedPolicies = Array.from(applicablePolicies.values()).sort((a, b) => {
-      if (a.enforcement === 'mandatory' && b.enforcement !== 'mandatory') return -1;
-      if (b.enforcement === 'mandatory' && a.enforcement !== 'mandatory') return 1;
+      if (a.enforcement === 'mandatory' && b.enforcement !== 'mandatory') {return -1;}
+      if (b.enforcement === 'mandatory' && a.enforcement !== 'mandatory') {return 1;}
       return 0;
     });
 
@@ -712,14 +712,14 @@ export class DataGovernanceEngine extends EventEmitter {
     const now = new Date();
 
     // Check if policy is active
-    if (policy.effectiveDate > now) return false;
-    if (policy.expiryDate && policy.expiryDate < now) return false;
+    if (policy.effectiveDate > now) {return false;}
+    if (policy.expiryDate && policy.expiryDate < now) {return false;}
 
     // Check scope
     const scope = policy.scope;
 
-    if (!scope.dataTypes.includes(context.dataType)) return false;
-    if (!scope.environments.includes(context.environment)) return false;
+    if (!scope.dataTypes.includes(context.dataType)) {return false;}
+    if (!scope.environments.includes(context.environment)) {return false;}
 
     if (scope.users && context.userId && !scope.users.includes(context.userId)) {
       return false;
@@ -931,7 +931,7 @@ export class DataGovernanceEngine extends EventEmitter {
   }
 
   private maskValue(value: any, type: MaskingType, preserveFormat: boolean): any {
-    if (value === null || value === undefined) return value;
+    if (value === null || value === undefined) {return value;}
 
     switch (type) {
       case 'full':
@@ -939,7 +939,7 @@ export class DataGovernanceEngine extends EventEmitter {
 
       case 'partial':
         const str = String(value);
-        if (str.length <= 4) return '****';
+        if (str.length <= 4) {return '****';}
         return str.substring(0, 2) + '*'.repeat(str.length - 4) + str.substring(str.length - 2);
 
       case 'hash':

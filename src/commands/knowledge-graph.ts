@@ -63,7 +63,7 @@ export default function registerKnowledgeGraphCommand(program: Command) {
         });
 
         spinner.succeed('Knowledge graph loaded');
-        console.log('\n' + visualization);
+        console.log(`\n${  visualization}`);
       } catch (error) {
         spinner.fail('Failed to visualize graph');
         console.error(chalk.red('Error:'), error);
@@ -91,14 +91,14 @@ export default function registerKnowledgeGraphCommand(program: Command) {
 
         spinner.succeed(`Found ${results.length} results`);
 
-        console.log('\n' + chalk.cyan('═══ Search Results ═══'));
+        console.log(`\n${  chalk.cyan('═══ Search Results ═══')}`);
 
         for (const [index, result] of results.entries()) {
           console.log(`\n${chalk.yellow(`[${index + 1}]`)} ${chalk.green(result.node.name)}`);
           console.log(`  Type: ${chalk.blue(result.node.type)}`);
-          console.log(`  Similarity: ${chalk.magenta((result.similarity * 100).toFixed(1) + '%')}`);
+          console.log(`  Similarity: ${chalk.magenta(`${(result.similarity * 100).toFixed(1)  }%`)}`);
           console.log(
-            `  Confidence: ${chalk.gray((result.node.confidence * 100).toFixed(1) + '%')}`,
+            `  Confidence: ${chalk.gray(`${(result.node.confidence * 100).toFixed(1)  }%`)}`,
           );
 
           if (result.relationships && result.relationships.length > 0) {
@@ -133,13 +133,13 @@ export default function registerKnowledgeGraphCommand(program: Command) {
 
         spinner.succeed('Knowledge added successfully');
 
-        console.log('\n' + chalk.cyan('═══ Extraction Results ═══'));
+        console.log(`\n${  chalk.cyan('═══ Extraction Results ═══')}`);
         console.log(`Entities found: ${chalk.green(extraction.entities.length)}`);
         console.log(`Relationships found: ${chalk.blue(extraction.relationships.length)}`);
-        console.log(`Confidence: ${chalk.magenta((extraction.confidence * 100).toFixed(1) + '%')}`);
+        console.log(`Confidence: ${chalk.magenta(`${(extraction.confidence * 100).toFixed(1)  }%`)}`);
 
         if (extraction.entities.length > 0) {
-          console.log('\n' + chalk.yellow('Entities:'));
+          console.log(`\n${  chalk.yellow('Entities:')}`);
           for (const entity of extraction.entities.slice(0, 5)) {
             console.log(`  • ${entity.text} (${entity.type})`);
           }
@@ -149,7 +149,7 @@ export default function registerKnowledgeGraphCommand(program: Command) {
         }
 
         if (extraction.relationships.length > 0) {
-          console.log('\n' + chalk.yellow('Relationships:'));
+          console.log(`\n${  chalk.yellow('Relationships:')}`);
           for (const rel of extraction.relationships.slice(0, 5)) {
             const source = extraction.entities.find((e) => e.id === rel.sourceEntityId);
             const target = extraction.entities.find((e) => e.id === rel.targetEntityId);
@@ -198,7 +198,7 @@ export default function registerKnowledgeGraphCommand(program: Command) {
         if (path) {
           spinner.succeed(`Path found with ${path.length} nodes`);
 
-          console.log('\n' + chalk.cyan('═══ Path ═══'));
+          console.log(`\n${  chalk.cyan('═══ Path ═══')}`);
           for (const [index, node] of path.entries()) {
             const arrow = index < path.length - 1 ? ' → ' : '';
             console.log(`${chalk.yellow(`[${index + 1}]`)} ${chalk.green(node.name)}${arrow}`);
@@ -226,12 +226,12 @@ export default function registerKnowledgeGraphCommand(program: Command) {
 
         spinner.succeed('Statistics calculated');
 
-        console.log('\n' + chalk.cyan('═══ Knowledge Graph Statistics ═══'));
+        console.log(`\n${  chalk.cyan('═══ Knowledge Graph Statistics ═══')}`);
         console.log(chalk.yellow('\nGraph Metrics:'));
         console.log(`  Total Nodes: ${chalk.green(stats.totalNodes)}`);
         console.log(`  Total Edges: ${chalk.blue(stats.totalEdges)}`);
         console.log(`  Total Clusters: ${chalk.magenta(stats.totalClusters)}`);
-        console.log(`  Graph Density: ${chalk.cyan((stats.density * 100).toFixed(2) + '%')}`);
+        console.log(`  Graph Density: ${chalk.cyan(`${(stats.density * 100).toFixed(2)  }%`)}`);
         console.log(`  Average Degree: ${chalk.gray(stats.averageDegree.toFixed(2))}`);
 
         console.log(chalk.yellow('\nNode Distribution:'));
@@ -250,10 +250,10 @@ export default function registerKnowledgeGraphCommand(program: Command) {
         console.log(`  Total Events: ${chalk.green(eventStats.totalEvents)}`);
         console.log(`  Queue Size: ${chalk.blue(eventStats.queueSize)}`);
         console.log(
-          `  Success Rate: ${chalk.magenta((eventStats.successRate * 100).toFixed(1) + '%')}`,
+          `  Success Rate: ${chalk.magenta(`${(eventStats.successRate * 100).toFixed(1)  }%`)}`,
         );
         console.log(
-          `  Avg Processing Time: ${chalk.cyan(eventStats.averageProcessingTime.toFixed(0) + 'ms')}`,
+          `  Avg Processing Time: ${chalk.cyan(`${eventStats.averageProcessingTime.toFixed(0)  }ms`)}`,
         );
         console.log(
           `  Last Processed: ${chalk.gray(eventStats.lastProcessedTime.toLocaleString())}`,

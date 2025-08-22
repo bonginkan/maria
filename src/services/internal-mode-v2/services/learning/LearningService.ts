@@ -301,25 +301,25 @@ export class LearningService extends BaseService {
     // Mode preference patterns
     if (behavior.modeUsage) {
       const modePattern = await this.extractModePreferencePattern(userId, behavior.modeUsage);
-      if (modePattern) patterns.push(modePattern);
+      if (modePattern) {patterns.push(modePattern);}
     }
 
     // Timing patterns
     if (behavior.timestamp) {
       const timingPattern = await this.extractTimingPattern(userId, behavior.timestamp);
-      if (timingPattern) patterns.push(timingPattern);
+      if (timingPattern) {patterns.push(timingPattern);}
     }
 
     // Context patterns
     if (behavior.context) {
       const contextPattern = await this.extractContextPattern(userId, behavior.context);
-      if (contextPattern) patterns.push(contextPattern);
+      if (contextPattern) {patterns.push(contextPattern);}
     }
 
     // Transition patterns
     if (behavior.transition) {
       const transitionPattern = await this.extractTransitionPattern(userId, behavior.transition);
-      if (transitionPattern) patterns.push(transitionPattern);
+      if (transitionPattern) {patterns.push(transitionPattern);}
     }
 
     return patterns;
@@ -581,7 +581,7 @@ export class LearningService extends BaseService {
     const totalPatterns = profile.patterns.length;
     const strongPatterns = profile.patterns.filter((p) => p.confidence > 0.8).length;
 
-    if (totalPatterns === 0) return 0;
+    if (totalPatterns === 0) {return 0;}
 
     return (strongPatterns / totalPatterns) * 100;
   }

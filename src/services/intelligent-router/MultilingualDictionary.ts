@@ -15,7 +15,7 @@ export class MultilingualDictionary {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     this.loadTranslations();
     this.initialized = true;

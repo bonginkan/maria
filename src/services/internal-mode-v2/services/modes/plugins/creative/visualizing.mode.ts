@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -170,9 +170,9 @@ export class VisualizingMode extends BaseMode {
     const dataMatches = dataTerms.filter((term) => input.includes(term));
     confidence += dataMatches.length * 0.1;
 
-    if (context.metadata?.requiresVisualization) confidence += 0.25;
-    if (context.metadata?.hasDataToVisualize) confidence += 0.2;
-    if (context.metadata?.communicationNeeds) confidence += 0.15;
+    if (context.metadata?.requiresVisualization) {confidence += 0.25;}
+    if (context.metadata?.hasDataToVisualize) {confidence += 0.2;}
+    if (context.metadata?.communicationNeeds) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -350,8 +350,8 @@ export class VisualizingMode extends BaseMode {
 
     const complexityCount = dataIndicators.filter(Boolean).length;
 
-    if (complexityCount >= 3) return 'high';
-    if (complexityCount >= 2) return 'medium';
+    if (complexityCount >= 3) {return 'high';}
+    if (complexityCount >= 2) {return 'medium';}
     return 'low';
   }
 
@@ -367,9 +367,9 @@ export class VisualizingMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.75;
 
-    if (results.effectiveness > 0.8) confidence += 0.1;
-    if (results.clarity.score > 0.8) confidence += 0.08;
-    if (results.usability.score > 0.75) confidence += 0.07;
+    if (results.effectiveness > 0.8) {confidence += 0.1;}
+    if (results.clarity.score > 0.8) {confidence += 0.08;}
+    if (results.usability.score > 0.75) {confidence += 0.07;}
 
     return Math.min(confidence, 1.0);
   }
@@ -412,10 +412,10 @@ export class VisualizingMode extends BaseMode {
 
   // Helper methods
   private identifyDataType(input: string): string {
-    if (input.includes('time') || input.includes('trend')) return 'temporal';
-    if (input.includes('category') || input.includes('group')) return 'categorical';
-    if (input.includes('number') || input.includes('metric')) return 'quantitative';
-    if (input.includes('location') || input.includes('map')) return 'spatial';
+    if (input.includes('time') || input.includes('trend')) {return 'temporal';}
+    if (input.includes('category') || input.includes('group')) {return 'categorical';}
+    if (input.includes('number') || input.includes('metric')) {return 'quantitative';}
+    if (input.includes('location') || input.includes('map')) {return 'spatial';}
     return 'mixed';
   }
 
@@ -428,8 +428,8 @@ export class VisualizingMode extends BaseMode {
   }
 
   private assessDataVolume(input: string): string {
-    if (input.includes('large') || input.includes('big')) return 'high';
-    if (input.includes('small') || input.includes('few')) return 'low';
+    if (input.includes('large') || input.includes('big')) {return 'high';}
+    if (input.includes('small') || input.includes('few')) {return 'low';}
     return 'medium';
   }
 
@@ -442,25 +442,25 @@ export class VisualizingMode extends BaseMode {
   }
 
   private identifyPrimaryGoal(input: string): string {
-    if (input.includes('compare')) return 'comparison';
-    if (input.includes('trend')) return 'trend_analysis';
-    if (input.includes('distribute') || input.includes('proportion')) return 'distribution';
-    if (input.includes('flow') || input.includes('process')) return 'flow_visualization';
+    if (input.includes('compare')) {return 'comparison';}
+    if (input.includes('trend')) {return 'trend_analysis';}
+    if (input.includes('distribute') || input.includes('proportion')) {return 'distribution';}
+    if (input.includes('flow') || input.includes('process')) {return 'flow_visualization';}
     return 'exploration';
   }
 
   private identifyTargetAudience(input: string): string {
-    if (input.includes('executive') || input.includes('management')) return 'executives';
-    if (input.includes('technical') || input.includes('developer')) return 'technical_team';
-    if (input.includes('user') || input.includes('customer')) return 'end_users';
+    if (input.includes('executive') || input.includes('management')) {return 'executives';}
+    if (input.includes('technical') || input.includes('developer')) {return 'technical_team';}
+    if (input.includes('user') || input.includes('customer')) {return 'end_users';}
     return 'general_audience';
   }
 
   private analyzeUsageContext(input: string): string {
-    if (input.includes('presentation')) return 'presentation';
-    if (input.includes('report')) return 'reporting';
-    if (input.includes('dashboard')) return 'monitoring';
-    if (input.includes('analysis')) return 'analysis';
+    if (input.includes('presentation')) {return 'presentation';}
+    if (input.includes('report')) {return 'reporting';}
+    if (input.includes('dashboard')) {return 'monitoring';}
+    if (input.includes('analysis')) {return 'analysis';}
     return 'communication';
   }
 
@@ -477,10 +477,10 @@ export class VisualizingMode extends BaseMode {
   }
 
   private choosePrimaryType(dataAnalysis: any, purpose: any, context: ModeContext): string {
-    if (purpose.primary_goal === 'trend_analysis') return 'line_chart';
-    if (purpose.primary_goal === 'comparison') return 'bar_chart';
-    if (purpose.primary_goal === 'distribution') return 'histogram';
-    if (purpose.primary_goal === 'flow_visualization') return 'flowchart';
+    if (purpose.primary_goal === 'trend_analysis') {return 'line_chart';}
+    if (purpose.primary_goal === 'comparison') {return 'bar_chart';}
+    if (purpose.primary_goal === 'distribution') {return 'histogram';}
+    if (purpose.primary_goal === 'flow_visualization') {return 'flowchart';}
     return 'dashboard';
   }
 

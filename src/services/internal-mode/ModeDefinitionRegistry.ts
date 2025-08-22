@@ -6,12 +6,12 @@
  */
 
 import {
-  ModeDefinition,
+  _DEFAULT_TRIGGER_WEIGHTS,
+  _MODE_CATEGORIES,
   ModeCategory,
+  ModeDefinition,
   ModeTrigger,
   TriggerCondition,
-  _MODE_CATEGORIES,
-  _DEFAULT_TRIGGER_WEIGHTS,
 } from './types';
 
 export class ModeDefinitionRegistry {
@@ -24,7 +24,7 @@ export class ModeDefinitionRegistry {
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {return;}
 
     this.initializeModes();
     this.buildCategoryIndex();

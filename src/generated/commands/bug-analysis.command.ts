@@ -6,7 +6,7 @@
  */
 
 import { BaseCommand } from './base-command';
-import { _CommandContext, CommandResult, _CommandArgs } from './types';
+import { _CommandArgs, _CommandContext, CommandResult } from './types';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import { glob } from 'glob';
@@ -585,15 +585,15 @@ export class BugAnalysisCommand extends BaseCommand {
   }
   
   private displayResults(result: AnalysisResult): void {
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════')}`);
     console.log(chalk.bold.cyan('                    BUG ANALYSIS REPORT                     '));
     console.log(chalk.bold('═══════════════════════════════════════════════════════════\n'));
     
     // Summary
     console.log(chalk.bold('📊 Summary:'));
-    console.log(chalk.gray('├─') + ` Files analyzed: ${chalk.cyan(result.analyzedFiles)}`);
-    console.log(chalk.gray('├─') + ` Total bugs found: ${chalk.yellow(result.totalBugs)}`);
-    console.log(chalk.gray('└─') + ` Scan duration: ${chalk.green(result.scanDuration + 'ms')}\n`);
+    console.log(`${chalk.gray('├─')  } Files analyzed: ${chalk.cyan(result.analyzedFiles)}`);
+    console.log(`${chalk.gray('├─')  } Total bugs found: ${chalk.yellow(result.totalBugs)}`);
+    console.log(`${chalk.gray('└─')  } Scan duration: ${chalk.green(`${result.scanDuration  }ms`)}\n`);
     
     // Severity breakdown
     console.log(chalk.bold('🎯 Severity Breakdown:'));
@@ -641,7 +641,7 @@ export class BugAnalysisCommand extends BaseCommand {
       console.log(chalk.green('\n✅ No bugs detected! Your code looks clean.'));
     }
     
-    console.log('\n' + chalk.bold('═══════════════════════════════════════════════════════════\n'));
+    console.log(`\n${  chalk.bold('═══════════════════════════════════════════════════════════\n')}`);
   }
   
   private getSeverityColor(severity: BugReport['severity']): (text: string) => string {

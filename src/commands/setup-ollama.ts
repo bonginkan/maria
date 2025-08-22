@@ -215,7 +215,7 @@ export OLLAMA_MAX_LOADED_MODELS=3
     if (!currentContent.includes('MARIA Ollama Configuration')) {
       await fs.appendFile(rcFile, envVars);
       console.log(chalk.green(`✅ Environment variables added to ${rcFile}`));
-      console.log(chalk.yellow('ℹ️ Please restart your terminal or run: source ' + rcFile));
+      console.log(chalk.yellow(`ℹ️ Please restart your terminal or run: source ${  rcFile}`));
     } else {
       console.log(chalk.yellow('⚠️ Environment variables already configured'));
     }

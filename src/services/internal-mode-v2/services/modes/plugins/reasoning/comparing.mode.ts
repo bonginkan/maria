@@ -475,15 +475,15 @@ export default class ComparingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('technology') || inputLower.includes('tool'))
-      return 'technology_comparison';
+      {return 'technology_comparison';}
     if (inputLower.includes('approach') || inputLower.includes('method'))
-      return 'methodology_comparison';
+      {return 'methodology_comparison';}
     if (inputLower.includes('solution') || inputLower.includes('option'))
-      return 'solution_comparison';
+      {return 'solution_comparison';}
     if (inputLower.includes('product') || inputLower.includes('service'))
-      return 'product_comparison';
+      {return 'product_comparison';}
     if (inputLower.includes('framework') || inputLower.includes('library'))
-      return 'framework_comparison';
+      {return 'framework_comparison';}
 
     return 'general_comparison';
   }
@@ -491,10 +491,10 @@ export default class ComparingMode extends BaseMode {
   private extractComparisonPurpose(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('choose') || inputLower.includes('select')) return 'decision_making';
-    if (inputLower.includes('understand') || inputLower.includes('learn')) return 'understanding';
-    if (inputLower.includes('evaluate') || inputLower.includes('assess')) return 'evaluation';
-    if (inputLower.includes('recommend')) return 'recommendation';
+    if (inputLower.includes('choose') || inputLower.includes('select')) {return 'decision_making';}
+    if (inputLower.includes('understand') || inputLower.includes('learn')) {return 'understanding';}
+    if (inputLower.includes('evaluate') || inputLower.includes('assess')) {return 'evaluation';}
+    if (inputLower.includes('recommend')) {return 'recommendation';}
 
     return 'analysis';
   }
@@ -503,13 +503,13 @@ export default class ComparingMode extends BaseMode {
     const inputLower = input.toLowerCase();
 
     if (inputLower.includes('project') || inputLower.includes('development'))
-      return 'projectcontext';
+      {return 'projectcontext';}
     if (inputLower.includes('business') || inputLower.includes('commercial'))
-      return 'businesscontext';
+      {return 'businesscontext';}
     if (inputLower.includes('academic') || inputLower.includes('research'))
-      return 'academiccontext';
+      {return 'academiccontext';}
     if (inputLower.includes('personal') || inputLower.includes('individual'))
-      return 'personalcontext';
+      {return 'personalcontext';}
 
     return 'generalcontext';
   }
@@ -518,12 +518,12 @@ export default class ComparingMode extends BaseMode {
     const criteria: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('performance')) criteria.push('performance');
-    if (inputLower.includes('cost') || inputLower.includes('price')) criteria.push('cost');
-    if (inputLower.includes('ease') || inputLower.includes('simple')) criteria.push('ease_of_use');
-    if (inputLower.includes('feature')) criteria.push('features');
-    if (inputLower.includes('security')) criteria.push('security');
-    if (inputLower.includes('scalability')) criteria.push('scalability');
+    if (inputLower.includes('performance')) {criteria.push('performance');}
+    if (inputLower.includes('cost') || inputLower.includes('price')) {criteria.push('cost');}
+    if (inputLower.includes('ease') || inputLower.includes('simple')) {criteria.push('ease_of_use');}
+    if (inputLower.includes('feature')) {criteria.push('features');}
+    if (inputLower.includes('security')) {criteria.push('security');}
+    if (inputLower.includes('scalability')) {criteria.push('scalability');}
 
     return criteria.length > 0 ? criteria : ['functionality', 'quality', 'suitability'];
   }
@@ -531,8 +531,8 @@ export default class ComparingMode extends BaseMode {
   private determineComparisonDepth(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('deep') || inputLower.includes('detailed')) return 'comprehensive';
-    if (inputLower.includes('quick') || inputLower.includes('brief')) return 'overview';
+    if (inputLower.includes('deep') || inputLower.includes('detailed')) {return 'comprehensive';}
+    if (inputLower.includes('quick') || inputLower.includes('brief')) {return 'overview';}
 
     return 'standard';
   }
@@ -540,9 +540,9 @@ export default class ComparingMode extends BaseMode {
   private identifyPerspective(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('technical')) return 'technical';
-    if (inputLower.includes('business')) return 'business';
-    if (inputLower.includes('user')) return 'user_centric';
+    if (inputLower.includes('technical')) {return 'technical';}
+    if (inputLower.includes('business')) {return 'business';}
+    if (inputLower.includes('user')) {return 'user_centric';}
 
     return 'balanced';
   }
@@ -551,9 +551,9 @@ export default class ComparingMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('budget')) constraints.push('budget_constraint');
-    if (inputLower.includes('time')) constraints.push('time_constraint');
-    if (inputLower.includes('resource')) constraints.push('resource_constraint');
+    if (inputLower.includes('budget')) {constraints.push('budget_constraint');}
+    if (inputLower.includes('time')) {constraints.push('time_constraint');}
+    if (inputLower.includes('resource')) {constraints.push('resource_constraint');}
 
     return constraints;
   }

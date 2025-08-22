@@ -6,16 +6,16 @@
 import { EventEmitter } from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  ApprovalAction,
+  ApprovalAuditEntry,
+  ApprovalEngineConfig,
   ApprovalRequest,
   ApprovalResponse,
-  TaskContext,
   ApprovalTheme,
-  ApprovalEngineConfig,
-  TrustLevel,
-  ApprovalAction,
-  RiskLevel,
   ProposedAction,
-  ApprovalAuditEntry,
+  RiskLevel,
+  TaskContext,
+  TrustLevel,
   TrustSettings,
   UserPattern,
   // ApprovalEvents, // Currently unused
@@ -83,7 +83,7 @@ export class ApprovalEngine extends EventEmitter {
         this.canAutoApprove(riskAssessment.overallRisk, context.userTrustLevel)
       ) {
         this.emit('auto-approval-triggered', {
-          requestId: 'auto-' + uuidv4(),
+          requestId: `auto-${  uuidv4()}`,
           reason: 'Trust level and risk assessment allow auto-approval',
         });
 
@@ -273,7 +273,7 @@ export class ApprovalEngine extends EventEmitter {
    */
   private createAutoApprovalResponse(reason: string): ApprovalResponse {
     return {
-      requestId: 'auto-' + uuidv4(),
+      requestId: `auto-${  uuidv4()}`,
       action: 'approve',
       approved: true,
       comments: reason,
@@ -287,7 +287,7 @@ export class ApprovalEngine extends EventEmitter {
    */
   private createErrorResponse(error: Error): ApprovalResponse {
     return {
-      requestId: 'error-' + uuidv4(),
+      requestId: `error-${  uuidv4()}`,
       action: 'reject',
       approved: false,
       comments: `Error: ${error.message}`,
@@ -300,7 +300,7 @@ export class ApprovalEngine extends EventEmitter {
    * Check if auto-approval is allowed
    */
   private canAutoApprove(risk: RiskLevel, trustLevel: TrustLevel): boolean {
-    if (risk === 'critical') return false;
+    if (risk === 'critical') {return false;}
 
     switch (trustLevel) {
       case TrustLevel.NOVICE:

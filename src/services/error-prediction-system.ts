@@ -3,7 +3,7 @@
  * エラー予測とリアルタイム警告システム
  */
 
-import { getStatusIcon, getMessageColor } from '../utils/color-theme';
+import { getMessageColor, getStatusIcon } from '../utils/color-theme';
 
 export interface ErrorPattern {
   id: string;
@@ -605,10 +605,10 @@ export class ErrorPredictionSystem {
   private calculateRiskLevel(
     score: number,
   ): 'safe' | 'caution' | 'warning' | 'danger' | 'critical' {
-    if (score < 2) return 'safe';
-    if (score < 4) return 'caution';
-    if (score < 6) return 'warning';
-    if (score < 8) return 'danger';
+    if (score < 2) {return 'safe';}
+    if (score < 4) {return 'caution';}
+    if (score < 6) {return 'warning';}
+    if (score < 8) {return 'danger';}
     return 'critical';
   }
 }

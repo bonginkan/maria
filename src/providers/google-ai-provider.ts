@@ -1,5 +1,5 @@
-import { GoogleGenerativeAI, GenerativeModel, Content } from '@google/generative-ai';
-import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './ai-provider.js';
+import { Content, GenerativeModel, GoogleGenerativeAI } from '@google/generative-ai';
+import { BaseAIProvider, CodeReviewResult, CompletionOptions, Message } from './ai-provider.js';
 
 export class GoogleAIProvider extends BaseAIProvider {
   readonly name = 'GoogleAI';

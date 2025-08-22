@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -162,9 +162,9 @@ export class FocusingMode extends BaseMode {
     const urgencyMatches = urgencyIndicators.filter((indicator) => input.includes(indicator));
     confidence += urgencyMatches.length * 0.08;
 
-    if (context.metadata?.requiresDeepFocus) confidence += 0.25;
-    if (context.metadata?.intensiveTask) confidence += 0.2;
-    if (context.metadata?.complexAnalysis) confidence += 0.15;
+    if (context.metadata?.requiresDeepFocus) {confidence += 0.25;}
+    if (context.metadata?.intensiveTask) {confidence += 0.2;}
+    if (context.metadata?.complexAnalysis) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -345,8 +345,8 @@ export class FocusingMode extends BaseMode {
 
     let baseDuration = 30; // minutes
 
-    if (complexityLevel === 'high') baseDuration *= 1.5;
-    if (urgencyLevel === 'high') baseDuration *= 0.8;
+    if (complexityLevel === 'high') {baseDuration *= 1.5;}
+    if (urgencyLevel === 'high') {baseDuration *= 0.8;}
 
     return baseDuration;
   }
@@ -354,9 +354,9 @@ export class FocusingMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.82;
 
-    if (results.quality.overall > 0.85) confidence += 0.1;
-    if (results.concentration.depth > 0.8) confidence += 0.05;
-    if (results.insights.depth > 0.8) confidence += 0.03;
+    if (results.quality.overall > 0.85) {confidence += 0.1;}
+    if (results.concentration.depth > 0.8) {confidence += 0.05;}
+    if (results.insights.depth > 0.8) {confidence += 0.03;}
 
     return Math.min(confidence, 1.0);
   }

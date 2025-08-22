@@ -3,7 +3,7 @@
  * Handles rate limiting for commands
  */
 
-import { IMiddleware, CommandContext, CommandResult, ISlashCommand } from '../types';
+import { CommandContext, CommandResult, IMiddleware, ISlashCommand } from '../types';
 import { logger } from '../../utils/logger';
 
 interface RateLimitEntry {

@@ -289,13 +289,13 @@ export default class ThinkingMode extends BaseMode {
   private categorizeInput(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('?')) return 'question';
+    if (inputLower.includes('?')) {return 'question';}
     if (inputLower.includes('explain') || inputLower.includes('describe'))
-      return 'explanation_request';
-    if (inputLower.includes('help') || inputLower.includes('assist')) return 'assistance_request';
+      {return 'explanation_request';}
+    if (inputLower.includes('help') || inputLower.includes('assist')) {return 'assistance_request';}
     if (inputLower.includes('what') || inputLower.includes('how') || inputLower.includes('why'))
-      return 'inquiry';
-    if (input.length > 100) return 'complex_statement';
+      {return 'inquiry';}
+    if (input.length > 100) {return 'complex_statement';}
 
     return 'general';
   }
@@ -308,9 +308,9 @@ export default class ThinkingMode extends BaseMode {
     const hasQuestions = (input.match(/\?/g) || []).length;
     const hasTechnicalTerms = this.containsTechnicalTerms(input);
 
-    if (wordCount < 5) return 'simple';
-    if (wordCount < 15 && hasQuestions <= 1 && !hasTechnicalTerms) return 'moderate';
-    if (wordCount < 30 && (hasQuestions <= 2 || hasTechnicalTerms)) return 'complex';
+    if (wordCount < 5) {return 'simple';}
+    if (wordCount < 15 && hasQuestions <= 1 && !hasTechnicalTerms) {return 'moderate';}
+    if (wordCount < 30 && (hasQuestions <= 2 || hasTechnicalTerms)) {return 'complex';}
 
     return 'very_complex';
   }

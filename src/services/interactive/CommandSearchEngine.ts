@@ -76,7 +76,7 @@ export class CommandSearchEngine extends EventEmitter {
 
     for (let i = 0; i < searchTarget.length; i++) {
       const command = searchTarget[i];
-      if (!command) continue;
+      if (!command) {continue;}
 
       // カテゴリフィルタ適用
       if (categoryFilter && command.category !== categoryFilter) {
@@ -325,15 +325,15 @@ export class CommandSearchEngine extends EventEmitter {
    * 最近使用ボーナスを計算
    */
   private calculateRecentBonus(lastUsed?: Date): number {
-    if (!lastUsed) return 0;
+    if (!lastUsed) {return 0;}
 
     const now = new Date();
     const diffHours = (now.getTime() - lastUsed.getTime()) / (1000 * 60 * 60);
 
-    if (diffHours < 1) return 10; // 1時間以内
-    if (diffHours < 24) return 8; // 1日以内
-    if (diffHours < 168) return 5; // 1週間以内
-    if (diffHours < 720) return 2; // 1ヶ月以内
+    if (diffHours < 1) {return 10;} // 1時間以内
+    if (diffHours < 24) {return 8;} // 1日以内
+    if (diffHours < 168) {return 5;} // 1週間以内
+    if (diffHours < 720) {return 2;} // 1ヶ月以内
 
     return 0;
   }
@@ -377,7 +377,7 @@ export class CommandSearchEngine extends EventEmitter {
 
     for (let i = 0; i < this.commands.length; i++) {
       const command = this.commands[i];
-      if (!command) continue;
+      if (!command) {continue;}
 
       // コマンド名をインデックスに追加
       this.addToIndex(command.name.toLowerCase(), i);
@@ -434,7 +434,7 @@ export class CommandSearchEngine extends EventEmitter {
    * 検索結果をハイライト
    */
   public highlightMatches(text: string, query: string): string {
-    if (!query) return text;
+    if (!query) {return text;}
 
     const regex = new RegExp(`(${this.escapeRegex(query)})`, 'gi');
     return text.replace(regex, '**$1**');

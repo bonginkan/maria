@@ -56,7 +56,7 @@ class Logger {
     status: 'start' | 'progress' | 'complete' | 'error',
     message?: string,
   ): void {
-    if (this.level > LogLevel.INFO) return;
+    if (this.level > LogLevel.INFO) {return;}
 
     const statusIcons = {
       start: '🚀',
@@ -80,18 +80,18 @@ class Logger {
   }
 
   table(data: Record<string, unknown>[]): void {
-    if (this.level > LogLevel.INFO) return;
+    if (this.level > LogLevel.INFO) {return;}
     console.table(data);
   }
 
   json(obj: unknown, pretty = true): void {
-    if (this.level > LogLevel.DEBUG) return;
+    if (this.level > LogLevel.DEBUG) {return;}
     console.log(chalk.magenta(`${this.prefix} [JSON]`));
     console.log(pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj));
   }
 
   divider(): void {
-    if (this.level > LogLevel.INFO) return;
+    if (this.level > LogLevel.INFO) {return;}
     console.log(chalk.magenta('─'.repeat(60)));
   }
 
@@ -103,7 +103,7 @@ class Logger {
    * プログレスバーを表示
    */
   progress(current: number, total: number, label?: string): void {
-    if (this.level > LogLevel.INFO) return;
+    if (this.level > LogLevel.INFO) {return;}
 
     const percentage = Math.round((current / total) * 100);
     const barLength = 30;

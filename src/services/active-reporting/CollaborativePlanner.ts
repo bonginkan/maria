@@ -5,11 +5,11 @@
 import { EventEmitter } from 'events';
 import chalk from 'chalk';
 import {
-  SOW,
-  Task,
   CollaborativePlan,
   DecisionPoint,
   PlanModification,
+  SOW,
+  Task,
   UserFeedback,
 } from './types';
 

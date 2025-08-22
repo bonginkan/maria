@@ -120,10 +120,10 @@ export class ActiveReporter {
    * タスクを更新
    */
   updateTask(taskId: string, updates: Partial<Task>): void {
-    if (!this.project) return;
+    if (!this.project) {return;}
 
     const task = this.project.tasks.find((t) => t.id === taskId);
-    if (!task) return;
+    if (!task) {return;}
 
     // 状態変化の追跡
     if (updates.status && updates.status !== task.status) {
@@ -165,7 +165,7 @@ export class ActiveReporter {
   errorTask(taskId: string, error: string): void {
     this.updateTask(taskId, {
       status: 'error',
-      error: error,
+      error,
       endTime: new Date(),
     });
   }
@@ -206,7 +206,7 @@ export class ActiveReporter {
    * 詳細レポートをレンダリング
    */
   private renderDetailed(): string {
-    if (!this.project) return '';
+    if (!this.project) {return '';}
 
     const output: string[] = [];
     const stats = this.calculateStats();
@@ -311,7 +311,7 @@ export class ActiveReporter {
    * コンパクトレポートをレンダリング
    */
   private renderCompact(): string {
-    if (!this.project) return '';
+    if (!this.project) {return '';}
 
     const stats = this.calculateStats();
     const activeTask = this.project.tasks.find((t) => t.status === 'in_progress');
@@ -454,7 +454,7 @@ export class ActiveReporter {
    * 自動更新を開始
    */
   private startAutoRefresh(): void {
-    if (this.refreshTimer) return;
+    if (this.refreshTimer) {return;}
 
     this.refreshTimer = setInterval(() => {
       this.notifyUpdate();

@@ -3,7 +3,7 @@
  * Handles headless ComfyUI setup, workflow execution, and model management
  */
 
-import { exec, spawn, ChildProcess } from 'child_process';
+import { ChildProcess, exec, spawn } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
 import fs from 'fs/promises';

@@ -4,7 +4,7 @@
  */
 
 import * as crypto from 'crypto';
-import { _Task, _SOW, TaskDecomposition, _DependencyGraph } from './types';
+import { _DependencyGraph, _SOW, _Task, TaskDecomposition } from './types';
 
 export class TaskDecomposer {
   private decompositionStrategies: Map<string, DecompositionStrategy>;
@@ -333,7 +333,7 @@ export class TaskDecomposer {
     const result: string[] = [];
 
     const _visit = (_nodeId: string) => {
-      if (visited.has(nodeId)) return;
+      if (visited.has(nodeId)) {return;}
       visited.add(nodeId);
 
       const _task = nodes.get(nodeId);
@@ -354,7 +354,7 @@ export class TaskDecomposer {
    */
   private calculateCriticalPath(_dependencies: DependencyGraph): string[] {
     const { _nodes, _edges, _topologicalOrder } = dependencies;
-    if (!topologicalOrder) return [];
+    if (!topologicalOrder) {return [];}
 
     const _earliestStart = new Map<string, number>();
     const _latestStart = new Map<string, number>();
@@ -363,7 +363,7 @@ export class TaskDecomposer {
     // Forward pass - calculate earliest start times
     topologicalOrder.forEach((_taskId) => {
       const _task = nodes.get(taskId);
-      if (!task) return;
+      if (!task) {return;}
 
       const _maxPrevious = 0;
       task.dependencies.forEach((_depId) => {
@@ -384,7 +384,7 @@ export class TaskDecomposer {
     // Backward pass - calculate latest start times
     [...topologicalOrder].reverse().forEach((_taskId) => {
       const _task = nodes.get(taskId);
-      if (!task) return;
+      if (!task) {return;}
 
       const _successors = edges.get(taskId) || new Set();
       if (successors.size === 0) {
@@ -417,14 +417,14 @@ export class TaskDecomposer {
   private identifyParallelizableGroups(_tasks: Task[], _dependencies: DependencyGraph): Task[][] {
     const groups: Task[][] = [];
     const { topologicalOrder } = dependencies;
-    if (!topologicalOrder) return groups;
+    if (!topologicalOrder) {return groups;}
 
     const _taskLevels = new Map<string, number>();
 
     // Assign levels based on dependencies
     topologicalOrder.forEach((_taskId) => {
       const _task = tasks.find((_t) => t.id === taskId);
-      if (!task) return;
+      if (!task) {return;}
 
       const _maxDepLevel = -1;
       task.dependencies.forEach((_depId) => {
@@ -480,12 +480,12 @@ export class TaskDecomposer {
     // Sort by priority, then by dependencies
     return tasks.sort((a, _b) => {
       // Critical tasks first
-      if (a.priority === 'critical' && b.priority !== 'critical') return -1;
-      if (b.priority === 'critical' && a.priority !== 'critical') return 1;
+      if (a.priority === 'critical' && b.priority !== 'critical') {return -1;}
+      if (b.priority === 'critical' && a.priority !== 'critical') {return 1;}
 
       // Then high priority
-      if (a.priority === 'high' && b.priority !== 'high') return -1;
-      if (b.priority === 'high' && a.priority !== 'high') return 1;
+      if (a.priority === 'high' && b.priority !== 'high') {return -1;}
+      if (b.priority === 'high' && a.priority !== 'high') {return 1;}
 
       // Then by number of dependencies (fewer dependencies first)
       return a.dependencies.length - b.dependencies.length;

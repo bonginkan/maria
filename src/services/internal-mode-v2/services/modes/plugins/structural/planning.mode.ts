@@ -514,13 +514,13 @@ export default class PlanningMode extends BaseMode {
   private classifyPlanningType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('project')) return 'project_planning';
+    if (inputLower.includes('project')) {return 'project_planning';}
     if (inputLower.includes('strategic') || inputLower.includes('strategy'))
-      return 'strategic_planning';
-    if (inputLower.includes('product')) return 'product_planning';
-    if (inputLower.includes('resource')) return 'resource_planning';
+      {return 'strategic_planning';}
+    if (inputLower.includes('product')) {return 'product_planning';}
+    if (inputLower.includes('resource')) {return 'resource_planning';}
     if (inputLower.includes('timeline') || inputLower.includes('schedule'))
-      return 'timeline_planning';
+      {return 'timeline_planning';}
 
     return 'general_planning';
   }
@@ -528,9 +528,9 @@ export default class PlanningMode extends BaseMode {
   private determinePlanningLevel(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('executive') || inputLower.includes('strategic')) return 'strategic';
-    if (inputLower.includes('tactical') || inputLower.includes('operational')) return 'tactical';
-    if (inputLower.includes('detailed') || inputLower.includes('specific')) return 'operational';
+    if (inputLower.includes('executive') || inputLower.includes('strategic')) {return 'strategic';}
+    if (inputLower.includes('tactical') || inputLower.includes('operational')) {return 'tactical';}
+    if (inputLower.includes('detailed') || inputLower.includes('specific')) {return 'operational';}
 
     return 'tactical';
   }
@@ -538,11 +538,11 @@ export default class PlanningMode extends BaseMode {
   private extractTimeframe(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('quarter')) return 'quarterly';
-    if (inputLower.includes('year')) return 'annual';
-    if (inputLower.includes('month')) return 'monthly';
-    if (inputLower.includes('week')) return 'weekly';
-    if (inputLower.includes('sprint')) return 'sprint';
+    if (inputLower.includes('quarter')) {return 'quarterly';}
+    if (inputLower.includes('year')) {return 'annual';}
+    if (inputLower.includes('month')) {return 'monthly';}
+    if (inputLower.includes('week')) {return 'weekly';}
+    if (inputLower.includes('sprint')) {return 'sprint';}
 
     return 'medium_term';
   }
@@ -550,11 +550,11 @@ export default class PlanningMode extends BaseMode {
   private identifyPlanningDomain(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('technical') || inputLower.includes('technology')) return 'technical';
-    if (inputLower.includes('business') || inputLower.includes('commercial')) return 'business';
-    if (inputLower.includes('marketing') || inputLower.includes('sales')) return 'marketing';
-    if (inputLower.includes('hr') || inputLower.includes('people')) return 'human_resources';
-    if (inputLower.includes('financial') || inputLower.includes('budget')) return 'financial';
+    if (inputLower.includes('technical') || inputLower.includes('technology')) {return 'technical';}
+    if (inputLower.includes('business') || inputLower.includes('commercial')) {return 'business';}
+    if (inputLower.includes('marketing') || inputLower.includes('sales')) {return 'marketing';}
+    if (inputLower.includes('hr') || inputLower.includes('people')) {return 'human_resources';}
+    if (inputLower.includes('financial') || inputLower.includes('budget')) {return 'financial';}
 
     return 'general';
   }
@@ -568,8 +568,8 @@ export default class PlanningMode extends BaseMode {
       inputLower.includes(indicator),
     ).length;
 
-    if (wordCount > 100 || complexityCount > 2) return 'high';
-    if (wordCount > 50 || complexityCount > 1) return 'medium';
+    if (wordCount > 100 || complexityCount > 2) {return 'high';}
+    if (wordCount > 50 || complexityCount > 1) {return 'medium';}
     return 'low';
   }
 
@@ -577,10 +577,10 @@ export default class PlanningMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('budget')) constraints.push('budget_constraint');
-    if (inputLower.includes('time')) constraints.push('time_constraint');
-    if (inputLower.includes('resource')) constraints.push('resource_constraint');
-    if (inputLower.includes('regulation')) constraints.push('regulatory_constraint');
+    if (inputLower.includes('budget')) {constraints.push('budget_constraint');}
+    if (inputLower.includes('time')) {constraints.push('time_constraint');}
+    if (inputLower.includes('resource')) {constraints.push('resource_constraint');}
+    if (inputLower.includes('regulation')) {constraints.push('regulatory_constraint');}
 
     return constraints;
   }
@@ -598,10 +598,10 @@ export default class PlanningMode extends BaseMode {
     const stakeholders: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('team')) stakeholders.push('project team');
-    if (inputLower.includes('customer')) stakeholders.push('customers');
-    if (inputLower.includes('management')) stakeholders.push('management');
-    if (inputLower.includes('user')) stakeholders.push('end users');
+    if (inputLower.includes('team')) {stakeholders.push('project team');}
+    if (inputLower.includes('customer')) {stakeholders.push('customers');}
+    if (inputLower.includes('management')) {stakeholders.push('management');}
+    if (inputLower.includes('user')) {stakeholders.push('end users');}
 
     return stakeholders.length > 0 ? stakeholders : ['project team'];
   }
@@ -647,9 +647,9 @@ export default class PlanningMode extends BaseMode {
   private selectStrategyType(input: string, objectives: unknown[]): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('agile') || inputLower.includes('iterative')) return 'agile';
-    if (inputLower.includes('waterfall') || inputLower.includes('sequential')) return 'waterfall';
-    if (inputLower.includes('hybrid') || inputLower.includes('mixed')) return 'hybrid';
+    if (inputLower.includes('agile') || inputLower.includes('iterative')) {return 'agile';}
+    if (inputLower.includes('waterfall') || inputLower.includes('sequential')) {return 'waterfall';}
+    if (inputLower.includes('hybrid') || inputLower.includes('mixed')) {return 'hybrid';}
 
     return objectives.length > 3 ? 'phased' : 'direct';
   }
@@ -671,8 +671,8 @@ export default class PlanningMode extends BaseMode {
     const methodologies: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('agile')) methodologies.push('Agile methodology');
-    if (inputLower.includes('lean')) methodologies.push('Lean principles');
+    if (inputLower.includes('agile')) {methodologies.push('Agile methodology');}
+    if (inputLower.includes('lean')) {methodologies.push('Lean principles');}
     methodologies.push('Best practices framework');
 
     return methodologies;

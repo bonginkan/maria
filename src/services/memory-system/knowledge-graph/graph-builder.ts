@@ -184,7 +184,7 @@ export class KnowledgeGraph extends EventEmitter {
 
   removeNode(nodeId: string): boolean {
     const node = this.nodes.get(nodeId);
-    if (!node) return false;
+    if (!node) {return false;}
 
     // Remove all relationships involving this node
     const relatedRelationships = Array.from(node.relationships.values());
@@ -231,7 +231,7 @@ export class KnowledgeGraph extends EventEmitter {
 
   updateNode(nodeId: string, updates: Partial<GraphNode>): boolean {
     const node = this.nodes.get(nodeId);
-    if (!node) return false;
+    if (!node) {return false;}
 
     Object.assign(node, updates);
     this.indexer.updateNode(node);
@@ -251,7 +251,7 @@ export class KnowledgeGraph extends EventEmitter {
     const source = this.nodes.get(sourceId);
     const target = this.nodes.get(targetId);
 
-    if (!source || !target) return null;
+    if (!source || !target) {return null;}
 
     const relationship: Relationship = {
       id: this.generateRelationshipId(sourceId, targetId, type),
@@ -296,7 +296,7 @@ export class KnowledgeGraph extends EventEmitter {
 
   removeRelationship(relationshipId: string): boolean {
     const relationship = this.relationships.get(relationshipId);
-    if (!relationship) return false;
+    if (!relationship) {return false;}
 
     const source = this.nodes.get(relationship.source);
     const target = this.nodes.get(relationship.target);
@@ -371,18 +371,18 @@ export class KnowledgeGraph extends EventEmitter {
 
     for (const neighborId of adjacentNodeIds) {
       const neighbor = this.nodes.get(neighborId);
-      if (!neighbor) continue;
+      if (!neighbor) {continue;}
 
       // Filter by relationship types if specified
       if (opts.relationshipTypes.length > 0) {
         const hasValidRelationship = Array.from(neighbor.relationships.values()).some((rel) =>
           opts.relationshipTypes.includes(rel.type),
         );
-        if (!hasValidRelationship) continue;
+        if (!hasValidRelationship) {continue;}
       }
 
       // Filter by weight threshold
-      if (neighbor.weights.semantic < opts.weightThreshold) continue;
+      if (neighbor.weights.semantic < opts.weightThreshold) {continue;}
 
       neighbors.push(neighbor);
     }
@@ -416,16 +416,16 @@ export class KnowledgeGraph extends EventEmitter {
         };
       }
 
-      if (visited.has(current.nodeId)) continue;
+      if (visited.has(current.nodeId)) {continue;}
       visited.add(current.nodeId);
 
       const neighbors = this.adjacencyList.get(current.nodeId) || new Set();
 
       for (const neighborId of neighbors) {
-        if (visited.has(neighborId)) continue;
+        if (visited.has(neighborId)) {continue;}
 
         const relationships = this.getRelationshipsBetween(current.nodeId, neighborId);
-        if (relationships.length === 0) continue;
+        if (relationships.length === 0) {continue;}
 
         const bestRelationship = relationships.reduce((best, rel) =>
           rel.strength > best.strength ? rel : best,
@@ -454,7 +454,7 @@ export class KnowledgeGraph extends EventEmitter {
       weight: number,
       depth: number,
     ) => {
-      if (depth > maxDepth) return;
+      if (depth > maxDepth) {return;}
 
       if (currentId === targetId && path.length > 1) {
         paths.push({
@@ -467,16 +467,16 @@ export class KnowledgeGraph extends EventEmitter {
         return;
       }
 
-      if (visited.has(currentId)) return;
+      if (visited.has(currentId)) {return;}
       visited.add(currentId);
 
       const neighbors = this.adjacencyList.get(currentId) || new Set();
 
       for (const neighborId of neighbors) {
-        if (path.includes(neighborId)) continue; // Avoid cycles
+        if (path.includes(neighborId)) {continue;} // Avoid cycles
 
         const rels = this.getRelationshipsBetween(currentId, neighborId);
-        if (rels.length === 0) continue;
+        if (rels.length === 0) {continue;}
 
         const bestRel = rels.reduce((best, rel) => (rel.strength > best.strength ? rel : best));
 
@@ -499,7 +499,7 @@ export class KnowledgeGraph extends EventEmitter {
 
   getNeighborhood(nodeId: string, radius: number = 2): NeighborhoodResult | null {
     const center = this.nodes.get(nodeId);
-    if (!center) return null;
+    if (!center) {return null;}
 
     const neighbors = new Map<number, GraphNode[]>();
     const relationships: Relationship[] = [];
@@ -509,11 +509,11 @@ export class KnowledgeGraph extends EventEmitter {
     while (queue.length > 0) {
       const { nodeId: currentId, distance } = queue.shift()!;
 
-      if (distance > radius || visited.has(currentId)) continue;
+      if (distance > radius || visited.has(currentId)) {continue;}
       visited.add(currentId);
 
       const node = this.nodes.get(currentId);
-      if (!node) continue;
+      if (!node) {continue;}
 
       if (!neighbors.has(distance)) {
         neighbors.set(distance, []);
@@ -709,7 +709,7 @@ export class KnowledgeGraph extends EventEmitter {
   }
 
   private calculatePathConfidence(relationships: Relationship[]): number {
-    if (relationships.length === 0) return 0;
+    if (relationships.length === 0) {return 0;}
 
     return (
       relationships.reduce((sum, rel) => sum + rel.metadata.confidence, 0) / relationships.length
@@ -761,7 +761,7 @@ export class KnowledgeGraph extends EventEmitter {
 
   private calculateDensity(): number {
     const n = this.nodes.size;
-    if (n < 2) return 0;
+    if (n < 2) {return 0;}
     return (2 * this.relationships.size) / (n * (n - 1));
   }
 
@@ -790,7 +790,7 @@ export class KnowledgeGraph extends EventEmitter {
 
     for (const [nodeId, node] of this.nodes) {
       const neighbors = Array.from(this.adjacencyList.get(nodeId) || []);
-      if (neighbors.length < 2) continue;
+      if (neighbors.length < 2) {continue;}
 
       let edgeCount = 0;
       for (let i = 0; i < neighbors.length; i++) {
@@ -974,7 +974,7 @@ class GraphClusterer {
 
     // Simple connected components clustering
     for (const [nodeId, node] of nodes) {
-      if (visited.has(nodeId)) continue;
+      if (visited.has(nodeId)) {continue;}
 
       const cluster = this.expandCluster(graph, nodeId, visited);
       if (cluster.nodes.size > 1) {
@@ -995,7 +995,7 @@ class GraphClusterer {
 
     while (queue.length > 0) {
       const nodeId = queue.shift()!;
-      if (visited.has(nodeId)) continue;
+      if (visited.has(nodeId)) {continue;}
 
       visited.add(nodeId);
       clusterNodes.add(nodeId);
@@ -1020,7 +1020,7 @@ class GraphClusterer {
   }
 
   private calculateCohesion(graph: KnowledgeGraph, nodes: Set<string>): number {
-    if (nodes.size < 2) return 1.0;
+    if (nodes.size < 2) {return 1.0;}
 
     let internalEdges = 0;
     let possibleEdges = 0;

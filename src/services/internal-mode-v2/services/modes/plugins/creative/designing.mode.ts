@@ -459,12 +459,12 @@ export default class DesigningMode extends BaseMode {
   private identifyDesignType(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('ui') || inputLower.includes('interface')) return 'user_interface';
-    if (inputLower.includes('ux') || inputLower.includes('experience')) return 'user_experience';
+    if (inputLower.includes('ui') || inputLower.includes('interface')) {return 'user_interface';}
+    if (inputLower.includes('ux') || inputLower.includes('experience')) {return 'user_experience';}
     if (inputLower.includes('system') || inputLower.includes('architecture'))
-      return 'system_architecture';
-    if (inputLower.includes('graphic') || inputLower.includes('visual')) return 'visual_design';
-    if (inputLower.includes('product') || inputLower.includes('service')) return 'product_design';
+      {return 'system_architecture';}
+    if (inputLower.includes('graphic') || inputLower.includes('visual')) {return 'visual_design';}
+    if (inputLower.includes('product') || inputLower.includes('service')) {return 'product_design';}
 
     return 'solution_design';
   }
@@ -473,10 +473,10 @@ export default class DesigningMode extends BaseMode {
     const objectives: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('user')) objectives.push('Enhance user experience');
-    if (inputLower.includes('efficient')) objectives.push('Improve efficiency');
-    if (inputLower.includes('scalable')) objectives.push('Ensure scalability');
-    if (inputLower.includes('accessible')) objectives.push('Ensure accessibility');
+    if (inputLower.includes('user')) {objectives.push('Enhance user experience');}
+    if (inputLower.includes('efficient')) {objectives.push('Improve efficiency');}
+    if (inputLower.includes('scalable')) {objectives.push('Ensure scalability');}
+    if (inputLower.includes('accessible')) {objectives.push('Ensure accessibility');}
 
     return objectives.length > 0
       ? objectives
@@ -487,10 +487,10 @@ export default class DesigningMode extends BaseMode {
     const constraints: string[] = [];
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('budget')) constraints.push('Budget limitations');
-    if (inputLower.includes('time')) constraints.push('Time constraints');
-    if (inputLower.includes('technology')) constraints.push('Technology constraints');
-    if (inputLower.includes('regulation')) constraints.push('Regulatory requirements');
+    if (inputLower.includes('budget')) {constraints.push('Budget limitations');}
+    if (inputLower.includes('time')) {constraints.push('Time constraints');}
+    if (inputLower.includes('technology')) {constraints.push('Technology constraints');}
+    if (inputLower.includes('regulation')) {constraints.push('Regulatory requirements');}
 
     return constraints;
   }
@@ -508,10 +508,10 @@ export default class DesigningMode extends BaseMode {
   private identifyTargetAudience(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('developer')) return 'developers';
-    if (inputLower.includes('business')) return 'business_users';
-    if (inputLower.includes('consumer')) return 'consumers';
-    if (inputLower.includes('admin')) return 'administrators';
+    if (inputLower.includes('developer')) {return 'developers';}
+    if (inputLower.includes('business')) {return 'business_users';}
+    if (inputLower.includes('consumer')) {return 'consumers';}
+    if (inputLower.includes('admin')) {return 'administrators';}
 
     return 'general_users';
   }
@@ -529,8 +529,8 @@ export default class DesigningMode extends BaseMode {
   private estimateDesignTimeline(input: string): string {
     const inputLower = input.toLowerCase();
 
-    if (inputLower.includes('quick') || inputLower.includes('rapid')) return '1-2 weeks';
-    if (inputLower.includes('complex') || inputLower.includes('comprehensive')) return '2-3 months';
+    if (inputLower.includes('quick') || inputLower.includes('rapid')) {return '1-2 weeks';}
+    if (inputLower.includes('complex') || inputLower.includes('comprehensive')) {return '2-3 months';}
 
     return '4-6 weeks';
   }

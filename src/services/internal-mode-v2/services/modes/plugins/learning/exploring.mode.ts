@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -153,9 +153,9 @@ export class ExploringMode extends BaseMode {
     const curiosityMatches = curiosityIndicators.filter((indicator) => input.includes(indicator));
     confidence += curiosityMatches.length * 0.08;
 
-    if (context.metadata?.requiresExploration) confidence += 0.25;
-    if (context.metadata?.unknownTerritory) confidence += 0.2;
-    if (context.metadata?.discoveryOpportunity) confidence += 0.15;
+    if (context.metadata?.requiresExploration) {confidence += 0.25;}
+    if (context.metadata?.unknownTerritory) {confidence += 0.2;}
+    if (context.metadata?.discoveryOpportunity) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -307,8 +307,8 @@ export class ExploringMode extends BaseMode {
 
   private determineExplorationScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 150) return 'comprehensive';
-    if (wordCount > 75) return 'moderate';
+    if (wordCount > 150) {return 'comprehensive';}
+    if (wordCount > 75) {return 'moderate';}
     return 'focused';
   }
 
@@ -330,9 +330,9 @@ export class ExploringMode extends BaseMode {
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.72;
 
-    if (results.discoveries.length > 2) confidence += 0.1;
-    if (results.insights.quality > 0.8) confidence += 0.08;
-    if (results.depth > 0.7) confidence += 0.1;
+    if (results.discoveries.length > 2) {confidence += 0.1;}
+    if (results.insights.quality > 0.8) {confidence += 0.08;}
+    if (results.depth > 0.7) {confidence += 0.1;}
 
     return Math.min(confidence, 1.0);
   }

@@ -570,7 +570,7 @@ export class AccessControlManager extends EventEmitter {
     };
 
     const permissionKey = operationMap[operation];
-    if (!permissionKey) return false;
+    if (!permissionKey) {return false;}
 
     const scopes = permissions.memory[permissionKey] || [];
     return scopes.some((scope) => scope.type === level);
@@ -1496,10 +1496,10 @@ export class AccessControlManager extends EventEmitter {
     const dataTypes: string[] = [];
 
     if (resource.path) {
-      if (resource.path.includes('/personal/')) dataTypes.push('personal');
-      if (resource.path.includes('/financial/')) dataTypes.push('financial');
-      if (resource.path.includes('/health/')) dataTypes.push('health');
-      if (resource.path.includes('/phi/')) dataTypes.push('phi');
+      if (resource.path.includes('/personal/')) {dataTypes.push('personal');}
+      if (resource.path.includes('/financial/')) {dataTypes.push('financial');}
+      if (resource.path.includes('/health/')) {dataTypes.push('health');}
+      if (resource.path.includes('/phi/')) {dataTypes.push('phi');}
     }
 
     return dataTypes;
@@ -1582,8 +1582,8 @@ export class AccessControlManager extends EventEmitter {
     const user = this.users.get(userId);
     const role = this.roles.get(roleId);
 
-    if (!user) throw new Error(`User not found: ${userId}`);
-    if (!role) throw new Error(`Role not found: ${roleId}`);
+    if (!user) {throw new Error(`User not found: ${userId}`);}
+    if (!role) {throw new Error(`Role not found: ${roleId}`);}
 
     if (!user.roles.some((r) => r.id === roleId)) {
       user.roles.push(role);
@@ -1598,7 +1598,7 @@ export class AccessControlManager extends EventEmitter {
   async revokeRole(userId: string, roleId: string): Promise<void> {
     const user = this.users.get(userId);
 
-    if (!user) throw new Error(`User not found: ${userId}`);
+    if (!user) {throw new Error(`User not found: ${userId}`);}
 
     user.roles = user.roles.filter((r) => r.id !== roleId);
 

@@ -5,7 +5,7 @@
  * authentication, security, deployment, and data portability
  */
 
-import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { EnterpriseAuditLogger } from '../enterprise-audit-logger';
 import { DataGovernanceEngine } from '../data-governance-engine';
 import { EnterpriseAuthManager } from '../enterprise-auth-manager';
@@ -1191,7 +1191,7 @@ describe('Phase 4: Enterprise Integration Tests', () => {
       });
 
       // Set up audit listener
-      let auditedEvents: any[] = [];
+      const auditedEvents: any[] = [];
       authManager.on('authenticationAttempt', (event) => {
         auditedEvents.push(event);
       });

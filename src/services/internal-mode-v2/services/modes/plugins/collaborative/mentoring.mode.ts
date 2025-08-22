@@ -1,5 +1,5 @@
 import { BaseMode } from '../base/BaseMode';
-import { ModeContext, ModeResult, ModeConfig } from '../types/ModeTypes';
+import { ModeConfig, ModeContext, ModeResult } from '../types/ModeTypes';
 import { EventEmitter } from 'events';
 
 /**
@@ -159,9 +159,9 @@ export class MentoringMode extends BaseMode {
     const questionMatches = questionIndicators.filter((indicator) => input.includes(indicator));
     confidence += questionMatches.length * 0.08;
 
-    if (context.metadata?.requiresMentoring) confidence += 0.25;
-    if (context.metadata?.learningGoal) confidence += 0.2;
-    if (context.metadata?.skillDevelopment) confidence += 0.15;
+    if (context.metadata?.requiresMentoring) {confidence += 0.25;}
+    if (context.metadata?.learningGoal) {confidence += 0.2;}
+    if (context.metadata?.skillDevelopment) {confidence += 0.15;}
 
     return Math.min(confidence, 1.0);
   }
@@ -354,17 +354,17 @@ export class MentoringMode extends BaseMode {
 
   private determineMentorshipScope(context: ModeContext): string {
     const wordCount = context.input.split(/\s+/).length;
-    if (wordCount > 100) return 'comprehensive';
-    if (wordCount > 50) return 'moderate';
+    if (wordCount > 100) {return 'comprehensive';}
+    if (wordCount > 50) {return 'moderate';}
     return 'focused';
   }
 
   private calculateConfidence(context: ModeContext, results: any): number {
     let confidence = 0.75;
 
-    if (results.effectiveness > 0.8) confidence += 0.1;
-    if (results.progress.overall > 0.7) confidence += 0.08;
-    if (results.engagement.level === 'high') confidence += 0.07;
+    if (results.effectiveness > 0.8) {confidence += 0.1;}
+    if (results.progress.overall > 0.7) {confidence += 0.08;}
+    if (results.engagement.level === 'high') {confidence += 0.07;}
 
     return Math.min(confidence, 1.0);
   }
@@ -412,15 +412,15 @@ export class MentoringMode extends BaseMode {
   }
 
   private identifyLearningStyle(input: string): string {
-    if (input.includes('example') || input.includes('show')) return 'visual_demonstrative';
-    if (input.includes('practice') || input.includes('hands-on')) return 'kinesthetic_practical';
-    if (input.includes('explain') || input.includes('theory')) return 'auditory_conceptual';
+    if (input.includes('example') || input.includes('show')) {return 'visual_demonstrative';}
+    if (input.includes('practice') || input.includes('hands-on')) {return 'kinesthetic_practical';}
+    if (input.includes('explain') || input.includes('theory')) {return 'auditory_conceptual';}
     return 'adaptive_multimodal';
   }
 
   private assessMotivation(input: string): string {
-    if (input.includes('need') || input.includes('important')) return 'high';
-    if (input.includes('curious') || input.includes('interested')) return 'medium';
+    if (input.includes('need') || input.includes('important')) {return 'high';}
+    if (input.includes('curious') || input.includes('interested')) {return 'medium';}
     return 'assessment_needed';
   }
 
