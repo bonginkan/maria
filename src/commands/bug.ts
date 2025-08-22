@@ -10,6 +10,8 @@ import * as path from 'path';
 import { execSync } from 'child_process';
 import prompts from 'prompts';
 import { logger } from '../utils/logger.js';
+import { DualMemoryEngine } from '../services/memory-system/dual-memory-engine.js';
+import { MemoryCoordinator } from '../services/memory-system/memory-coordinator.js';
 
 export const bugCommand = new Command('bug')
   .description('AI-powered bug detection and fixing')
@@ -100,14 +102,51 @@ interface Bug {
   autoFix?: () => Promise<void>;
 }
 
+// Initialize memory system (singleton pattern)
+let memoryEngine: DualMemoryEngine | null = null;
+let memoryCoordinator: MemoryCoordinator | null = null;
+
+async function initializeMemory() {
+  if (!memoryEngine) {
+    try {
+      memoryEngine = new DualMemoryEngine();
+      memoryCoordinator = new MemoryCoordinator(memoryEngine);
+      await memoryEngine.initialize();
+    } catch (error) {
+      logger.warn('Memory system not available for bug command');
+    }
+  }
+  return { memoryEngine, memoryCoordinator };
+}
+
 async function analyzeFile(filePath: string): Promise<Bug[]> {
   const bugs: Bug[] = [];
+
+  // Initialize memory system
+  const { memoryEngine } = await initializeMemory();
 
   try {
     const absolutePath = path.resolve(filePath);
     const content = await fs.readFile(absolutePath, 'utf8');
     const ext = path.extname(filePath);
     const lines = content.split('\n');
+
+    // Check memory for previous bug patterns in similar files
+    if (memoryEngine) {
+      try {
+        const previousBugs = await memoryEngine.recall({
+          query: `bug patterns for ${ext} files`,
+          type: 'bug_analysis',
+          limit: 5,
+        });
+
+        if (previousBugs.length > 0) {
+          logger.debug(`Found ${previousBugs.length} previous bug patterns in memory`);
+        }
+      } catch (error) {
+        logger.debug('Memory recall failed:', error);
+      }
+    }
 
     // JavaScript/TypeScript specific bugs
     if (['.js', '.jsx', '.ts', '.tsx'].includes(ext)) {
@@ -266,14 +305,36 @@ function analyzeError(errorMessage: string): Bug[] {
   for (const { pattern, type, severity, getMessage, suggestion } of patterns) {
     const match = errorMessage.match(pattern);
     if (match) {
-      bugs.push({
+      const bug = {
         severity,
         type,
         message: getMessage(match),
         description: errorMessage,
         suggestion,
         autoFixAvailable: false,
-      });
+      };
+      bugs.push(bug);
+
+      // Store bug pattern in memory for future reference
+      const { memoryEngine } = await initializeMemory();
+      if (memoryEngine) {
+        try {
+          await memoryEngine.store({
+            type: 'bug_pattern',
+            pattern: type,
+            severity,
+            message: bug.message,
+            suggestion,
+            timestamp: new Date(),
+            context: {
+              errorMessage,
+              detectedBy: 'error_analysis',
+            },
+          });
+        } catch (error) {
+          logger.debug('Failed to store bug in memory:', error);
+        }
+      }
     }
   }
 

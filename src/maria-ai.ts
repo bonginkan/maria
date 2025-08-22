@@ -8,6 +8,8 @@ import { AIProviderManager } from './providers/manager';
 import { IntelligentRouter } from './services/intelligent-router';
 import { HealthMonitor } from './services/health-monitor';
 import { ConfigManager } from './config/config-manager';
+import { DualMemoryEngine } from './services/memory-system/dual-memory-engine';
+import { MemoryCoordinator } from './services/memory-system/memory-coordinator';
 
 export interface MariaAIConfig {
   priority?: 'privacy-first' | 'performance' | 'cost-effective' | 'auto';
@@ -27,6 +29,8 @@ export class MariaAI {
   private router: IntelligentRouter;
   private healthMonitor: HealthMonitor;
   private config: ConfigManager;
+  private memoryEngine: DualMemoryEngine | null = null;
+  private memoryCoordinator: MemoryCoordinator | null = null;
   private isInitialized: boolean = false;
 
   constructor(config: MariaAIConfig = {}) {
@@ -38,6 +42,12 @@ export class MariaAI {
     if (config.autoStart !== false) {
       this.initialize();
     }
+  }
+
+  // Memory system setter for interactive session
+  setMemorySystem(memoryEngine: DualMemoryEngine, memoryCoordinator: MemoryCoordinator): void {
+    this.memoryEngine = memoryEngine;
+    this.memoryCoordinator = memoryCoordinator;
   }
 
   async initialize(): Promise<void> {
@@ -92,10 +102,46 @@ export class MariaAI {
   }
 
   /**
-   * Generate code
+   * Generate code with memory context
    */
   async generateCode(prompt: string, language?: string): Promise<AIResponse> {
-    return this.router.routeCode(prompt, language);
+    // Enhance prompt with memory context if available
+    let enhancedPrompt = prompt;
+
+    if (this.memoryEngine && this.memoryCoordinator) {
+      try {
+        // Get relevant code patterns and user preferences from memory
+        const context = await this.memoryEngine.getContext({
+          query: prompt,
+          type: 'code_generation',
+          language: language,
+        });
+
+        if (context.codePatterns?.length > 0) {
+          enhancedPrompt = `${prompt}\n\nContext from memory:\n`;
+          enhancedPrompt += `Previous patterns: ${context.codePatterns
+            .slice(0, 3)
+            .map((p) => p.pattern)
+            .join(', ')}\n`;
+        }
+
+        if (context.userPreferences) {
+          enhancedPrompt += `User preferences: ${JSON.stringify(context.userPreferences)}\n`;
+        }
+
+        // Store the interaction in memory for future reference
+        await this.memoryEngine.storeInteraction({
+          type: 'code_generation',
+          input: prompt,
+          language: language,
+          timestamp: new Date(),
+        });
+      } catch (error) {
+        console.warn('Memory context enhancement failed:', error);
+      }
+    }
+
+    return this.router.routeCode(enhancedPrompt, language);
   }
 
   /**

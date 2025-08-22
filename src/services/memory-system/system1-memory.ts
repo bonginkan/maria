@@ -606,7 +606,8 @@ export class System1MemoryManager implements System1Memory {
         .slice(i + 1)
         .filter(
           (p) =>
-            p && !processed.has(p.id) &&
+            p &&
+            !processed.has(p.id) &&
             p.language === currentPattern.language &&
             this.calculatePatternSimilarity(currentPattern, p) > 0.8,
         );

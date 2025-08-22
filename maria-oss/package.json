@@ -1,7 +1,7 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.8.2",
-  "description": "Enterprise-Grade AI Development Platform - Intelligent CLI with Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, Vector-based Code Search, and Comprehensive Quality Analysis",
+  "version": "1.8.6",
+  "description": "Enterprise AI Platform with Revolutionary Dual-Layer Memory System - Intelligent CLI with Context-Aware Learning, Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, and Personalized Development Experience",
   "keywords": [
     "ai",
     "cli",
@@ -97,7 +97,6 @@
     "@google/generative-ai": "^0.1.0",
     "@langchain/core": "^0.1.0",
     "@sindresorhus/slugify": "^2.2.1",
-    "@types/glob": "^9.0.0",
     "axios": "^1.11.0",
     "chalk": "^5.3.0",
     "cli-progress": "^3.12.0",
@@ -163,6 +162,10 @@
     "tsup": "^8.0.1",
     "typescript": "5.3.3",
     "vitest": "^1.2.0"
+  },
+  "overrides": {
+    "chalk": "^5.3.0",
+    "lodash.isequal": "npm:lodash.isEqual@^4.5.0"
   },
   "publishConfig": {
     "access": "public",
