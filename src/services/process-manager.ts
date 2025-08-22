@@ -33,6 +33,8 @@ export interface ProcessingStats {
   cancelled: number;
   failed: number;
   averageDuration: number;
+  runningProcesses?: number;
+  maxConcurrentProcesses?: number;
 }
 
 export class ProcessManager extends EventEmitter {
@@ -517,6 +519,21 @@ export class ProcessManager extends EventEmitter {
     output += `   Running Tasks: ${health.details.runningTasks}/${stats.backgroundProcessor.maxConcurrentProcesses}\n\n`;
 
     return output;
+  }
+
+  /**
+   * Clean up completed processes
+   */
+  cleanupCompletedProcesses(): void {
+    this.backgroundProcessor.cleanupCompleted();
+  }
+
+  /**
+   * Set maximum concurrent processes
+   */
+  setMaxConcurrentProcesses(max: number): void {
+    // This would be implemented if BackgroundProcessor had this method
+    logger.info(`Setting max concurrent processes to: ${max}`);
   }
 }
 

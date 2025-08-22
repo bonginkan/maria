@@ -1,18 +1,34 @@
-# MARIA Platform v1.3.0 "Cognitive Revolution" - AI Development CLI
+# 🤖 MARIA Platform v1.6.4 "Algorithm Education Revolution"
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
-[![npm](https://img.shields.io/npm/v/@bonginkan/maria?label=npm%20package)](https://www.npmjs.com/package/@bonginkan/maria)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
+[![npm](https://img.shields.io/npm/v/@bonginkan/maria?label=npm%20package)](https://www.npmjs.com/package/@bonginkan/maria)
+[![Downloads](https://img.shields.io/npm/dt/@bonginkan/maria)](https://www.npmjs.com/package/@bonginkan/maria)
+[![License](https://img.shields.io/npm/l/@bonginkan/maria)](https://github.com/bonginkan/maria/blob/main/LICENSE)
 [![Quality](https://img.shields.io/badge/Code%20Quality-100%25-brightgreen)](https://github.com/bonginkan/maria)
 [![Cognitive Modes](https://img.shields.io/badge/Cognitive%20Modes-50-purple)](https://github.com/bonginkan/maria)
 
-**MARIA Platform v1.3.0 "Cognitive Revolution"** introduces the world's first **Internal Mode System** - a revolutionary cognitive adaptation framework featuring 50 specialized AI thinking modes that automatically adapt to your context and needs. This breakthrough transforms static AI interactions into dynamic, context-aware cognitive partnerships.
+> 🎉 **MARIA Platform v1.6.4 "Algorithm Education Revolution"** - Interactive AI Development CLI with Complete CS Curriculum, 36+ Slash Commands, 50 Cognitive AI Modes, and Educational Development Platform featuring the world's first **Internal Mode System**!
 
-> 🧠 **v1.3.0 Released** - `npm install -g @bonginkan/maria` - **Phase 7 Complete: Revolutionary Internal Mode System + 124-Character Responsive Design Framework**
+## 🌟 What's New in v1.6.4 "Algorithm Education Revolution"
 
-## 🌟 Revolutionary Features
+### 🚀 Autonomous Coding Agent
 
-### 🧠 NEW: Internal Mode System - Cognitive Adaptation Engine
+- **World's First Fully Autonomous Professional Engineering AI**
+- Complete software solutions from high-level requirements
+- Visual progress tracking with real-time feedback
+- Self-evolution learning engine
+- 120+ professional engineering modes
+
+### 📚 Algorithm Education Platform
+
+- Interactive QuickSort implementation with visualization
+- Performance analysis and benchmarking tools
+- Memory profiling and optimization
+- Computer science curriculum integration
+- Educational sorting algorithms collection
+
+### 🧠 Internal Mode System - Cognitive Adaptation Engine
 
 - **50 Cognitive Modes**: Revolutionary thinking states across 9 categories (Reasoning, Creative, Analytical, etc.)
 - **Real-time Recognition**: <200ms automatic mode switching based on context and intent
@@ -24,6 +40,14 @@
 "Give me ideas" → ✽ 💡 Brainstorming…
 "Optimize this" → ✽ ⚡ Optimizing…
 ```
+
+### 🎯 Key Features
+
+- **Interactive Learning**: Hands-on algorithm education with visualization
+- **Performance Analysis**: Real-time performance metrics and optimization
+- **Professional Engineering**: Industry-standard development practices
+- **Visual Progress**: Beautiful CLI interface with progress tracking
+- **Autonomous Execution**: Complete task automation from requirements
 
 ### 🤖 Intelligent Router - Natural Language Command System
 
@@ -104,9 +128,15 @@
 
 ## Quick Start
 
+### Installation
+
 ```bash
-# Install globally
+# Install globally via npm
 npm install -g @bonginkan/maria
+
+# Verify installation
+maria --version
+# Output: MARIA Platform v1.6.4 "Algorithm Education Revolution"
 
 # Setup local AI models (optional)
 maria setup-ollama    # Install and configure Ollama
@@ -139,257 +169,186 @@ You: "研究論文を実装して"      # → Triggers /paper for paper-to-code
 /help     # Full command reference
 ```
 
-## Architecture
-
-### 🎨 CLI Design System - 124-Character Responsive Framework
-
-Based on our comprehensive [CLI Design Optimization SOW](./docs/03-sow/CLI_DESIGN_CHALK_OPTIMIZATION_SOW.md), MARIA features revolutionary terminal UI design:
-
-#### **🖥️ 124-Character Responsive Design**
-
-- **Optimal Width**: 124 characters as base standard with dynamic adaptation
-- **Responsive Range**: 80-200 character terminal support
-- **Layout System**: 2-column layouts (80:36 ratio) with 4-character gaps
-- **Perfect Centering**: All logos and content mathematically centered
-
-#### **🎨 Unified Color System (7-Color Palette)**
-
-```typescript
-const UNIFIED_COLORS = {
-  PRIMARY: chalk.cyan, // Primary interface elements
-  SUCCESS: chalk.green, // Success states and confirmations
-  WARNING: chalk.yellow, // Warnings and alerts
-  ERROR: chalk.red, // Error states
-  INFO: chalk.blue, // Information display
-  MUTED: chalk.gray, // Secondary text and borders
-  ACCENT: chalk.magenta, // Brand accents and highlights
-};
-```
-
-#### **🔤 Minimal Icon System (6 Core Symbols)**
-
-- `✓` Success • `✗` Error • `!` Warning • `i` Info • `⠋` Loading • `→` Arrow
-- **No Emoji Policy**: Terminal compatibility across all systems
-- **Unicode Safe**: Consistent display across different terminal environments
-
-#### **📐 Layout Constants & Responsive Design**
-
-```typescript
-const DESIGN_CONSTANTS = {
-  SCREEN_WIDTH: 124, // Base design width
-  CONTENT_WIDTH: 120, // Content area (2-char margin)
-  BORDER_WIDTH: 118, // Inner border width
-  MAIN_CONTENT: 80, // Primary content column
-  SIDEBAR: 36, // Secondary content (45% ratio)
-  STATUS_BAR: 120, // Status bar width
-};
-```
-
-### 🏗️ Revolutionary Platform Components
-
-- **Intelligent Router**: `src/services/intelligent-router/` - 5-language natural language understanding
-- **Internal Mode System**: 50 cognitive states (✽ Thinking…, ✽ Debugging…, ✽ Optimizing…)
-- **Multi-Agent Orchestrator**: Coordinated specialized agents for complex tasks
-- **DeepCode Integration**: Paper-to-code transformation with 8-agent architecture
-- **CodeRAG System**: Semantic code search with graph-based dependency analysis
-- **MCP Protocol**: Standardized tool-agent communication framework
-- **124-Character UI Framework**: Responsive terminal design with unified color system
-
-### 🤖 Advanced Command Systems
-
-- **Phase 2 Commands**: `/paper`, `/slide`, `/vibe`, `/mode`, `/agentic` (autonomous development)
-- **Quality Analysis**: `/bug`, `/lint`, `/typecheck`, `/security-review` (enterprise-grade)
-- **Interactive Session**: `src/services/interactive-session.ts` - 30+ commands with real-time interrupts
-- **Google Workspace**: Direct integration for Docs, Slides, and Drive export
-
-### 🧠 Intelligence Infrastructure
-
-- **Adaptive Learning**: Cross-session knowledge transfer and user pattern optimization
-- **Context Preservation**: Deep semantic compression with knowledge graph construction
-- **Predictive Analytics**: ML-powered intent prediction and workflow optimization
-- **Real-time Processing**: <200ms response with interrupt handling and streaming
-
-### 💻 Core Technologies
-
-- **TypeScript 5.0+** with zero-error policy and comprehensive type coverage
-- **Multi-AI Integration**: 22+ models (OpenAI, Anthropic, Google, xAI, Groq, LM Studio, Ollama, vLLM)
-- **Local AI Support**: Native integration with LM Studio, Ollama, and vLLM for private deployments
-- **Enterprise Standards**: OWASP compliance, security vulnerability assessment
-- **Natural Language Processing**: Intent recognition with 95%+ accuracy across 5 languages
-
-## Development
-
-### Build & Quality
+### Alternative Installation Methods
 
 ```bash
-# Development workflow
-pnpm build              # Build CLI using tsup
-pnpm dev                # Watch mode development
-pnpm clean              # Remove dist/ directory
+# Using yarn
+yarn global add @bonginkan/maria
 
-# Quality assurance (ZERO errors/warnings policy)
-pnpm lint --max-warnings 0    # ESLint with zero warnings enforced
-pnpm type-check               # TypeScript type checking
-pnpm test                     # Run test suite
-pnpm test:coverage           # Tests with coverage
-
-# Local testing
-npm link                     # Global CLI installation
-maria --version             # Test CLI functionality
-maria                        # Interactive mode
+# Using pnpm
+pnpm add -g @bonginkan/maria
 ```
 
-### Environment Setup
+## 🎯 Usage Examples
+
+### Basic Interactive Mode
 
 ```bash
-# AI Provider APIs
-OPENAI_API_KEY=sk-...
-ANTHROPIC_API_KEY=sk-ant-...
-GOOGLE_AI_API_KEY=AIza...
-GROQ_API_KEY=gsk_...
+# Start MARIA interactive CLI
+maria
 
-# Local Models (integrated support)
-LMSTUDIO_API_URL=http://localhost:1234
-OLLAMA_API_URL=http://localhost:11434
-VLLM_API_URL=http://localhost:8000
+# Available commands in interactive mode:
+> /help                          # Show all commands
+> /agent execute "create API"    # Autonomous coding agent
+> /agent demo                   # Demo autonomous capabilities
+> /code "hello world function"  # AI code generation
+> /status                       # System status
+> /exit                         # Exit
 ```
 
-### Code Quality Standards
-
-All code must pass these checks before committing:
+### Algorithm Education Commands
 
 ```bash
-pnpm lint --max-warnings 0 && pnpm type-check && pnpm test && pnpm build
+# Start MARIA and use algorithm education slash commands
+maria
+> /sort quicksort --visualize     # Interactive sorting visualization
+> /learn algorithms               # Complete CS curriculum
+> /benchmark sorting              # Performance analysis
+> /algorithm complexity           # Big O notation tutorials
+> /code "merge sort implementation" # AI-generated algorithms
 ```
 
-**Zero-Error Policy**:
-
-- ESLint errors: 0 (blocking)
-- ESLint warnings: 0 (blocking)
-- TypeScript errors: 0 (blocking)
-- Failed tests: 0 (blocking)
-- Build failures: 0 (blocking)
-
-## Project Structure
-
-```
-src/
-├── cli.ts                    # Main CLI entry point
-├── commands/                 # Individual CLI commands
-├── services/
-│   ├── interactive-session.ts     # Interactive mode handler
-│   ├── intelligent-router/        # Natural language processing
-│   ├── adaptive-learning-engine.ts
-│   ├── enhanced-context-preservation.ts
-│   ├── automated-code-quality.ts
-│   └── ...
-├── providers/               # AI model integrations
-├── components/             # React components for UI
-└── types/                  # TypeScript definitions
-
-dist/                       # Compiled output
-bin/maria                   # Executable CLI
-maria-oss/                  # OSS distribution package
-```
-
-## Contributing
-
-### Adding Commands
-
-1. Create `src/commands/new-command.ts` following existing patterns
-2. Register in CLI setup
-3. Add slash command handler in `interactive-session.ts`
-4. Update help text and documentation
-5. Ensure zero-error policy compliance
-
-### Testing Protocol
+### 36+ Interactive Slash Commands
 
 ```bash
-# Build and test locally
-pnpm build && npm link
-
-# Verify core functionality
-maria --version              # Should show current version
-maria status                # System health check
-maria                       # Interactive mode
-
-# Test commands in interactive mode
-/help                       # All 30+ commands
-/model                      # AI model selection
-/code "hello world function" # Code generation
-/exit                       # Clean session termination
+# All commands are slash commands within interactive mode
+maria
+> /help                          # Show all 36+ commands
+> /model                         # AI model selection
+> /sort quicksort               # Algorithm education
+> /code "function"              # AI code generation
+> /bug analyze                  # Bug detection
+> /lint check                   # Code quality
+> /status                       # System status
+> /mode internal                # 50 cognitive AI modes
+> /exit                         # Exit MARIA
 ```
 
-## 📦 Distribution & Licensing
+## 🎨 Key Features
 
-### Distribution Channels
+### 🤖 Autonomous Coding Agent
 
-- **Development Repository**: `bonginkan/maria_code` (private, source code)
-- **Public Distribution**: `bonginkan/maria` (compiled binaries only)
-- **NPM Package**: `@bonginkan/maria` (v1.1.0+, compiled distribution)
+- **Complete SOW Generation**: Automatic Statement of Work creation
+- **Visual Mode Display**: Real-time progress with beautiful UI
+- **Active Reporting**: Progress tracking and status updates
+- **Self-Evolution**: Learning engine that improves over time
+- **120+ Engineering Modes**: Professional development patterns
 
-### 🏢 Dual-License Model
+### 📊 Algorithm Education Platform
 
-**MARIA Platform** operates under a dual-license structure designed to support both individual developers and enterprise customers:
+- **Interactive QuickSort**: Step-by-step algorithm visualization
+- **Performance Benchmarking**: Compare algorithm efficiency
+- **Memory Profiling**: Analyze memory usage patterns
+- **Educational Tools**: Computer science curriculum support
+- **Sorting Algorithms**: Complete collection with analysis
 
-#### 📱 Personal Use License (Free)
+### 🔧 Development Tools
 
-- **Individual Developers**: Free for personal projects, learning, and non-commercial use
-- **Open Source Projects**: Free for open-source software development
-- **Students & Academics**: Free for educational and research purposes
-- **Startups**: Free for companies under 10 employees or $1M ARR
+- **AI Code Generation**: Multi-language code creation
+- **Intelligent Assistance**: Context-aware development help
+- **Project Analysis**: Codebase understanding and insights
+- **Quality Assurance**: Automated testing and validation
+- **Version Control**: Git integration and workflow support
 
-#### 🏢 Enterprise License (Paid)
+## 🌍 Supported Platforms
 
-- **Commercial Organizations**: Required for companies over 10 employees or $1M ARR
-- **Enterprise Features**: Advanced security, compliance, priority support
-- **Custom Integrations**: Tailored implementations and dedicated support
-- **SLA Guarantees**: 99.9% uptime, <24hr response times
-
-### 🔒 Source Code Protection
-
-- **Compiled Distribution Only**: Source code (`src/`) is not distributed publicly
-- **NPM Package**: Contains only compiled JavaScript binaries and type definitions
-- **Intellectual Property**: Core algorithms and AI systems remain proprietary
-- **Security**: Closed-source model ensures enterprise-grade security and compliance
-
-### 📞 Enterprise Sales & Support
-
-- **Enterprise Licensing**: enterprise@bonginkan.ai
-- **Custom Deployments**: Custom implementations for large organizations
-- **Training & Certification**: Professional development programs
-- **24/7 Support**: Dedicated enterprise support channels
-
-Automated CI/CD handles compiled distribution, NPM publishing, and quality enforcement while protecting proprietary source code.
+- **Node.js**: 18.0.0 - 22.x
+- **Operating Systems**: macOS, Linux, Windows
+- **Terminals**: All major terminal applications
+- **Shells**: bash, zsh, fish, PowerShell
 
 ## 📚 Documentation
 
-### v1.1.0 Complete Documentation Suite
+### Command Reference
 
-- **[📋 Technical Specification](./SPEC_SHEET_v1.1.0.md)** - Complete technical specs, architecture, and Phase 6 implementation details
-- **[👨‍💻 Developer Guide](./DEVELOPER_GUIDE_v1.1.0.md)** - Comprehensive development guide with API reference, customization, and enterprise deployment
-- **[👤 User Manual](./USER_MANUAL_v1.1.0.md)** - Complete user guide with step-by-step tutorials and best practices
-- **[📖 Claude AI Instructions](./CLAUDE.md)** - Complete platform overview and development guidelines for AI assistance
+- **Interactive Mode**: `maria` (starts directly)
+- **All Commands**: `/help` within interactive mode
+- **Algorithm Education**: `/sort`, `/learn`, `/algorithm` commands
+- **AI Development**: `/code`, `/bug`, `/lint`, `/model` commands
+- **System Status**: `/status` command
 
-### Quick Access Documentation
+### Examples and Tutorials
 
-- **Getting Started**: [User Manual - Getting Started](./USER_MANUAL_v1.1.0.md#getting-started)
-- **Installation**: [User Manual - Installation Guide](./USER_MANUAL_v1.1.0.md#installation-guide)
-- **Code Quality Analysis**: [Technical Specification - Code Quality Platform](./SPEC_SHEET_v1.1.0.md#code-quality-analysis-infrastructure)
-- **API Development**: [Developer Guide - API Reference](./DEVELOPER_GUIDE_v1.1.0.md#api-reference)
-- **Enterprise Deployment**: [Developer Guide - Enterprise Deployment](./DEVELOPER_GUIDE_v1.1.0.md#enterprise-deployment)
-- **Troubleshooting**: [User Manual - Troubleshooting](./USER_MANUAL_v1.1.0.md#troubleshooting)
+- **Getting Started**: Run `maria` and type `/help`
+- **Algorithm Learning**: Use `/sort quicksort --visualize` for interactive tutorials
+- **Development Workflow**: AI-assisted coding with `/code` commands
+- **Performance Analysis**: Built-in benchmarking with `/benchmark` commands
 
-### Version Management System
+## 🔧 Configuration
+MARIA works out of the box with no configuration required. For advanced features:
 
-Starting with v1.1.0, all documentation follows semantic versioning:
+```bash
+# Start interactive mode (default)
+maria
 
-- **SPEC_SHEET_v1.1.0.md** - Current technical specifications
-- **DEVELOPER_GUIDE_v1.1.0.md** - Current developer documentation
-- **USER_MANUAL_v1.1.0.md** - Current user documentation
+# Check system status
+> /status
 
-Future versions (v1.1.1, v1.2.0, etc.) will maintain separate versioned documentation alongside existing files for complete historical reference and seamless upgrade paths.
+# Configure AI providers
+> /model  # Select from 22+ AI models (GPT, Claude, Gemini, Local LLMs)
+
+# Algorithm education
+> /sort quicksort --visualize  # Interactive learning
+```
+
+## 🤝 Contributing
+
+We welcome contributions to MARIA! Please check our [contribution guidelines](https://github.com/bonginkan/maria/blob/main/CONTRIBUTING.md).
+
+### Development Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/bonginkan/maria.git
+cd maria
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Run locally
+./bin/maria
+```
+
+## 📄 License
+
+MIT License - see [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE) for details.
+
+## 🔗 Links
+
+- **NPM Package**: [npmjs.com/package/@bonginkan/maria](https://www.npmjs.com/package/@bonginkan/maria)
+- **GitHub Repository**: [github.com/bonginkan/maria](https://github.com/bonginkan/maria)
+- **Documentation**: Available via `maria --help`
+- **Support**: [GitHub Issues](https://github.com/bonginkan/maria/issues)
+
+## 🎯 What Makes MARIA Special
+
+### Revolutionary AI Development
+
+- **First Autonomous AI**: Complete software development from requirements
+- **Visual Progress**: Beautiful CLI with real-time feedback
+- **Educational Focus**: Algorithm learning with interactive visualization
+- **Professional Quality**: Industry-standard engineering practices
+
+### Cutting-Edge Technology
+
+- **Advanced AI Integration**: Multiple AI model support
+- **Intelligent Automation**: Self-learning and adaptation
+- **Modern CLI Experience**: Beautiful, responsive interface
+- **Cross-Platform**: Works everywhere Node.js runs
+
+### Perfect for:
+
+- **Students**: Learn algorithms with interactive visualization
+- **Developers**: Accelerate development with AI assistance
+- **Teams**: Collaborative development with autonomous agents
+- **Educators**: Teach computer science with hands-on tools
 
 ---
 
-**MARIA Platform v1.1.0** establishes the new industry standard for AI-powered development tooling, combining enterprise-grade code quality analysis with the simplicity of conversational AI interaction. This release represents a fundamental shift in how developers approach code quality, security, and maintenance in modern software development.
+**Experience the Algorithm Education Revolution with MARIA Platform v1.6.4**
+
+🚀 Start your journey: `npm install -g @bonginkan/maria && maria`
+>>>>>>> release/v1.6.0

@@ -23,6 +23,8 @@ export interface ConversationContext {
   history?: ConversationHistory[];
   currentTask?: string;
   hasErrors?: boolean;
+  isUrgent?: boolean;
+  isInteractive?: boolean;
   metadata?: Record<string, unknown>;
 }
 

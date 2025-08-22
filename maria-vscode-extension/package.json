@@ -1,0 +1,271 @@
+{
+  "name": "maria-ai-assistant",
+  "displayName": "MARIA AI Assistant v1.6.0",
+  "description": "Revolutionary AI Development Platform - World's First Autonomous Coding Agent with 120+ Professional Engineering Modes, Agent Mode for Multi-file Projects, and Real-time Visual Progress",
+  "version": "1.6.0",
+  "publisher": "bonginkan",
+  "icon": "resources/icon.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Snippets",
+    "Programming Languages",
+    "Linters",
+    "Formatters"
+  ],
+  "keywords": [
+    "ai",
+    "assistant",
+    "code-generation",
+    "maria",
+    "autonomous-agent",
+    "agent-mode",
+    "professional-engineering",
+    "autonomous-coding",
+    "visual-progress",
+    "real-time-feedback",
+    "software-lifecycle",
+    "project-generation",
+    "multi-file-projects",
+    "cognitive-modes",
+    "ai-evolution",
+    "autonomous-development",
+    "development",
+    "productivity",
+    "coding-assistant",
+    "claude",
+    "gpt",
+    "gemini"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bonginkan/maria-vscode"
+  },
+  "homepage": "https://maria.bonginkan.ai",
+  "bugs": {
+    "url": "https://github.com/bonginkan/maria-vscode/issues"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "maria.generateCode",
+        "title": "Generate Code",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.executeAgent",
+        "title": "🤖 Execute Autonomous Agent",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.agentMode",
+        "title": "✨ Agent Mode - Multi-file Projects",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.analyzeBugs",
+        "title": "Analyze Bugs",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.lintAnalysis",
+        "title": "Lint Analysis",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.typeCheck",
+        "title": "Type Safety Check",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.securityReview",
+        "title": "Security Review",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.showInternalModes",
+        "title": "Show Internal Modes",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.showModels",
+        "title": "Show AI Models",
+        "category": "MARIA"
+      },
+      {
+        "command": "maria.openChat",
+        "title": "Open MARIA Chat",
+        "category": "MARIA"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "maria.chatView",
+          "name": "MARIA AI Assistant",
+          "when": "maria.enabled"
+        },
+        {
+          "id": "maria.agentView",
+          "name": "Autonomous Agent",
+          "when": "maria.enabled"
+        },
+        {
+          "id": "maria.modesView",
+          "name": "Internal Modes (120+)",
+          "when": "maria.enabled"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "maria.generateCode",
+          "when": "maria.enabled"
+        },
+        {
+          "command": "maria.executeAgent",
+          "when": "maria.enabled"
+        },
+        {
+          "command": "maria.agentMode",
+          "when": "maria.enabled"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "maria.generateCode",
+          "when": "maria.enabled",
+          "group": "maria@1"
+        },
+        {
+          "command": "maria.analyzeBugs",
+          "when": "maria.enabled",
+          "group": "maria@2"
+        },
+        {
+          "command": "maria.securityReview",
+          "when": "maria.enabled",
+          "group": "maria@3"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "maria.generateCode",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "maria.executeAgent",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "maria.openChat",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m"
+      }
+    ],
+    "configuration": {
+      "title": "MARIA AI Assistant",
+      "properties": {
+        "maria.apiKey": {
+          "type": "string",
+          "description": "MARIA API key for authentication",
+          "scope": "machine-overridable"
+        },
+        "maria.provider": {
+          "type": "string",
+          "enum": [
+            "openai",
+            "anthropic",
+            "google",
+            "groq",
+            "lmstudio",
+            "ollama",
+            "auto"
+          ],
+          "default": "auto",
+          "description": "Preferred AI provider"
+        },
+        "maria.model": {
+          "type": "string",
+          "default": "auto",
+          "description": "Preferred AI model"
+        },
+        "maria.enableDiagnostics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable real-time code diagnostics"
+        },
+        "maria.enableInternalModes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable internal mode visualization"
+        },
+        "maria.agentMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Agent Mode for multi-file projects"
+        },
+        "maria.autonomousLevel": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "assisted", 
+            "autonomous"
+          ],
+          "default": "assisted",
+          "description": "Autonomous operation level"
+        },
+        "maria.visualizationLevel": {
+          "type": "string",
+          "enum": [
+            "minimal",
+            "standard",
+            "detailed"
+          ],
+          "default": "standard",
+          "description": "Progress visualization detail level"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
+    "build:server": "esbuild src/server/server.ts --bundle --outfile=dist/server.js --external:vscode --format=cjs --platform=node",
+    "build:all": "npm run build && npm run build:server",
+    "watch": "npm run build -- --watch",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "test": "node ./dist/test/runTest.js",
+    "lint": "eslint src --ext ts",
+    "pretest": "npm run build:all"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "esbuild": "^0.19.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.11"
+  }
+}
