@@ -4,15 +4,16 @@ export default defineConfig({
   entry: ['src/index.ts', 'src/cli.ts'],
   format: ['cjs'],
   dts: true,
-  splitting: false,
-  sourcemap: false,
   clean: true,
+  sourcemap: true,
   minify: false,
+  splitting: false,
+  treeshake: true,
   target: 'node18',
-  outDir: 'dist',
-  external: [
-    // Mark all dependencies as external to avoid bundling
-    'chalk',
-    'commander'
-  ]
+  platform: 'node',
+  shims: true,
+  keepNames: true,
+  bundle: true,
+  skipNodeModulesBundle: false,
+  onSuccess: 'chmod +x dist/cli.js',
 });
