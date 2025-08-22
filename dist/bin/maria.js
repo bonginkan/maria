@@ -17802,6 +17802,7 @@ var init_package = __esm({
         "lint-staged": "^16.1.5",
         prettier: "^3.2.4",
         "react-devtools-core": "^6.1.5",
+        "ts-node": "^10.9.2",
         tsup: "^8.0.1",
         typescript: "5.3.3",
         vitest: "^1.2.0"

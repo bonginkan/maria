@@ -448,20 +448,20 @@ export class System2MemoryManager implements System2Memory {
     if (context) {
       console.log('Code quality context:', Object.keys(context));
     }
-    const cacheKey = `quality:${this.hashCode(code)}:${language}`;
+    const cacheKey = `quality:${this.hashCode(code)}:${_language}`;
     const cached = this.analysisCache.get(cacheKey) as CodeQualityMetrics;
     if (cached) {
       return cached;
     }
 
     const metrics: CodeQualityMetrics = {
-      maintainability: await this.calculateMaintainability(code, language),
-      readability: await this.calculateReadability(code, language),
-      testability: await this.calculateTestability(code, language),
-      performance: await this.calculatePerformance(code, language),
-      security: await this.calculateSecurity(code, language),
-      bugDensity: await this.calculateBugDensity(code, language),
-      complexity: await this.calculateCyclomaticComplexity(code, language),
+      maintainability: await this.calculateMaintainability(code, _language),
+      readability: await this.calculateReadability(code, _language),
+      testability: await this.calculateTestability(code, _language),
+      performance: await this.calculatePerformance(code, _language),
+      security: await this.calculateSecurity(code, _language),
+      bugDensity: await this.calculateBugDensity(code, _language),
+      complexity: await this.calculateCyclomaticComplexity(code, _language),
     };
 
     this.analysisCache.set(cacheKey, metrics);
@@ -924,9 +924,15 @@ export class System2MemoryManager implements System2Memory {
       );
 
       // Remove lowest quality traces (keep 80% of limit)
-      const removeCount = Math.floor(this.config.maxReasoningTraces * 0.2);
+      const removeCount = Math.min(
+        Math.floor(this.config.maxReasoningTraces * 0.2),
+        sortedByQuality.length
+      );
       for (let i = 0; i < removeCount; i++) {
-        this.reasoningTraces.delete(sortedByQuality[i][0]);
+        const traceEntry = sortedByQuality[i];
+        if (traceEntry) {
+          this.reasoningTraces.delete(traceEntry[0]);
+        }
       }
     }
   }
