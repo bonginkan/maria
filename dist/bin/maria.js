@@ -17643,7 +17643,7 @@ var init_package = __esm({
   "package.json"() {
     package_default = {
       name: "@bonginkan/maria",
-      version: "1.7.0",
+      version: "1.7.1",
       description: "Enterprise-Grade AI Development Platform - Intelligent CLI with Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, Vector-based Code Search, and Comprehensive Quality Analysis",
       keywords: [
         "ai",

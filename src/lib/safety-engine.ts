@@ -64,12 +64,12 @@ class SafetyEngine {
     };
   }
 
-  async validateFile(filePath: string): Promise<boolean> {
+  async validateFile(_filePath: string): Promise<boolean> {
     // Check if file modifications are safe
     return true;
   }
 
-  async createBackup(files: string[]): Promise<void> {
+  async createBackup(_files: string[]): Promise<void> {
     // Create backup of files before modification
   }
 

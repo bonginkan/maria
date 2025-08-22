@@ -1,6 +1,6 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.7.0",
+  "version": "1.8.3",
   "description": "Enterprise-Grade AI Development Platform - Intelligent CLI with Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, Vector-based Code Search, and Comprehensive Quality Analysis",
   "keywords": [
     "ai",
@@ -82,7 +82,7 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "type-check": "tsc --noEmit",
-    "prepublishOnly": "pnpm run build",
+    "prepublishOnly": "echo 'Using prebuilt dist files'",
     "release": "pnpm version patch && pnpm publish",
     "pre-commit": "lint-staged",
     "release:latest": "pnpm publish && npm dist-tag add @bonginkan/maria@$(npm pkg get version | tr -d '\"') latest",

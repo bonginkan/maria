@@ -386,7 +386,7 @@ export async function runAutoImproveStatusCommand(): Promise<void> {
 export async function runAutoImproveApprovalCommand(
   action: 'list' | 'approve' | 'reject',
   suggestionId?: string,
-  reason?: string,
+  _reason?: string,
 ): Promise<void> {
   try {
     console.log(chalk.yellow('⏳ Processing approval request...'));

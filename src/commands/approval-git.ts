@@ -37,18 +37,18 @@ interface ApprovalRevertOptions {
   noCommit?: boolean;
 }
 
-interface ApprovalTagOptions {
+interface _ApprovalTagOptions {
   delete?: string;
   force?: boolean;
   message?: string;
   list?: boolean;
 }
 
-interface ApprovalStatusOptions {
+interface _ApprovalStatusOptions {
   detailed?: boolean;
 }
 
-interface ApprovalShowOptions {
+interface _ApprovalShowOptions {
   diff?: boolean;
   tags?: boolean;
 }
@@ -355,7 +355,7 @@ async function handleApprovalRevert(
 /**
  * Handle approval tag command
  */
-async function handleApprovalTag(tagName: string, options: any): Promise<void> {
+async function handleApprovalTag(tagName: string, options: unknown): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   // Delete tag
@@ -371,7 +371,7 @@ async function handleApprovalTag(tagName: string, options: any): Promise<void> {
 
   // List tags
   if (options.list || !tagName) {
-    const config = repo.getConfig();
+    const _config = repo.getConfig();
     // Note: This would need implementation in ApprovalRepository to list tags
     console.log(chalk.blue('\n🏷️  Approval Tags:\n'));
     console.log(chalk.gray('Tag listing will be implemented in repository manager'));
@@ -397,13 +397,13 @@ async function handleApprovalTag(tagName: string, options: any): Promise<void> {
 /**
  * Handle approval status command
  */
-async function handleApprovalStatus(options: any): Promise<void> {
+async function handleApprovalStatus(options: unknown): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
   const approvalEngine = ApprovalEngine.getInstance();
 
   console.log(chalk.blue('\n📊 Approval Repository Status:\n'));
 
-  const config = repo.getConfig();
+  const _config = repo.getConfig();
   const currentBranch = repo.getCurrentBranch();
   const stats = repo.getStatistics();
   const pendingRequests = approvalEngine.getAllPendingRequests();
@@ -457,7 +457,7 @@ async function handleApprovalStatus(options: any): Promise<void> {
 /**
  * Handle approval show command
  */
-async function handleApprovalShow(commitId: string, options: any): Promise<void> {
+async function handleApprovalShow(commitId: string, options: unknown): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   let targetCommitId = commitId;

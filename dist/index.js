@@ -17709,7 +17709,7 @@ __name(handleApprovalShow, "handleApprovalShow");
 
 // package.json
 var package_default = {
-  version: "1.7.0"};
+  version: "1.7.1"};
 
 // src/cli.ts
 function createCLI() {

@@ -261,7 +261,7 @@ function analyzeDiff(diff: string, options: ReviewOptions): ReviewIssue[] {
   return issues;
 }
 
-async function analyzeFile(filePath: string, options: unknown): Promise<ReviewIssue[]> {
+async function analyzeFile(filePath: string, _options: unknown): Promise<ReviewIssue[]> {
   const issues: ReviewIssue[] = [];
 
   try {
