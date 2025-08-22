@@ -13,7 +13,7 @@ import {
   ModeRecognitionResult,
   ModeTransition,
   ModeConfig,
-  _ModeServiceEvents,
+  ModeServiceEvents,
   ModeHistoryEntry,
 } from './types';
 import { ModeDefinitionRegistry, getModeRegistry } from './ModeDefinitionRegistry';
