@@ -392,7 +392,7 @@ export class MeditatingMode extends BaseMode {
     };
   }
 
-  private assessContemplationDepth(context: ModeContext): any {
+  private assessContemplationDepth(context: ModeContext): unknown {
     return {
       initial: this.calculateInitialDepth(context),
       current: this.calculateCurrentDepth(context),
@@ -412,7 +412,7 @@ export class MeditatingMode extends BaseMode {
     return mindfulnessIndicators.filter(Boolean).length / mindfulnessIndicators.length;
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.75;
 
     if (results.insights.length > 2) confidence += 0.1;
@@ -422,11 +422,11 @@ export class MeditatingMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private assessContemplationQuality(pipeline: any): number {
+  private assessContemplationQuality(pipeline: unknown): number {
     return 0.85; // Simplified quality assessment
   }
 
-  private generateContemplativeRecommendations(pipeline: any): string[] {
+  private generateContemplativeRecommendations(pipeline: unknown): string[] {
     return [
       'Continue exploring the deeper layers of understanding',
       'Practice regular contemplative observation',
@@ -476,7 +476,7 @@ export class MeditatingMode extends BaseMode {
     return 'Core unchanging nature amidst apparent change';
   }
 
-  private generateLayerInsights(layer: any, context: ModeContext): string[] {
+  private generateLayerInsights(layer: unknown, context: ModeContext): string[] {
     return [`${layer.name} layer reveals ${layer.content}`];
   }
 
@@ -540,7 +540,7 @@ export class MeditatingMode extends BaseMode {
     return ['cognitive', 'emotional', 'intuitive', 'somatic', 'spiritual'];
   }
 
-  private exploreBoundaries(context: ModeContext): any {
+  private exploreBoundaries(context: ModeContext): unknown {
     return {
       current: 'present_understanding_limits',
       expandable: 'growth_potential_areas',
@@ -552,7 +552,7 @@ export class MeditatingMode extends BaseMode {
     return 0.75;
   }
 
-  private trackAwarenessExpansion(context: ModeContext): any {
+  private trackAwarenessExpansion(context: ModeContext): unknown {
     return {
       direction: 'deepening_and_broadening',
       rate: 'steady_progressive',
@@ -604,7 +604,7 @@ export class MeditatingMode extends BaseMode {
     ];
   }
 
-  private trackWisdomEvolution(context: ModeContext): any {
+  private trackWisdomEvolution(context: ModeContext): unknown {
     return {
       growth: 'continuous_deepening',
       integration: 'increasing_synthesis',

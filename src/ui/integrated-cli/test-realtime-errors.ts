@@ -37,7 +37,7 @@ async function testRealtimeAndErrors(): Promise<void> {
   });
 
   // 複数のタスクを並行して更新
-  const taskIds: string[] = [];
+  const _taskIds: string[] = [];
   for (let _i = 0; i < 5; i++) {
     const _taskId = reporter.addTask({
       title: `Task ${i + 1}`,
@@ -75,7 +75,7 @@ async function testRealtimeAndErrors(): Promise<void> {
   console.log('2. Concurrent Error Handling Test');
   console.log('─'.repeat(50));
 
-  const errors: string[] = [];
+  const _errors: string[] = [];
 
   // 存在しないタスクへの操作
   try {
@@ -91,7 +91,7 @@ async function testRealtimeAndErrors(): Promise<void> {
   }
 
   try {
-    breakdown.updateTask('nonexistent_task_3', { progress: 90 });
+    breakdown.updateTask('nonexistent_task_3', _{ progress: 90 });
   } catch (error) {
     errors.push('Breakdown: nonexistent task');
   }
@@ -125,7 +125,7 @@ async function testRealtimeAndErrors(): Promise<void> {
 
   // 大量のタスクを作成・削除
   for (let _cycle = 0; cycle < 10; cycle++) {
-    const tempTaskIds: string[] = [];
+    const _tempTaskIds: string[] = [];
 
     // 100個のタスクを作成
     for (let _i = 0; i < 100; i++) {
@@ -208,7 +208,7 @@ async function testRealtimeAndErrors(): Promise<void> {
     {
       name: 'Null task title',
       test: () =>
-        reporter.addTask({ title: null as any, status: 'pending', progress: 0, estimatedTime: 10 }),
+        reporter.addTask({ title: null as any, _status: 'pending', _progress: 0, _estimatedTime: 10 }),
     },
     {
       name: 'Undefined progress',
@@ -227,7 +227,7 @@ async function testRealtimeAndErrors(): Promise<void> {
     {
       name: 'Negative estimated time',
       test: () =>
-        reporter.addTask({ title: 'Test', status: 'pending', progress: 0, estimatedTime: -5 }),
+        reporter.addTask({ title: 'Test', _status: 'pending', _progress: 0, _estimatedTime: -5 }),
     },
     {
       name: 'Invalid mode',
@@ -236,7 +236,7 @@ async function testRealtimeAndErrors(): Promise<void> {
   ];
 
   const _handledCount = 0;
-  invalidInputTests.forEach(({ name, test }) => {
+  invalidInputTests.forEach(({ name, _test }) => {
     try {
       test();
       console.log(`  ⚠ ${name}: No error thrown (may be handled gracefully)`);
@@ -415,4 +415,4 @@ if (require.main === module) {
   runRealtimeErrorsTest();
 }
 
-export { testRealtimeAndErrors, runRealtimeErrorsTest };
+export { testRealtimeAndErrors, _runRealtimeErrorsTest };

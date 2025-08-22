@@ -125,7 +125,7 @@ export class ProactiveReporter extends EventEmitter {
   /**
    * Check if a report should be triggered
    */
-  public checkTriggers(event: string, _data: unknown): void {
+  public checkTriggers(_event: string, _data: unknown): void {
     if (!this.isReportingEnabled) return;
 
     for (const [_id, trigger] of this.triggers) {
@@ -140,7 +140,7 @@ export class ProactiveReporter extends EventEmitter {
   /**
    * Determine if a trigger should fire
    */
-  private shouldTriggerReport(_trigger: ReportTrigger, event: string, _data: unknown): boolean {
+  private shouldTriggerReport(_trigger: ReportTrigger, _event: string, _data: unknown): boolean {
     switch (trigger.type) {
       case 'taskevent':
         return event === 'task_completed' || event === 'task_blocked' || event === 'task_started';
@@ -361,7 +361,7 @@ export class ProactiveReporter extends EventEmitter {
    * Generate milestone-specific recommendations
    */
   private generateMilestoneRecommendations(_task: Task): Recommendation[] {
-    const recommendations: Recommendation[] = [
+    const _recommendations: Recommendation[] = [
       {
         id: 'next_task',
         title: 'Consider starting the next task in the sequence',
@@ -422,7 +422,7 @@ export class ProactiveReporter extends EventEmitter {
    * Generate progress-specific recommendations
    */
   private generateProgressRecommendations(_progressData: unknown): Recommendation[] {
-    const recommendations: Recommendation[] = [];
+    const _recommendations: Recommendation[] = [];
 
     if (progressData.overallProgress < 30) {
       recommendations.push({
@@ -509,7 +509,7 @@ export class ProactiveReporter extends EventEmitter {
   /**
    * Get report history
    */
-  public getReportHistory(limit?: number): ProactiveReport[] {
+  public getReportHistory(_limit?: number): ProactiveReport[] {
     const _reports = [...this.reportHistory].reverse(); // Most recent first
     return limit ? reports.slice(0, limit) : reports;
   }

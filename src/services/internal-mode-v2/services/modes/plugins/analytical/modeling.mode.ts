@@ -350,7 +350,7 @@ export class ModelingMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.78;
 
     if (results.accuracy > 0.85) confidence += 0.1;
@@ -360,15 +360,15 @@ export class ModelingMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private selectPrimaryTechnique(pipeline: any): string {
+  private selectPrimaryTechnique(pipeline: unknown): string {
     return pipeline.techniqueSelection[0]?.name || 'conceptual_modeling';
   }
 
-  private calculateModelAccuracy(pipeline: any): number {
+  private calculateModelAccuracy(pipeline: unknown): number {
     return 0.85;
   }
 
-  private assessModelUtility(pipeline: any): any {
+  private assessModelUtility(pipeline: unknown): unknown {
     return {
       usability: 0.8,
       maintainability: 0.82,
@@ -377,7 +377,7 @@ export class ModelingMode extends BaseMode {
     };
   }
 
-  private generateModelingRecommendations(pipeline: any): string[] {
+  private generateModelingRecommendations(pipeline: unknown): string[] {
     return [
       'Validate models with domain experts',
       'Iterate based on stakeholder feedback',
@@ -421,7 +421,7 @@ export class ModelingMode extends BaseMode {
     return ['functional_req_1', 'functional_req_2'];
   }
 
-  private extractNonFunctionalRequirements(input: string): any {
+  private extractNonFunctionalRequirements(input: string): unknown {
     return {
       performance: 'high',
       scalability: 'horizontal',
@@ -433,7 +433,7 @@ export class ModelingMode extends BaseMode {
     return ['understanding', 'communication', 'analysis', 'design'];
   }
 
-  private identifyStakeholderNeeds(input: string): any {
+  private identifyStakeholderNeeds(input: string): unknown {
     return {
       developers: 'technical_clarity',
       business: 'process_understanding',
@@ -508,14 +508,14 @@ export class ModelingMode extends BaseMode {
     return [{ name: 'physical_component_1', technology: 'tech_stack_1' }];
   }
 
-  private createDeploymentModel(context: ModeContext): any {
+  private createDeploymentModel(context: ModeContext): unknown {
     return {
       environments: ['development', 'staging', 'production'],
       deployment_strategy: 'blue_green',
     };
   }
 
-  private createInfrastructureModel(context: ModeContext): any {
+  private createInfrastructureModel(context: ModeContext): unknown {
     return {
       servers: ['web_server', 'app_server', 'db_server'],
       network: 'secure_vpc',
@@ -531,7 +531,7 @@ export class ModelingMode extends BaseMode {
     return ['generalization', 'aggregation', 'composition'];
   }
 
-  private createAbstractionHierarchies(context: ModeContext): any {
+  private createAbstractionHierarchies(context: ModeContext): unknown {
     return {
       levels: ['concrete', 'abstract', 'meta'],
       relationships: 'is_a_kind_of',
@@ -614,7 +614,7 @@ export class ModelingMode extends BaseMode {
     return ['clarity_enhancement', 'detail_addition', 'relationship_refinement'];
   }
 
-  private optimizeModels(context: ModeContext): any {
+  private optimizeModels(context: ModeContext): unknown {
     return {
       complexity_reduction: 'simplified_where_appropriate',
       clarity_improvement: 'enhanced_readability',
@@ -622,7 +622,7 @@ export class ModelingMode extends BaseMode {
     };
   }
 
-  private simplifyModels(context: ModeContext): any {
+  private simplifyModels(context: ModeContext): unknown {
     return {
       abstraction_level_adjustment: 'appropriate_detail_level',
       notation_simplification: 'clearer_symbols',
@@ -630,7 +630,7 @@ export class ModelingMode extends BaseMode {
     };
   }
 
-  private enhanceModels(context: ModeContext): any {
+  private enhanceModels(context: ModeContext): unknown {
     return {
       detail_enhancement: 'additional_relevant_details',
       relationship_clarification: 'explicit_connections',

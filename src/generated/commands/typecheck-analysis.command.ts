@@ -628,7 +628,7 @@ export class TypeCheckAnalysisCommand extends BaseCommand {
     }
   }
   
-  private isStrictModeEnabled(compilerOptions: any): boolean {
+  private isStrictModeEnabled(compilerOptions: unknown): boolean {
     return compilerOptions.strict === true ||
            (compilerOptions.noImplicitAny === true &&
             compilerOptions.strictNullChecks === true &&

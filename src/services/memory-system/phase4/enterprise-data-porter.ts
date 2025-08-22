@@ -286,7 +286,7 @@ export interface ExportOptions {
 export interface DataFilter {
   field: string;
   operator: 'eq' | 'neq' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'contains' | 'matches';
-  value: any;
+  value: Event;
   logic?: 'AND' | 'OR';
 }
 
@@ -396,7 +396,7 @@ export interface SchemaValidationResult {
 export interface SchemaError {
   field: string;
   message: string;
-  value: any;
+  value: Event;
   line?: number;
 }
 
@@ -800,13 +800,13 @@ export class EnterpriseDataPorter extends EventEmitter {
     }
   }
 
-  private async loadSourceData(source: DataSource): Promise<any[]> {
+  private async loadSourceData(source: DataSource): Promise<unknown[]> {
     // Load data from source
     // This is a simplified implementation
     return [];
   }
 
-  private applyFilters(data: any[], filters: DataFilter[]): any[] {
+  private applyFilters(data: unknown[], filters: DataFilter[]): unknown[] {
     if (filters.length === 0) return data;
 
     return data.filter((record) => {
@@ -817,7 +817,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     });
   }
 
-  private getFieldValue(record: any, field: string): any {
+  private getFieldValue(record: unknown, field: string): unknown {
     const parts = field.split('.');
     let value = record;
 
@@ -832,7 +832,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     return value;
   }
 
-  private evaluateFilter(value: any, filter: DataFilter): boolean {
+  private evaluateFilter(value: unknown, filter: DataFilter): boolean {
     switch (filter.operator) {
       case 'eq':
         return value === filter.value;
@@ -857,22 +857,22 @@ export class EnterpriseDataPorter extends EventEmitter {
     }
   }
 
-  private async validateDataQuality(data: any[]): Promise<QualityValidationResult> {
+  private async validateDataQuality(data: unknown[]): Promise<QualityValidationResult> {
     return this.validationEngine.validateQuality(data);
   }
 
   private async validateSchema(
-    data: any[],
+    data: unknown[],
     format: SupportedFormat,
   ): Promise<SchemaValidationResult> {
     return this.validationEngine.validateSchema(data, format);
   }
 
-  private async writeToDestination(data: any, destination: DataDestination): Promise<void> {
+  private async writeToDestination(data: unknown, destination: DataDestination): Promise<void> {
     console.log(`Writing data to destination: ${destination.type}:${destination.location}`);
   }
 
-  private async generateChecksums(data: any): Promise<Record<ChecksumAlgorithm, string>> {
+  private async generateChecksums(data: unknown): Promise<Record<ChecksumAlgorithm, string>> {
     const dataStr = typeof data === 'string' ? data : JSON.stringify(data);
 
     return {
@@ -906,16 +906,16 @@ export class EnterpriseDataPorter extends EventEmitter {
     };
   }
 
-  private async compressData(data: any): Promise<any> {
+  private async compressData(data: unknown): Promise<unknown> {
     // Apply compression based on configuration
     return data;
   }
 
-  private applyFieldMappings(data: any[], mappings: FieldMapping[]): any[] {
+  private applyFieldMappings(data: unknown[], mappings: FieldMapping[]): unknown[] {
     if (mappings.length === 0) return data;
 
     return data.map((record) => {
-      const mappedRecord: any = {};
+      const mappedRecord: unknown = {};
 
       for (const mapping of mappings) {
         let value = this.getFieldValue(record, mapping.source);
@@ -933,7 +933,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     });
   }
 
-  private applyTransformation(value: any, transformation: DataTransformation): any {
+  private applyTransformation(value: unknown, transformation: DataTransformation): unknown {
     switch (transformation.type) {
       case 'format':
         return this.formatValue(value, transformation.parameters);
@@ -950,22 +950,22 @@ export class EnterpriseDataPorter extends EventEmitter {
     }
   }
 
-  private formatValue(value: any, parameters: Record<string, any>): any {
+  private formatValue(value: unknown, parameters: Record<string, any>): unknown {
     // Apply formatting based on parameters
     return value;
   }
 
-  private calculateValue(value: any, parameters: Record<string, any>): any {
+  private calculateValue(value: unknown, parameters: Record<string, any>): unknown {
     // Apply calculations based on parameters
     return value;
   }
 
-  private lookupValue(value: any, parameters: Record<string, any>): any {
+  private lookupValue(value: unknown, parameters: Record<string, any>): unknown {
     // Apply lookup transformation based on parameters
     return value;
   }
 
-  private regexTransform(value: any, parameters: Record<string, any>): any {
+  private regexTransform(value: unknown, parameters: Record<string, any>): unknown {
     if (typeof value === 'string' && parameters.pattern && parameters.replacement) {
       return value.replace(
         new RegExp(parameters.pattern, parameters.flags || 'g'),
@@ -975,7 +975,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     return value;
   }
 
-  private customTransform(value: any, transformation: DataTransformation): any {
+  private customTransform(value: unknown, transformation: DataTransformation): unknown {
     // Apply custom transformation function
     if (transformation.function) {
       try {
@@ -989,7 +989,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     return value;
   }
 
-  private setFieldValue(record: any, field: string, value: any): void {
+  private setFieldValue(record: unknown, field: string, value: unknown): void {
     const parts = field.split('.');
     let current = record;
 
@@ -1004,7 +1004,7 @@ export class EnterpriseDataPorter extends EventEmitter {
   }
 
   private async validateBusinessRules(
-    data: any[],
+    data: unknown[],
     validation: ValidationRules,
   ): Promise<PorterError[]> {
     const errors: PorterError[] = [];
@@ -1027,7 +1027,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     return errors;
   }
 
-  private evaluateBusinessRule(record: any, rule: BusinessRule): boolean {
+  private evaluateBusinessRule(record: unknown, rule: BusinessRule): boolean {
     try {
       const func = new Function('record', `return ${rule.condition}`);
       return func(record);
@@ -1037,7 +1037,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     }
   }
 
-  private async processBatches(data: any[], request: ImportRequest): Promise<BatchResult[]> {
+  private async processBatches(data: unknown[], request: ImportRequest): Promise<BatchResult[]> {
     const results: BatchResult[] = [];
     const batchSize = request.options.batchSize;
 
@@ -1050,7 +1050,7 @@ export class EnterpriseDataPorter extends EventEmitter {
     return results;
   }
 
-  private async processBatch(batch: any[], request: ImportRequest): Promise<BatchResult> {
+  private async processBatch(batch: unknown[], request: ImportRequest): Promise<BatchResult> {
     // Process batch based on import mode
     const result: BatchResult = {
       batchIndex: 0,
@@ -1076,14 +1076,14 @@ export class EnterpriseDataPorter extends EventEmitter {
     return result;
   }
 
-  private async processRecord(record: any, request: ImportRequest): Promise<void> {
+  private async processRecord(record: unknown, request: ImportRequest): Promise<void> {
     // Process individual record based on import mode
     console.log(`Processing record in ${request.options.mode} mode`);
   }
 
   private createImportResult(
     requestId: string,
-    data: any[],
+    data: unknown[],
     errors: PorterError[],
     schemaResult: SchemaValidationResult,
     startTime: number,
@@ -1204,16 +1204,16 @@ interface BatchResult {
 // Format handlers (simplified implementations)
 
 abstract class FormatHandler {
-  abstract serialize(data: any[], options: any): Promise<any>;
-  abstract deserialize(data: any, options: any): Promise<any[]>;
+  abstract serialize(data: unknown[], options: unknown): Promise<unknown>;
+  abstract deserialize(data: unknown, options: unknown): Promise<unknown[]>;
 }
 
 class JSONFormatHandler extends FormatHandler {
-  async serialize(data: any[], options: any): Promise<string> {
+  async serialize(data: unknown[], options: unknown): Promise<string> {
     return JSON.stringify(data, null, options.pretty ? 2 : 0);
   }
 
-  async deserialize(data: any, options: any): Promise<any[]> {
+  async deserialize(data: unknown, options: unknown): Promise<unknown[]> {
     if (typeof data === 'string') {
       return JSON.parse(data);
     }
@@ -1222,7 +1222,7 @@ class JSONFormatHandler extends FormatHandler {
 }
 
 class CSVFormatHandler extends FormatHandler {
-  async serialize(data: any[], options: any): Promise<string> {
+  async serialize(data: unknown[], options: unknown): Promise<string> {
     if (data.length === 0) return '';
 
     const headers = Object.keys(data[0]);
@@ -1233,14 +1233,14 @@ class CSVFormatHandler extends FormatHandler {
     return [headers.join(','), ...rows].join('\n');
   }
 
-  async deserialize(data: string, options: any): Promise<any[]> {
+  async deserialize(data: string, options: unknown): Promise<unknown[]> {
     const lines = data.split('\n').filter((line) => line.trim());
     if (lines.length === 0) return [];
 
     const headers = lines[0].split(',');
     const records = lines.slice(1).map((line) => {
       const values = line.split(',');
-      const record: any = {};
+      const record: unknown = {};
       headers.forEach((header, index) => {
         record[header] = values[index];
       });
@@ -1250,7 +1250,7 @@ class CSVFormatHandler extends FormatHandler {
     return records;
   }
 
-  private escapeCSVField(value: any): string {
+  private escapeCSVField(value: unknown): string {
     const str = String(value || '');
     if (str.includes(',') || str.includes('"') || str.includes('\n')) {
       return `"${str.replace(/"/g, '""')}"`;
@@ -1260,7 +1260,7 @@ class CSVFormatHandler extends FormatHandler {
 }
 
 class XMLFormatHandler extends FormatHandler {
-  async serialize(data: any[], options: any): Promise<string> {
+  async serialize(data: unknown[], options: unknown): Promise<string> {
     let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<root>\n';
 
     for (const record of data) {
@@ -1275,7 +1275,7 @@ class XMLFormatHandler extends FormatHandler {
     return xml;
   }
 
-  async deserialize(data: string, options: any): Promise<any[]> {
+  async deserialize(data: string, options: unknown): Promise<unknown[]> {
     // Simplified XML parsing - would use proper XML parser in production
     return [];
   }
@@ -1291,33 +1291,33 @@ class XMLFormatHandler extends FormatHandler {
 }
 
 class YAMLFormatHandler extends FormatHandler {
-  async serialize(data: any[], options: any): Promise<string> {
+  async serialize(data: unknown[], options: unknown): Promise<string> {
     return JSON.stringify(data, null, 2); // Simplified - would use yaml library
   }
 
-  async deserialize(data: string, options: any): Promise<any[]> {
+  async deserialize(data: string, options: unknown): Promise<unknown[]> {
     return JSON.parse(data); // Simplified - would use yaml library
   }
 }
 
 class BinaryFormatHandler extends FormatHandler {
-  async serialize(data: any[], options: any): Promise<Buffer> {
+  async serialize(data: unknown[], options: unknown): Promise<Buffer> {
     return Buffer.from(JSON.stringify(data));
   }
 
-  async deserialize(data: Buffer, options: any): Promise<any[]> {
+  async deserialize(data: Buffer, options: unknown): Promise<unknown[]> {
     return JSON.parse(data.toString());
   }
 }
 
 class EncryptedFormatHandler extends FormatHandler {
-  async serialize(data: any[], options: any): Promise<string> {
+  async serialize(data: unknown[], options: unknown): Promise<string> {
     const jsonData = JSON.stringify(data);
     // Apply encryption - simplified
     return Buffer.from(jsonData).toString('base64');
   }
 
-  async deserialize(data: string, options: any): Promise<any[]> {
+  async deserialize(data: string, options: unknown): Promise<unknown[]> {
     // Apply decryption - simplified
     const jsonData = Buffer.from(data, 'base64').toString();
     return JSON.parse(jsonData);
@@ -1399,7 +1399,7 @@ class SOXComplianceEngine extends ComplianceEngine {
 class ValidationEngine {
   constructor(private config: ValidationConfig) {}
 
-  async validateQuality(data: any[]): Promise<QualityValidationResult> {
+  async validateQuality(data: unknown[]): Promise<QualityValidationResult> {
     return {
       score: 0.95,
       metrics: {
@@ -1412,7 +1412,7 @@ class ValidationEngine {
     };
   }
 
-  async validateSchema(data: any[], format: SupportedFormat): Promise<SchemaValidationResult> {
+  async validateSchema(data: unknown[], format: SupportedFormat): Promise<SchemaValidationResult> {
     return {
       valid: true,
       schema: format,
@@ -1425,12 +1425,12 @@ class ValidationEngine {
 class EncryptionService {
   constructor(private config: PorterEncryptionConfig) {}
 
-  async encrypt(data: any): Promise<any> {
+  async encrypt(data: unknown): Promise<unknown> {
     // Apply encryption based on configuration
     return data;
   }
 
-  async decrypt(data: any): Promise<any> {
+  async decrypt(data: unknown): Promise<unknown> {
     // Apply decryption based on configuration
     return data;
   }

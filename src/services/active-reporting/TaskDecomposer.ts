@@ -4,7 +4,7 @@
  */
 
 import * as crypto from 'crypto';
-import { _Task, _SOW, TaskDecomposition, _DependencyGraph } from './types';
+import { __Task, _SOW, TaskDecomposition, __DependencyGraph } from './types';
 
 export class TaskDecomposer {
   private decompositionStrategies: Map<string, DecompositionStrategy>;
@@ -68,7 +68,7 @@ export class TaskDecomposer {
    * Decompose tasks into subtasks
    */
   private async decomposeIntoSubtasks(_tasks: Task[]): Promise<Task[]> {
-    const decomposedTasks: Task[] = [];
+    const _decomposedTasks: Task[] = [];
 
     for (const task of tasks) {
       if (this.needsDecomposition(task)) {
@@ -102,7 +102,7 @@ export class TaskDecomposer {
    */
   private async decomposeTask(_task: Task): Promise<Task[]> {
     const _strategy = this.selectDecompositionStrategy(task);
-    const subtasks: Task[] = [];
+    const _subtasks: Task[] = [];
 
     // Apply decomposition strategy
     switch (strategy) {
@@ -126,12 +126,12 @@ export class TaskDecomposer {
    * Sequential decomposition - tasks that must be done in order
    */
   private sequentialDecomposition(_task: Task): Task[] {
-    const subtasks: Task[] = [];
+    const _subtasks: Task[] = [];
     const _phases = this.identifyPhases(task);
     let previousId: string | undefined;
 
     phases.forEach((phase, _index) => {
-      const subtask: Task = {
+      const _subtask: Task = {
         id: crypto.randomUUID(),
         title: `${task.title} - ${phase.name}`,
         description: phase.description,
@@ -160,7 +160,7 @@ export class TaskDecomposer {
    * Parallel decomposition - tasks that can be done simultaneously
    */
   private parallelDecomposition(_task: Task): Task[] {
-    const subtasks: Task[] = [];
+    const _subtasks: Task[] = [];
     const _components = this.identifyComponents(task);
 
     components.forEach((_component) => {
@@ -190,12 +190,12 @@ export class TaskDecomposer {
    * Hierarchical decomposition - nested task structure
    */
   private hierarchicalDecomposition(_task: Task): Task[] {
-    const subtasks: Task[] = [];
+    const _subtasks: Task[] = [];
     const _hierarchy = this.buildHierarchy(task);
 
     const _processLevel = (_level: HierarchyLevel, _parentDeps: string[]) => {
       level.tasks.forEach((_taskDef) => {
-        const subtask: Task = {
+        const _subtask: Task = {
           id: crypto.randomUUID(),
           title: taskDef.title,
           description: taskDef.description,
@@ -231,7 +231,7 @@ export class TaskDecomposer {
    * Default decomposition strategy
    */
   private defaultDecomposition(_task: Task): Task[] {
-    const subtasks: Task[] = [];
+    const _subtasks: Task[] = [];
     const _baseTime = task.estimatedTime || 60;
 
     // Standard decomposition into prepare, _execute, verify
@@ -330,7 +330,7 @@ export class TaskDecomposer {
    */
   private topologicalSort(_nodes: Map<string, Task>, _edges: Map<string, Set<string>>): string[] {
     const _visited = new Set<string>();
-    const result: string[] = [];
+    const _result: string[] = [];
 
     const _visit = (_nodeId: string) => {
       if (visited.has(nodeId)) return;
@@ -353,7 +353,7 @@ export class TaskDecomposer {
    * Calculate critical path
    */
   private calculateCriticalPath(_dependencies: DependencyGraph): string[] {
-    const { _nodes, _edges, _topologicalOrder } = dependencies;
+    const { _nodes, _edges, __topologicalOrder } = dependencies;
     if (!topologicalOrder) return [];
 
     const _earliestStart = new Map<string, number>();
@@ -399,7 +399,7 @@ export class TaskDecomposer {
     });
 
     // Find critical path (tasks where earliest start = latest start)
-    const criticalPath: string[] = [];
+    const _criticalPath: string[] = [];
     topologicalOrder.forEach((_taskId) => {
       const _earliest = earliestStart.get(taskId) || 0;
       const _latest = latestStart.get(taskId) || 0;
@@ -415,7 +415,7 @@ export class TaskDecomposer {
    * Identify groups of tasks that can be executed in parallel
    */
   private identifyParallelizableGroups(_tasks: Task[], _dependencies: DependencyGraph): Task[][] {
-    const groups: Task[][] = [];
+    const _groups: Task[][] = [];
     const { topologicalOrder } = dependencies;
     if (!topologicalOrder) return groups;
 
@@ -522,11 +522,11 @@ export class TaskDecomposer {
    * Identify phases for sequential decomposition
    */
   private identifyPhases(_task: Task): Phase[] {
-    const phases: Phase[] = [
-      { name: 'Setup', _description: 'Initial setup and preparation', _timeRatio: 0.15 },
-      { name: 'Implementation', _description: 'Main implementation work', _timeRatio: 0.5 },
-      { name: 'Testing', _description: 'Testing and validation', _timeRatio: 0.2 },
-      { name: 'Finalization', _description: 'Final touches and cleanup', _timeRatio: 0.15 },
+    const _phases: Phase[] = [
+      { name: 'Setup', _description: 'Initial setup and preparation', __timeRatio: 0.15 },
+      { name: 'Implementation', _description: 'Main implementation work', __timeRatio: 0.5 },
+      { name: 'Testing', _description: 'Testing and validation', __timeRatio: 0.2 },
+      { name: 'Finalization', _description: 'Final touches and cleanup', __timeRatio: 0.15 },
     ];
 
     return phases;
@@ -536,27 +536,27 @@ export class TaskDecomposer {
    * Identify components for parallel decomposition
    */
   private identifyComponents(_task: Task): Component[] {
-    const components: Component[] = [];
+    const _components: Component[] = [];
 
     // Extract components from task description
     if (task.description.includes('frontend')) {
-      components.push({ name: 'Frontend', _description: 'Frontend components', _timeRatio: 0.4 });
+      components.push({ name: 'Frontend', _description: 'Frontend components', __timeRatio: 0.4 });
     }
 
     if (task.description.includes('backend')) {
-      components.push({ name: 'Backend', _description: 'Backend services', _timeRatio: 0.4 });
+      components.push({ name: 'Backend', _description: 'Backend services', __timeRatio: 0.4 });
     }
 
     if (task.description.includes('database')) {
-      components.push({ name: 'Database', _description: 'Database operations', _timeRatio: 0.2 });
+      components.push({ name: 'Database', _description: 'Database operations', __timeRatio: 0.2 });
     }
 
     // Default components if none identified
     if (components.length === 0) {
       components.push(
-        { name: 'Core', _description: 'Core functionality', _timeRatio: 0.5 },
-        { name: 'Support', _description: 'Supporting features', _timeRatio: 0.3 },
-        { name: 'Polish', _description: 'Polish and refinement', _timeRatio: 0.2 },
+        { name: 'Core', _description: 'Core functionality', __timeRatio: 0.5 },
+        { name: 'Support', _description: 'Supporting features', __timeRatio: 0.3 },
+        { name: 'Polish', _description: 'Polish and refinement', __timeRatio: 0.2 },
       );
     }
 

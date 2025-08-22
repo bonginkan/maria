@@ -355,7 +355,7 @@ async function handleApprovalRevert(
 /**
  * Handle approval tag command
  */
-async function handleApprovalTag(tagName: string, options: any): Promise<void> {
+async function handleApprovalTag(tagName: string, options: unknown): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   // Delete tag
@@ -397,7 +397,7 @@ async function handleApprovalTag(tagName: string, options: any): Promise<void> {
 /**
  * Handle approval status command
  */
-async function handleApprovalStatus(options: any): Promise<void> {
+async function handleApprovalStatus(options: unknown): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
   const approvalEngine = ApprovalEngine.getInstance();
 
@@ -457,7 +457,7 @@ async function handleApprovalStatus(options: any): Promise<void> {
 /**
  * Handle approval show command
  */
-async function handleApprovalShow(commitId: string, options: any): Promise<void> {
+async function handleApprovalShow(commitId: string, options: unknown): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   let targetCommitId = commitId;

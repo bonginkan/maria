@@ -44,7 +44,7 @@ export class SOWGenerator {
     const _assumptions = this.generateAssumptions(intent);
     const _successCriteria = this.generateSuccessCriteria(intent, deliverables);
 
-    const sow: SOW = {
+    const _sow: SOW = {
       id: crypto.randomUUID(),
       title: this.generateTitle(intent, request),
       objective: this.generateObjective(intent, request),
@@ -118,7 +118,7 @@ export class SOWGenerator {
    * Generate scope statements
    */
   private generateScope(_intent: IntentAnalysis, _request: string): string[] {
-    const scope: string[] = [];
+    const _scope: string[] = [];
 
     // Primary scope
     scope.push(`Primary: ${this.getActionFromIntent(intent.primaryIntent)} implementation`);
@@ -143,7 +143,7 @@ export class SOWGenerator {
    * Generate tasks based on intent
    */
   private generateTasks(_intent: IntentAnalysis, _request: string): Task[] {
-    const tasks: Task[] = [];
+    const _tasks: Task[] = [];
     const _baseTime = this.estimateBaseTime(intent.estimatedComplexity);
 
     // Planning phase tasks
@@ -247,7 +247,7 @@ export class SOWGenerator {
    * Generate implementation-specific tasks
    */
   private generateImplementationTasks(_intent: IntentAnalysis, _baseTime: number): Task[] {
-    const tasks: Task[] = [];
+    const _tasks: Task[] = [];
 
     switch (intent.primaryIntent) {
       case 'implement_feature':
@@ -391,7 +391,7 @@ export class SOWGenerator {
    * Generate deliverables
    */
   private generateDeliverables(_intent: IntentAnalysis, _tasks: Task[]): Deliverable[] {
-    const deliverables: Deliverable[] = [];
+    const _deliverables: Deliverable[] = [];
 
     // Code deliverable
     deliverables.push({
@@ -448,7 +448,7 @@ export class SOWGenerator {
     const _startDate = new Date();
     const _endDate = new Date(startDate.getTime() + totalHours * 60 * 60 * 1000);
 
-    const milestones: Milestone[] = [
+    const _milestones: Milestone[] = [
       {
         id: crypto.randomUUID(),
         name: 'Planning Complete',
@@ -472,7 +472,7 @@ export class SOWGenerator {
       },
     ];
 
-    const phases: Phase[] = [
+    const _phases: Phase[] = [
       {
         id: crypto.randomUUID(),
         name: 'Planning',
@@ -511,7 +511,7 @@ export class SOWGenerator {
    * Generate risks
    */
   private generateRisks(_intent: IntentAnalysis): Risk[] {
-    const risks: Risk[] = [];
+    const _risks: Risk[] = [];
 
     (intent.identifiedRisks || []).forEach((_riskId) => {
       const _mitigation =
@@ -546,7 +546,7 @@ export class SOWGenerator {
    * Generate assumptions
    */
   private generateAssumptions(_intent: IntentAnalysis): string[] {
-    const assumptions: string[] = [
+    const _assumptions: string[] = [
       'All required dependencies and libraries are available',
       'Development environment is properly configured',
       'No external blockers or dependencies',
@@ -571,7 +571,7 @@ export class SOWGenerator {
    * Generate success criteria
    */
   private generateSuccessCriteria(_intent: IntentAnalysis, _deliverables: Deliverable[]): string[] {
-    const criteria: string[] = [];
+    const _criteria: string[] = [];
 
     // General criteria
     criteria.push('All deliverables completed and accepted');
@@ -615,7 +615,7 @@ export class SOWGenerator {
   }
 
   private getActionFromIntent(_intent: string): string {
-    const actionMap: Record<string, string> = {
+    const _actionMap: Record<string, string> = {
       implement_feature: 'Feature Implementation',
       fix_bug: 'Bug Fix',
       refactor_code: 'Code Refactoring',
@@ -651,7 +651,7 @@ export class SOWGenerator {
   }
 
   private estimateBaseTime(_complexity: string): number {
-    const timeMap: Record<string, number> = {
+    const _timeMap: Record<string, number> = {
       simple: 120, // 2 hours
       moderate: 240, // 4 hours
       complex: 480, // 8 hours

@@ -379,13 +379,13 @@ describe('Phase 3: Knowledge Graph and Event-Driven System', () => {
         sessionId: 'session123',
         data: `
           class DataProcessor {
-            async process(data: any[]): Promise<void> {
+            async process(data: unknown[]): Promise<void> {
               for (const item of data) {
                 await this.processItem(item);
               }
             }
             
-            private async processItem(item: any): Promise<void> {
+            private async processItem(item: unknown): Promise<void> {
               // Process item
             }
           }

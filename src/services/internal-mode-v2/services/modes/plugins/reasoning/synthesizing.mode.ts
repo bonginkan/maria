@@ -395,7 +395,7 @@ export class SynthesizingMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.75;
 
     if (results.coherence.score > 0.8) confidence += 0.1;
@@ -405,7 +405,7 @@ export class SynthesizingMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private selectSynthesisMethod(pipeline: any): string {
+  private selectSynthesisMethod(pipeline: unknown): string {
     const methodPriority = [
       'thematic_synthesis',
       'conceptual_integration',
@@ -416,7 +416,7 @@ export class SynthesizingMode extends BaseMode {
     return methodPriority[0]; // Simplified selection
   }
 
-  private assessSynthesisQuality(pipeline: any): any {
+  private assessSynthesisQuality(pipeline: unknown): unknown {
     return {
       overall: 0.83,
       dimensions: {
@@ -429,7 +429,7 @@ export class SynthesizingMode extends BaseMode {
     };
   }
 
-  private assessNovelty(pipeline: any): any {
+  private assessNovelty(pipeline: unknown): unknown {
     return {
       score: 0.8,
       level: 'high',
@@ -437,7 +437,7 @@ export class SynthesizingMode extends BaseMode {
     };
   }
 
-  private generateSynthesisRecommendations(pipeline: any): string[] {
+  private generateSynthesisRecommendations(pipeline: unknown): string[] {
     return [
       'Validate synthesis results with domain experts',
       'Test integrated understanding in practical applications',
@@ -455,23 +455,23 @@ export class SynthesizingMode extends BaseMode {
     ];
   }
 
-  private assessCredibility(source: any): number {
+  private assessCredibility(source: unknown): number {
     return source.reliability || 0.7;
   }
 
-  private assessRelevance(source: any, context: ModeContext): number {
+  private assessRelevance(source: unknown, context: ModeContext): number {
     return source.relevance || 0.6;
   }
 
-  private assessCoverage(source: any, context: ModeContext): number {
+  private assessCoverage(source: unknown, context: ModeContext): number {
     return 0.7; // Simplified coverage assessment
   }
 
-  private assessBias(source: any): string {
+  private assessBias(source: unknown): string {
     return 'low';
   }
 
-  private assessRecency(source: any): string {
+  private assessRecency(source: unknown): string {
     return 'current';
   }
 
@@ -510,14 +510,14 @@ export class SynthesizingMode extends BaseMode {
     return [{ concept1: 'a', concept2: 'b', relationship: 'depends_on' }];
   }
 
-  private buildConceptHierarchies(context: ModeContext): any {
+  private buildConceptHierarchies(context: ModeContext): unknown {
     return {
       root: 'main_concept',
       children: ['sub_concept_1', 'sub_concept_2'],
     };
   }
 
-  private buildSemanticNetworks(context: ModeContext): any {
+  private buildSemanticNetworks(context: ModeContext): unknown {
     return {
       nodes: ['concept_1', 'concept_2'],
       edges: [{ from: 'concept_1', to: 'concept_2', weight: 0.8 }],
@@ -548,7 +548,7 @@ export class SynthesizingMode extends BaseMode {
     return [{ theme1: 'theme_1', theme2: 'theme_2', relationship: 'complementary' }];
   }
 
-  private buildThemeHierarchies(context: ModeContext): any {
+  private buildThemeHierarchies(context: ModeContext): unknown {
     return {
       primary: ['theme_1'],
       secondary: ['theme_2', 'theme_3'],
@@ -575,7 +575,7 @@ export class SynthesizingMode extends BaseMode {
     return this.integrationMethods[0];
   }
 
-  private createIntegrationFramework(context: ModeContext): any {
+  private createIntegrationFramework(context: ModeContext): unknown {
     return {
       structure: 'multi_layered',
       approach: 'systematic',
@@ -583,7 +583,7 @@ export class SynthesizingMode extends BaseMode {
     };
   }
 
-  private performKnowledgeSynthesis(context: ModeContext): any {
+  private performKnowledgeSynthesis(context: ModeContext): unknown {
     return {
       unified_understanding: 'coherent_integrated_knowledge',
       novel_connections: ['connection_1', 'connection_2'],
@@ -591,7 +591,7 @@ export class SynthesizingMode extends BaseMode {
     };
   }
 
-  private validateIntegration(context: ModeContext): any {
+  private validateIntegration(context: ModeContext): unknown {
     return {
       consistency_check: 'passed',
       completeness_check: 'passed',

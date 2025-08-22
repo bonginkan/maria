@@ -76,7 +76,7 @@ export class RenderOptimizer {
       debounce?: number;
     } = {},
   ): void {
-    const item: RenderQueueItem = {
+    const _item: RenderQueueItem = {
       id,
       content,
       priority: options.priority || 'normal',
@@ -86,7 +86,7 @@ export class RenderOptimizer {
 
     // Debounce if specified
     if (options.debounce) {
-      const existing = this.renderQueue.get(id);
+      const _existing = this.renderQueue.get(id);
       if (existing && Date.now() - existing.timestamp < options.debounce) {
         return; // Skip this update
       }
@@ -104,13 +104,13 @@ export class RenderOptimizer {
   /**
    * バッチレンダリング
    */
-  batchRender(items: Array<string | (() => string)>): void {
-    const batchId = `batch_${Date.now()}`;
-    const batchContent = () => {
+  batchRender(_items: Array<string | (() => string)>): void {
+    const _batchId = `batch_${Date.now()}`;
+    const _batchContent = () => {
       return items.map((item) => (typeof item === 'function' ? item() : item)).join('\n');
     };
 
-    this.queue(batchId, batchContent, { priority: 'high' });
+    this.queue(batchId, batchContent, _{ priority: 'high' });
   }
 
   /**
@@ -132,12 +132,12 @@ export class RenderOptimizer {
     }
 
     this.isRendering = true;
-    const startTime = performance.now();
+    const _startTime = performance.now();
 
     try {
       // Sort by priority and timestamp
-      const sortedItems = Array.from(this.renderQueue.values()).sort((a, b) => {
-        const priorityOrder = { high: 0, normal: 1, low: 2 };
+      const _sortedItems = Array.from(this.renderQueue.values()).sort((a, b) => {
+        const _priorityOrder = { high: 0, _normal: 1, _low: 2 };
         if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
           return priorityOrder[a.priority] - priorityOrder[b.priority];
         }
@@ -145,11 +145,11 @@ export class RenderOptimizer {
       });
 
       // Process batch
-      const batch = sortedItems.slice(0, this.BATCH_SIZE);
-      const output: string[] = [];
+      const _batch = sortedItems.slice(0, this.BATCH_SIZE);
+      const _output: string[] = [];
 
       for (const item of batch) {
-        const content = typeof item.content === 'function' ? item.content() : item.content;
+        const _content = typeof item.content === 'function' ? item.content() : item.content;
         output.push(content);
         this.renderQueue.delete(item.id);
       }
@@ -160,7 +160,7 @@ export class RenderOptimizer {
       }
 
       // Update metrics
-      const renderTime = performance.now() - startTime;
+      const _renderTime = performance.now() - startTime;
       this.metrics.renderTime = renderTime;
 
       // Check for frame drops
@@ -177,8 +177,8 @@ export class RenderOptimizer {
    * メトリクスを更新
    */
   private updateMetrics(): void {
-    const now = Date.now();
-    const deltaTime = now - this.lastRenderTime;
+    const _now = Date.now();
+    const _deltaTime = now - this.lastRenderTime;
 
     if (deltaTime >= 1000) {
       // Calculate FPS
@@ -190,7 +190,7 @@ export class RenderOptimizer {
       if (global.gc) {
         global.gc();
       }
-      const memUsage = process.memoryUsage();
+      const _memUsage = process.memoryUsage();
       this.metrics.memoryUsage = Math.round(memUsage.heapUsed / 1024 / 1024);
     }
 
@@ -243,13 +243,13 @@ export class RenderOptimizer {
       retryDelay?: number;
     } = {},
   ): void {
-    const maxRetries = options.maxRetries || 3;
-    const retryDelay = options.retryDelay || 100;
-    let retries = 0;
+    const _maxRetries = options.maxRetries || 3;
+    const _retryDelay = options.retryDelay || 100;
+    let _retries = 0;
 
-    const attempt = () => {
+    const _attempt = () => {
       if (condition()) {
-        const finalContent = typeof content === 'function' ? content() : content;
+        const _finalContent = typeof content === 'function' ? content() : content;
         process.stdout.write(finalContent);
       } else if (retries < maxRetries) {
         retries++;
@@ -269,15 +269,15 @@ export class TerminalBuffer {
   private maxLines: number;
   private currentLine: number = 0;
 
-  constructor(maxLines: number = 1000) {
+  constructor(_maxLines: number = 1000) {
     this.maxLines = maxLines;
   }
 
   /**
    * バッファに追加
    */
-  write(content: string): void {
-    const lines = content.split('\n');
+  write(_content: string): void {
+    const _lines = content.split('\n');
     this.buffer.push(...lines);
 
     // Trim excess lines
@@ -300,7 +300,7 @@ export class TerminalBuffer {
   /**
    * 特定の行を更新
    */
-  updateLine(lineNumber: number, content: string): void {
+  updateLine(_lineNumber: number, _content: string): void {
     if (lineNumber < 0 || lineNumber >= this.buffer.length) {
       return;
     }
@@ -308,7 +308,7 @@ export class TerminalBuffer {
     this.buffer[lineNumber] = content;
 
     // Move cursor and update
-    const moveUp = this.currentLine - lineNumber;
+    const _moveUp = this.currentLine - lineNumber;
     if (moveUp > 0) {
       process.stdout.write(`\x1b[${moveUp}A`); // Move up
       process.stdout.write('\x1b[2K'); // Clear line
@@ -327,7 +327,7 @@ export class TerminalBuffer {
   /**
    * スクロール
    */
-  scroll(lines: number): void {
+  scroll(_lines: number): void {
     if (lines > 0) {
       // Scroll down
       process.stdout.write(`\x1b[${lines}S`);
@@ -348,7 +348,7 @@ export class StringBuilder {
   /**
    * 文字列を追加
    */
-  append(str: string): StringBuilder {
+  append(_str: string): StringBuilder {
     this.chunks.push(str);
     this.length += str.length;
     return this;
@@ -357,14 +357,14 @@ export class StringBuilder {
   /**
    * 改行を追加
    */
-  appendLine(str: string = ''): StringBuilder {
+  appendLine(_str: string = ''): StringBuilder {
     return this.append(str + '\n');
   }
 
   /**
    * 条件付き追加
    */
-  appendIf(condition: boolean, str: string): StringBuilder {
+  appendIf(_condition: boolean, _str: string): StringBuilder {
     if (condition) {
       this.append(str);
     }
@@ -374,7 +374,7 @@ export class StringBuilder {
   /**
    * 繰り返し追加
    */
-  repeat(str: string, count: number): StringBuilder {
+  repeat(_str: string, _count: number): StringBuilder {
     return this.append(str.repeat(count));
   }
 
@@ -404,11 +404,11 @@ export class StringBuilder {
 /**
  * レンダリングヘルパー関数
  */
-export const RenderHelpers = {
+export const _RenderHelpers = {
   /**
    * デバウンス付きレンダリング
    */
-  debounceRender(fn: () => void, delay: number = 100): (...args: unknown[]) => void {
+  debounceRender(_fn: () => void, _delay: number = 100): (...args: unknown[]) => void {
     let timeoutId: NodeJS.Timeout;
 
     return (...args: unknown[]) => {
@@ -420,8 +420,8 @@ export const RenderHelpers = {
   /**
    * スロットル付きレンダリング
    */
-  throttleRender(fn: () => void, limit: number = 16): (...args: unknown[]) => void {
-    let inThrottle = false;
+  throttleRender(_fn: () => void, _limit: number = 16): (...args: unknown[]) => void {
+    let _inThrottle = false;
 
     return (...args: unknown[]) => {
       if (!inThrottle) {
@@ -435,9 +435,9 @@ export const RenderHelpers = {
   /**
    * 仮想スクロール
    */
-  virtualScroll(items: string[], viewportHeight: number, scrollPosition: number): string[] {
-    const startIndex = Math.floor(scrollPosition);
-    const endIndex = Math.min(startIndex + viewportHeight, items.length);
+  virtualScroll(_items: string[], _viewportHeight: number, _scrollPosition: number): string[] {
+    const _startIndex = Math.floor(scrollPosition);
+    const _endIndex = Math.min(startIndex + viewportHeight, items.length);
     return items.slice(startIndex, endIndex);
   },
 
@@ -449,8 +449,8 @@ export const RenderHelpers = {
     batchSize: number = 10,
     delay: number = 0,
   ): Promise<void> {
-    for (let i = 0; i < items.length; i += batchSize) {
-      const batch = items.slice(i, i + batchSize);
+    for (let _i = 0; i < items.length; i += batchSize) {
+      const _batch = items.slice(i, i + batchSize);
       process.stdout.write(batch.join(''));
 
       if (delay > 0) {

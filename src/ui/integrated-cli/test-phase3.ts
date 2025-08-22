@@ -2,8 +2,8 @@
  * Phase 3 Test: Approval System
  * 承認システムとキーボードショートカットのテスト
  */
-import { ApprovalPrompt, ApprovalOption } from './ApprovalPrompt.js';
-import { KeyboardShortcutHandler, ShortcutCategory } from './KeyboardShortcutHandler.js';
+import { _ApprovalPrompt, _ApprovalOption } from './ApprovalPrompt.js';
+import { _KeyboardShortcutHandler, _ShortcutCategory } from './KeyboardShortcutHandler.js';
 
 /**
  * Phase 3テスト実行
@@ -18,7 +18,7 @@ async function testPhase3(): Promise<void> {
   // シンプルな確認ダイアログをシミュレート
   console.log('Creating simple approval prompt...');
 
-  const simpleOptions: ApprovalOption[] = [
+  const _simpleOptions: ApprovalOption[] = [
     {
       key: 'y',
       label: 'Yes',
@@ -59,7 +59,7 @@ async function testPhase3(): Promise<void> {
   console.log('2. Complex Choice Prompt Test');
   console.log('─'.repeat(50));
 
-  const complexOptions: ApprovalOption[] = [
+  const _complexOptions: ApprovalOption[] = [
     {
       key: 'c',
       label: 'Continue',
@@ -118,7 +118,7 @@ async function testPhase3(): Promise<void> {
   console.log('Complex prompt configuration:');
   console.log(`  - Title: "Operation Control"`);
   console.log(`  - Options: 4 choices with shortcuts`);
-  console.log(`  - Timeout: 10 seconds (default: Continue)`);
+  console.log(`  - Timeout: 10 seconds (_default: Continue)`);
   console.log(`  - Mode: Detailed with descriptions`);
   console.log(`  - Features: Escape allowed, confirmation for Stop`);
   console.log('');
@@ -308,7 +308,7 @@ async function testPhase3(): Promise<void> {
   console.log('Testing ApprovalPrompt + KeyboardShortcutHandler integration...');
 
   // ApprovalPrompt内でのキーボードショートカット
-  const integrationOptions: ApprovalOption[] = [
+  const _integrationOptions: ApprovalOption[] = [
     {
       key: 'save',
       label: 'Save & Continue',
@@ -363,7 +363,7 @@ async function simulateApprovalPrompt(
   options.forEach((option, index) => {
     console.log(`  ${index + 1}. ${option}`);
   });
-  console.log('(Simulated user selection: Option 1)');
+  console.log('(_Simulated user selection: Option 1)');
 
   // 実際の実装では実際のユーザー入力を待つ
   return options[0];
@@ -386,4 +386,4 @@ if (require.main === module) {
   runPhase3Test();
 }
 
-export { testPhase3, runPhase3Test };
+export { testPhase3, _runPhase3Test };

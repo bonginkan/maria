@@ -216,7 +216,7 @@ export class FocusingMode extends BaseMode {
     this.focusHistory.push(session);
   }
 
-  private async recordFocusMetrics(results: any): Promise<void> {
+  private async recordFocusMetrics(results: unknown): Promise<void> {
     // Record detailed focus metrics for analysis
   }
 
@@ -351,7 +351,7 @@ export class FocusingMode extends BaseMode {
     return baseDuration;
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.82;
 
     if (results.quality.overall > 0.85) confidence += 0.1;
@@ -373,11 +373,11 @@ export class FocusingMode extends BaseMode {
     });
   }
 
-  private calculateFocusDepth(pipeline: any): number {
+  private calculateFocusDepth(pipeline: unknown): number {
     return 0.85;
   }
 
-  private summarizeFilters(pipeline: any): any {
+  private summarizeFilters(pipeline: unknown): unknown {
     return {
       active_count: this.attentionFilters.size,
       effectiveness: 0.82,
@@ -385,7 +385,7 @@ export class FocusingMode extends BaseMode {
     };
   }
 
-  private generateFocusRecommendations(pipeline: any): string[] {
+  private generateFocusRecommendations(pipeline: unknown): string[] {
     return [
       'Maintain consistent concentration levels throughout analysis',
       'Periodically validate focus target relevance',
@@ -445,7 +445,7 @@ export class FocusingMode extends BaseMode {
     return 'sustained_selective_attention';
   }
 
-  private calculateAttentionAllocation(context: ModeContext): any {
+  private calculateAttentionAllocation(context: ModeContext): unknown {
     return {
       primary_target: 0.7,
       secondary_targets: 0.2,
@@ -457,7 +457,7 @@ export class FocusingMode extends BaseMode {
     return 0.85;
   }
 
-  private planAttentionMaintenance(context: ModeContext): any {
+  private planAttentionMaintenance(context: ModeContext): unknown {
     return {
       breaks: 'micro_breaks_every_20_minutes',
       refreshing: 'attention_reset_techniques',
@@ -465,7 +465,7 @@ export class FocusingMode extends BaseMode {
     };
   }
 
-  private optimizeAttentionUsage(context: ModeContext): any {
+  private optimizeAttentionUsage(context: ModeContext): unknown {
     return {
       efficiency: 0.88,
       waste_reduction: 'minimize_attention_leakage',
@@ -497,7 +497,7 @@ export class FocusingMode extends BaseMode {
     return ['deep_breathing', 'attention_anchoring', 'cognitive_load_management'];
   }
 
-  private planConcentrationMaintenance(context: ModeContext): any {
+  private planConcentrationMaintenance(context: ModeContext): unknown {
     return {
       techniques: ['progressive_deepening', 'attention_renewal'],
       schedule: 'maintain_for_target_duration',
@@ -505,7 +505,7 @@ export class FocusingMode extends BaseMode {
     };
   }
 
-  private enhanceConcentration(context: ModeContext): any {
+  private enhanceConcentration(context: ModeContext): unknown {
     return {
       amplification: 'focus_enhancement_techniques',
       stabilization: 'concentration_stabilization_methods',

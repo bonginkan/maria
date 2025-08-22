@@ -447,14 +447,14 @@ export * from './core/AutonomousCodingAgentService';
 export * from './core/VisualModeDisplayEngine';
 
 // Type guards
-export const isTask = (obj: any): obj is Task => {
+export const isTask = (obj: unknown): obj is Task => {
   return obj && typeof obj.id === 'string' && typeof obj.title === 'string';
 };
 
-export const isSOW = (obj: any): obj is SOW => {
+export const isSOW = (obj: unknown): obj is SOW => {
   return obj && typeof obj.id === 'string' && Array.isArray(obj.tasks);
 };
 
-export const isCodingMode = (obj: any): obj is CodingMode => {
+export const isCodingMode = (obj: unknown): obj is CodingMode => {
   return obj && typeof obj.name === 'string' && typeof obj.symbol === 'string';
 };

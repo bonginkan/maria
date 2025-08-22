@@ -65,7 +65,7 @@ export default function registerCodeMemoryCommand(program: Command) {
         };
 
         // Query memory for relevant patterns and previous solutions
-        let memoryContext: any = null;
+        let memoryContext: unknown = null;
         if (memoryEngine) {
           spinner.text = 'Searching memory for relevant patterns...';
           memoryContext = await queryMemoryForContext(memoryEngine, prompt, context);
@@ -180,7 +180,7 @@ async function queryMemoryForContext(
   engine: DualMemoryEngine,
   prompt: string,
   context: CodeGenerationContext,
-): Promise<any> {
+): Promise<unknown> {
   // Query for relevant code patterns
   const patternQuery: MemoryQuery = {
     type: 'pattern',
@@ -277,7 +277,7 @@ async function learnFromGeneration(
   } as CodePattern);
 }
 
-async function updateUserPreferences(engine: DualMemoryEngine, options: any): Promise<void> {
+async function updateUserPreferences(engine: DualMemoryEngine, options: unknown): Promise<void> {
   const preferences: Partial<UserPreferenceSet> = {
     preferredModels: options.model ? [options.model] : undefined,
     codeStyle: options.style,
@@ -300,7 +300,7 @@ async function updateUserPreferences(engine: DualMemoryEngine, options: any): Pr
 async function generateCodeWithMemory(
   prompt: string,
   context: CodeGenerationContext,
-  memoryContext: any,
+  memoryContext: unknown,
   model?: string,
 ): Promise<string> {
   const aiRouter = new AIRouterService();
@@ -310,14 +310,14 @@ async function generateCodeWithMemory(
 
   if (memoryContext && memoryContext.patterns.length > 0) {
     enhancedPrompt += '\n\n## Similar patterns from memory:\n';
-    memoryContext.patterns.slice(0, 2).forEach((pattern: any) => {
+    memoryContext.patterns.slice(0, 2).forEach((pattern: unknown) => {
       enhancedPrompt += `\n### Previous solution:\n\`\`\`\n${pattern.content}\n\`\`\`\n`;
     });
   }
 
   if (memoryContext && memoryContext.reasoning.length > 0) {
     enhancedPrompt += '\n\n## Related reasoning:\n';
-    memoryContext.reasoning.slice(0, 1).forEach((trace: any) => {
+    memoryContext.reasoning.slice(0, 1).forEach((trace: unknown) => {
       enhancedPrompt += `\n- ${trace.outcome}\n`;
     });
   }

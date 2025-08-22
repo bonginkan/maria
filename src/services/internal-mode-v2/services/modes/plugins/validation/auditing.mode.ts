@@ -252,7 +252,7 @@ export class AuditingMode extends BaseMode {
     // Finalize and secure audit trail
   }
 
-  private async recordAuditTrail(results: any, context: ModeContext): Promise<void> {
+  private async recordAuditTrail(results: unknown, context: ModeContext): Promise<void> {
     const trailEntry = {
       timestamp: Date.now(),
       scope: results.scope,
@@ -432,7 +432,7 @@ export class AuditingMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.8;
 
     if (results.thoroughness > 0.85) confidence += 0.1;
@@ -458,11 +458,11 @@ export class AuditingMode extends BaseMode {
     return 'systematic_examination';
   }
 
-  private calculateThoroughness(pipeline: any): number {
+  private calculateThoroughness(pipeline: unknown): number {
     return 0.87;
   }
 
-  private generateRecommendations(pipeline: any): string[] {
+  private generateRecommendations(pipeline: unknown): string[] {
     return [
       'Address high-priority compliance gaps immediately',
       'Implement continuous monitoring for key controls',
@@ -510,7 +510,7 @@ export class AuditingMode extends BaseMode {
     return ['organization_specific_requirements', 'industry_best_practices'];
   }
 
-  private prioritizeStandards(standards: unknown[]): any {
+  private prioritizeStandards(standards: unknown[]): unknown {
     return {
       critical: standards.filter((s) => s.mandatory),
       important: standards.filter((s) => !s.mandatory),
@@ -522,7 +522,7 @@ export class AuditingMode extends BaseMode {
     return 'systematic_evidence_based_examination';
   }
 
-  private createAuditTimeline(context: ModeContext): any {
+  private createAuditTimeline(context: ModeContext): unknown {
     return {
       planning: '1 week',
       execution: '2-3 weeks',
@@ -608,7 +608,7 @@ export class AuditingMode extends BaseMode {
     return ['document_review', 'interview', 'observation', 'testing', 'analysis'];
   }
 
-  private verifyEvidence(context: ModeContext): any {
+  private verifyEvidence(context: ModeContext): unknown {
     return {
       reliability: 'high',
       relevance: 'directly_related',
@@ -616,7 +616,7 @@ export class AuditingMode extends BaseMode {
     };
   }
 
-  private documentEvidence(context: ModeContext): any {
+  private documentEvidence(context: ModeContext): unknown {
     return {
       format: 'structured_evidence_documentation',
       retention: 'audit_retention_policy',
@@ -632,7 +632,7 @@ export class AuditingMode extends BaseMode {
     return 'medium';
   }
 
-  private categorizeRisks(context: ModeContext): any {
+  private categorizeRisks(context: ModeContext): unknown {
     return {
       operational: ['process_inefficiency', 'control_gaps'],
       compliance: ['regulatory_violations', 'standard_deviations'],
@@ -649,7 +649,7 @@ export class AuditingMode extends BaseMode {
     return ['immediate_action_required', 'process_improvement_needed'];
   }
 
-  private createRiskMatrix(context: ModeContext): any {
+  private createRiskMatrix(context: ModeContext): unknown {
     return {
       dimensions: ['likelihood', 'impact'],
       categories: ['low', 'medium', 'high'],
@@ -657,7 +657,7 @@ export class AuditingMode extends BaseMode {
     };
   }
 
-  private assessResidualRisks(context: ModeContext): any {
+  private assessResidualRisks(context: ModeContext): unknown {
     return {
       after_controls: 'acceptable_level',
       monitoring_required: 'ongoing_risk_monitoring',
@@ -677,7 +677,7 @@ export class AuditingMode extends BaseMode {
     return 'needs_improvement';
   }
 
-  private evaluateByStandard(context: ModeContext): any {
+  private evaluateByStandard(context: ModeContext): unknown {
     return {
       iso_27001: { score: 0.85, status: 'compliant' },
       pci_dss: { score: 0.78, status: 'mostly_compliant' },
@@ -701,7 +701,7 @@ export class AuditingMode extends BaseMode {
     return 'Overall compliance posture is good with identified areas for improvement';
   }
 
-  private createDetailedFindings(context: ModeContext): any {
+  private createDetailedFindings(context: ModeContext): unknown {
     return {
       total_findings: 3,
       by_severity: { high: 0, medium: 1, low: 2 },
@@ -709,7 +709,7 @@ export class AuditingMode extends BaseMode {
     };
   }
 
-  private createComplianceStatus(context: ModeContext): any {
+  private createComplianceStatus(context: ModeContext): unknown {
     return {
       overall: 'compliant_with_improvements_needed',
       by_area: {
@@ -720,7 +720,7 @@ export class AuditingMode extends BaseMode {
     };
   }
 
-  private createRiskAssessment(context: ModeContext): any {
+  private createRiskAssessment(context: ModeContext): unknown {
     return {
       summary: 'manageable_risk_profile',
       key_risks: ['process_gaps', 'documentation_incomplete'],
@@ -737,7 +737,7 @@ export class AuditingMode extends BaseMode {
     ];
   }
 
-  private createActionPlan(context: ModeContext): any {
+  private createActionPlan(context: ModeContext): unknown {
     return {
       immediate: ['high_priority_findings'],
       short_term: ['medium_priority_improvements'],

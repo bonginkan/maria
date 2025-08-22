@@ -232,7 +232,7 @@ export class PrototypingMode extends BaseMode {
     // Implementation would persist to storage
   }
 
-  private async storePrototypeInfo(results: any, context: ModeContext): Promise<void> {
+  private async storePrototypeInfo(results: unknown, context: ModeContext): Promise<void> {
     const prototypeKey = this.generatePrototypeKey(results, context);
     this.prototypeHistory.set(prototypeKey, {
       ...results,
@@ -368,7 +368,7 @@ export class PrototypingMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.75;
 
     if (results.quality.overall > 0.8) confidence += 0.1;
@@ -397,7 +397,7 @@ export class PrototypingMode extends BaseMode {
     return this.prototypingMethods[1]; // default to digital_mockup
   }
 
-  private assessPrototypeQuality(pipeline: any): any {
+  private assessPrototypeQuality(pipeline: unknown): unknown {
     return {
       overall: 0.8,
       dimensions: {
@@ -410,7 +410,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private assessUsability(pipeline: any): any {
+  private assessUsability(pipeline: unknown): unknown {
     return {
       score: 0.78,
       factors: ['ease_of_use', 'intuitive_design', 'user_satisfaction'],
@@ -418,7 +418,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private collectFeedback(pipeline: any): any {
+  private collectFeedback(pipeline: unknown): unknown {
     return {
       sources: ['user_testing', 'stakeholder_review', 'expert_evaluation'],
       summary: 'Generally positive with specific improvement areas identified',
@@ -427,7 +427,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private generatePrototypingRecommendations(pipeline: any): string[] {
+  private generatePrototypingRecommendations(pipeline: unknown): string[] {
     return [
       'Conduct regular user testing throughout iterations',
       'Document design decisions and rationale',
@@ -442,7 +442,7 @@ export class PrototypingMode extends BaseMode {
     return ['design_software', 'development_environment', 'testing_tools'];
   }
 
-  private generatePrototypeKey(results: any, context: ModeContext): string {
+  private generatePrototypeKey(results: unknown, context: ModeContext): string {
     return `prototype_${results.method}_${Date.now()}`;
   }
 
@@ -489,7 +489,7 @@ export class PrototypingMode extends BaseMode {
     return 'iterative_design_thinking';
   }
 
-  private createPrototypeTimeline(context: ModeContext): any {
+  private createPrototypeTimeline(context: ModeContext): unknown {
     return {
       phase1: 'concept_and_planning (1 week)',
       phase2: 'design_and_development (2-3 weeks)',
@@ -520,7 +520,7 @@ export class PrototypingMode extends BaseMode {
     return ['technical_feasibility_uncertainty', 'user_acceptance_risk', 'timeline_pressure'];
   }
 
-  private planRiskMitigation(context: ModeContext): any {
+  private planRiskMitigation(context: ModeContext): unknown {
     return {
       technical_risk: 'early_technical_spike',
       user_risk: 'continuous_user_involvement',
@@ -528,7 +528,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private designArchitecture(context: ModeContext): any {
+  private designArchitecture(context: ModeContext): unknown {
     return {
       structure: 'modular_component_based',
       patterns: ['mvc', 'observer'],
@@ -536,7 +536,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private designUserInterface(context: ModeContext): any {
+  private designUserInterface(context: ModeContext): unknown {
     return {
       layout: 'responsive_grid_layout',
       navigation: 'intuitive_hierarchical',
@@ -544,7 +544,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private designUserExperience(context: ModeContext): any {
+  private designUserExperience(context: ModeContext): unknown {
     return {
       user_journey: 'streamlined_task_flow',
       interaction_model: 'direct_manipulation',
@@ -552,7 +552,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private designTechnicalAspects(context: ModeContext): any {
+  private designTechnicalAspects(context: ModeContext): unknown {
     return {
       technology_stack: 'modern_web_technologies',
       performance_targets: 'sub_second_response_times',
@@ -560,7 +560,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private designInteractions(context: ModeContext): any {
+  private designInteractions(context: ModeContext): unknown {
     return {
       primary_interactions: ['click', 'drag', 'type'],
       secondary_interactions: ['hover', 'scroll', 'gesture'],
@@ -568,7 +568,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private designVisualElements(context: ModeContext): any {
+  private designVisualElements(context: ModeContext): unknown {
     return {
       color_scheme: 'accessible_high_contrast',
       typography: 'readable_sans_serif',
@@ -584,7 +584,7 @@ export class PrototypingMode extends BaseMode {
     return ['html5', 'css3', 'javascript', 'react', 'nodejs'];
   }
 
-  private createImplementationPlan(context: ModeContext): any {
+  private createImplementationPlan(context: ModeContext): unknown {
     return {
       sprint1: 'core_functionality',
       sprint2: 'user_interface',
@@ -600,7 +600,7 @@ export class PrototypingMode extends BaseMode {
     return 'comprehensive_testing_pyramid';
   }
 
-  private createDeploymentPlan(context: ModeContext): any {
+  private createDeploymentPlan(context: ModeContext): unknown {
     return {
       environment: 'staging_then_production',
       strategy: 'blue_green_deployment',
@@ -619,7 +619,7 @@ export class PrototypingMode extends BaseMode {
     ];
   }
 
-  private planUserTesting(context: ModeContext): any {
+  private planUserTesting(context: ModeContext): unknown {
     return {
       participants: 'representative_user_group',
       methods: ['task_completion', 'think_aloud', 'post_test_interview'],
@@ -627,7 +627,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private planTechnicalTesting(context: ModeContext): any {
+  private planTechnicalTesting(context: ModeContext): unknown {
     return {
       performance: 'load_and_stress_testing',
       security: 'vulnerability_assessment',
@@ -635,7 +635,7 @@ export class PrototypingMode extends BaseMode {
     };
   }
 
-  private analyzeTestResults(context: ModeContext): any {
+  private analyzeTestResults(context: ModeContext): unknown {
     return {
       summary: 'generally_positive_with_improvement_areas',
       key_findings: ['navigation_confusion', 'performance_bottleneck'],
@@ -659,7 +659,7 @@ export class PrototypingMode extends BaseMode {
     return 'design_sprint_methodology';
   }
 
-  private planFeedbackIntegration(context: ModeContext): any {
+  private planFeedbackIntegration(context: ModeContext): unknown {
     return {
       collection: 'continuous_feedback_loops',
       analysis: 'thematic_analysis',
@@ -675,7 +675,7 @@ export class PrototypingMode extends BaseMode {
     return 0.85;
   }
 
-  private assessConvergence(context: ModeContext): any {
+  private assessConvergence(context: ModeContext): unknown {
     return {
       status: 'converging_toward_optimal_solution',
       confidence: 0.8,
@@ -695,7 +695,7 @@ export class PrototypingMode extends BaseMode {
     return ['usability_score_above_threshold', 'task_completion_rate', 'user_satisfaction'];
   }
 
-  private analyzeValidationResults(context: ModeContext): any {
+  private analyzeValidationResults(context: ModeContext): unknown {
     return {
       usability_score: 0.8,
       completion_rate: 0.9,
@@ -716,7 +716,7 @@ export class PrototypingMode extends BaseMode {
     ];
   }
 
-  private createSpecifications(context: ModeContext): any {
+  private createSpecifications(context: ModeContext): unknown {
     return {
       functional: 'detailed_feature_specifications',
       technical: 'architecture_and_implementation_details',
@@ -728,7 +728,7 @@ export class PrototypingMode extends BaseMode {
     return 'comprehensive_user_guide_with_screenshots_and_tutorials';
   }
 
-  private createTechnicalDocumentation(context: ModeContext): any {
+  private createTechnicalDocumentation(context: ModeContext): unknown {
     return {
       api_documentation: 'complete_api_reference',
       deployment_guide: 'step_by_step_deployment_instructions',
@@ -744,7 +744,7 @@ export class PrototypingMode extends BaseMode {
     ];
   }
 
-  private planFutureIterations(context: ModeContext): any {
+  private planFutureIterations(context: ModeContext): unknown {
     return {
       short_term: 'address_current_feedback',
       medium_term: 'add_advanced_features',

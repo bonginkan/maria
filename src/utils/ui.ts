@@ -30,7 +30,7 @@ export function printWelcome(): void {
   renderAIServicesStatus(layout);
 }
 
-export function printStatus(health: any): void {
+export function printStatus(health: unknown): void {
   const layout = LayoutManager.getOptimalLayout();
 
   // Render status with optimized layout
@@ -69,7 +69,7 @@ export function formatResourceUsage(percentage: number): string {
 /**
  * MARIA CODEヘッダー描画（ブランドロゴ対応）
  */
-function renderMARIAHeader(layout: any): void {
+function renderMARIAHeader(layout: unknown): void {
   const headerContent = [
     'MARIA CODE',
     'AI-Powered Development Platform',
@@ -89,7 +89,7 @@ function renderMARIAHeader(layout: any): void {
 /**
  * セッション情報表示
  */
-function renderSessionInfo(layout: any): void {
+function renderSessionInfo(layout: unknown): void {
   const info = [
     LayoutManager.alignText(
       'Welcome to MARIA CODE Interactive Chat',
@@ -115,7 +115,7 @@ function renderSessionInfo(layout: any): void {
 /**
  * AI サービス状況表示（最適化版）
  */
-function renderAIServicesStatus(layout: any): void {
+function renderAIServicesStatus(layout: unknown): void {
   console.log(TEXT_HIERARCHY.SUBTITLE('Available AI Services:'));
   console.log(SEMANTIC_COLORS.MUTED(LayoutManager.createSectionSeparator(layout.contentWidth)));
 
@@ -184,7 +184,7 @@ function renderLocalAIStatus(): void {
 /**
  * ヘルス状況の全体ステータス描画
  */
-function renderOverallStatus(health: any): string {
+function renderOverallStatus(health: unknown): string {
   const statusIcon =
     health.overall === 'healthy'
       ? IconRegistry.get('SUCCESS')
@@ -205,13 +205,13 @@ function renderOverallStatus(health: any): string {
 /**
  * ヘルス状況のセクション描画
  */
-function renderHealthSections(health: any): string[] {
+function renderHealthSections(health: unknown): string[] {
   const sections: string[] = [''];
 
   // AI Providers
   if (health.providers && health.providers.length > 0) {
     sections.push(TEXT_HIERARCHY.SUBTITLE('AI Providers:'));
-    health.providers.forEach((provider: any) => {
+    health.providers.forEach((provider: unknown) => {
       const statusIcon =
         provider.health.status === 'healthy'
           ? IconRegistry.get('SUCCESS')
@@ -241,7 +241,7 @@ function renderHealthSections(health: any): string[] {
   // Recommendations
   if (health.recommendations && health.recommendations.length > 0) {
     sections.push(TEXT_HIERARCHY.SUBTITLE('Recommendations:'));
-    health.recommendations.forEach((rec: any) => {
+    health.recommendations.forEach((rec: unknown) => {
       const icon =
         rec.type === 'error'
           ? IconRegistry.get('ERROR')
@@ -259,7 +259,7 @@ function renderHealthSections(health: any): string[] {
 /**
  * ヘルス状況に応じたテーマ取得
  */
-function getHealthTheme(overall: string): any {
+function getHealthTheme(overall: string): unknown {
   switch (overall) {
     case 'healthy':
       return 'success';

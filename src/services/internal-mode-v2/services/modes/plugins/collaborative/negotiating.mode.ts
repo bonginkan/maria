@@ -329,7 +329,7 @@ export class NegotiatingMode extends BaseMode {
     // Implementation would save to persistent storage
   }
 
-  private async storeNegotiationOutcomes(results: any): Promise<void> {
+  private async storeNegotiationOutcomes(results: unknown): Promise<void> {
     const key = this.generateNegotiationKey(results);
     this.negotiationHistory.set(key, {
       ...results,
@@ -358,7 +358,7 @@ export class NegotiatingMode extends BaseMode {
     return 'medium';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.7;
 
     if (results.consensus.level > 0.7) confidence += 0.1;
@@ -442,25 +442,25 @@ export class NegotiatingMode extends BaseMode {
     return ['safety requirements', 'regulatory compliance', 'core functionality'];
   }
 
-  private selectNegotiationStrategy(situation: any): string {
+  private selectNegotiationStrategy(situation: unknown): string {
     if (situation.urgency === 'high') return 'collaborative_expedited';
     if (situation.complexity === 'high') return 'structured_facilitated';
     return 'collaborative_consensus';
   }
 
-  private defineNegotiationApproach(situation: any): string {
+  private defineNegotiationApproach(situation: unknown): string {
     return 'interest_based_problem_solving';
   }
 
-  private identifyNegotiationTactics(situation: any): string[] {
+  private identifyNegotiationTactics(situation: unknown): string[] {
     return ['active_listening', 'reframing', 'option_generation', 'objective_criteria'];
   }
 
-  private developFallbackOptions(situation: any): string[] {
+  private developFallbackOptions(situation: unknown): string[] {
     return ['escalation_to_management', 'external_mediation', 'phased_implementation'];
   }
 
-  private planNegotiationTimeline(situation: any): any {
+  private planNegotiationTimeline(situation: unknown): unknown {
     return {
       preparation: '1 week',
       negotiation: '2-3 sessions',
@@ -473,7 +473,7 @@ export class NegotiatingMode extends BaseMode {
     return ['preparation', 'opening', 'exploration', 'bargaining', 'closure'];
   }
 
-  private designMeetingStructure(): any {
+  private designMeetingStructure(): unknown {
     return {
       duration: '2-3 hours per session',
       frequency: 'weekly',
@@ -495,7 +495,7 @@ export class NegotiatingMode extends BaseMode {
     return 'neutral_facilitation';
   }
 
-  private designCommunicationProtocol(): any {
+  private designCommunicationProtocol(): unknown {
     return {
       channels: ['meetings', 'email', 'documentation'],
       frequency: 'regular_updates',
@@ -507,7 +507,7 @@ export class NegotiatingMode extends BaseMode {
     return 'consensus_with_fallback_voting';
   }
 
-  private createOpeningFramework(): any {
+  private createOpeningFramework(): unknown {
     return {
       agenda_setting: 'collaborative',
       expectation_alignment: 'explicit',
@@ -559,7 +559,7 @@ export class NegotiatingMode extends BaseMode {
     return ['role_definitions', 'process_workflows', 'quality_standards'];
   }
 
-  private assessStakeholderSatisfaction(pipeline: any): any {
+  private assessStakeholderSatisfaction(pipeline: unknown): unknown {
     return {
       individual: [0.8, 0.75, 0.85, 0.9],
       average: 0.825,
@@ -567,11 +567,11 @@ export class NegotiatingMode extends BaseMode {
     };
   }
 
-  private calculateEffectiveness(pipeline: any): number {
+  private calculateEffectiveness(pipeline: unknown): number {
     return 0.8; // Simplified calculation
   }
 
-  private generateRecommendations(pipeline: any): string[] {
+  private generateRecommendations(pipeline: unknown): string[] {
     return [
       'Document agreed-upon decisions clearly',
       'Establish regular follow-up meetings',
@@ -587,7 +587,7 @@ export class NegotiatingMode extends BaseMode {
     );
   }
 
-  private generateNegotiationKey(results: any): string {
+  private generateNegotiationKey(results: unknown): string {
     return `negotiation_${results.strategy.type}_${Date.now()}`;
   }
 }

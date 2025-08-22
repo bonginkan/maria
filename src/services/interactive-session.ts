@@ -630,7 +630,7 @@ async function showStatus(maria: MariaAI): Promise<void> {
     // Show provider status
     if (health.providers && health.providers.length > 0) {
       console.log('🤖 AI Providers:');
-      health.providers.forEach((provider: any) => {
+      health.providers.forEach((provider: unknown) => {
         const providerStatus =
           provider.health.status === 'healthy'
             ? '✅'
@@ -651,7 +651,7 @@ async function showStatus(maria: MariaAI): Promise<void> {
     // Show recommendations if any
     if (health.recommendations && health.recommendations.length > 0) {
       console.log('\n💡 Recommendations:');
-      health.recommendations.forEach((rec: any) => {
+      health.recommendations.forEach((rec: unknown) => {
         const icon = rec.type === 'error' ? '🔴' : rec.type === 'warning' ? '🟡' : '🔵';
         console.log(`   ${icon} ${rec.message}`);
       });
@@ -704,7 +704,7 @@ async function showHealth(maria: MariaAI): Promise<void> {
     // AI Providers (for SystemHealth structure)
     if (health.providers && health.providers.length > 0) {
       console.log(chalk.bold('🤖 AI Providers:'));
-      health.providers.forEach((provider: any) => {
+      health.providers.forEach((provider: unknown) => {
         const providerStatus =
           provider.health.status === 'healthy'
             ? '✅'
@@ -752,7 +752,7 @@ async function showHealth(maria: MariaAI): Promise<void> {
     if (health.recommendations && health.recommendations.length > 0) {
       console.log('');
       console.log(chalk.bold('💡 Recommendations:'));
-      health.recommendations.forEach((rec: any) => {
+      health.recommendations.forEach((rec: unknown) => {
         const icon = rec.type === 'error' ? '🔴' : rec.type === 'warning' ? '🟡' : '🔵';
         const message = rec.message || rec;
         console.log(`  ${icon} ${message}`);
@@ -814,7 +814,7 @@ async function showModelSelector(maria: MariaAI, args: string[]): Promise<void> 
   }
 }
 
-async function showInteractiveModelSelector(models: any[]): Promise<void> {
+async function showInteractiveModelSelector(models: unknown[]): Promise<void> {
   if (models.length === 0) {
     console.log(chalk.yellow('No models available'));
     return;

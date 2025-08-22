@@ -221,7 +221,7 @@ export class MentoringMode extends BaseMode {
     this.mentoringHistory.set(sessionKey, session);
   }
 
-  private async updateLearnerProfile(results: any, context: ModeContext): Promise<void> {
+  private async updateLearnerProfile(results: unknown, context: ModeContext): Promise<void> {
     const learnerId = this.generateLearnerId(context);
     const profile = this.learnerProfiles.get(learnerId);
 
@@ -359,7 +359,7 @@ export class MentoringMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.75;
 
     if (results.effectiveness > 0.8) confidence += 0.1;
@@ -369,7 +369,7 @@ export class MentoringMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private analyzeSkillDevelopment(pipeline: any): any {
+  private analyzeSkillDevelopment(pipeline: unknown): unknown {
     return {
       addressed: ['primary_skill', 'supporting_skill_1', 'supporting_skill_2'],
       improvements: [
@@ -381,7 +381,7 @@ export class MentoringMode extends BaseMode {
     };
   }
 
-  private assessEngagement(pipeline: any): any {
+  private assessEngagement(pipeline: unknown): unknown {
     return {
       level: 'high',
       indicators: ['active_participation', 'thoughtful_questions', 'eager_practice'],
@@ -389,11 +389,11 @@ export class MentoringMode extends BaseMode {
     };
   }
 
-  private calculateEffectiveness(pipeline: any): number {
+  private calculateEffectiveness(pipeline: unknown): number {
     return 0.82;
   }
 
-  private generateMentoringRecommendations(pipeline: any): string[] {
+  private generateMentoringRecommendations(pipeline: unknown): string[] {
     return [
       'Continue with current teaching strategy - showing good results',
       'Increase practice opportunities to reinforce learning',
@@ -456,7 +456,7 @@ export class MentoringMode extends BaseMode {
     return 'progressive_scaffolded_learning';
   }
 
-  private designPathStructure(context: ModeContext): any {
+  private designPathStructure(context: ModeContext): unknown {
     return {
       phases: ['foundation_building', 'skill_development', 'application_practice'],
       sequence: 'logical_progressive',
@@ -464,7 +464,7 @@ export class MentoringMode extends BaseMode {
     };
   }
 
-  private planProgression(context: ModeContext): any {
+  private planProgression(context: ModeContext): unknown {
     return {
       pace: 'learner_adaptive',
       complexity_increase: 'gradual',
@@ -483,7 +483,7 @@ export class MentoringMode extends BaseMode {
     ];
   }
 
-  private ensureAdaptability(context: ModeContext): any {
+  private ensureAdaptability(context: ModeContext): unknown {
     return {
       flexibility: 'high',
       adjustment_triggers: ['progress_indicators', 'learner_feedback'],
@@ -491,7 +491,7 @@ export class MentoringMode extends BaseMode {
     };
   }
 
-  private choosePrimaryStrategy(learnerProfile: any, context: ModeContext): string {
+  private choosePrimaryStrategy(learnerProfile: unknown, context: ModeContext): string {
     if (learnerProfile.learning_style.includes('visual')) {
       return 'demonstration_modeling';
     }
@@ -501,11 +501,11 @@ export class MentoringMode extends BaseMode {
     return 'socratic_questioning';
   }
 
-  private chooseSecondaryStrategies(learnerProfile: any, context: ModeContext): string[] {
+  private chooseSecondaryStrategies(learnerProfile: unknown, context: ModeContext): string[] {
     return ['scaffolded_learning', 'reflective_practice'];
   }
 
-  private explainStrategySelection(learnerProfile: any, context: ModeContext): string {
+  private explainStrategySelection(learnerProfile: unknown, context: ModeContext): string {
     return 'Strategy selected based on learning style assessment and content complexity';
   }
 
@@ -521,7 +521,7 @@ export class MentoringMode extends BaseMode {
     return input.split(' ').slice(0, 10).join(' ');
   }
 
-  private organizeContent(context: ModeContext): any {
+  private organizeContent(context: ModeContext): unknown {
     return {
       introduction: 'concept_overview_and_relevance',
       main_content: 'structured_explanation_with_examples',
@@ -541,7 +541,7 @@ export class MentoringMode extends BaseMode {
     ];
   }
 
-  private createExplanations(context: ModeContext): any {
+  private createExplanations(context: ModeContext): unknown {
     return {
       conceptual: 'clear_concept_explanation',
       procedural: 'step_by_step_process',
@@ -567,7 +567,7 @@ export class MentoringMode extends BaseMode {
     return [{ type: 'application_challenge', goal: 'real_world_application' }];
   }
 
-  private provideFeedback(context: ModeContext): any {
+  private provideFeedback(context: ModeContext): unknown {
     return {
       type: 'constructive_and_specific',
       timing: 'immediate_and_ongoing',
@@ -575,7 +575,7 @@ export class MentoringMode extends BaseMode {
     };
   }
 
-  private offerGuidance(context: ModeContext): any {
+  private offerGuidance(context: ModeContext): unknown {
     return {
       approach: 'supportive_and_encouraging',
       detail_level: 'appropriate_for_skill_level',
@@ -587,7 +587,7 @@ export class MentoringMode extends BaseMode {
     return 'positive_reinforcement_and_progress_recognition';
   }
 
-  private makeCorrections(context: ModeContext): any {
+  private makeCorrections(context: ModeContext): unknown {
     return {
       method: 'gentle_redirection_with_explanation',
       focus: 'learning_from_mistakes',

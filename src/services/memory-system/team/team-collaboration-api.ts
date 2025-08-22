@@ -296,7 +296,7 @@ export class TeamCollaborationAPI extends EventEmitter {
       limit?: number;
       includeRatings?: boolean;
     },
-  ): Promise<any[]> {
+  ): Promise<unknown[]> {
     const session = this.sessions.get(sessionId);
     if (!session) {
       throw new Error('Session not found');
@@ -504,7 +504,7 @@ export class TeamCollaborationAPI extends EventEmitter {
   async getPersonalizedSuggestions(
     memberId: string,
     workspaceId: string,
-    context: any,
+    context: unknown,
   ): Promise<string[]> {
     // Get suggestions from learning engine
     const learningSuggestions = await this.learningEngine.getPersonalizedSuggestions(
@@ -527,12 +527,12 @@ export class TeamCollaborationAPI extends EventEmitter {
   /**
    * Helper functions
    */
-  private handleMemoryShared(workspace: any, member: any, memory: any): void {
+  private handleMemoryShared(workspace: unknown, member: unknown, memory: unknown): void {
     // Broadcast to other team members
     this.emit('team:memory:shared', { workspace, member, memory });
   }
 
-  private handleMemberJoined(workspace: any, member: any): void {
+  private handleMemberJoined(workspace: unknown, member: unknown): void {
     // Initialize member's personalization
     if (this.config.enablePersonalization) {
       // Member profile will be created on first interaction
@@ -550,7 +550,7 @@ export class TeamCollaborationAPI extends EventEmitter {
     session: CollaborationSession,
     memberId: string,
     action: string,
-    details: any,
+    details: unknown,
   ): void {
     session.activities.push({
       timestamp: new Date(),
@@ -560,7 +560,7 @@ export class TeamCollaborationAPI extends EventEmitter {
     });
   }
 
-  private parsePersonalizedResults(content: string): any[] {
+  private parsePersonalizedResults(content: string): unknown[] {
     try {
       // Try to parse as JSON array
       return JSON.parse(content);
@@ -570,7 +570,7 @@ export class TeamCollaborationAPI extends EventEmitter {
     }
   }
 
-  private calculateCollaborationScore(statistics: any, sessions: CollaborationSession[]): number {
+  private calculateCollaborationScore(statistics: unknown, sessions: CollaborationSession[]): number {
     // Factors for collaboration score
     const factors = {
       contributions: Math.min(1, statistics.sharedCount / 100),
@@ -598,7 +598,7 @@ export class TeamCollaborationAPI extends EventEmitter {
     return allRatings.reduce((sum, rating) => sum + rating, 0) / allRatings.length;
   }
 
-  private async storeSessionSummary(session: CollaborationSession, metrics: any): Promise<void> {
+  private async storeSessionSummary(session: CollaborationSession, metrics: unknown): Promise<void> {
     const summary = {
       sessionId: session.id,
       workspaceId: session.workspaceId,
@@ -658,7 +658,7 @@ export class TeamCollaborationAPI extends EventEmitter {
   /**
    * Export workspace data
    */
-  async exportWorkspaceData(workspaceId: string): Promise<any> {
+  async exportWorkspaceData(workspaceId: string): Promise<unknown> {
     const workspaceData = await this.teamManager.exportWorkspaceMemory(workspaceId);
 
     // Add session data

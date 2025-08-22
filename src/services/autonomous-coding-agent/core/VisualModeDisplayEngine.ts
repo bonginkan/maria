@@ -217,7 +217,7 @@ export class VisualModeDisplayEngine {
   /**
    * Show mode execution result
    */
-  async showModeResult(mode: CodingMode, result: any): Promise<void> {
+  async showModeResult(mode: CodingMode, result: unknown): Promise<void> {
     if (this.visualizationLevel === 'minimal') return;
 
     console.log(chalk.green(`  ✅ ${mode.name} completed`));

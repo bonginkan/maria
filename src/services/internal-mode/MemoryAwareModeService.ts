@@ -610,7 +610,7 @@ export class MemoryAwareModeService extends EventEmitter {
     }
   }
 
-  private async adaptModeBasedOnFeedback(modeId: string, feedback: any): Promise<void> {
+  private async adaptModeBasedOnFeedback(modeId: string, feedback: unknown): Promise<void> {
     // Implement mode adaptation logic based on feedback
     console.log(`Adapting mode ${modeId} based on feedback:`, feedback);
   }
@@ -687,7 +687,7 @@ export class MemoryAwareModeService extends EventEmitter {
     };
   }
 
-  private mapModeToCategory(mode: ModeDefinition): any {
+  private mapModeToCategory(mode: ModeDefinition): unknown {
     // Map mode to cognitive category based on its characteristics
     if (mode.name.includes('Debug')) return 'validation';
     if (mode.name.includes('Think')) return 'reasoning';
@@ -695,7 +695,7 @@ export class MemoryAwareModeService extends EventEmitter {
     return 'reasoning'; // Default
   }
 
-  private createMemoryRequirements(): any {
+  private createMemoryRequirements(): unknown {
     return {
       system1Usage: {
         patternMatching: true,
@@ -729,7 +729,7 @@ export class MemoryAwareModeService extends EventEmitter {
     };
   }
 
-  private createInitialMemoryState(): any {
+  private createInitialMemoryState(): unknown {
     return {
       system1Cache: {
         relevantPatterns: [],
@@ -763,7 +763,7 @@ export class MemoryAwareModeService extends EventEmitter {
     };
   }
 
-  private createInitialPerformanceMetrics(): any {
+  private createInitialPerformanceMetrics(): unknown {
     return {
       activationAccuracy: 0.8,
       responseTime: 100,

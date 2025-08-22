@@ -213,7 +213,7 @@ export class VisualizingMode extends BaseMode {
     // Save visualization artifacts and metadata
   }
 
-  private async storeVisualizationResults(results: any): Promise<void> {
+  private async storeVisualizationResults(results: unknown): Promise<void> {
     const visualizationKey = `visualization_${Date.now()}`;
     this.visualizationHistory.set(visualizationKey, {
       ...results,
@@ -355,7 +355,7 @@ export class VisualizingMode extends BaseMode {
     return 'low';
   }
 
-  private assessRepresentationNeeds(context: ModeContext): any {
+  private assessRepresentationNeeds(context: ModeContext): unknown {
     return {
       clarity: 'high_priority',
       interactivity: 'medium_priority',
@@ -364,7 +364,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.75;
 
     if (results.effectiveness > 0.8) confidence += 0.1;
@@ -374,7 +374,7 @@ export class VisualizingMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private assessClarityAchieved(pipeline: any): any {
+  private assessClarityAchieved(pipeline: unknown): unknown {
     return {
       score: 0.85,
       level: 'high',
@@ -382,14 +382,14 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private assessComplexityHandled(pipeline: any): any {
+  private assessComplexityHandled(pipeline: unknown): unknown {
     return {
       level: 'medium',
       strategies: ['progressive_disclosure', 'layered_information', 'contextual_details'],
     };
   }
 
-  private assessInteractivityLevel(pipeline: any): any {
+  private assessInteractivityLevel(pipeline: unknown): unknown {
     return {
       level: 'medium',
       features: ['hover_details', 'clickable_elements', 'filter_controls'],
@@ -397,11 +397,11 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private calculateVisualizationEffectiveness(pipeline: any): number {
+  private calculateVisualizationEffectiveness(pipeline: unknown): number {
     return 0.83;
   }
 
-  private generateVisualizationRecommendations(pipeline: any): string[] {
+  private generateVisualizationRecommendations(pipeline: unknown): string[] {
     return [
       'Consider progressive disclosure for complex data',
       'Ensure accessibility compliance for all visualizations',
@@ -419,7 +419,7 @@ export class VisualizingMode extends BaseMode {
     return 'mixed';
   }
 
-  private analyzeDataStructure(input: string): any {
+  private analyzeDataStructure(input: string): unknown {
     return {
       dimensions: this.countDataDimensions(input),
       hierarchy: this.identifyHierarchy(input),
@@ -476,7 +476,7 @@ export class VisualizingMode extends BaseMode {
     return ['user_comprehension', 'task_completion', 'engagement_level'];
   }
 
-  private choosePrimaryType(dataAnalysis: any, purpose: any, context: ModeContext): string {
+  private choosePrimaryType(dataAnalysis: unknown, purpose: unknown, context: ModeContext): string {
     if (purpose.primary_goal === 'trend_analysis') return 'line_chart';
     if (purpose.primary_goal === 'comparison') return 'bar_chart';
     if (purpose.primary_goal === 'distribution') return 'histogram';
@@ -485,14 +485,14 @@ export class VisualizingMode extends BaseMode {
   }
 
   private identifyAlternativeTypes(
-    dataAnalysis: any,
-    purpose: any,
+    dataAnalysis: unknown,
+    purpose: unknown,
     context: ModeContext,
   ): string[] {
     return ['scatter_plot', 'heatmap', 'treemap', 'network_diagram'];
   }
 
-  private explainTypeChoice(dataAnalysis: any, purpose: any, context: ModeContext): string {
+  private explainTypeChoice(dataAnalysis: unknown, purpose: unknown, context: ModeContext): string {
     return 'Type chosen based on data characteristics and communication goals';
   }
 
@@ -500,7 +500,7 @@ export class VisualizingMode extends BaseMode {
     return ['multi_panel_dashboard', 'linked_visualizations', 'layered_displays'];
   }
 
-  private planLayout(context: ModeContext): any {
+  private planLayout(context: ModeContext): unknown {
     return {
       structure: 'grid_based',
       alignment: 'consistent_margins',
@@ -508,7 +508,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private selectColorScheme(context: ModeContext): any {
+  private selectColorScheme(context: ModeContext): unknown {
     return {
       palette: 'professional_blue_theme',
       accessibility: 'colorblind_friendly',
@@ -516,7 +516,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private chooseTypography(context: ModeContext): any {
+  private chooseTypography(context: ModeContext): unknown {
     return {
       primary_font: 'sans_serif_readable',
       hierarchy: 'clear_size_differences',
@@ -524,7 +524,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private establishVisualHierarchy(context: ModeContext): any {
+  private establishVisualHierarchy(context: ModeContext): unknown {
     return {
       primary_elements: 'emphasized',
       secondary_elements: 'supporting',
@@ -532,7 +532,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private planSpacing(context: ModeContext): any {
+  private planSpacing(context: ModeContext): unknown {
     return {
       whitespace: 'generous_but_efficient',
       grouping: 'logical_element_clustering',
@@ -540,7 +540,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private planAccessibility(context: ModeContext): any {
+  private planAccessibility(context: ModeContext): unknown {
     return {
       color_independence: 'patterns_and_textures',
       keyboard_navigation: 'full_accessibility',
@@ -592,7 +592,7 @@ export class VisualizingMode extends BaseMode {
     return 0.8;
   }
 
-  private collectUsabilityFeedback(context: ModeContext): any {
+  private collectUsabilityFeedback(context: ModeContext): unknown {
     return {
       clarity: 'high_user_satisfaction',
       ease_of_use: 'intuitive_interface',
@@ -608,7 +608,7 @@ export class VisualizingMode extends BaseMode {
     return ['interaction_smoothing', 'performance_optimization', 'visual_polish'];
   }
 
-  private incorporateUserFeedback(context: ModeContext): any {
+  private incorporateUserFeedback(context: ModeContext): unknown {
     return {
       feedback_collected: true,
       changes_implemented: 'responsive_to_user_needs',
@@ -616,7 +616,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private optimizePerformance(context: ModeContext): any {
+  private optimizePerformance(context: ModeContext): unknown {
     return {
       load_time: 'optimized',
       interactivity: 'responsive',
@@ -624,7 +624,7 @@ export class VisualizingMode extends BaseMode {
     };
   }
 
-  private applyFinalPolish(context: ModeContext): any {
+  private applyFinalPolish(context: ModeContext): unknown {
     return {
       visual_refinement: 'professional_finish',
       interaction_smoothing: 'seamless_experience',

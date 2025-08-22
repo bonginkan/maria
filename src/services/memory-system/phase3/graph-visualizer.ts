@@ -158,8 +158,8 @@ export class GraphVisualizer {
    * Render a node and its children recursively
    */
   private renderNode(
-    node: any,
-    graphData: any,
+    node: unknown,
+    graphData: unknown,
     depth: number,
     maxDepth: number,
     visited: Set<string>,
@@ -184,14 +184,14 @@ export class GraphVisualizer {
     }
 
     // Find connected nodes
-    const connections = graphData.edges.filter((e: any) => e.source === node.id);
+    const connections = graphData.edges.filter((e: unknown) => e.source === node.id);
 
     for (const edge of connections) {
       if (counter.nodeCount >= counter.maxNodes) break;
 
       if (this.shouldFilterEdge(edge, options.filter)) continue;
 
-      const targetNode = graphData.nodes.find((n: any) => n.id === edge.target);
+      const targetNode = graphData.nodes.find((n: unknown) => n.id === edge.target);
       if (!targetNode) continue;
 
       // Render edge
@@ -310,7 +310,7 @@ export class GraphVisualizer {
 
       for (const node of nodes.slice(0, maxNodes - totalNodes)) {
         const connections = graphData.edges.filter(
-          (e: any) => e.source === node.id || e.target === node.id,
+          (e: unknown) => e.source === node.id || e.target === node.id,
         ).length;
 
         lines.push(
@@ -406,7 +406,7 @@ export class GraphVisualizer {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([id, connections]) => {
-        const node = graphData.nodes.find((n: any) => n.id === id);
+        const node = graphData.nodes.find((n: unknown) => n.id === id);
         return node ? { ...node, connections } : null;
       })
       .filter(Boolean);
@@ -451,7 +451,7 @@ export class GraphVisualizer {
     return this.colors.primary(header.substring(0, this.CONTENT_WIDTH));
   }
 
-  private createFooter(graphData: any): string {
+  private createFooter(graphData: unknown): string {
     const timestamp = new Date().toISOString();
     const footer = `Generated: ${timestamp} | Nodes: ${graphData.nodes.length} | Edges: ${graphData.edges.length}`;
     return this.colors.muted('─'.repeat(this.CONTENT_WIDTH) + '\n' + footer);
@@ -465,7 +465,7 @@ export class GraphVisualizer {
     return this.colors.primary('█'.repeat(filled)) + this.colors.muted('░'.repeat(empty));
   }
 
-  private formatNodeLine(node: any, depth: number, options: VisualizationOptions): string {
+  private formatNodeLine(node: unknown, depth: number, options: VisualizationOptions): string {
     const indent = '  '.repeat(depth);
     const symbol = this.symbols[node.type as keyof typeof this.symbols] || '•';
     const label = node.label || node.name || node.id;
@@ -485,13 +485,13 @@ export class GraphVisualizer {
     return line;
   }
 
-  private formatNodeLabel(node: any): string {
+  private formatNodeLabel(node: unknown): string {
     const symbol = this.symbols[node.type as keyof typeof this.symbols] || '•';
     const label = (node.label || node.name || node.id).substring(0, 15).padEnd(15);
     return `${symbol} ${label}`;
   }
 
-  private formatEdgeLine(edge: any, depth: number): string {
+  private formatEdgeLine(edge: unknown, depth: number): string {
     const indent = '  '.repeat(depth);
     const symbol =
       this.edgeSymbols[edge.type as keyof typeof this.edgeSymbols] || this.edgeSymbols.default;
@@ -499,7 +499,7 @@ export class GraphVisualizer {
     return this.colors.muted(`${indent}  ${symbol} ${edge.type}`);
   }
 
-  private formatMetadata(metadata: any, depth: number): string {
+  private formatMetadata(metadata: unknown, depth: number): string {
     const indent = '  '.repeat(depth);
     const items = Object.entries(metadata)
       .map(([key, value]) => `${key}: ${value}`)
@@ -524,17 +524,17 @@ export class GraphVisualizer {
     return this.edgeSymbols[type as keyof typeof this.edgeSymbols] || this.edgeSymbols.default;
   }
 
-  private findRootNodes(graphData: any): string[] {
+  private findRootNodes(graphData: unknown): string[] {
     const hasIncoming = new Set<string>();
 
     for (const edge of graphData.edges) {
       hasIncoming.add(edge.target);
     }
 
-    return graphData.nodes.filter((n: any) => !hasIncoming.has(n.id)).map((n: any) => n.id);
+    return graphData.nodes.filter((n: unknown) => !hasIncoming.has(n.id)).map((n: unknown) => n.id);
   }
 
-  private shouldFilterNode(node: any, filter?: any): boolean {
+  private shouldFilterNode(node: unknown, filter?: unknown): boolean {
     if (!filter) return false;
 
     if (filter.nodeTypes && !filter.nodeTypes.includes(node.type)) {
@@ -548,7 +548,7 @@ export class GraphVisualizer {
     return false;
   }
 
-  private shouldFilterEdge(edge: any, filter?: any): boolean {
+  private shouldFilterEdge(edge: unknown, filter?: unknown): boolean {
     if (!filter) return false;
 
     if (filter.edgeTypes && !filter.edgeTypes.includes(edge.type)) {

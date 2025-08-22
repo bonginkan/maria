@@ -18,7 +18,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 
 let collaborationAPI: TeamCollaborationAPI | null = null;
-let currentSession: any = null;
+let currentSession: unknown = null;
 let currentUser: TeamMember | null = null;
 
 export default function registerTeamMemoryCommand(program: Command) {
@@ -460,7 +460,7 @@ async function saveWorkspaceInfo(workspace: TeamWorkspace): Promise<void> {
 
   const configPath = path.join(configDir, 'workspace.json');
 
-  let config: any = {};
+  let config: unknown = {};
   try {
     const existing = await fs.readFile(configPath, 'utf-8');
     config = JSON.parse(existing);
@@ -479,7 +479,7 @@ async function saveWorkspaceInfo(workspace: TeamWorkspace): Promise<void> {
   await fs.writeFile(configPath, JSON.stringify(config, null, 2));
 }
 
-function formatContent(content: any): string {
+function formatContent(content: unknown): string {
   if (typeof content === 'string') {
     return content.substring(0, 200) + (content.length > 200 ? '...' : '');
   }

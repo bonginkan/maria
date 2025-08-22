@@ -14,10 +14,10 @@ class ModeOrchestrator {
   async determineModes(task: Task): Promise<CodingMode[]> {
     return [{ name: 'DefaultMode', symbol: '⚡', category: 'code_development' }];
   }
-  async getEngine(category: string): Promise<any> {
+  async getEngine(category: string): Promise<unknown> {
     return { execute: async () => ({ success: true }) };
   }
-  async attemptRecovery(mode: CodingMode, _error: Error): Promise<any> {
+  async attemptRecovery(mode: CodingMode, _error: Error): Promise<unknown> {
     return { success: false };
   }
   async findAlternative(mode: CodingMode): Promise<CodingMode | null> {
@@ -26,7 +26,7 @@ class ModeOrchestrator {
 }
 
 class ProactiveReporter {
-  async report(report: any): Promise<void> {
+  async report(report: unknown): Promise<void> {
     console.log('Report:', report.title);
   }
 }

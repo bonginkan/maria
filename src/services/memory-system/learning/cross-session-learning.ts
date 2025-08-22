@@ -270,8 +270,8 @@ export class CrossSessionLearningEngine extends EventEmitter {
   /**
    * Analyze interaction for patterns
    */
-  private analyzeInteraction(interaction: Interaction): any[] {
-    const patterns: any[] = [];
+  private analyzeInteraction(interaction: Interaction): unknown[] {
+    const patterns: unknown[] = [];
 
     // Command patterns
     if (interaction.type === 'command') {
@@ -346,7 +346,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
   /**
    * Extract behavior pattern from interaction
    */
-  private extractBehaviorPattern(interaction: Interaction): any {
+  private extractBehaviorPattern(interaction: Interaction): unknown {
     // Simple pattern extraction - in production, use NLP
     const input = interaction.input.toLowerCase();
 
@@ -409,8 +409,8 @@ export class CrossSessionLearningEngine extends EventEmitter {
   /**
    * Analyze session for learnings
    */
-  private analyzeSessionForLearnings(session: SessionData): any[] {
-    const candidates: any[] = [];
+  private analyzeSessionForLearnings(session: SessionData): unknown[] {
+    const candidates: unknown[] = [];
 
     // Analyze success patterns
     const successfulInteractions = session.interactions.filter((i) => i.success);
@@ -453,9 +453,9 @@ export class CrossSessionLearningEngine extends EventEmitter {
   /**
    * Extract success patterns
    */
-  private extractSuccessPatterns(interactions: Interaction[]): any[] {
+  private extractSuccessPatterns(interactions: Interaction[]): unknown[] {
     // Group by type and analyze
-    const patterns: any[] = [];
+    const patterns: unknown[] = [];
     const typeGroups = new Map<string, Interaction[]>();
 
     interactions.forEach((i) => {
@@ -597,7 +597,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
   /**
    * Get personalized suggestions
    */
-  async getPersonalizedSuggestions(userId: string, context: any): Promise<string[]> {
+  async getPersonalizedSuggestions(userId: string, context: unknown): Promise<string[]> {
     const profile = this.profiles.get(userId);
     if (!profile) return [];
 
@@ -766,7 +766,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
     }
   }
 
-  private findLearning(userId: string, pattern: any): Learning | undefined {
+  private findLearning(userId: string, pattern: unknown): Learning | undefined {
     const userLearnings = this.learnings.get(userId) || [];
     return userLearnings.find(
       (l) =>

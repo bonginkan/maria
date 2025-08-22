@@ -375,7 +375,7 @@ export class DeducingMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.78;
 
     if (results.validity.overall_score > 0.85) confidence += 0.1;
@@ -385,11 +385,11 @@ export class DeducingMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private calculateDeductionAccuracy(pipeline: any): number {
+  private calculateDeductionAccuracy(pipeline: unknown): number {
     return 0.86;
   }
 
-  private generateDeductionRecommendations(pipeline: any): string[] {
+  private generateDeductionRecommendations(pipeline: unknown): string[] {
     return [
       'Verify premise validity before drawing conclusions',
       'Check logical consistency throughout inference chain',
@@ -425,7 +425,7 @@ export class DeducingMode extends BaseMode {
     return 0.8; // Simplified reliability assessment
   }
 
-  private classifyPremises(premises: unknown[]): any {
+  private classifyPremises(premises: unknown[]): unknown {
     return {
       factual: premises.filter((p) => p.type === 'explicit'),
       hypothetical: premises.filter((p) => p.type === 'assumption'),
@@ -481,14 +481,14 @@ export class DeducingMode extends BaseMode {
     );
   }
 
-  private isRuleApplicable(rule: any, context: ModeContext): boolean {
+  private isRuleApplicable(rule: unknown, context: ModeContext): boolean {
     // Simplified rule applicability check
     return (
       context.input.toLowerCase().includes('if') || context.input.toLowerCase().includes('then')
     );
   }
 
-  private applyRule(rule: any, context: ModeContext): any {
+  private applyRule(rule: unknown, context: ModeContext): unknown {
     return {
       rule_name: rule.name,
       application_result: 'rule_successfully_applied',
@@ -578,7 +578,7 @@ export class DeducingMode extends BaseMode {
     return 'questionable_soundness';
   }
 
-  private assessPremiseTruth(context: ModeContext): any {
+  private assessPremiseTruth(context: ModeContext): unknown {
     return {
       overall_reliability: 0.85,
       factual_premises: 'well_supported',

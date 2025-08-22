@@ -35,7 +35,7 @@ export interface EncryptionRule {
 export interface DataCondition {
   field: string;
   operator: 'equals' | 'contains' | 'matches' | 'in';
-  value: any;
+  value: Event;
   priority: number;
 }
 
@@ -230,7 +230,7 @@ export interface DLPAction {
 export interface ActionCondition {
   field: string;
   operator: string;
-  value: any;
+  value: Event;
 }
 
 export interface DLPException {
@@ -332,7 +332,7 @@ export interface LogDestination {
 export interface LogFilter {
   field: string;
   operator: string;
-  value: any;
+  value: Event;
   action: 'include' | 'exclude';
 }
 
@@ -495,7 +495,7 @@ export interface ThreatMitigation {
 export interface ThreatCondition {
   field: string;
   operator: string;
-  value: any;
+  value: Event;
   weight: number;
 }
 
@@ -526,7 +526,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
    * Encrypt data based on classification and policies
    */
   async encryptData(
-    data: any,
+    data: unknown,
     classification: DataClassification,
     context?: Record<string, any>,
   ): Promise<EncryptedData> {
@@ -564,7 +564,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
   /**
    * Decrypt data with security checks
    */
-  async decryptData(encryptedData: EncryptedData, context?: Record<string, any>): Promise<any> {
+  async decryptData(encryptedData: EncryptedData, context?: Record<string, any>): Promise<unknown> {
     try {
       // Validate encrypted data
       await this.validateEncryptedData(encryptedData);
@@ -609,7 +609,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
   /**
    * Detect and analyze threats
    */
-  async detectThreats(data: any, context: Record<string, any>): Promise<ThreatEvent[]> {
+  async detectThreats(data: unknown, context: Record<string, any>): Promise<ThreatEvent[]> {
     const threats: ThreatEvent[] = [];
 
     try {
@@ -645,7 +645,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
    * Secure data transfer
    */
   async secureTransfer(
-    data: any,
+    data: unknown,
     destination: string,
     classification: DataClassification,
     context?: Record<string, any>,
@@ -798,7 +798,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
   }
 
   private getEncryptionRule(
-    data: any,
+    data: unknown,
     classification: DataClassification,
     context?: Record<string, any>,
   ): EncryptionRule {
@@ -846,7 +846,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
 
   private evaluateDataCondition(
     condition: DataCondition,
-    data: any,
+    data: unknown,
     context?: Record<string, any>,
   ): boolean {
     const value = this.getFieldValue(condition.field, data, context);
@@ -865,7 +865,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
     }
   }
 
-  private getFieldValue(field: string, data: any, context?: Record<string, any>): any {
+  private getFieldValue(field: string, data: unknown, context?: Record<string, any>): unknown {
     // Check context first
     if (context && context[field] !== undefined) {
       return context[field];
@@ -1022,7 +1022,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
     console.log(`Emergency encrypting target: ${target.identifier}`);
   }
 
-  private async processDLPViolation(violation: any): Promise<void> {
+  private async processDLPViolation(violation: unknown): Promise<void> {
     // Handle DLP violation
     await this.auditLogger.logDLPViolation(violation);
     this.emit('dlpViolation', violation);
@@ -1071,7 +1071,7 @@ export class EnterpriseSecurityManager extends EventEmitter {
 
   private async handleSecurityError(
     type: string,
-    error: any,
+    error: unknown,
     context?: Record<string, any>,
   ): Promise<void> {
     await this.auditLogger.logSecurityError(type, error, context);
@@ -1130,7 +1130,7 @@ class EncryptionEngine {
   ) {}
 
   async encrypt(
-    data: any,
+    data: unknown,
     rule: EncryptionRule,
     classification: DataClassification,
   ): Promise<EncryptedData> {
@@ -1164,7 +1164,7 @@ class EncryptionEngine {
     };
   }
 
-  async decrypt(encryptedData: EncryptedData): Promise<any> {
+  async decrypt(encryptedData: EncryptedData): Promise<unknown> {
     // Simplified decryption
     return JSON.parse('{}');
   }
@@ -1187,19 +1187,19 @@ class ThreatDetector extends EventEmitter {
     super();
   }
 
-  async detectIntrusions(data: any, context: Record<string, any>): Promise<ThreatEvent[]> {
+  async detectIntrusions(data: unknown, context: Record<string, any>): Promise<ThreatEvent[]> {
     return [];
   }
 
-  async detectAnomalies(data: any, context: Record<string, any>): Promise<ThreatEvent[]> {
+  async detectAnomalies(data: unknown, context: Record<string, any>): Promise<ThreatEvent[]> {
     return [];
   }
 
-  async scanMalware(data: any, context: Record<string, any>): Promise<ThreatEvent[]> {
+  async scanMalware(data: unknown, context: Record<string, any>): Promise<ThreatEvent[]> {
     return [];
   }
 
-  async detectExfiltration(data: any, context: Record<string, any>): Promise<ThreatEvent[]> {
+  async detectExfiltration(data: unknown, context: Record<string, any>): Promise<ThreatEvent[]> {
     return [];
   }
 
@@ -1222,7 +1222,7 @@ class DLPEngine extends EventEmitter {
   }
 
   async inspect(
-    data: any,
+    data: unknown,
     classification: DataClassification,
     context?: Record<string, any>,
   ): Promise<{
@@ -1239,7 +1239,7 @@ class DLPEngine extends EventEmitter {
   }
 
   async checkTransferPolicy(
-    data: any,
+    data: unknown,
     destination: string,
     classification: DataClassification,
   ): Promise<void> {
@@ -1272,7 +1272,7 @@ class SecurityMonitor extends EventEmitter {
     console.log(`Security event: ${type}`, data);
   }
 
-  async sendAlert(alert: any): Promise<void> {
+  async sendAlert(alert: unknown): Promise<void> {
     console.log('Security alert:', alert);
   }
 
@@ -1302,7 +1302,7 @@ class SecurityAuditLogger {
     console.log('Audit: Data decrypted', { classification, keyId, context });
   }
 
-  async logKeyRotation(keyId: string, status: string, error?: any): Promise<void> {
+  async logKeyRotation(keyId: string, status: string, error?: unknown): Promise<void> {
     console.log('Audit: Key rotation', { keyId, status, error });
   }
 
@@ -1310,11 +1310,11 @@ class SecurityAuditLogger {
     console.log('Audit: Threat detected', threat);
   }
 
-  async logDLPViolation(violation: any): Promise<void> {
+  async logDLPViolation(violation: unknown): Promise<void> {
     console.log('Audit: DLP violation', violation);
   }
 
-  async logSecurityError(type: string, error: any, context?: Record<string, any>): Promise<void> {
+  async logSecurityError(type: string, error: unknown, context?: Record<string, any>): Promise<void> {
     console.log('Audit: Security error', { type, error: error.message, context });
   }
 }

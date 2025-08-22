@@ -28359,7 +28359,7 @@ var init_package = __esm({
   "package.json"() {
     package_default = {
       name: "@bonginkan/maria",
-      version: "2.0.0",
+      version: "2.0.2",
       description: "\u{1F9E0} MARIA Platform v2.0.0 Memory Intelligence Edition - Revolutionary Dual-Layer Memory System with Complete Local AI Integration (Ollama + vLLM + LM Studio), Context-Aware Learning, 50+ Cognitive Modes, and Enterprise-Grade Development Intelligence",
       keywords: [
         "ai",

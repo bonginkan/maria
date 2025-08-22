@@ -365,7 +365,7 @@ export class QuestioningMode extends BaseMode {
     return criticalIndicators.filter(Boolean).length / criticalIndicators.length;
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.75;
 
     if (results.questions.length > 5) confidence += 0.08;
@@ -375,7 +375,7 @@ export class QuestioningMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private consolidateQuestions(pipeline: any): unknown[] {
+  private consolidateQuestions(pipeline: unknown): unknown[] {
     const allQuestions = [
       ...pipeline.initialQuestioning,
       ...pipeline.deeperInquiry.probing_questions,
@@ -386,7 +386,7 @@ export class QuestioningMode extends BaseMode {
     return allQuestions.slice(0, 15); // Limit to most relevant questions
   }
 
-  private assessInquiryDepth(pipeline: any): any {
+  private assessInquiryDepth(pipeline: unknown): unknown {
     return {
       level: this.inquiryDepth,
       maximum_reached: Math.max(4, this.inquiryDepth),
@@ -395,11 +395,11 @@ export class QuestioningMode extends BaseMode {
     };
   }
 
-  private calculateQuestioningEffectiveness(pipeline: any): number {
+  private calculateQuestioningEffectiveness(pipeline: unknown): number {
     return 0.83;
   }
 
-  private generateQuestioningRecommendations(pipeline: any): string[] {
+  private generateQuestioningRecommendations(pipeline: unknown): string[] {
     return [
       'Continue deeper inquiry into foundational assumptions',
       'Explore additional stakeholder perspectives',
@@ -438,7 +438,7 @@ export class QuestioningMode extends BaseMode {
     return ['domain_specific', 'stakeholder_relevant', 'time_sensitive'];
   }
 
-  private choosePrimaryTechnique(target: any, context: ModeContext): string {
+  private choosePrimaryTechnique(target: unknown, context: ModeContext): string {
     if (target.type === 'assumption_challenging') {
       return 'assumption_challenging';
     }
@@ -448,11 +448,11 @@ export class QuestioningMode extends BaseMode {
     return 'probing_questions';
   }
 
-  private chooseSecondaryTechniques(target: any, context: ModeContext): string[] {
+  private chooseSecondaryTechniques(target: unknown, context: ModeContext): string[] {
     return ['clarifying_questions', 'perspective_questioning'];
   }
 
-  private explainTechniqueChoice(target: any, context: ModeContext): string {
+  private explainTechniqueChoice(target: unknown, context: ModeContext): string {
     return `Selected based on target complexity and questioning type: ${target.type}`;
   }
 
@@ -489,7 +489,7 @@ export class QuestioningMode extends BaseMode {
     ];
   }
 
-  private conductCriticalExamination(context: ModeContext): any {
+  private conductCriticalExamination(context: ModeContext): unknown {
     return {
       logical_consistency: 'examine_for_contradictions',
       evidence_strength: 'assess_supporting_evidence',
@@ -524,7 +524,7 @@ export class QuestioningMode extends BaseMode {
     return ['alternative_approach_1', 'alternative_perspective_2', 'alternative_explanation_3'];
   }
 
-  private analyzeImplications(context: ModeContext): any {
+  private analyzeImplications(context: ModeContext): unknown {
     return {
       logical_implications: 'what_follows_from_premises',
       practical_implications: 'real_world_consequences',
@@ -549,7 +549,7 @@ export class QuestioningMode extends BaseMode {
     return ['technical_viewpoint', 'business_viewpoint', 'user_viewpoint', 'regulatory_viewpoint'];
   }
 
-  private exploreStakeholderPerspectives(context: ModeContext): any {
+  private exploreStakeholderPerspectives(context: ModeContext): unknown {
     return {
       primary_stakeholders: ['developers', 'users', 'management'],
       secondary_stakeholders: ['regulators', 'partners', 'community'],
@@ -561,7 +561,7 @@ export class QuestioningMode extends BaseMode {
     return ['culturalcontext_1', 'value_system_differences', 'communication_styles'];
   }
 
-  private examineTemporalFactors(context: ModeContext): any {
+  private examineTemporalFactors(context: ModeContext): unknown {
     return {
       historicalcontext: 'past_influences',
       current_situation: 'present_constraints',
@@ -584,7 +584,7 @@ export class QuestioningMode extends BaseMode {
     ];
   }
 
-  private assessQuestioningQuality(context: ModeContext): any {
+  private assessQuestioningQuality(context: ModeContext): unknown {
     return {
       relevance: 'highly_relevant',
       depth: 'appropriate_depth_achieved',
@@ -601,7 +601,7 @@ export class QuestioningMode extends BaseMode {
     return ['area_needing_deeper_exploration', 'perspective_not_fully_examined'];
   }
 
-  private assessInsightQuality(context: ModeContext): any {
+  private assessInsightQuality(context: ModeContext): unknown {
     return {
       novelty: 'new_understanding_gained',
       significance: 'important_implications_revealed',

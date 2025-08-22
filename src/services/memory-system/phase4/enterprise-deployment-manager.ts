@@ -1609,11 +1609,11 @@ class KubernetesClient {
 }
 
 class HelmClient {
-  async install(chart: string, namespace: string, values: any): Promise<void> {
+  async install(chart: string, namespace: string, values: unknown): Promise<void> {
     console.log(`Installing Helm chart ${chart} in namespace ${namespace}`);
   }
 
-  async upgrade(chart: string, namespace: string, values: any): Promise<void> {
+  async upgrade(chart: string, namespace: string, values: unknown): Promise<void> {
     console.log(`Upgrading Helm chart ${chart} in namespace ${namespace}`);
   }
 
@@ -1637,7 +1637,7 @@ class TerraformClient {
 class DeploymentError extends Error {
   constructor(
     message: string,
-    public details?: any,
+    public details?: unknown,
   ) {
     super(message);
     this.name = 'DeploymentError';

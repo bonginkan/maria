@@ -2,8 +2,8 @@
  * Phase 2 Test: Active Reporting System
  * アクティブレポーティングシステムのテスト
  */
-import { _ActiveReporter, _Project } from './ActiveReporter.js';
-import { _ProgressTracker, _SubTask } from './ProgressTracker.js';
+import { __ActiveReporter, __Project } from './ActiveReporter.js';
+import { __ProgressTracker, __SubTask } from './ProgressTracker.js';
 import { _TaskBreakdownDisplay } from './TaskBreakdownDisplay.js';
 
 /**
@@ -23,7 +23,7 @@ async function testPhase2(): Promise<void> {
   });
 
   // プロジェクト開始
-  const project: Omit<Project, 'startTime'> = {
+  const _project: Omit<Project, 'startTime'> = {
     id: 'test_project',
     name: 'MARIA CLI Integration Test',
     description: 'Testing the integrated CLI system components',
@@ -91,7 +91,7 @@ async function testPhase2(): Promise<void> {
   };
 
   // サブタスクを作成
-  const subTasks: SubTask[] = [
+  const _subTasks: SubTask[] = [
     {
       id: 'sub_1',
       title: 'Design Layout Zones',
@@ -298,4 +298,4 @@ if (require.main === module) {
   runPhase2Test();
 }
 
-export { testPhase2, _runPhase2Test };
+export { testPhase2, __runPhase2Test };

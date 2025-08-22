@@ -51,7 +51,7 @@ export interface GovernanceRule {
 export interface RuleCondition {
   field: string;
   operator: 'equals' | 'contains' | 'matches' | 'greater_than' | 'less_than' | 'in' | 'not_in';
-  value: any;
+  value: Event;
   combinedWith?: RuleCondition;
   combineOperator?: 'AND' | 'OR';
 }
@@ -268,7 +268,7 @@ export class DataGovernanceEngine extends EventEmitter {
    * Apply governance policies to data
    */
   async applyPolicies(
-    data: any,
+    data: unknown,
     context: {
       dataType: string;
       userId?: string;
@@ -277,7 +277,7 @@ export class DataGovernanceEngine extends EventEmitter {
       environment: 'development' | 'staging' | 'production';
     },
   ): Promise<{
-    data: any;
+    data: Record<string, unknown>;
     appliedPolicies: string[];
     actions: RuleAction[];
   }> {
@@ -320,9 +320,9 @@ export class DataGovernanceEngine extends EventEmitter {
    * Track data lineage
    */
   async trackLineage(
-    sourceData: any,
-    destinationData: any,
-    context: any,
+    sourceData: unknown,
+    destinationData: unknown,
+    context: unknown,
     appliedPolicies: string[],
   ): Promise<DataLineage> {
     const lineage: DataLineage = {
@@ -696,7 +696,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return false;
   }
 
-  private findApplicablePolicies(context: any): Map<string, DataGovernancePolicy> {
+  private findApplicablePolicies(context: unknown): Map<string, DataGovernancePolicy> {
     const applicable = new Map<string, DataGovernancePolicy>();
 
     for (const [id, policy] of Array.from(this.policies)) {
@@ -708,7 +708,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return applicable;
   }
 
-  private isPolicyApplicable(policy: DataGovernancePolicy, context: any): boolean {
+  private isPolicyApplicable(policy: DataGovernancePolicy, context: unknown): boolean {
     const now = new Date();
 
     // Check if policy is active
@@ -738,11 +738,11 @@ export class DataGovernanceEngine extends EventEmitter {
 
   private async applyPolicy(
     policy: DataGovernancePolicy,
-    data: any,
-    context: any,
+    data: unknown,
+    context: unknown,
   ): Promise<{
     applied: boolean;
-    data: any;
+    data: Record<string, unknown>;
     actions: RuleAction[];
   }> {
     const actions: RuleAction[] = [];
@@ -770,7 +770,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return { applied, data: processedData, actions };
   }
 
-  private evaluateCondition(condition: RuleCondition, data: any, context: any): boolean {
+  private evaluateCondition(condition: RuleCondition, data: unknown, context: unknown): boolean {
     const value = this.getFieldValue(condition.field, data, context);
     let result = false;
 
@@ -812,7 +812,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return result;
   }
 
-  private getFieldValue(field: string, data: any, context: any): any {
+  private getFieldValue(field: string, data: unknown, context: unknown): unknown {
     // Check context first
     if (context[field] !== undefined) {
       return context[field];
@@ -833,7 +833,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return value;
   }
 
-  private async executeAction(action: RuleAction, data: any, context: any): Promise<{ data: any }> {
+  private async executeAction(action: RuleAction, data: unknown, context: unknown): Promise<{ data: unknown }> {
     switch (action.type) {
       case 'encrypt':
         return {
@@ -867,7 +867,7 @@ export class DataGovernanceEngine extends EventEmitter {
     }
   }
 
-  private async applyMaskingRules(data: any, rules: DataMaskingRule[]): Promise<any> {
+  private async applyMaskingRules(data: unknown, rules: DataMaskingRule[]): Promise<unknown> {
     let maskedData = { ...data };
 
     for (const rule of rules) {
@@ -877,7 +877,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return maskedData;
   }
 
-  private async applyDataMasking(data: any, context: any): Promise<any> {
+  private async applyDataMasking(data: unknown, context: unknown): Promise<unknown> {
     let maskedData = { ...data };
 
     for (const rule of Array.from(this.maskingRules.values())) {
@@ -889,7 +889,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return maskedData;
   }
 
-  private shouldApplyMasking(rule: DataMaskingRule, context: any): boolean {
+  private shouldApplyMasking(rule: DataMaskingRule, context: unknown): boolean {
     // Check exceptions
     for (const exception of rule.exceptions) {
       if (this.evaluateCondition(exception.condition, {}, context)) {
@@ -902,15 +902,15 @@ export class DataGovernanceEngine extends EventEmitter {
     return true;
   }
 
-  private applyMaskingRule(data: any, rule: DataMaskingRule): any {
+  private applyMaskingRule(data: unknown, rule: DataMaskingRule): unknown {
     const pattern = new RegExp(rule.fieldPattern);
 
-    const maskField = (obj: any, path: string = ''): any => {
+    const maskField = (obj: unknown, path: string = ''): unknown => {
       if (typeof obj !== 'object' || obj === null) {
         return obj;
       }
 
-      const masked: any = Array.isArray(obj) ? [] : {};
+      const masked: unknown = Array.isArray(obj) ? [] : {};
 
       for (const key in obj) {
         const fullPath = path ? `${path}.${key}` : key;
@@ -930,7 +930,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return maskField(data);
   }
 
-  private maskValue(value: any, type: MaskingType, preserveFormat: boolean): any {
+  private maskValue(value: unknown, type: MaskingType, preserveFormat: boolean): unknown {
     if (value === null || value === undefined) return value;
 
     switch (type) {
@@ -966,7 +966,7 @@ export class DataGovernanceEngine extends EventEmitter {
     }
   }
 
-  private anonymizeData(data: any, parameters: any): any {
+  private anonymizeData(data: unknown, parameters: unknown): unknown {
     // Simple anonymization - can be enhanced
     const anonymized = { ...data };
 
@@ -981,13 +981,13 @@ export class DataGovernanceEngine extends EventEmitter {
     return anonymized;
   }
 
-  private assessDataQuality(data: any): DataQualityMetrics {
+  private assessDataQuality(data: unknown): DataQualityMetrics {
     // Simple quality assessment - can be enhanced
     let completeness = 0;
     let validity = 0;
     let totalFields = 0;
 
-    const assess = (obj: any): void => {
+    const assess = (obj: unknown): void => {
       for (const key in obj) {
         totalFields++;
 
@@ -1018,7 +1018,7 @@ export class DataGovernanceEngine extends EventEmitter {
     };
   }
 
-  private determineSensitivity(data: any, context: any): SensitivityLevel {
+  private determineSensitivity(data: unknown, context: unknown): SensitivityLevel {
     if (context.dataClassification) {
       const classificationMap: Record<string, SensitivityLevel> = {
         public: 'public',
@@ -1047,7 +1047,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return 'internal';
   }
 
-  private extractSchema(data: any): Record<string, any> {
+  private extractSchema(data: unknown): Record<string, any> {
     const schema: Record<string, any> = {};
 
     for (const key in data) {
@@ -1076,9 +1076,9 @@ export class DataGovernanceEngine extends EventEmitter {
     });
   }
 
-  private async exportSubjectData(dataSubjectId: string): Promise<any> {
+  private async exportSubjectData(dataSubjectId: string): Promise<unknown> {
     // Collect all data related to the subject
-    const subjectData: any = {
+    const subjectData: unknown = {
       subjectId: dataSubjectId,
       exportDate: new Date(),
       data: {},
@@ -1131,12 +1131,12 @@ export class DataGovernanceEngine extends EventEmitter {
     });
   }
 
-  private async rectifySubjectData(dataSubjectId: string, corrections: any): Promise<void> {
+  private async rectifySubjectData(dataSubjectId: string, corrections: unknown): Promise<void> {
     // Implement data correction logic
     this.emit('dataRectified', { dataSubjectId, corrections });
   }
 
-  private async exportPortableData(dataSubjectId: string): Promise<any> {
+  private async exportPortableData(dataSubjectId: string): Promise<unknown> {
     const data = await this.exportSubjectData(dataSubjectId);
 
     // Format for portability (e.g., JSON-LD, CSV)
@@ -1150,7 +1150,7 @@ export class DataGovernanceEngine extends EventEmitter {
     };
   }
 
-  private async restrictDataProcessing(dataSubjectId: string, restrictions: any): Promise<void> {
+  private async restrictDataProcessing(dataSubjectId: string, restrictions: unknown): Promise<void> {
     // Create restriction policy
     const restrictionPolicy: DataGovernancePolicy = {
       id: `restriction_${dataSubjectId}`,
@@ -1197,7 +1197,7 @@ export class DataGovernanceEngine extends EventEmitter {
     await this.registerPolicy(restrictionPolicy);
   }
 
-  private async assessCompliance(framework: string, scope?: any): Promise<ComplianceAssessment> {
+  private async assessCompliance(framework: string, scope?: unknown): Promise<ComplianceAssessment> {
     // Implement compliance assessment logic
     return {
       framework,
@@ -1238,7 +1238,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return recommendations;
   }
 
-  private async sendNotification(config: NotificationConfig, details: any): Promise<void> {
+  private async sendNotification(config: NotificationConfig, details: unknown): Promise<void> {
     // Implement notification sending
     this.emit('notificationSent', { config, details });
   }
@@ -1262,7 +1262,7 @@ export class DataGovernanceEngine extends EventEmitter {
     return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  private generateDataId(data: any): string {
+  private generateDataId(data: unknown): string {
     const hash = crypto.createHash('sha256').update(JSON.stringify(data)).digest('hex');
     return hash.substring(0, 16);
   }
@@ -1277,7 +1277,7 @@ class PolicyEngine {
     this.policies.set(policy.id, policy);
   }
 
-  evaluate(data: any, context: any): RuleAction[] {
+  evaluate(data: unknown, context: unknown): RuleAction[] {
     const actions: RuleAction[] = [];
     // Implementation
     return actions;
@@ -1285,19 +1285,19 @@ class PolicyEngine {
 }
 
 class EncryptionService {
-  async encrypt(data: any, parameters: any): Promise<any> {
+  async encrypt(data: unknown, parameters: unknown): Promise<unknown> {
     // Implement encryption
     return { ...data, _encrypted: true };
   }
 
-  async decrypt(data: any): Promise<any> {
+  async decrypt(data: unknown): Promise<unknown> {
     // Implement decryption
     return data;
   }
 }
 
 class AuditLogger {
-  async log(event: string, details: any): Promise<void> {
+  async log(event: string, details: unknown): Promise<void> {
     // Implement audit logging
     console.log(`Audit: ${event}`, details);
   }

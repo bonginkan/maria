@@ -1191,7 +1191,7 @@ describe('Phase 4: Enterprise Integration Tests', () => {
       });
 
       // Set up audit listener
-      let auditedEvents: any[] = [];
+      let auditedEvents: unknown[] = [];
       authManager.on('authenticationAttempt', (event) => {
         auditedEvents.push(event);
       });

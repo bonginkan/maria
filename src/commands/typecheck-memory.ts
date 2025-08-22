@@ -84,7 +84,7 @@ export default function registerTypeCheckMemoryCommand(program: Command) {
         };
 
         // Query memory for type patterns
-        let memoryPatterns: any = null;
+        let memoryPatterns: unknown = null;
         if (memoryEngine) {
           spinner.text = 'Analyzing type patterns from memory...';
           memoryPatterns = await queryTypeMemory(memoryEngine, context);
@@ -197,7 +197,7 @@ async function initializeMemorySystem(): Promise<DualMemoryEngine> {
   });
 }
 
-async function queryTypeMemory(engine: DualMemoryEngine, context: TypeCheckContext): Promise<any> {
+async function queryTypeMemory(engine: DualMemoryEngine, context: TypeCheckContext): Promise<unknown> {
   // Query for type violations
   const violationQuery: MemoryQuery = {
     type: 'pattern',
@@ -268,7 +268,7 @@ async function startTypeReasoning(
 async function completeTypeReasoning(
   engine: DualMemoryEngine,
   traceId: string,
-  results: any,
+  results: unknown,
   coverage: TypeCoverageMetrics | null,
 ): Promise<void> {
   const quality = coverage ? coverage.coverage / 100 : 0.7;
@@ -279,9 +279,9 @@ async function completeTypeReasoning(
 
 async function runTypeCheckWithMemory(
   context: TypeCheckContext,
-  memoryPatterns: any,
-  options: any,
-): Promise<any> {
+  memoryPatterns: unknown,
+  options: unknown,
+): Promise<unknown> {
   // Parse tsconfig
   const configPath = ts.findConfigFile(process.cwd(), ts.sys.fileExists, context.tsConfig);
 
@@ -382,7 +382,7 @@ async function calculateTypeCoverage(
           }
 
           // Count any usage
-          if (line.includes(': any') || line.includes('<any>') || line.includes('as any')) {
+          if (line.includes(': any') || line.includes('<unknown>') || line.includes('as any')) {
             anyUsage++;
           }
 
@@ -409,7 +409,7 @@ async function calculateTypeCoverage(
     coverage: Math.round(coverage * 100) / 100,
     anyUsage,
     unknownUsage,
-    strictCompliance: anyUsage === 0 && coverage > 80,
+    strictCompliance: EventUsage === 0 && coverage > 80,
   };
 
   // Store in memory if available
@@ -432,8 +432,8 @@ async function calculateTypeCoverage(
 async function predictTypeIssues(
   engine: DualMemoryEngine,
   context: TypeCheckContext,
-  results: any,
-): Promise<any[]> {
+  results: unknown,
+): Promise<unknown[]> {
   // Query for evolving type patterns
   const evolutionQuery: MemoryQuery = {
     type: 'pattern',
@@ -449,9 +449,9 @@ async function predictTypeIssues(
   const response = await engine.query(evolutionQuery);
   const patterns = response.data || [];
 
-  const predictions: any[] = [];
+  const predictions: unknown[] = [];
 
-  patterns.forEach((pattern: any) => {
+  patterns.forEach((pattern: unknown) => {
     if (pattern.trend === 'increasing') {
       predictions.push({
         issue: pattern.error,
@@ -478,8 +478,8 @@ async function predictTypeIssues(
 async function applyTypeFixes(
   violations: TypeViolation[],
   engine: DualMemoryEngine | null,
-): Promise<any> {
-  const fixes: any[] = [];
+): Promise<unknown> {
+  const fixes: unknown[] = [];
   const fixableViolations = violations.filter((v) => v.fixable);
 
   for (const violation of fixableViolations) {
@@ -516,7 +516,7 @@ async function applyTypeFixes(
 async function learnFromTypeCheck(
   engine: DualMemoryEngine,
   context: TypeCheckContext,
-  results: any,
+  results: unknown,
   coverage: TypeCoverageMetrics | null,
 ): Promise<void> {
   // Store type violation patterns
@@ -582,7 +582,7 @@ function getCategoryName(category: ts.DiagnosticCategory): string {
   }
 }
 
-function isFixable(error: string, memoryPatterns: any): boolean {
+function isFixable(error: string, memoryPatterns: unknown): boolean {
   // Check if this type of error is fixable
   const fixablePatterns = [
     'implicit any',
@@ -594,7 +594,7 @@ function isFixable(error: string, memoryPatterns: any): boolean {
   return fixablePatterns.some((pattern) => error.toLowerCase().includes(pattern));
 }
 
-function getSuggestion(error: string, memoryPatterns: any): string | undefined {
+function getSuggestion(error: string, memoryPatterns: unknown): string | undefined {
   // Get suggestion based on error type
   if (error.includes('implicit any')) {
     return 'Add explicit type annotation';
@@ -611,7 +611,7 @@ function getSuggestion(error: string, memoryPatterns: any): string | undefined {
 
   // Check memory for suggestions
   if (memoryPatterns?.typeFixes) {
-    const fix = memoryPatterns.typeFixes.find((f: any) => error.includes(f.pattern));
+    const fix = memoryPatterns.typeFixes.find((f: unknown) => error.includes(f.pattern));
     if (fix) {
       return fix.suggestion;
     }
@@ -629,7 +629,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Display functions
-function displayTypePatterns(patterns: any[]): void {
+function displayTypePatterns(patterns: unknown[]): void {
   console.log(chalk.yellow('\n📋 Common type violations in this project:'));
   patterns.slice(0, 5).forEach((pattern, i) => {
     console.log(
@@ -667,7 +667,7 @@ function displayTypeCoverage(coverage: TypeCoverageMetrics): void {
   }
 }
 
-function displayTypePredictions(predictions: any[]): void {
+function displayTypePredictions(predictions: unknown[]): void {
   if (predictions.length > 0) {
     console.log(chalk.yellow('\n🔮 Predicted type safety issues:'));
     predictions.forEach((pred, i) => {
@@ -678,7 +678,7 @@ function displayTypePredictions(predictions: any[]): void {
   }
 }
 
-function displayFixResults(fixes: any[]): void {
+function displayFixResults(fixes: unknown[]): void {
   if (fixes.length > 0) {
     console.log(chalk.green('\n🔧 Type fixes available:'));
     fixes.forEach((fix, i) => {
@@ -690,9 +690,9 @@ function displayFixResults(fixes: any[]): void {
 }
 
 function displayTypeCheckResults(
-  results: any,
+  results: unknown,
   coverage: TypeCoverageMetrics | null,
-  memoryPatterns: any,
+  memoryPatterns: unknown,
 ): void {
   console.log(chalk.blue('\n🔍 TypeScript Type Check Results:'));
   console.log(chalk.white(`  Files checked: ${results.fileCount}`));
@@ -768,7 +768,7 @@ function displayTypeCheckResults(
   }
 }
 
-function calculateTypeSafetyScore(results: any, coverage: TypeCoverageMetrics | null): number {
+function calculateTypeSafetyScore(results: unknown, coverage: TypeCoverageMetrics | null): number {
   let score = 100;
 
   // Deduct for errors

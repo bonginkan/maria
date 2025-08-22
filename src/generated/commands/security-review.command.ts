@@ -564,7 +564,7 @@ export class SecurityReviewCommand extends BaseCommand {
     return issues;
   }
   
-  private validateSecurityRule(rule: any, content: string, match: RegExpExecArray): boolean {
+  private validateSecurityRule(rule: unknown, content: string, match: RegExpExecArray): boolean {
     // Additional validation to reduce false positives
     switch (rule.rule) {
       case 'hardcoded-credentials':

@@ -37,10 +37,10 @@ export class TaskVisualizer {
    * Visualize SOW
    */
   public visualizeSOW(_sow: SOW): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     // Header
-    lines.push(this.createHeader('SOW: ' + sow.title));
+    lines.push(_this.createHeader('SOW: ' + sow.title));
     lines.push('');
 
     // Objective
@@ -92,7 +92,7 @@ export class TaskVisualizer {
     }
 
     // Footer
-    lines.push(this.createFooter(`Version: ${sow.version} | Status: ${sow.approvalStatus}`));
+    lines.push(_this.createFooter(`Version: ${sow.version} | Status: ${sow.approvalStatus}`));
 
     return lines.join('\n');
   }
@@ -101,7 +101,7 @@ export class TaskVisualizer {
    * Visualize tasks with hierarchy
    */
   public visualizeTasks(_tasks: Task[]): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     lines.push(this.createHeader('Task Breakdown'));
     lines.push('');
@@ -158,7 +158,7 @@ export class TaskVisualizer {
    * Visualize progress metrics
    */
   public visualizeProgress(_metrics: ProgressMetrics): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     lines.push(this.createHeader('Progress Report'));
     lines.push('');
@@ -189,7 +189,7 @@ export class TaskVisualizer {
    * Visualize Hourensou report
    */
   public visualizeHourensou(_report: HourensouReport): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     lines.push(this.createHeader('ホウレンソウ (Hourensou) Report'));
     lines.push('');
@@ -210,7 +210,7 @@ export class TaskVisualizer {
         lines.push(`${icon} ${item.title}`);
         lines.push(chalk.gray(`  ${item.details}`));
         if (item.impact) {
-          lines.push(chalk.yellow(`  Impact: ${item.impact}`));
+          lines.push(_chalk.yellow(`  Impact: ${item.impact}`));
         }
       });
       lines.push('');
@@ -241,15 +241,15 @@ export class TaskVisualizer {
       lines.push(chalk.gray('─'.repeat(50)));
       report.sou.forEach((_item) => {
         lines.push(`❓ ${item.question}`);
-        lines.push(chalk.gray(`  Context: ${item.context}`));
+        lines.push(_chalk.gray(`  Context: ${item.context}`));
         if (item.recommendation) {
-          lines.push(chalk.green(`  Recommendation: ${item.recommendation}`));
+          lines.push(_chalk.green(`  Recommendation: ${item.recommendation}`));
         }
       });
       lines.push('');
     }
 
-    lines.push(this.createFooter(`Generated: ${report.timestamp.toLocaleString()}`));
+    lines.push(_this.createFooter(`Generated: ${report.timestamp.toLocaleString()}`));
 
     return lines.join('\n');
   }
@@ -258,7 +258,7 @@ export class TaskVisualizer {
    * Visualize decision point
    */
   public visualizeDecision(_decision: DecisionPoint): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     lines.push(this.createHeader('Decision Required'));
     lines.push('');
@@ -278,15 +278,15 @@ export class TaskVisualizer {
         lines.push(chalk.gray(`     ${option.description}`));
 
         if (option.pros && option.pros.length > 0) {
-          lines.push(chalk.green(`     Pros: ${option.pros.join(', ')}`));
+          lines.push(_chalk.green(`     Pros: ${option.pros.join(', ')}`));
         }
 
         if (option.cons && option.cons.length > 0) {
-          lines.push(chalk.red(`     Cons: ${option.cons.join(', ')}`));
+          lines.push(_chalk.red(`     Cons: ${option.cons.join(', ')}`));
         }
 
         if (option.estimatedTime) {
-          lines.push(chalk.gray(`     Time: ${option.estimatedTime} minutes`));
+          lines.push(_chalk.gray(`     Time: ${option.estimatedTime} minutes`));
         }
 
         lines.push('');
@@ -294,11 +294,11 @@ export class TaskVisualizer {
     }
 
     if (decision.recommendation) {
-      lines.push(chalk.green(`Recommendation: ${decision.recommendation}`));
+      lines.push(_chalk.green(`Recommendation: ${decision.recommendation}`));
     }
 
     if (decision.deadline) {
-      lines.push(chalk.yellow(`Deadline: ${decision.deadline.toLocaleString()}`));
+      lines.push(_chalk.yellow(`Deadline: ${decision.deadline.toLocaleString()}`));
     }
 
     return lines.join('\n');
@@ -308,7 +308,7 @@ export class TaskVisualizer {
    * Create beautiful progress visualization
    */
   public createBeautifulProgress(_report: ProgressReport): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     // Main header
     lines.push(this.createDoubleLineHeader('ACTIVE TASK MANAGEMENT'));
@@ -481,7 +481,7 @@ export class TaskVisualizer {
   }
 
   private createMetricsGrid(_metrics: ProgressMetrics): string {
-    const lines: string[] = [];
+    const _lines: string[] = [];
 
     lines.push('  ┌─────────────────────┬─────────────────────┐');
     lines.push(`  │ Tasks Completed     │ ${String(metrics.tasksCompleted).padStart(18)} │`);
@@ -574,7 +574,7 @@ export class TaskVisualizer {
   private wrapText(_text: string, _indent: number = 0): string {
     const _maxWidth = this.WIDTH - indent - 4;
     const _words = text.split(' ');
-    const lines: string[] = [];
+    const _lines: string[] = [];
     const _currentLine = '';
 
     words.forEach((_word) => {
@@ -619,7 +619,7 @@ export class TaskVisualizer {
    * Render progress dashboard
    */
   public renderProgressDashboard(_progressData: ProgressMetrics): string {
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('📊 PROGRESS DASHBOARD', this.WIDTH - 4)));
@@ -632,10 +632,10 @@ export class TaskVisualizer {
     );
 
     // Task summary
-    output.push(this.createLine(`✅ Completed: ${progressData.completedTasks || 0}`));
-    output.push(this.createLine(`🔄 In Progress: ${progressData.inProgressTasks || 0}`));
-    output.push(this.createLine(`⏸ Blocked: ${progressData.blockedTasks || 0}`));
-    output.push(this.createLine(`📊 Total: ${progressData.totalTasks || 0}`));
+    output.push(_this.createLine(`✅ Completed: ${progressData.completedTasks || 0}`));
+    output.push(_this.createLine(`🔄 In Progress: ${progressData.inProgressTasks || 0}`));
+    output.push(_this.createLine(`⏸ Blocked: ${progressData.blockedTasks || 0}`));
+    output.push(_this.createLine(`📊 Total: ${progressData.totalTasks || 0}`));
 
     output.push(this.createBorder('bottom'));
 
@@ -646,13 +646,13 @@ export class TaskVisualizer {
    * Render task completion celebration
    */
   public renderTaskCompletion(_task: Task): string {
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('🎉 TASK COMPLETED', this.WIDTH - 4)));
     output.push(this.createBorder('middle'));
-    output.push(this.createLine(`Task: ${task.title}`));
-    output.push(this.createLine(`Progress: 100% ✅`));
+    output.push(_this.createLine(`Task: ${task.title}`));
+    output.push(_this.createLine(`Progress: 100% ✅`));
     output.push(this.createBorder('bottom'));
 
     return output.join('\n');
@@ -662,13 +662,13 @@ export class TaskVisualizer {
    * Render blocker alert
    */
   public renderBlockerAlert(_blocker: unknown): string {
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('🚨 BLOCKER DETECTED', this.WIDTH - 4)));
     output.push(this.createBorder('middle'));
-    output.push(this.createLine(`Issue: ${blocker.title}`));
-    output.push(this.createLine(`Severity: ${blocker.severity || 'HIGH'}`));
+    output.push(_this.createLine(`Issue: ${blocker.title}`));
+    output.push(_this.createLine(`Severity: ${blocker.severity || 'HIGH'}`));
     output.push(this.createBorder('bottom'));
 
     return output.join('\n');
@@ -678,12 +678,12 @@ export class TaskVisualizer {
    * Render decision point
    */
   public renderDecisionPoint(_decision: unknown): string {
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('🤔 DECISION REQUIRED', this.WIDTH - 4)));
     output.push(this.createBorder('middle'));
-    output.push(this.createLine(`Question: ${decision.title}`));
+    output.push(_this.createLine(`Question: ${decision.title}`));
     output.push(this.createBorder('bottom'));
 
     return output.join('\n');
@@ -693,13 +693,13 @@ export class TaskVisualizer {
    * Visualize SOW
    */
   public visualizeSOW(_sow: SOW): string {
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText(`📋 ${sow.title}`, this.WIDTH - 4)));
     output.push(this.createBorder('middle'));
-    output.push(this.createLine(`Objective: ${sow.objective}`));
-    output.push(this.createLine(`Tasks: ${sow.tasks.length}`));
+    output.push(_this.createLine(`Objective: ${sow.objective}`));
+    output.push(_this.createLine(`Tasks: ${sow.tasks.length}`));
     output.push(this.createBorder('bottom'));
 
     return output.join('\n');
@@ -710,7 +710,7 @@ export class TaskVisualizer {
    */
   public visualizeTasks(_tasks: Task[]): string {
     const _grouped = this.groupTasksByStatus(tasks);
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('📝 TASK BREAKDOWN', this.WIDTH - 4)));
@@ -741,12 +741,12 @@ export class TaskVisualizer {
    * Visualize Hourensou report
    */
   public visualizeHourensou(_report: unknown): string {
-    const output: string[] = [];
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('📊 HOURENSOU REPORT', this.WIDTH - 4)));
     output.push(this.createBorder('middle'));
-    output.push(this.createLine(`Context: ${report.context || 'Active Reporting'}`));
+    output.push(_this.createLine(`Context: ${report.context || 'Active Reporting'}`));
     output.push(this.createBorder('bottom'));
 
     return output.join('\n');
@@ -755,8 +755,8 @@ export class TaskVisualizer {
   /**
    * Render menu options
    */
-  public renderMenu(_title: string, options: Array<{ value: string; label: string }>): string {
-    const output: string[] = [];
+  public renderMenu(_title: string, _options: Array<{ value: string; label: string }>): string {
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText(title, this.WIDTH - 4)));
@@ -775,8 +775,8 @@ export class TaskVisualizer {
   /**
    * Render confirmation dialog
    */
-  public renderConfirmation(_question: string, details?: string): string {
-    const output: string[] = [];
+  public renderConfirmation(_question: string, _details?: string): string {
+    const _output: string[] = [];
 
     output.push(this.createBorder('top'));
     output.push(this.createLine(this.centerText('❓ CONFIRMATION', this.WIDTH - 4)));

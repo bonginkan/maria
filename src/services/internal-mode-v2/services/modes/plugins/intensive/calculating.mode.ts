@@ -245,7 +245,7 @@ export class CalculatingMode extends BaseMode {
     // Implementation would persist to storage
   }
 
-  private async cacheComputationResults(results: any, context: ModeContext): Promise<void> {
+  private async cacheComputationResults(results: unknown, context: ModeContext): Promise<void> {
     const cacheKey = this.generateCacheKey(context);
     this.calculationCache.set(cacheKey, {
       ...results,
@@ -378,7 +378,7 @@ export class CalculatingMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.8;
 
     if (results.accuracy > 0.95) confidence += 0.1;
@@ -394,7 +394,7 @@ export class CalculatingMode extends BaseMode {
     return (currentAverage * (count - 1) + newAccuracy) / count;
   }
 
-  private generateComputationalRecommendations(pipeline: any): string[] {
+  private generateComputationalRecommendations(pipeline: unknown): string[] {
     return [
       'Consider algorithm optimization for better performance',
       'Validate results with independent computation methods',
@@ -460,7 +460,7 @@ export class CalculatingMode extends BaseMode {
     return constraints;
   }
 
-  private extractRequirements(input: string): any {
+  private extractRequirements(input: string): unknown {
     return {
       accuracy: this.extractAccuracyRequirement(input),
       speed: this.extractSpeedRequirement(input),
@@ -475,7 +475,7 @@ export class CalculatingMode extends BaseMode {
     return 'low';
   }
 
-  private extractInputData(input: string): any {
+  private extractInputData(input: string): unknown {
     return {
       numbers: this.extractNumbers(input),
       variables: this.extractVariables(input),
@@ -535,7 +535,7 @@ export class CalculatingMode extends BaseMode {
     };
   }
 
-  private collectComputationMetrics(computations: any): any {
+  private collectComputationMetrics(computations: unknown): unknown {
     return {
       totalOperations: 1000,
       averageExecutionTime: 0.5,
@@ -544,7 +544,7 @@ export class CalculatingMode extends BaseMode {
     };
   }
 
-  private analyzeComputationPerformance(computations: any): any {
+  private analyzeComputationPerformance(computations: unknown): unknown {
     return {
       efficiency: 0.85,
       scalability: 'good',
@@ -568,7 +568,7 @@ export class CalculatingMode extends BaseMode {
     return 0.4; // 40% efficiency gain
   }
 
-  private analyzeOptimizationTradeoffs(context: ModeContext): any {
+  private analyzeOptimizationTradeoffs(context: ModeContext): unknown {
     return {
       speed_vs_memory: 'favors_speed',
       accuracy_vs_speed: 'balanced',
@@ -584,7 +584,7 @@ export class CalculatingMode extends BaseMode {
     return this.precisionLevel;
   }
 
-  private performCrossValidation(context: ModeContext): any {
+  private performCrossValidation(context: ModeContext): unknown {
     return {
       method: 'k_fold',
       folds: 5,
@@ -597,7 +597,7 @@ export class CalculatingMode extends BaseMode {
     return true;
   }
 
-  private performErrorAnalysis(context: ModeContext): any {
+  private performErrorAnalysis(context: ModeContext): unknown {
     return {
       absoluteError: 0.01,
       relativeError: 0.001,
@@ -618,7 +618,7 @@ export class CalculatingMode extends BaseMode {
     return 'O(n)';
   }
 
-  private analyzeScalability(context: ModeContext): any {
+  private analyzeScalability(context: ModeContext): unknown {
     return {
       rating: 'good',
       limits: '10^6 elements',
@@ -634,7 +634,7 @@ export class CalculatingMode extends BaseMode {
     return 'Computational analysis completed with high accuracy and good efficiency';
   }
 
-  private createDetailedResults(context: ModeContext): any {
+  private createDetailedResults(context: ModeContext): unknown {
     return {
       primaryResults: { value: 42, units: 'abstract_units' },
       auxiliaryResults: [{ metric: 'efficiency', value: 0.85 }],
@@ -681,7 +681,7 @@ export class CalculatingMode extends BaseMode {
     return matches || [];
   }
 
-  private extractParameters(input: string): any {
+  private extractParameters(input: string): unknown {
     return {
       identified: true,
       count: 3,

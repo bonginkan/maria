@@ -429,7 +429,7 @@ export class ArchitectingMode extends BaseMode {
     return constraints;
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.8;
 
     if (results.quality.overall > 0.8) confidence += 0.1;
@@ -439,7 +439,7 @@ export class ArchitectingMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private generateArchitecturalRecommendations(pipeline: any): string[] {
+  private generateArchitecturalRecommendations(pipeline: unknown): string[] {
     return [
       'Follow established design patterns for consistency',
       'Ensure proper separation of concerns across components',
@@ -450,7 +450,7 @@ export class ArchitectingMode extends BaseMode {
   }
 
   // Helper methods for architectural operations
-  private isPatternRelevant(pattern: any, context: ModeContext): boolean {
+  private isPatternRelevant(pattern: unknown, context: ModeContext): boolean {
     return pattern.useCases.some((useCase) =>
       context.input.toLowerCase().includes(useCase.replace('_', ' ')),
     );
@@ -460,7 +460,7 @@ export class ArchitectingMode extends BaseMode {
     return ['user_authentication', 'data_processing', 'report_generation'];
   }
 
-  private extractNonFunctionalRequirements(input: string): any {
+  private extractNonFunctionalRequirements(input: string): unknown {
     return {
       performance: 'high',
       scalability: 'horizontal',
@@ -477,7 +477,7 @@ export class ArchitectingMode extends BaseMode {
     return stakeholders;
   }
 
-  private prioritizeRequirements(input: string): any {
+  private prioritizeRequirements(input: string): unknown {
     return {
       high: ['core_functionality', 'security'],
       medium: ['performance', 'usability'],
@@ -491,7 +491,7 @@ export class ArchitectingMode extends BaseMode {
     return 'component';
   }
 
-  private defineSystemBoundaries(input: string): any {
+  private defineSystemBoundaries(input: string): unknown {
     return {
       internal: 'core_application_components',
       external: 'third_party_services_and_apis',
@@ -499,7 +499,7 @@ export class ArchitectingMode extends BaseMode {
     };
   }
 
-  private analyzeSystemContext(input: string): any {
+  private analyzeSystemContext(input: string): unknown {
     return {
       environment: 'cloud_native',
       constraints: ['regulatory', 'technical', 'business'],
@@ -507,7 +507,7 @@ export class ArchitectingMode extends BaseMode {
     };
   }
 
-  private analyzeExistingSystems(input: string): any {
+  private analyzeExistingSystems(input: string): unknown {
     return {
       legacy: 'database_and_file_systems',
       integration_points: 'apis_and_data_feeds',
@@ -515,7 +515,7 @@ export class ArchitectingMode extends BaseMode {
     };
   }
 
-  private analyzeIntegrationRequirements(input: string): any {
+  private analyzeIntegrationRequirements(input: string): unknown {
     return {
       internal: 'component_to_component',
       external: 'third_party_services',
@@ -523,15 +523,15 @@ export class ArchitectingMode extends BaseMode {
     };
   }
 
-  private evaluatePatternFit(pattern: any, requirements: any, systemAnalysis: any): boolean {
+  private evaluatePatternFit(pattern: unknown, requirements: unknown, systemAnalysis: unknown): boolean {
     return this.calculatePatternFit(pattern, requirements) > 0.6;
   }
 
-  private calculatePatternFit(pattern: any, requirements: any): number {
+  private calculatePatternFit(pattern: unknown, requirements: unknown): number {
     return Math.random() * 0.4 + 0.6; // Simplified fit calculation
   }
 
-  private generatePatternRationale(pattern: any, requirements: any): string {
+  private generatePatternRationale(pattern: unknown, requirements: unknown): string {
     return `${pattern.name} pattern chosen for ${pattern.useCases[0]} requirements`;
   }
 
@@ -569,7 +569,7 @@ export class ArchitectingMode extends BaseMode {
     return ['dependency_injection', 'factory', 'observer'];
   }
 
-  private defineInterfaceContract(interfaceType: string, context: ModeContext): any {
+  private defineInterfaceContract(interfaceType: string, context: ModeContext): unknown {
     return {
       type: interfaceType,
       specification: 'openapi_3.0',
@@ -590,11 +590,11 @@ export class ArchitectingMode extends BaseMode {
     ];
   }
 
-  private mapComponentsToLayer(layer: any, context: ModeContext): string[] {
+  private mapComponentsToLayer(layer: unknown, context: ModeContext): string[] {
     return [`${layer.name}_component_1`, `${layer.name}_component_2`];
   }
 
-  private selectLayerPatterns(layer: any, context: ModeContext): string[] {
+  private selectLayerPatterns(layer: unknown, context: ModeContext): string[] {
     return ['repository', 'unit_of_work', 'facade'];
   }
 
@@ -618,14 +618,14 @@ export class ArchitectingMode extends BaseMode {
     return 0.88;
   }
 
-  private assessMaintainability(context: ModeContext): any {
+  private assessMaintainability(context: ModeContext): unknown {
     return {
       score: 0.82,
       factors: ['code_organization', 'documentation', 'test_coverage'],
     };
   }
 
-  private assessScalability(context: ModeContext): any {
+  private assessScalability(context: ModeContext): unknown {
     return {
       score: 0.85,
       dimensions: ['horizontal', 'vertical'],
@@ -641,7 +641,7 @@ export class ArchitectingMode extends BaseMode {
     return 0.83;
   }
 
-  private evaluateDesignPrinciples(context: ModeContext): any {
+  private evaluateDesignPrinciples(context: ModeContext): unknown {
     return this.designPrinciples.map((principle) => ({
       principle,
       adherence: Math.random() * 0.3 + 0.7,
@@ -687,7 +687,7 @@ export class ArchitectingMode extends BaseMode {
     ];
   }
 
-  private determineArchitecturalStyle(pipeline: any): string {
+  private determineArchitecturalStyle(pipeline: unknown): string {
     if (pipeline.patternSelection.some((p) => p.name === 'microservices')) {
       return 'microservices';
     }
@@ -697,7 +697,7 @@ export class ArchitectingMode extends BaseMode {
     return 'component_based';
   }
 
-  private assessComplexity(pipeline: any): any {
+  private assessComplexity(pipeline: unknown): unknown {
     return {
       level: 'medium',
       factors: ['component_count', 'integration_points', 'business_rules'],

@@ -134,7 +134,7 @@ export class GitHubIntegration extends EventEmitter {
         direction: 'desc',
       });
 
-      const pullRequests: GitHubPullRequest[] = response.map((pr: any) => ({
+      const pullRequests: GitHubPullRequest[] = response.map((pr: unknown) => ({
         id: pr.id,
         number: pr.number,
         title: pr.title,
@@ -204,7 +204,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Handle GitHub webhook events
    */
-  async handleWebhookEvent(event: string, payload: any): Promise<void> {
+  async handleWebhookEvent(event: string, payload: unknown): Promise<void> {
     try {
       switch (event) {
         case 'pull_request':
@@ -331,7 +331,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Make authenticated GitHub API request
    */
-  private async githubRequest(method: string, endpoint: string, data?: any): Promise<unknown> {
+  private async githubRequest(method: string, endpoint: string, data?: unknown): Promise<unknown> {
     const baseUrl = this.config.baseUrl || 'https://api.github.com';
     const url = `${baseUrl}/repos/${this.config.owner}/${this.config.repo}${endpoint}`;
 
@@ -365,7 +365,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Handle pull request webhook events
    */
-  private async handlePullRequestEvent(payload: any): Promise<void> {
+  private async handlePullRequestEvent(payload: unknown): Promise<void> {
     const action = payload.action;
     const pullRequest = payload.pull_request;
 
@@ -386,7 +386,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Handle pull request review webhook events
    */
-  private async handlePullRequestReviewEvent(payload: any): Promise<void> {
+  private async handlePullRequestReviewEvent(payload: unknown): Promise<void> {
     const review = payload.review;
     const pullRequest = payload.pull_request;
 
@@ -400,7 +400,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Handle push webhook events
    */
-  private async handlePushEvent(payload: any): Promise<void> {
+  private async handlePushEvent(payload: unknown): Promise<void> {
     const ref = payload.ref;
     const commits = payload.commits;
 
@@ -412,7 +412,7 @@ export class GitHubIntegration extends EventEmitter {
   /**
    * Handle issues webhook events
    */
-  private async handleIssuesEvent(payload: any): Promise<void> {
+  private async handleIssuesEvent(payload: unknown): Promise<void> {
     const action = payload.action;
     const issue = payload.issue;
 

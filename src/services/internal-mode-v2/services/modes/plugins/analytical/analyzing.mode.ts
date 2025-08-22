@@ -283,7 +283,7 @@ export class AnalyzingMode extends BaseMode {
     return baseCount * complexityMultiplier;
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.7;
 
     if (results.insights.length > 2) confidence += 0.1;
@@ -340,39 +340,39 @@ export class AnalyzingMode extends BaseMode {
     return `${perspective} analysis focus`;
   }
 
-  private performHierarchicalDecomposition(context: ModeContext): any {
+  private performHierarchicalDecomposition(context: ModeContext): unknown {
     return { type: 'hierarchical', components: [] };
   }
 
-  private performFunctionalDecomposition(context: ModeContext): any {
+  private performFunctionalDecomposition(context: ModeContext): unknown {
     return { type: 'functional', functions: [] };
   }
 
-  private performTemporalDecomposition(context: ModeContext): any {
+  private performTemporalDecomposition(context: ModeContext): unknown {
     return { type: 'temporal', phases: [] };
   }
 
-  private performRelationalDecomposition(context: ModeContext): any {
+  private performRelationalDecomposition(context: ModeContext): unknown {
     return { type: 'relational', relationships: [] };
   }
 
-  private identifyStructuralPatterns(context: ModeContext): any {
+  private identifyStructuralPatterns(context: ModeContext): unknown {
     return { type: 'structural', pattern: 'modular', confidence: 0.8 };
   }
 
-  private identifyBehavioralPatterns(context: ModeContext): any {
+  private identifyBehavioralPatterns(context: ModeContext): unknown {
     return { type: 'behavioral', pattern: 'sequential', confidence: 0.7 };
   }
 
-  private identifyTemporalPatterns(context: ModeContext): any {
+  private identifyTemporalPatterns(context: ModeContext): unknown {
     return { type: 'temporal', pattern: 'cyclical', confidence: 0.6 };
   }
 
-  private identifyDependencyPatterns(context: ModeContext): any {
+  private identifyDependencyPatterns(context: ModeContext): unknown {
     return { type: 'dependency', pattern: 'hierarchical', confidence: 0.9 };
   }
 
-  private assessComplexity(pipeline: any): string {
+  private assessComplexity(pipeline: unknown): string {
     const indicators = [
       pipeline.perspectives?.length || 0,
       pipeline.components?.hierarchical?.components?.length || 0,
@@ -386,7 +386,7 @@ export class AnalyzingMode extends BaseMode {
     return 'low';
   }
 
-  private generateRecommendations(pipeline: any): string[] {
+  private generateRecommendations(pipeline: unknown): string[] {
     return [
       'Consider implementing modular architecture patterns',
       'Focus optimization efforts on identified bottlenecks',

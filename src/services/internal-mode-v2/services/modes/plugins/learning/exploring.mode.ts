@@ -327,7 +327,7 @@ export class ExploringMode extends BaseMode {
     return 0.75 + Math.random() * 0.2;
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.72;
 
     if (results.discoveries.length > 2) confidence += 0.1;
@@ -337,7 +337,7 @@ export class ExploringMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private generateExplorationRecommendations(pipeline: any): string[] {
+  private generateExplorationRecommendations(pipeline: unknown): string[] {
     return [
       'Continue exploring high-potential paths identified',
       'Document discoveries for future reference',
@@ -363,7 +363,7 @@ export class ExploringMode extends BaseMode {
     return ['knowledge_acquisition', 'pattern_identification', 'insight_generation'];
   }
 
-  private determineDepthLimits(input: string): any {
+  private determineDepthLimits(input: string): unknown {
     return {
       maximum_depth: 'detailed_investigation',
       stopping_criteria: 'diminishing_returns_or_time_limit',
@@ -382,7 +382,7 @@ export class ExploringMode extends BaseMode {
     return this.curiosityLevel * 0.5;
   }
 
-  private trackExplorationProgress(context: ModeContext): any {
+  private trackExplorationProgress(context: ModeContext): unknown {
     return {
       milestones_reached: 3,
       paths_completed: 2,
@@ -399,7 +399,7 @@ export class ExploringMode extends BaseMode {
     return ['fundamental_assumption_challenged'];
   }
 
-  private calculateKnowledgeGained(context: ModeContext): any {
+  private calculateKnowledgeGained(context: ModeContext): unknown {
     return {
       factual: 'significant_new_facts',
       conceptual: 'enhanced_understanding',
@@ -420,7 +420,7 @@ export class ExploringMode extends BaseMode {
     ];
   }
 
-  private updateConceptualFrameworks(context: ModeContext): any {
+  private updateConceptualFrameworks(context: ModeContext): unknown {
     return {
       frameworks_modified: 2,
       new_frameworks_created: 1,
@@ -444,7 +444,7 @@ export class ExploringMode extends BaseMode {
     ];
   }
 
-  private updateExplorationPriorities(context: ModeContext): any {
+  private updateExplorationPriorities(context: ModeContext): unknown {
     return {
       high_priority: ['follow_up_on_key_discovery'],
       medium_priority: ['investigate_side_findings'],
@@ -452,7 +452,7 @@ export class ExploringMode extends BaseMode {
     };
   }
 
-  private assessKnowledgeExpansion(pipeline: any): any {
+  private assessKnowledgeExpansion(pipeline: unknown): unknown {
     return {
       scope: 'significant_expansion',
       depth: 'moderate_to_deep',
@@ -461,7 +461,7 @@ export class ExploringMode extends BaseMode {
     };
   }
 
-  private calculateExplorationDepth(pipeline: any): number {
+  private calculateExplorationDepth(pipeline: unknown): number {
     return 0.78;
   }
 }

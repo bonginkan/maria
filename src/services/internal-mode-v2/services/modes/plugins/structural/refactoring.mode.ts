@@ -227,7 +227,7 @@ export class RefactoringMode extends BaseMode {
     this.refactoringHistory.set(sessionKey, session);
   }
 
-  private async recordRefactoringResults(results: any): Promise<void> {
+  private async recordRefactoringResults(results: unknown): Promise<void> {
     const metricsKey = `metrics_${Date.now()}`;
     this.codeMetrics.set(metricsKey, {
       before: results.analysis.metrics,
@@ -387,7 +387,7 @@ export class RefactoringMode extends BaseMode {
     return 'focused';
   }
 
-  private calculateConfidence(context: ModeContext, results: any): number {
+  private calculateConfidence(context: ModeContext, results: unknown): number {
     let confidence = 0.77;
 
     if (results.effectiveness > 0.8) confidence += 0.1;
@@ -397,7 +397,7 @@ export class RefactoringMode extends BaseMode {
     return Math.min(confidence, 1.0);
   }
 
-  private assessMaintainabilityGains(pipeline: any): any {
+  private assessMaintainabilityGains(pipeline: unknown): unknown {
     return {
       gain: 0.25,
       level: 'significantly_improved',
@@ -405,7 +405,7 @@ export class RefactoringMode extends BaseMode {
     };
   }
 
-  private assessComplexityReduction(pipeline: any): any {
+  private assessComplexityReduction(pipeline: unknown): unknown {
     return {
       reduction: 0.3,
       cyclomatic_complexity: 'reduced_by_40_percent',
@@ -413,7 +413,7 @@ export class RefactoringMode extends BaseMode {
     };
   }
 
-  private assessRefactoringRisk(pipeline: any): any {
+  private assessRefactoringRisk(pipeline: unknown): unknown {
     return {
       level: 'low',
       factors: ['comprehensive_test_coverage', 'incremental_changes', 'rollback_plan'],
@@ -421,11 +421,11 @@ export class RefactoringMode extends BaseMode {
     };
   }
 
-  private calculateRefactoringEffectiveness(pipeline: any): number {
+  private calculateRefactoringEffectiveness(pipeline: unknown): number {
     return 0.85;
   }
 
-  private generateRefactoringRecommendations(pipeline: any): string[] {
+  private generateRefactoringRecommendations(pipeline: unknown): string[] {
     return [
       'Continue with incremental refactoring approach',
       'Maintain comprehensive test coverage during changes',
@@ -435,7 +435,7 @@ export class RefactoringMode extends BaseMode {
   }
 
   // Helper methods
-  private analyzeCodeStructure(input: string): any {
+  private analyzeCodeStructure(input: string): unknown {
     return {
       classes: 'multiple_classes_identified',
       methods: 'various_method_sizes',
@@ -444,7 +444,7 @@ export class RefactoringMode extends BaseMode {
     };
   }
 
-  private analyzeComplexity(input: string): any {
+  private analyzeComplexity(input: string): unknown {
     return {
       cyclomatic: 'medium_complexity',
       cognitive: 'high_cognitive_load',
@@ -452,7 +452,7 @@ export class RefactoringMode extends BaseMode {
     };
   }
 
-  private analyzeDependencies(input: string): any {
+  private analyzeDependencies(input: string): unknown {
     return {
       coupling: 'tight_coupling_identified',
       cohesion: 'low_cohesion_detected',
@@ -468,7 +468,7 @@ export class RefactoringMode extends BaseMode {
     return ['long_method', 'large_class', 'duplicate_code', 'long_parameter_list'];
   }
 
-  private calculateCodeMetrics(input: string): any {
+  private calculateCodeMetrics(input: string): unknown {
     return {
       lines_of_code: 350,
       cyclomatic_complexity: 15,
@@ -556,7 +556,7 @@ export class RefactoringMode extends BaseMode {
     return ['regression_introduction', 'performance_degradation', 'integration_issues'];
   }
 
-  private planRiskMitigation(context: ModeContext): any {
+  private planRiskMitigation(context: ModeContext): unknown {
     return {
       regression_risk: 'comprehensive_automated_testing',
       performance_risk: 'benchmarking_and_profiling',
@@ -568,7 +568,7 @@ export class RefactoringMode extends BaseMode {
     return 'high_safety_with_proper_precautions';
   }
 
-  private checkAutomatedTests(context: ModeContext): any {
+  private checkAutomatedTests(context: ModeContext): unknown {
     return {
       coverage: '85_percent',
       quality: 'good',
@@ -580,7 +580,7 @@ export class RefactoringMode extends BaseMode {
     return 'version_control_branching_with_backup_points';
   }
 
-  private createRollbackPlan(context: ModeContext): any {
+  private createRollbackPlan(context: ModeContext): unknown {
     return {
       triggers: ['test_failures', 'performance_degradation'],
       steps: ['revert_changes', 'verify_stability', 'investigate_issues'],
@@ -602,7 +602,7 @@ export class RefactoringMode extends BaseMode {
     return final - baseline;
   }
 
-  private compareMetrics(context: ModeContext): any {
+  private compareMetrics(context: ModeContext): unknown {
     return {
       complexity_reduction: '30_percent_decrease',
       maintainability_increase: '25_percent_improvement',
@@ -610,7 +610,7 @@ export class RefactoringMode extends BaseMode {
     };
   }
 
-  private validateImprovements(context: ModeContext): any {
+  private validateImprovements(context: ModeContext): unknown {
     return {
       quality_validated: true,
       performance_maintained: true,

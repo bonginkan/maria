@@ -192,7 +192,7 @@ export class OptimizedBox {
   /**
    * 上ボーダー描画（タイトル対応）
    */
-  private renderTopBorder(colorFn: Function, border: any, width: number): void {
+  private renderTopBorder(colorFn: Function, border: unknown, width: number): void {
     if (this.options.title) {
       const titleWidth = width - 4; // ボーダーと余白分
       const title = LayoutManager.alignText(

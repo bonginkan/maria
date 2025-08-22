@@ -78,7 +78,7 @@ export interface SyncEvent {
   type: 'add' | 'update' | 'delete' | 'merge';
   timestamp: Date;
   memberId: string;
-  data: any;
+  data: Record<string, unknown>;
   workspace: string;
 }
 
@@ -206,7 +206,7 @@ export class TeamMemoryManager extends EventEmitter {
     workspaceId: string,
     memory: {
       type: 'knowledge' | 'pattern' | 'reasoning' | 'preference';
-      data: any;
+      data: Record<string, unknown>;
       metadata?: any;
     },
   ): Promise<void> {
@@ -273,7 +273,7 @@ export class TeamMemoryManager extends EventEmitter {
       filter?: string;
       limit?: number;
     },
-  ): Promise<any[]> {
+  ): Promise<unknown[]> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) {
       throw new Error('Workspace not found');
@@ -292,7 +292,7 @@ export class TeamMemoryManager extends EventEmitter {
     workspace.memoryPool.statistics.accessCount++;
 
     // Query from pool
-    let results: any[] = [];
+    let results: unknown[] = [];
 
     switch (query.type) {
       case 'knowledge':
@@ -602,7 +602,7 @@ export class TeamMemoryManager extends EventEmitter {
   /**
    * Export workspace memory
    */
-  async exportWorkspaceMemory(workspaceId: string): Promise<any> {
+  async exportWorkspaceMemory(workspaceId: string): Promise<unknown> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) {
       throw new Error('Workspace not found');

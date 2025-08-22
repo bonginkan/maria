@@ -138,7 +138,7 @@ export class GitLabIntegration extends EventEmitter {
         per_page: 100,
       });
 
-      const mergeRequests: GitLabMergeRequest[] = response.map((mr: any) => ({
+      const mergeRequests: GitLabMergeRequest[] = response.map((mr: unknown) => ({
         id: mr.id,
         iid: mr.iid,
         project_id: mr.project_id,
@@ -213,7 +213,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Handle GitLab webhook events
    */
-  async handleWebhookEvent(event: string, payload: any): Promise<void> {
+  async handleWebhookEvent(event: string, payload: unknown): Promise<void> {
     try {
       switch (event) {
         case 'Merge Request Hook':
@@ -311,7 +311,7 @@ export class GitLabIntegration extends EventEmitter {
       return {
         approvalsRequired: response.approvals_required,
         approvalsLeft: response.approvals_left,
-        approvedBy: response.approved_by.map((approval: any) => ({
+        approvedBy: response.approved_by.map((approval: unknown) => ({
           user: {
             id: approval.user.id,
             username: approval.user.username,
@@ -406,7 +406,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Make authenticated GitLab API request
    */
-  private async gitlabRequest(method: string, endpoint: string, data?: any): Promise<unknown> {
+  private async gitlabRequest(method: string, endpoint: string, data?: unknown): Promise<unknown> {
     const baseUrl = this.config.baseUrl || 'https://gitlab.com/api/v4';
     let url = `${baseUrl}/projects/${this.config.projectId}${endpoint}`;
 
@@ -439,7 +439,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Handle merge request webhook events
    */
-  private async handleMergeRequestEvent(payload: any): Promise<void> {
+  private async handleMergeRequestEvent(payload: unknown): Promise<void> {
     const action = payload.object_attributes.action;
     const mergeRequest = payload.object_attributes;
 
@@ -460,7 +460,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Handle push webhook events
    */
-  private async handlePushEvent(payload: any): Promise<void> {
+  private async handlePushEvent(payload: unknown): Promise<void> {
     const ref = payload.ref;
     const commits = payload.commits;
 
@@ -472,7 +472,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Handle issue webhook events
    */
-  private async handleIssueEvent(payload: any): Promise<void> {
+  private async handleIssueEvent(payload: unknown): Promise<void> {
     const action = payload.object_attributes.action;
     const issue = payload.object_attributes;
 
@@ -484,7 +484,7 @@ export class GitLabIntegration extends EventEmitter {
   /**
    * Handle pipeline webhook events
    */
-  private async handlePipelineEvent(payload: any): Promise<void> {
+  private async handlePipelineEvent(payload: unknown): Promise<void> {
     const pipeline = payload.object_attributes;
     const status = pipeline.status;
 

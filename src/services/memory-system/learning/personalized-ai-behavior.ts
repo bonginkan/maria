@@ -398,7 +398,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
   /**
    * Adapt from interaction
    */
-  private async adaptFromInteraction(userId: string, interaction: any): Promise<void> {
+  private async adaptFromInteraction(userId: string, interaction: unknown): Promise<void> {
     const adaptationSpeed = this.getAdaptationSpeed();
 
     // Quick adaptation for corrections
@@ -835,7 +835,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
       });
   }
 
-  private matchesPattern(interaction: any, pattern: any): boolean {
+  private matchesPattern(interaction: unknown, pattern: unknown): boolean {
     // Simple pattern matching - in production, use more sophisticated matching
     return (
       interaction.input.includes(pattern.pattern) ||
@@ -843,7 +843,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
     );
   }
 
-  private async quickAdapt(userId: string, interaction: any): Promise<void> {
+  private async quickAdapt(userId: string, interaction: unknown): Promise<void> {
     const profile = await this.getUserProfile(userId);
 
     // Immediate adaptation for corrections
@@ -899,7 +899,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
     return suggestions;
   }
 
-  private isRelevantPattern(pattern: any, input: string): boolean {
+  private isRelevantPattern(pattern: unknown, input: string): boolean {
     // Check if pattern is relevant to current input
     return (
       pattern.context.some((ctx: string) => input.includes(ctx)) ||
@@ -928,7 +928,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
     });
 
     if (response.data && Array.isArray(response.data)) {
-      return response.data.map((d: any) => d.suggestion || d.content).filter(Boolean);
+      return response.data.map((d: unknown) => d.suggestion || d.content).filter(Boolean);
     }
 
     return [];
@@ -975,7 +975,7 @@ export class PersonalizedAIBehavior extends EventEmitter {
   /**
    * Export user behavior data
    */
-  exportUserBehavior(userId: string): any {
+  exportUserBehavior(userId: string): unknown {
     return {
       profile: this.userProfiles.get(userId),
       metrics: this.behaviorMetrics.get(userId),

@@ -68,7 +68,7 @@ export default function registerBugMemoryCommand(program: Command) {
         const context = await buildBugContext(options);
 
         // Query memory for similar bugs and fixes
-        let memoryInsights: any = null;
+        let memoryInsights: unknown = null;
         if (memoryEngine) {
           spinner.text = 'Searching memory for similar bugs...';
           memoryInsights = await queryBugMemory(memoryEngine, context);
@@ -174,7 +174,7 @@ async function initializeMemorySystem(): Promise<DualMemoryEngine> {
   });
 }
 
-async function buildBugContext(options: any): Promise<BugContext> {
+async function buildBugContext(options: unknown): Promise<BugContext> {
   const context: BugContext = {};
 
   if (options.file) {
@@ -200,7 +200,7 @@ async function buildBugContext(options: any): Promise<BugContext> {
   return context;
 }
 
-async function queryBugMemory(engine: DualMemoryEngine, context: BugContext): Promise<any> {
+async function queryBugMemory(engine: DualMemoryEngine, context: BugContext): Promise<unknown> {
   // Query for similar bug patterns
   const bugQuery: MemoryQuery = {
     type: 'pattern',
@@ -259,7 +259,7 @@ async function startBugReasoning(engine: DualMemoryEngine, context: BugContext):
 async function completeBugReasoning(
   engine: DualMemoryEngine,
   traceId: string,
-  analysis: any,
+  analysis: unknown,
 ): Promise<void> {
   const quality = analysis.confidence || 0.7;
   const outcome = `Root cause: ${analysis.rootCause}\nFix: ${analysis.fixes[0]?.description || 'No fix available'}`;
@@ -267,8 +267,8 @@ async function completeBugReasoning(
   await engine.getSystem2().completeReasoningTrace(traceId, outcome, quality);
 }
 
-async function analyzeBugWithMemory(context: BugContext, memoryInsights: any): Promise<any> {
-  const analysis: any = {
+async function analyzeBugWithMemory(context: BugContext, memoryInsights: unknown): Promise<unknown> {
+  const analysis: unknown = {
     severity: context.severity || 'medium',
     rootCause: '',
     fixes: [],
@@ -296,7 +296,7 @@ async function analyzeBugWithMemory(context: BugContext, memoryInsights: any): P
 
     // Add previous fixes
     if (memoryInsights.previousFixes.length > 0) {
-      analysis.fixes = memoryInsights.previousFixes.map((fix: any) => ({
+      analysis.fixes = memoryInsights.previousFixes.map((fix: unknown) => ({
         description: fix.content,
         confidence: fix.score || 0.7,
         source: 'memory',
@@ -326,7 +326,7 @@ async function analyzeBugWithMemory(context: BugContext, memoryInsights: any): P
   return analysis;
 }
 
-async function predictBugs(engine: DualMemoryEngine, context: BugContext): Promise<any[]> {
+async function predictBugs(engine: DualMemoryEngine, context: BugContext): Promise<unknown[]> {
   // Query for patterns that often lead to bugs
   const patternQuery: MemoryQuery = {
     type: 'pattern',
@@ -343,10 +343,10 @@ async function predictBugs(engine: DualMemoryEngine, context: BugContext): Promi
   const patterns = response.data || [];
 
   // Analyze code for these patterns
-  const predictions: any[] = [];
+  const predictions: unknown[] = [];
 
   if (context.codeSnippet) {
-    patterns.forEach((pattern: any) => {
+    patterns.forEach((pattern: unknown) => {
       if (context.codeSnippet?.includes(pattern.pattern)) {
         predictions.push({
           pattern: pattern.pattern,
@@ -362,10 +362,10 @@ async function predictBugs(engine: DualMemoryEngine, context: BugContext): Promi
 }
 
 async function applyMemoryAssistedFix(
-  fix: any,
+  fix: unknown,
   context: BugContext,
   engine: DualMemoryEngine | null,
-): Promise<any> {
+): Promise<unknown> {
   const result = {
     success: false,
     description: fix.description,
@@ -401,7 +401,7 @@ async function applyMemoryAssistedFix(
 async function learnFromBug(
   engine: DualMemoryEngine,
   context: BugContext,
-  analysis: any,
+  analysis: unknown,
 ): Promise<void> {
   // Store bug pattern in System 1
   const embedding = await generateEmbedding(context.error || context.stackTrace || '');
@@ -483,7 +483,7 @@ function analyzeErrorMessage(error: string): string {
   return 'Unknown error';
 }
 
-function analyzeStackTrace(stackTrace: string): any {
+function analyzeStackTrace(stackTrace: string): unknown {
   const lines = stackTrace.split('\n');
   const firstError = lines.find((line) => line.includes('Error')) || '';
 
@@ -514,14 +514,14 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Display functions
-function displaySimilarBugs(bugs: any[]): void {
+function displaySimilarBugs(bugs: unknown[]): void {
   console.log(chalk.yellow('\n📚 Similar bugs from memory:'));
   bugs.slice(0, 3).forEach((bug, i) => {
     console.log(chalk.gray(`  ${i + 1}. ${bug.description || bug.content}`));
   });
 }
 
-function displayPredictions(predictions: any[]): void {
+function displayPredictions(predictions: unknown[]): void {
   if (predictions.length > 0) {
     console.log(chalk.yellow('\n⚠️  Predicted potential bugs:'));
     predictions.forEach((pred, i) => {
@@ -531,7 +531,7 @@ function displayPredictions(predictions: any[]): void {
   }
 }
 
-function displayBugAnalysis(analysis: any): void {
+function displayBugAnalysis(analysis: unknown): void {
   console.log(chalk.blue('\n🐛 Bug Analysis Results:'));
   console.log(chalk.white(`  Severity: ${analysis.severity}`));
   console.log(chalk.white(`  Root Cause: ${analysis.rootCause}`));
@@ -539,7 +539,7 @@ function displayBugAnalysis(analysis: any): void {
 
   if (analysis.fixes.length > 0) {
     console.log(chalk.green('\n✅ Suggested Fixes:'));
-    analysis.fixes.forEach((fix: any, i: number) => {
+    analysis.fixes.forEach((fix: unknown, i: number) => {
       console.log(chalk.green(`  ${i + 1}. ${fix.description}`));
       console.log(
         chalk.gray(
@@ -551,7 +551,7 @@ function displayBugAnalysis(analysis: any): void {
 
   if (analysis.relatedBugs.length > 0) {
     console.log(chalk.cyan('\n🔗 Related Bugs:'));
-    analysis.relatedBugs.forEach((bug: any, i: number) => {
+    analysis.relatedBugs.forEach((bug: unknown, i: number) => {
       console.log(chalk.cyan(`  ${i + 1}. ${bug.description || 'Similar pattern'}`));
     });
   }

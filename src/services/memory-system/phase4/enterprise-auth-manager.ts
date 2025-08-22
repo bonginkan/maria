@@ -136,7 +136,7 @@ export interface Permission {
 export interface PermissionCondition {
   type: 'time' | 'location' | 'attribute' | 'mfa' | 'custom';
   operator: 'equals' | 'contains' | 'matches' | 'in' | 'not_in' | 'greater_than' | 'less_than';
-  value: any;
+  value: Event;
   metadata?: Record<string, any>;
 }
 
@@ -259,7 +259,7 @@ export interface RuleResource {
 export interface RuleCondition {
   attribute: string;
   operator: string;
-  value: any;
+  value: Event;
   context?: 'user' | 'resource' | 'environment' | 'session';
 }
 
@@ -616,7 +616,7 @@ export class EnterpriseAuthManager extends EventEmitter {
       throw new Error(`User ${userId} not found`);
     }
 
-    const result: any = { backupCodes: this.generateBackupCodes() };
+    const result: unknown = { backupCodes: this.generateBackupCodes() };
 
     if (method === 'totp') {
       const secret = this.generateTOTPSecret();
@@ -1218,7 +1218,7 @@ export class EnterpriseAuthManager extends EventEmitter {
     resource: string,
     context?: AuthContext,
   ): boolean {
-    let value: any;
+    let value: Event;
 
     switch (condition.context) {
       case 'user':
@@ -1261,7 +1261,7 @@ export class EnterpriseAuthManager extends EventEmitter {
     return true;
   }
 
-  private getEnvironmentValue(attribute: string): any {
+  private getEnvironmentValue(attribute: string): unknown {
     switch (attribute) {
       case 'time':
         return new Date().toTimeString().substring(0, 5); // HH:MM
@@ -1277,7 +1277,7 @@ export class EnterpriseAuthManager extends EventEmitter {
     }
   }
 
-  private compareValues(actual: any, operator: string, expected: any): boolean {
+  private compareValues(actual: unknown, operator: string, expected: unknown): boolean {
     switch (operator) {
       case 'equals':
         return actual === expected;
@@ -1356,7 +1356,7 @@ export class EnterpriseAuthManager extends EventEmitter {
     return password.length > 6;
   }
 
-  private async validateSAMLToken(token: string, config: AuthProviderConfig): Promise<any> {
+  private async validateSAMLToken(token: string, config: AuthProviderConfig): Promise<unknown> {
     // SAML token validation logic
     // Simplified for demo
     return {

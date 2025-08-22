@@ -68,7 +68,7 @@ export default function registerLintMemoryCommand(program: Command) {
         };
 
         // Query memory for common lint patterns
-        let memoryPatterns: any = null;
+        let memoryPatterns: unknown = null;
         if (memoryEngine) {
           spinner.text = 'Analyzing project lint patterns...';
           memoryPatterns = await queryLintMemory(memoryEngine, context);
@@ -166,7 +166,7 @@ async function initializeMemorySystem(): Promise<DualMemoryEngine> {
   });
 }
 
-async function queryLintMemory(engine: DualMemoryEngine, context: LintContext): Promise<any> {
+async function queryLintMemory(engine: DualMemoryEngine, context: LintContext): Promise<unknown> {
   // Query for common lint violations
   const violationQuery: MemoryQuery = {
     type: 'pattern',
@@ -229,7 +229,7 @@ async function startQualityReasoning(
 async function completeQualityReasoning(
   engine: DualMemoryEngine,
   traceId: string,
-  results: any,
+  results: unknown,
 ): Promise<void> {
   const quality = calculateQualityScore(results);
   const outcome = `Quality Score: ${quality}/100\nErrors: ${results.errorCount}\nWarnings: ${results.warningCount}`;
@@ -239,9 +239,9 @@ async function completeQualityReasoning(
 
 async function runLintWithMemory(
   context: LintContext,
-  memoryPatterns: any,
-  options: any,
-): Promise<any> {
+  memoryPatterns: unknown,
+  options: unknown,
+): Promise<unknown> {
   // Configure ESLint with memory insights
   const eslint = new ESLint({
     fix: options.fix,
@@ -283,8 +283,8 @@ async function runLintWithMemory(
 async function predictLintIssues(
   engine: DualMemoryEngine,
   context: LintContext,
-  currentResults: any,
-): Promise<any[]> {
+  currentResults: unknown,
+): Promise<unknown[]> {
   // Query for evolving patterns
   const evolutionQuery: MemoryQuery = {
     type: 'pattern',
@@ -301,9 +301,9 @@ async function predictLintIssues(
   const patterns = response.data || [];
 
   // Analyze trends
-  const predictions: any[] = [];
+  const predictions: unknown[] = [];
 
-  patterns.forEach((pattern: any) => {
+  patterns.forEach((pattern: unknown) => {
     if (pattern.frequency > 3 && pattern.trend === 'increasing') {
       predictions.push({
         rule: pattern.rule,
@@ -320,7 +320,7 @@ async function predictLintIssues(
 async function learnFromLintResults(
   engine: DualMemoryEngine,
   context: LintContext,
-  results: any,
+  results: unknown,
 ): Promise<void> {
   // Process each unique rule violation
   const ruleFrequency = new Map<string, number>();
@@ -377,11 +377,11 @@ async function learnFromLintResults(
 }
 
 // Helper functions
-function getCustomRulesFromMemory(patterns: any): any {
-  const rules: any = {};
+function getCustomRulesFromMemory(patterns: unknown): unknown {
+  const rules: unknown = {};
 
   if (patterns.commonViolations) {
-    patterns.commonViolations.forEach((violation: any) => {
+    patterns.commonViolations.forEach((violation: unknown) => {
       if (violation.frequency > 5) {
         // Escalate common violations to errors
         rules[violation.rule] = 'error';
@@ -392,7 +392,7 @@ function getCustomRulesFromMemory(patterns: any): any {
   return rules;
 }
 
-function calculateQualityScore(results: any): number {
+function calculateQualityScore(results: unknown): number {
   const baseScore = 100;
   const errorPenalty = results.errorCount * 2;
   const warningPenalty = results.warningCount * 0.5;
@@ -400,13 +400,13 @@ function calculateQualityScore(results: any): number {
   return Math.max(0, baseScore - errorPenalty - warningPenalty);
 }
 
-function calculateMaintainability(results: any): number {
+function calculateMaintainability(results: unknown): number {
   // Simple maintainability calculation
   const issueRatio = (results.errorCount + results.warningCount) / results.fileCount;
   return Math.max(0, 1 - issueRatio / 10);
 }
 
-function calculateReadability(results: any): number {
+function calculateReadability(results: unknown): number {
   // Check for specific readability-related rules
   let readabilityIssues = 0;
 
@@ -425,7 +425,7 @@ function calculateReadability(results: any): number {
   return Math.max(0, 1 - readabilityIssues / (results.fileCount * 10));
 }
 
-function calculateComplexity(results: any): number {
+function calculateComplexity(results: unknown): number {
   // Check for complexity-related rules
   let complexityIssues = 0;
 
@@ -449,7 +449,7 @@ async function generateEmbedding(text: string): Promise<number[]> {
 }
 
 // Display functions
-function displayCommonPatterns(patterns: any[]): void {
+function displayCommonPatterns(patterns: unknown[]): void {
   console.log(chalk.yellow('\n📋 Common lint patterns in this project:'));
   patterns.slice(0, 5).forEach((pattern, i) => {
     console.log(
@@ -458,7 +458,7 @@ function displayCommonPatterns(patterns: any[]): void {
   });
 }
 
-function displayPredictions(predictions: any[]): void {
+function displayPredictions(predictions: unknown[]): void {
   if (predictions.length > 0) {
     console.log(chalk.yellow('\n🔮 Predicted future lint issues:'));
     predictions.forEach((pred, i) => {
@@ -469,7 +469,7 @@ function displayPredictions(predictions: any[]): void {
   }
 }
 
-function displayLintResults(results: any, memoryPatterns: any): void {
+function displayLintResults(results: unknown, memoryPatterns: unknown): void {
   const { errorCount, warningCount, fixableCount, fileCount } = results;
 
   console.log(chalk.blue('\n📝 Lint Analysis Results:'));
@@ -514,12 +514,12 @@ function displayLintResults(results: any, memoryPatterns: any): void {
 
   // Show detailed results for files with issues
   const filesWithIssues = results.results.filter(
-    (r: any) => r.errorCount > 0 || r.warningCount > 0,
+    (r: unknown) => r.errorCount > 0 || r.warningCount > 0,
   );
 
   if (filesWithIssues.length > 0) {
     console.log(chalk.yellow('\n📁 Files with issues:'));
-    filesWithIssues.slice(0, 10).forEach((file: any) => {
+    filesWithIssues.slice(0, 10).forEach((file: unknown) => {
       console.log(chalk.gray(`  ${file.filePath}`));
       console.log(
         chalk.red(`    Errors: ${file.errorCount}`),
@@ -527,7 +527,7 @@ function displayLintResults(results: any, memoryPatterns: any): void {
       );
 
       // Show first few messages
-      file.messages.slice(0, 3).forEach((msg: any) => {
+      file.messages.slice(0, 3).forEach((msg: unknown) => {
         const icon = msg.severity === 2 ? '❌' : '⚠️';
         console.log(
           chalk.gray(`    ${icon} [${msg.line}:${msg.column}] ${msg.message} (${msg.ruleId})`),
