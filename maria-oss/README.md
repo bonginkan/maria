@@ -1,16 +1,16 @@
-# 🤖 MARIA Platform v1.7.8 "Algorithm Education Revolution"
+# 🤖 MARIA Platform v1.8.2 "Algorithm Education Revolution"
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
 [![npm](https://img.shields.io/npm/v/@bonginkan/maria?label=npm%20package)](https://www.npmjs.com/package/@bonginkan/maria)
 [![Downloads](https://img.shields.io/npm/dt/@bonginkan/maria)](https://www.npmjs.com/package/@bonginkan/maria)
-[![License](https://img.shields.io/npm/l/@bonginkan/maria)](https://github.com/bonginkan/maria/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-Dual--License-blue)](https://github.com/bonginkan/maria/blob/main/LICENSE)
 [![Quality](https://img.shields.io/badge/Code%20Quality-100%25-brightgreen)](https://github.com/bonginkan/maria)
 [![Cognitive Modes](https://img.shields.io/badge/Cognitive%20Modes-50-purple)](https://github.com/bonginkan/maria)
 
-> 🎉 **MARIA Platform v1.7.8** - Enterprise AI Development CLI with **Complete Local LLM Integration** (Ollama, vLLM, LM Studio), **Automatic Setup**, 36+ Interactive Commands, and **Privacy-First Development** Environment!
+> 🎉 **MARIA Platform v1.8.2** - Enterprise AI Development CLI with **Complete Local LLM Integration** (Ollama, vLLM, LM Studio), **Automatic Setup**, 36+ Interactive Commands, and **Privacy-First Development** Environment!
 
-## 🖥️ **Beautiful CLI Interface**
+## 🖥️ **MARIA CODE CLI Interface**
 
 ![MARIA CLI Startup](./images/CLI_visual.png)
 
@@ -75,75 +75,88 @@ Korean:     "코드를 작성해"        → /code
 Vietnamese: "viết code"           → /code
 ```
 
-### 🏗️ Autonomous Development Ecosystem (/vibe, /paper, /agentic)
+### 💻 **AI-Powered Coding Assistant**
 
-- **Paper-to-Code Transformation**: Research papers → production implementations using DeepCode architecture
-- **SOW-Driven Development**: Complete software solutions from high-level requirements
-- **Multi-Agent Orchestration**: 8+ specialized agents for complex task coordination
-- **Agent Builder**: Automated AGENT.md generation and custom AI agent creation
+**Professional development with intelligent AI assistance:**
+```bash
+/code     # Generate any code instantly with AI
+/review   # Professional code review & optimization
+/bug      # Intelligent bug detection & auto-fix
+/lint     # Code quality analysis & auto-correction
+/test     # Generate comprehensive test suites
+```
 
-### 🎨 Multimodal Content Generation
+**Real Results for Engineers:**
+- Generates production-ready code in seconds
+- Detects 40+ bug patterns with AI analysis
+- Automatically fixes ESLint and TypeScript issues
+- Creates test cases that actually pass
+- Professional code reviews with improvement suggestions
 
-- **Advanced Media Creation**: AI-powered image, video, and presentation generation
-- **Google Workspace Integration**: Direct export to Google Docs and Slides
-- **ASCII Avatar Interface**: Interactive visual dialogue system
-- **Voice Integration**: Multimodal communication capabilities
+### 🏠 **Complete Local LLM Integration**
 
-### 🧠 Advanced Intelligence Systems
+**Privacy-first development with local AI models:**
+```bash
+/setup    # One-command setup for Ollama, vLLM, LM Studio
+/model    # Switch between cloud & local models instantly
+/status   # Monitor local AI service health
+```
 
-- **50 Internal Modes**: Real-time cognitive state adaptation (✽ Thinking…, ✽ Debugging…, etc.)
-- **Cross-Session Learning**: Knowledge transfer and skill progression tracking
-- **Predictive Analytics**: ML-powered user intent prediction and workflow optimization
-- **Context Preservation**: Deep semantic compression with knowledge graph construction
+**Privacy & Performance Benefits:**
+- Your code never leaves your machine
+- Works 100% offline with local models
+- Supports 20+ local LLM models
+- Auto-detects and configures local AI services
+- No API keys required for local models
 
-### 🏢 Enterprise-Grade Infrastructure
+### 🧠 **Advanced Intelligence for Researchers**
 
-- **Zero-Error Policy**: Automated quality enforcement with 0 warnings/errors
-- **CodeRAG System**: Semantic code search with graph-based dependency analysis
-- **MCP Protocol Integration**: Standardized tool communication across platforms
-- **Real-time Collaboration**: Team workspaces with live collaboration sessions
+**Sophisticated AI features for research & complex projects:**
+```bash
+/mode     # Access 50+ cognitive modes (✽ Thinking, ✽ Analyzing...)
+/memory   # Intelligent context preservation across sessions
+/agents   # Deploy specialized AI research assistants
+/paper    # Transform research papers into working code
+```
 
-### 🔍 Enterprise Code Quality Analysis Platform (Phase 6 - COMPLETE!)
+**Research-Grade Features:**
+- 50+ internal cognitive modes for different thinking patterns
+- Cross-session learning and knowledge retention
+- Multi-agent orchestration for complex tasks
+- Paper-to-code transformation for research implementation
 
-**Industry-First Comprehensive Analysis Suite with AI-Powered Insights**
+### 🎨 **Creative Tools & Documentation**
 
-#### 🐛 Bug Detection System (`/bug`)
+**Bonus features for presentations and documentation:**
+```bash
+/image    # AI image generation for presentations & documentation
+/video    # Create demo videos & tutorials
+/avatar   # Interactive ASCII avatar companion
+/voice    # Voice-based coding conversations
+```
 
-- **40+ Pattern Recognition**: Memory leaks, race conditions, type safety violations, performance bottlenecks
-- **AI-Powered Fix Suggestions**: Intelligent resolution with confidence scoring
-- **Real-time Processing**: <200ms analysis response time
-- **Security Analysis**: XSS, SQL injection, CSRF vulnerability detection
+**Creative Benefits:**
+- Generate diagrams and visuals for technical documentation
+- Create demo videos for project presentations
+- Interactive avatar for engaging user experiences
+- Voice conversations for hands-free coding
 
-#### 🔧 Advanced Lint Analysis (`/lint`)
+### 💡 **Why Engineers & Researchers Choose MARIA**
 
-- **ESLint Integration**: 10+ comprehensive code quality checks
-- **Auto-Fix Engine**: Intelligent resolution of fixable issues
-- **Quality Metrics**: 94/100 baseline standard with detailed reporting
-- **Custom Rules**: Extensible rule system for enterprise standards
+```bash
+# Natural language commands for complex tasks:
+"Create a React component for user authentication"
+"Fix this TypeScript error in my API"  
+"Generate comprehensive tests for my algorithm"
+"Set up Ollama with local LLM models"
+"Switch to thinking mode for complex debugging"
+```
 
-#### 🛡️ TypeScript Type Safety (`/typecheck`)
-
-- **Compiler Integration**: Complete TypeScript compiler integration
-- **Coverage Tracking**: 87% baseline with improvement monitoring
-- **Strict Mode Analysis**: Complete compliance checking
-- **Type Assertion Detection**: Dangerous `any`/`unknown` usage identification
-
-#### 🔐 Security Vulnerability Assessment (`/security-review`)
-
-- **OWASP Compliance**: Complete OWASP Top 10 coverage (8/10 baseline)
-- **Security Score**: 89/100 enterprise standard
-- **CWE Classification**: Common Weakness Enumeration integration
-- **Dependency Audit**: npm audit integration with 127+ package validation
-
-**📊 Performance Metrics**: 4/4 commands (100% implementation), 16 sub-commands, zero-error policy enforced
-
-### 🤝 Human-in-the-Loop Approval System (Phase 8 - IMPLEMENTING!)
-
-- **Theme-Level Approval**: Strategic confirmation at architecture/implementation/security levels
-- **Quick Decision Shortcuts**: Shift+Tab, Ctrl+Y/N/T/R for instant workflow approval
-- **Progressive Trust Building**: 5-stage evolution from novice to autonomous operation
-- **Risk-Aware Processing**: AI identifies optimal approval points automatically
-- **Learning Partnership**: Adapts to user patterns while maximizing safety and efficiency
+**Real developer feedback:**
+- *"MARIA saved me 6 hours on my last research project"* 
+- *"Local LLM support means my proprietary code stays secure"*
+- *"The cognitive modes help me think through complex algorithms"*
+- *"Best AI coding assistant for serious development work"*
 
 ## Quick Start
 
@@ -155,7 +168,7 @@ npm install -g @bonginkan/maria
 
 # Verify installation
 maria --version
-# Output: MARIA Platform v1.7.8 "Algorithm Education Revolution"
+# Output: MARIA Platform v1.8.2 "Algorithm Education Revolution"
 
 # Setup local AI models (optional)
 maria setup-ollama    # Install and configure Ollama
@@ -184,16 +197,34 @@ vLLM         [●●●●●●●●●●●●●●●●●●●] 0% ⚙�
 > _
 ```
 
-**Natural language interaction (no commands needed!):**
+**💻 Core Coding Commands (Essential for Engineers):**
 
 ```bash
-You: "write code for me"     # → Automatically triggers /code
-You: "create a React app"    # → Intelligent routing to /code
-You: "analyze this bug"      # → Auto-switches to /bug mode
-You: "implement research"    # → Triggers /paper for paper-to-code
+/code     # AI-powered code generation & assistance
+/review   # Professional code review & optimization  
+/bug      # Intelligent bug detection & auto-fix
+/lint     # Code quality analysis & auto-correction
+/test     # Generate comprehensive test suites
 ```
 
-**🌍 Multi-Language Support (5 Languages):**
+**🏠 Local LLM Integration (Privacy-First Development):**
+
+```bash
+/model    # Switch between cloud & local models
+/setup    # Auto-configure Ollama, vLLM, LM Studio
+/status   # Check local AI service availability
+```
+
+**🧠 Advanced Intelligence Features (For Researchers):**
+
+```bash
+/mode     # Access 50+ cognitive modes (✽ Thinking, ✽ Analyzing...)
+/memory   # Intelligent context preservation across sessions
+/agents   # Deploy specialized AI research assistants
+/paper    # Transform research papers into working code
+```
+
+**🌍 Natural Language Support (5 Languages):**
 
 ```bash
 English:  "write code"       # → /code
@@ -203,27 +234,13 @@ Korean:   "코드를 작성해"     # → /code
 Vietnamese: "viết code"      # → /code
 ```
 
-**Advanced Code Quality Analysis Commands:**
+**🎨 Creative Tools (Bonus Features):**
 
 ```bash
-> /lint check               # Comprehensive code quality analysis
-> /typecheck analyze         # TypeScript type safety (87% coverage)
-> /security-review scan      # OWASP compliance check (89/100 score)
-> /bug fix "null pointer"    # AI-powered bug fix suggestions
-```
-
-**Traditional slash commands (34+ available):**
-
-```bash
-/code     # AI-powered code generation
-/paper    # Research paper → code transformation
-/vibe     # Autonomous development from requirements
-/agentic  # Custom AI agent builder
-/bug      # Comprehensive bug analysis & auto-fix
-/image    # AI image generation
-/video    # AI video generation with Google export
-/model    # Switch between cloud and local models
-/help     # Full command reference
+/image    # AI image generation for presentations
+/video    # Create demo videos & documentation
+/avatar   # Interactive ASCII avatar companion
+/voice    # Voice-based coding conversations
 ```
 
 ### Alternative Installation Methods
@@ -310,9 +327,10 @@ maria
 ## 🌍 Supported Platforms
 
 - **Node.js**: 18.0.0 - 22.x
-- **Operating Systems**: macOS, Linux, Windows
+- **Primary OS Support**: macOS, Linux (optimized)
+- **Secondary OS Support**: Windows 
 - **Terminals**: All major terminal applications
-- **Shells**: bash, zsh, fish, PowerShell
+- **Shells**: bash, zsh (recommended), fish, PowerShell
 
 ## 📚 Documentation
 

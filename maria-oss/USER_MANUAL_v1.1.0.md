@@ -1,41 +1,61 @@
-# MARIA Platform v1.1.0 - User Manual
+# MARIA Platform v1.8.1 - User Manual
 
 ## 🎯 Welcome to MARIA
 
-**MARIA Platform v1.1.0** is the world's most advanced AI-powered development platform, designed to revolutionize how you write, analyze, and maintain code. This user manual will guide you through every feature, from basic setup to advanced enterprise-grade code quality analysis.
+**MARIA Platform v1.8.1** is an enterprise-grade AI development platform designed specifically for engineers and researchers. With complete local LLM integration, advanced coding assistance, and intelligent research tools, MARIA revolutionizes how you develop, analyze, and maintain code while keeping your work private and secure.
+
+## 🔗 Official Links
+
+- **NPM Package**: https://www.npmjs.com/package/@bonginkan/maria
+- **GitHub Repository**: https://github.com/bonginkan/maria
+- **Homepage**: https://bonginkan.ai/
 
 ## 📋 Table of Contents
 
 1. [Getting Started](#getting-started)
 2. [Installation Guide](#installation-guide)
-3. [Basic Usage](#basic-usage)
-4. [Natural Language Interface](#natural-language-interface)
-5. [Code Quality Analysis](#code-quality-analysis)
-6. [AI Development Commands](#ai-development-commands)
-7. [Project Management](#project-management)
-8. [Advanced Features](#advanced-features)
+3. [Core Coding Commands](#core-coding-commands)
+4. [Local LLM Integration](#local-llm-integration)
+5. [Advanced Intelligence Features](#advanced-intelligence-features)
+6. [Creative Tools & Documentation](#creative-tools--documentation)
+7. [Natural Language Interface](#natural-language-interface)
+8. [Project Management](#project-management)
 9. [Customization & Settings](#customization--settings)
 10. [Troubleshooting](#troubleshooting)
-11. [Tips & Best Practices](#tips--best-practices)
+11. [Tips & Best Practices for Engineers & Researchers](#tips--best-practices-for-engineers--researchers)
 
 ## 🚀 Getting Started
 
 ### What is MARIA?
 
-MARIA (Multi-Agent Research & Intelligence Assistant) is an enterprise-grade AI development platform that combines:
+MARIA (Multi-Agent Research & Intelligence Assistant) is an enterprise-grade AI development platform designed specifically for engineers and researchers who need:
 
-- **Natural Language Understanding**: Talk to AI in 5 languages (English, Japanese, Chinese, Korean, Vietnamese)
-- **Code Quality Analysis**: Professional-grade bug detection, linting, type checking, and security review
-- **Multi-Model AI Integration**: Access to 22+ AI models (OpenAI, Anthropic, Google, local models)
-- **Intelligent Development**: Automated coding, testing, and documentation generation
+**💻 Professional Coding Assistance:**
+- AI-powered code generation, review, and debugging
+- Intelligent bug detection with 40+ pattern recognition
+- Automated code quality analysis and fixes
+- Comprehensive test generation
 
-### Key Benefits
+**🏠 Complete Local LLM Integration:**
+- Privacy-first development with local AI models (Ollama, vLLM, LM Studio)
+- Your code never leaves your machine
+- Works 100% offline with local models
+- No API keys required for local development
 
-✅ **Boost Productivity**: Write code 3x faster with AI assistance  
-✅ **Improve Quality**: Catch bugs and security issues before they reach production  
-✅ **Reduce Errors**: Zero-error policy with automated quality enforcement  
-✅ **Learn Continuously**: AI adapts to your coding patterns and preferences  
-✅ **Work Naturally**: Use plain language instead of complex commands  
+**🧠 Advanced Intelligence for Research:**
+- 50+ cognitive modes for different thinking patterns
+- Cross-session learning and knowledge retention
+- Multi-agent orchestration for complex tasks
+- Paper-to-code transformation for research implementation
+
+### Key Benefits for Engineers & Researchers
+
+✅ **Privacy & Security**: Keep proprietary code secure with local LLM processing  
+✅ **Professional Quality**: Enterprise-grade code analysis and improvement suggestions  
+✅ **Research Support**: Transform research papers into working implementations  
+✅ **Multi-Language**: Natural language understanding in 5 languages  
+✅ **Continuous Learning**: AI remembers your patterns and improves over time  
+✅ **Offline Capability**: Full functionality without internet dependency  
 
 ## 💻 Installation Guide
 
@@ -56,7 +76,7 @@ npm install -g @bonginkan/maria
 
 # Verify installation
 maria --version
-# Should display: 1.1.0
+# Should display: 1.8.1
 ```
 
 #### Option 2: Using npx (No Installation Required)
@@ -89,6 +109,94 @@ maria setup
 # Configure AI providers (optional)
 export OPENAI_API_KEY="your-openai-key"
 export ANTHROPIC_API_KEY="your-anthropic-key"
+```
+
+## 🏠 Local LLM Setup (Privacy-First Development)
+
+**⚠️ Important**: To use local LLM features (`/model`, `/setup`, privacy-first development), you need to install and configure local AI models.
+
+### Option 1: Ollama Setup
+
+```bash
+# Install Ollama (macOS/Linux)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Install Ollama (Windows) - Download from https://ollama.ai/download
+
+# Auto-configure with MARIA
+maria setup-ollama
+
+# Or manually install models
+ollama pull llama2
+ollama pull codellama
+```
+
+### Option 2: LM Studio Setup
+
+```bash
+# Download LM Studio from https://lmstudio.ai/
+# Install and start LM Studio
+# Download models through LM Studio interface
+
+# MARIA will auto-detect LM Studio
+maria status
+```
+
+### Option 3: vLLM Setup
+
+```bash
+# Install vLLM (requires Python 3.8+)
+pip install vllm
+
+# Auto-configure with MARIA
+maria setup-vllm
+
+# Or set up manually
+export VLLM_API_URL="http://localhost:8000"
+```
+
+## 🎨 Creative Tools Setup (Optional Features)
+
+**⚠️ Important**: Creative tools require additional setup for full functionality.
+
+### Image Generation (`/image`)
+
+```bash
+# For local image generation, install ComfyUI or Stable Diffusion WebUI
+# Or use cloud providers (requires API keys):
+export OPENAI_API_KEY="your-key"  # For DALL-E
+export REPLICATE_API_TOKEN="your-token"  # For Stable Diffusion
+```
+
+### Video Generation (`/video`)
+
+```bash
+# For video generation, you need:
+# 1. Cloud provider API keys
+export RUNPOD_API_KEY="your-key"
+# 2. Or local video generation tools
+# 3. FFmpeg for video processing
+brew install ffmpeg  # macOS
+sudo apt install ffmpeg  # Linux
+```
+
+### Voice Chat (`/voice`)
+
+```bash
+# Voice features require:
+# 1. Microphone access (automatic)
+# 2. Speech-to-text API (optional for cloud providers)
+export OPENAI_API_KEY="your-key"  # For OpenAI Whisper
+# 3. Or use local Whisper models (automatic download)
+```
+
+### Avatar Interface (`/avatar`)
+
+```bash
+# ASCII avatar works out of the box
+# No additional setup required
+maria
+> /avatar
 ```
 
 ## 🎮 Basic Usage

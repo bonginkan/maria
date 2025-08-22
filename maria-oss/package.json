@@ -1,6 +1,6 @@
 {
   "name": "@bonginkan/maria",
-  "version": "1.7.8",
+  "version": "1.8.2",
   "description": "Enterprise-Grade AI Development Platform - Intelligent CLI with Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, Vector-based Code Search, and Comprehensive Quality Analysis",
   "keywords": [
     "ai",
@@ -46,7 +46,7 @@
   ],
   "author": "Bonginkan Inc.",
   "license": "SEE LICENSE IN LICENSE",
-  "homepage": "https://github.com/bonginkan/maria",
+  "homepage": "https://bonginkan.ai/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bonginkan/maria.git"
