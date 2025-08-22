@@ -162,21 +162,27 @@ Vietnamese: "viết code"           → /code
 ### Installation
 
 ```bash
-# Install latest version globally via npm
+# 🚀 Latest Version (Recommended) - Memory System Enabled
 npm install -g @bonginkan/maria@latest
 
-# Alternative: Install specific version (recommended for production)
-npm install -g @bonginkan/maria@1.8.3
+# 🔄 Update Existing Installation
+npm update -g @bonginkan/maria
 
-# Verify installation
+# 🎯 Alpha Version (Latest Features)
+npm install -g @bonginkan/maria@alpha
+
+# 📌 Specific Version (Production Use)
+npm install -g @bonginkan/maria@2.0.0
+
+# ✅ Verify Installation
 maria --version
-# Output: MARIA Platform v1.8.3
+# Output: MARIA Platform v2.0.0 "Memory Intelligence Edition"
 
-# Setup local AI models (optional)
+# 🧠 Setup Local AI Models (Optional)
 maria setup-ollama    # Install and configure Ollama
 maria setup-vllm      # Install and configure vLLM
 
-# Start interactive mode with natural language
+# 🚀 Start Interactive Mode
 maria
 ```
 
