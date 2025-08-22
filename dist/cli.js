@@ -13755,11 +13755,14 @@ var MemoryCoordinator = class {
   recommendations = [];
   optimizationTimer;
   syncTimer;
-  constructor(system1, system2, dualEngine, config2) {
-    this.system1 = system1;
-    this.system2 = system2;
+  constructor(dualEngine, config2) {
+    if (!dualEngine) {
+      throw new Error("MemoryCoordinator: dualEngine parameter is required");
+    }
     this.dualEngine = dualEngine;
-    this.config = config2;
+    this.system1 = dualEngine.system1;
+    this.system2 = dualEngine.system2;
+    this.config = config2 || this.getDefaultConfig();
     this.metrics = this.initializeMetrics();
     this.startCoordination();
   }
@@ -14125,7 +14128,19 @@ var MemoryCoordinator = class {
       this.syncPoints = this.syncPoints.slice(-50);
     }
   }
+  getDefaultConfig() {
+    return {
+      syncInterval: 5e3,
+      conflictResolutionStrategy: "balanced",
+      learningRate: 0.15,
+      adaptationThreshold: 0.7
+    };
+  }
   startCoordination() {
+    if (!this.config || !this.config.syncInterval) {
+      console.warn("MemoryCoordinator: Invalid config, using defaults");
+      this.config = this.getDefaultConfig();
+    }
     this.syncTimer = setInterval(() => {
       this.synchronizeSystems().catch(console.error);
     }, this.config.syncInterval);
@@ -25154,7 +25169,7 @@ function createInteractiveSession(maria) {
           throw new Error("Invalid memory configuration: missing required sections");
         }
         memoryEngine2 = new DualMemoryEngine(memoryConfig);
-        memoryCoordinator2 = new MemoryCoordinator(memoryEngine2);
+        memoryCoordinator2 = new MemoryCoordinator(memoryEngine2, memoryConfig.coordinator);
         if (maria && typeof maria.setMemorySystem === "function") {
           maria.setMemorySystem(memoryEngine2, memoryCoordinator2);
         }
@@ -25218,7 +25233,11 @@ function createInteractiveSession(maria) {
               waitingForCodeInput = false;
               continue;
             } catch (error) {
-              console.log(chalk13__default.default.red(`\u274C Code generation failed: ${error instanceof Error ? error.message : "Unknown error"}`));
+              console.log(
+                chalk13__default.default.red(
+                  `\u274C Code generation failed: ${error instanceof Error ? error.message : "Unknown error"}`
+                )
+              );
               waitingForCodeInput = false;
               continue;
             }
@@ -25344,7 +25363,11 @@ async function handleCommand(command, maria) {
           return "code_mode";
         }
       } catch (error) {
-        console.log(chalk13__default.default.red(`\u274C Code generation failed: ${error instanceof Error ? error.message : "Unknown error"}`));
+        console.log(
+          chalk13__default.default.red(
+            `\u274C Code generation failed: ${error instanceof Error ? error.message : "Unknown error"}`
+          )
+        );
       }
       return true;
     case "/test":
@@ -25751,13 +25774,17 @@ async function showInteractiveModelSelector(models) {
       const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : "";
       const isSelected = index === selectedIndex;
       if (isSelected) {
-        console.log(chalk13__default.default.bgBlue.white(`  \u25B6 ${status} ${model.name} [${model.provider}]${pricing}`));
+        console.log(
+          chalk13__default.default.bgBlue.white(`  \u25B6 ${status} ${model.name} [${model.provider}]${pricing}`)
+        );
         console.log(chalk13__default.default.bgBlue.white(`     ${model.description}`));
         if (model.capabilities && model.capabilities.length > 0) {
           console.log(chalk13__default.default.bgBlue.white(`     Capabilities: ${model.capabilities.join(", ")}`));
         }
       } else {
-        console.log(`  ${status} ${chalk13__default.default.bold(model.name)} ${chalk13__default.default.gray(`[${model.provider}]`)}${pricing}`);
+        console.log(
+          `  ${status} ${chalk13__default.default.bold(model.name)} ${chalk13__default.default.gray(`[${model.provider}]`)}${pricing}`
+        );
         console.log(`     ${chalk13__default.default.gray(model.description)}`);
         if (model.capabilities && model.capabilities.length > 0) {
           console.log(`     ${chalk13__default.default.cyan("Capabilities:")} ${model.capabilities.join(", ")}`);
@@ -25786,10 +25813,18 @@ async function showInteractiveModelSelector(models) {
         case "\r":
           cleanup();
           const selectedModel = models[selectedIndex];
-          console.log(chalk13__default.default.green(`
-\u2705 Selected: ${selectedModel.name} (${selectedModel.provider})`));
-          console.log(chalk13__default.default.yellow("Note: Model switching will be implemented in a future version"));
-          console.log(chalk13__default.default.gray("Currently, you can switch models using environment variables or CLI options\n"));
+          console.log(
+            chalk13__default.default.green(`
+\u2705 Selected: ${selectedModel.name} (${selectedModel.provider})`)
+          );
+          console.log(
+            chalk13__default.default.yellow("Note: Model switching will be implemented in a future version")
+          );
+          console.log(
+            chalk13__default.default.gray(
+              "Currently, you can switch models using environment variables or CLI options\n"
+            )
+          );
           resolve();
           break;
         case "\x1B":

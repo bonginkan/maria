@@ -626,6 +626,139 @@ declare class DualMemoryEngine {
 }
 
 /**
+ * MARIA Memory System - Memory Coordinator
+ *
+ * Cross-layer coordination and optimization between System 1 and System 2 memory
+ * Manages synchronization, performance optimization, and adaptive learning
+ */
+
+interface CoordinationMetrics {
+    syncOperations: number;
+    optimizationRuns: number;
+    adaptationEvents: number;
+    crossLayerTransfers: number;
+    performanceImprovements: number;
+    lastOptimization: Date;
+    averageSyncTime: number;
+    systemHealth: 'excellent' | 'good' | 'fair' | 'poor';
+}
+interface OptimizationRecommendation {
+    id: string;
+    type: 'performance' | 'memory' | 'learning' | 'synchronization';
+    priority: number;
+    description: string;
+    impact: {
+        performance: number;
+        memory: number;
+        latency: number;
+    };
+    implementation: {
+        effort: 'low' | 'medium' | 'high';
+        risk: 'low' | 'medium' | 'high';
+        timeline: number;
+    };
+    automated: boolean;
+}
+interface SynchronizationReport {
+    system1State: {
+        knowledgeNodes: number;
+        patterns: number;
+        interactions: number;
+        cacheHitRate: number;
+    };
+    system2State: {
+        reasoningTraces: number;
+        qualityMetrics: QualityMetrics;
+        enhancements: number;
+        reflections: number;
+    };
+    synchronizationPoints: SyncPoint[];
+    conflictResolutions: ConflictResolution[];
+    recommendations: OptimizationRecommendation[];
+}
+interface SyncPoint {
+    id: string;
+    timestamp: Date;
+    type: 'knowledge_transfer' | 'pattern_learning' | 'quality_feedback' | 'user_adaptation';
+    source: 'system1' | 'system2';
+    target: 'system1' | 'system2';
+    data: unknown;
+    success: boolean;
+    latency: number;
+}
+interface ConflictResolution {
+    id: string;
+    timestamp: Date;
+    conflictType: 'data_inconsistency' | 'preference_mismatch' | 'quality_threshold' | 'performance_tradeoff';
+    description: string;
+    resolution: string;
+    confidence: number;
+    impact: 'low' | 'medium' | 'high';
+}
+declare class MemoryCoordinator {
+    private system1;
+    private system2;
+    private dualEngine;
+    private config;
+    private metrics;
+    private syncPoints;
+    private conflicts;
+    private recommendations;
+    private optimizationTimer?;
+    private syncTimer?;
+    constructor(dualEngine: DualMemoryEngine, config?: CoordinatorConfig);
+    synchronizeSystems(): Promise<SynchronizationReport>;
+    optimizePerformance(): Promise<OptimizationRecommendation[]>;
+    adaptToUserBehavior(event: MemoryEvent): Promise<void>;
+    resolveConflicts(): Promise<ConflictResolution[]>;
+    private performCrossLayerSync;
+    private syncKnowledgeToReasoning;
+    private syncQualityToPatterns;
+    private syncUserPreferences;
+    private syncLearningData;
+    private analyzePerformance;
+    private generateOptimizationRecommendations;
+    private applyAutomatedOptimizations;
+    private applyOptimization;
+    private detectConflicts;
+    private resolveConflict;
+    private analyzeBehaviorPattern;
+    private determineAdaptation;
+    private performCrossLayerAdaptation;
+    private getSystem1State;
+    private getSystem2State;
+    private getRecentSyncPoints;
+    private getRecentConflicts;
+    private recordSyncPoint;
+    private getDefaultConfig;
+    private startCoordination;
+    private initializeMetrics;
+    private transferKnowledgeToReasoning;
+    private updatePatternsForMaintainability;
+    private updatePatternsForSecurity;
+    private adaptReasoningForTDD;
+    private adaptReasoningForSystematicApproach;
+    private integratePatternLearning;
+    private identifyBottlenecks;
+    private identifyOptimizationOpportunities;
+    private optimizePerformanceSettings;
+    private optimizeMemoryUsage;
+    private optimizeLearningSettings;
+    private optimizeSynchronizationSettings;
+    private adjustQualityThresholds;
+    private optimizeSystem2Performance;
+    private adaptSystem1ForCodeGeneration;
+    private adaptSystem2ForQuality;
+    private updateAdaptiveLearning;
+    getMetrics(): CoordinationMetrics;
+    getRecommendations(): OptimizationRecommendation[];
+    forceOptimization(): Promise<OptimizationRecommendation[]>;
+    forceSynchronization(): Promise<SynchronizationReport>;
+    updateConfig(newConfig: Partial<CoordinatorConfig>): void;
+    destroy(): void;
+}
+
+/**
  * MARIA Memory System - System 1 Memory Implementation
  *
  * Fast, intuitive memory patterns for immediate responses
@@ -779,138 +912,6 @@ declare class System2MemoryManager implements System2Memory {
     private calculateBasicComplexity;
     private hashCode;
     private initializeQualityMetrics;
-}
-
-/**
- * MARIA Memory System - Memory Coordinator
- *
- * Cross-layer coordination and optimization between System 1 and System 2 memory
- * Manages synchronization, performance optimization, and adaptive learning
- */
-
-interface CoordinationMetrics {
-    syncOperations: number;
-    optimizationRuns: number;
-    adaptationEvents: number;
-    crossLayerTransfers: number;
-    performanceImprovements: number;
-    lastOptimization: Date;
-    averageSyncTime: number;
-    systemHealth: 'excellent' | 'good' | 'fair' | 'poor';
-}
-interface OptimizationRecommendation {
-    id: string;
-    type: 'performance' | 'memory' | 'learning' | 'synchronization';
-    priority: number;
-    description: string;
-    impact: {
-        performance: number;
-        memory: number;
-        latency: number;
-    };
-    implementation: {
-        effort: 'low' | 'medium' | 'high';
-        risk: 'low' | 'medium' | 'high';
-        timeline: number;
-    };
-    automated: boolean;
-}
-interface SynchronizationReport {
-    system1State: {
-        knowledgeNodes: number;
-        patterns: number;
-        interactions: number;
-        cacheHitRate: number;
-    };
-    system2State: {
-        reasoningTraces: number;
-        qualityMetrics: QualityMetrics;
-        enhancements: number;
-        reflections: number;
-    };
-    synchronizationPoints: SyncPoint[];
-    conflictResolutions: ConflictResolution[];
-    recommendations: OptimizationRecommendation[];
-}
-interface SyncPoint {
-    id: string;
-    timestamp: Date;
-    type: 'knowledge_transfer' | 'pattern_learning' | 'quality_feedback' | 'user_adaptation';
-    source: 'system1' | 'system2';
-    target: 'system1' | 'system2';
-    data: unknown;
-    success: boolean;
-    latency: number;
-}
-interface ConflictResolution {
-    id: string;
-    timestamp: Date;
-    conflictType: 'data_inconsistency' | 'preference_mismatch' | 'quality_threshold' | 'performance_tradeoff';
-    description: string;
-    resolution: string;
-    confidence: number;
-    impact: 'low' | 'medium' | 'high';
-}
-declare class MemoryCoordinator {
-    private system1;
-    private system2;
-    private dualEngine;
-    private config;
-    private metrics;
-    private syncPoints;
-    private conflicts;
-    private recommendations;
-    private optimizationTimer?;
-    private syncTimer?;
-    constructor(system1: System1MemoryManager, system2: System2MemoryManager, dualEngine: DualMemoryEngine, config: CoordinatorConfig);
-    synchronizeSystems(): Promise<SynchronizationReport>;
-    optimizePerformance(): Promise<OptimizationRecommendation[]>;
-    adaptToUserBehavior(event: MemoryEvent): Promise<void>;
-    resolveConflicts(): Promise<ConflictResolution[]>;
-    private performCrossLayerSync;
-    private syncKnowledgeToReasoning;
-    private syncQualityToPatterns;
-    private syncUserPreferences;
-    private syncLearningData;
-    private analyzePerformance;
-    private generateOptimizationRecommendations;
-    private applyAutomatedOptimizations;
-    private applyOptimization;
-    private detectConflicts;
-    private resolveConflict;
-    private analyzeBehaviorPattern;
-    private determineAdaptation;
-    private performCrossLayerAdaptation;
-    private getSystem1State;
-    private getSystem2State;
-    private getRecentSyncPoints;
-    private getRecentConflicts;
-    private recordSyncPoint;
-    private startCoordination;
-    private initializeMetrics;
-    private transferKnowledgeToReasoning;
-    private updatePatternsForMaintainability;
-    private updatePatternsForSecurity;
-    private adaptReasoningForTDD;
-    private adaptReasoningForSystematicApproach;
-    private integratePatternLearning;
-    private identifyBottlenecks;
-    private identifyOptimizationOpportunities;
-    private optimizePerformanceSettings;
-    private optimizeMemoryUsage;
-    private optimizeLearningSettings;
-    private optimizeSynchronizationSettings;
-    private adjustQualityThresholds;
-    private optimizeSystem2Performance;
-    private adaptSystem1ForCodeGeneration;
-    private adaptSystem2ForQuality;
-    private updateAdaptiveLearning;
-    getMetrics(): CoordinationMetrics;
-    getRecommendations(): OptimizationRecommendation[];
-    forceOptimization(): Promise<OptimizationRecommendation[]>;
-    forceSynchronization(): Promise<SynchronizationReport>;
-    updateConfig(newConfig: Partial<CoordinatorConfig>): void;
-    destroy(): void;
 }
 
 /**

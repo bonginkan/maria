@@ -13,10 +13,8 @@ import { DualMemoryEngine } from './memory-system/dual-memory-engine';
 import { MemoryCoordinator } from './memory-system/memory-coordinator';
 
 // 新しいデザインシステムのインポート
-import { LayoutManager } from '../ui/design-system/LayoutManager.js';
-import { SEMANTIC_COLORS, TEXT_HIERARCHY } from '../ui/design-system/UnifiedColorPalette.js';
-import { IconRegistry } from '../ui/design-system/MinimalIconRegistry.js';
-import { printSuccess, printError, printWarning } from '../utils/ui.js';
+import { TEXT_HIERARCHY } from '../ui/design-system/UnifiedColorPalette.js';
+import { printSuccess, printError } from '../utils/ui.js';
 // Human-in-the-Loop Approval System
 import { ApprovalEngine } from './approval-engine/ApprovalEngine';
 import { QuickApprovalInterface } from './quick-approval/QuickApprovalInterface';
@@ -85,7 +83,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
         }
 
         memoryEngine = new DualMemoryEngine(memoryConfig);
-        memoryCoordinator = new MemoryCoordinator(memoryEngine);
+        memoryCoordinator = new MemoryCoordinator(memoryEngine, memoryConfig.coordinator);
 
         // Set memory system in MariaAI for command integration
         if (maria && typeof maria.setMemorySystem === 'function') {
@@ -823,7 +821,6 @@ async function showInteractiveModelSelector(models: any[]): Promise<void> {
   }
 
   let selectedIndex = 0;
-  let isSelecting = true;
 
   // Set up readline for capturing keystrokes
   const stdin = process.stdin;
