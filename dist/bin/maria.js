@@ -9323,12 +9323,9 @@ var init_memory_coordinator = __esm({
         console.log("Adapting reasoning for TDD approach");
       }
       async adaptReasoningForSystematicApproach() {
-        console.log("Adapting reasoning for systematic approach");
       }
       async integratePatternLearning(patterns, reasonings) {
-        console.log(
-          `Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`
-        );
+        if (patterns.length > 0 && reasonings.length > 0) ;
       }
       async identifyBottlenecks() {
         const bottlenecks = [];
@@ -9407,7 +9404,7 @@ var init_memory_coordinator = __esm({
     };
   }
 });
-var BRAND_COLORS, SEMANTIC_COLORS, TEXT_HIERARCHY, LAYOUT_COLORS;
+var BRAND_COLORS, SEMANTIC_COLORS2, TEXT_HIERARCHY, LAYOUT_COLORS;
 var init_UnifiedColorPalette = __esm({
   "src/ui/design-system/UnifiedColorPalette.ts"() {
     init_cjs_shims();
@@ -9419,7 +9416,7 @@ var init_UnifiedColorPalette = __esm({
       BACKGROUND: chalk13__default.default.bgBlack,
       FOREGROUND: chalk13__default.default.white
     };
-    SEMANTIC_COLORS = {
+    SEMANTIC_COLORS2 = {
       // プライマリーカラー（メインアクション）
       PRIMARY: chalk13__default.default.cyan,
       // クリアで視認性の高いシアン
@@ -9485,13 +9482,13 @@ var init_UnifiedColorPalette = __esm({
     };
     ({
       // よく使用するカラーのショートカット
-      primary: SEMANTIC_COLORS.PRIMARY,
-      success: SEMANTIC_COLORS.SUCCESS,
-      error: SEMANTIC_COLORS.ERROR,
-      warning: SEMANTIC_COLORS.WARNING,
-      info: SEMANTIC_COLORS.INFO,
-      muted: SEMANTIC_COLORS.MUTED,
-      accent: SEMANTIC_COLORS.ACCENT,
+      primary: SEMANTIC_COLORS2.PRIMARY,
+      success: SEMANTIC_COLORS2.SUCCESS,
+      error: SEMANTIC_COLORS2.ERROR,
+      warning: SEMANTIC_COLORS2.WARNING,
+      info: SEMANTIC_COLORS2.INFO,
+      muted: SEMANTIC_COLORS2.MUTED,
+      accent: SEMANTIC_COLORS2.ACCENT,
       // テキスト
       title: TEXT_HIERARCHY.TITLE,
       subtitle: TEXT_HIERARCHY.SUBTITLE,
@@ -9501,197 +9498,6 @@ var init_UnifiedColorPalette = __esm({
       brand: BRAND_COLORS.BRAND_PRIMARY,
       brandBright: BRAND_COLORS.BRAND_SECONDARY
     });
-  }
-});
-
-// src/ui/design-system/MinimalIconRegistry.ts
-var CORE_ICONS, SPINNER_FRAMES, FORBIDDEN_ICONS, IconRegistry;
-var init_MinimalIconRegistry = __esm({
-  "src/ui/design-system/MinimalIconRegistry.ts"() {
-    init_cjs_shims();
-    CORE_ICONS = {
-      // システム状態アイコン
-      SUCCESS: {
-        symbol: "\u2713",
-        width: 1,
-        description: "\u6210\u529F\u30FB\u5B8C\u4E86\u72B6\u614B",
-        usage: ["\u30BF\u30B9\u30AF\u5B8C\u4E86", "\u30D3\u30EB\u30C9\u6210\u529F", "\u30C6\u30B9\u30C8\u5408\u683C"]
-      },
-      ERROR: {
-        symbol: "\u2717",
-        width: 1,
-        description: "\u30A8\u30E9\u30FC\u30FB\u5931\u6557\u72B6\u614B",
-        usage: ["\u30A8\u30E9\u30FC\u767A\u751F", "\u30D3\u30EB\u30C9\u5931\u6557", "\u30C6\u30B9\u30C8\u5931\u6557"]
-      },
-      WARNING: {
-        symbol: "!",
-        width: 1,
-        description: "\u8B66\u544A\u30FB\u6CE8\u610F\u559A\u8D77",
-        usage: ["\u8B66\u544A\u30E1\u30C3\u30BB\u30FC\u30B8", "\u30C7\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3", "\u8981\u6CE8\u610F"]
-      },
-      INFO: {
-        symbol: "i",
-        width: 1,
-        description: "\u60C5\u5831\u30FB\u8AAC\u660E",
-        usage: ["\u60C5\u5831\u8868\u793A", "\u30D8\u30EB\u30D7", "\u8AAC\u660E\u6587"]
-      },
-      // プロセス状態アイコン
-      LOADING: {
-        symbol: "\u25EF",
-        width: 1,
-        description: "\u30ED\u30FC\u30C7\u30A3\u30F3\u30B0\u30FB\u51E6\u7406\u4E2D",
-        usage: ["API\u547C\u3073\u51FA\u3057", "\u30D5\u30A1\u30A4\u30EB\u51E6\u7406", "AI\u5FDC\u7B54\u5F85\u3061"]
-      },
-      ARROW: {
-        symbol: "\u2192",
-        width: 1,
-        description: "\u65B9\u5411\u30FB\u9032\u884C",
-        usage: ["\u30D5\u30ED\u30FC\u8868\u793A", "\u30CA\u30D3\u30B2\u30FC\u30B7\u30E7\u30F3", "\u6B21\u306E\u30B9\u30C6\u30C3\u30D7"]
-      }
-    };
-    SPINNER_FRAMES = ["\u280B", "\u2819", "\u2839", "\u2838", "\u283C", "\u2834", "\u2826", "\u2827", "\u2807", "\u280F"];
-    FORBIDDEN_ICONS = [
-      // 絵文字系（レンダリング不安定）
-      "\u{1F680}",
-      "\u{1F389}",
-      "\u{1F3A8}",
-      "\u{1F4CA}",
-      "\u{1F527}",
-      "\u26A1",
-      "\u{1F3AF}",
-      "\u{1F525}",
-      "\u{1F31F}",
-      "\u{1F4AB}",
-      "\u2B50",
-      "\u{1F3AA}",
-      "\u{1F3AD}",
-      "\u{1F52E}",
-      "\u{1F3B2}",
-      "\u{1F3C6}",
-      "\u{1F396}\uFE0F",
-      "\u{1F3C5}",
-      "\u{1F947}",
-      "\u{1F38A}",
-      "\u{1F388}",
-      "\u{1F381}",
-      "\u{1F380}",
-      // 複雑な記号（幅不定）
-      "\u2728",
-      "\u{1F48E}",
-      "\u{1F539}",
-      "\u{1F538}",
-      "\u25C6",
-      "\u25C7",
-      "\u2666",
-      "\u2662",
-      "\u25CF",
-      "\u25CB",
-      "\u25C9",
-      "\u25CE",
-      "\u26AB",
-      "\u26AA",
-      "\u{1F534}",
-      "\u{1F7E1}",
-      // フォント依存記号
-      "\u2605",
-      "\u2606",
-      "\u266A",
-      "\u266B",
-      "\u266C",
-      "\u2669",
-      "\u26BF",
-      "\u26BE"
-    ];
-    IconRegistry = class {
-      static {
-        __name(this, "IconRegistry");
-      }
-      /**
-       * 安全なアイコン取得（フォールバック付き）
-       */
-      static get(iconName) {
-        const icon = CORE_ICONS[iconName];
-        if (!icon) {
-          console.warn(`Unknown icon: ${iconName}, falling back to INFO`);
-          return CORE_ICONS.INFO.symbol;
-        }
-        return icon.symbol;
-      }
-      /**
-       * アイコンの文字幅取得
-       */
-      static getWidth(iconName) {
-        const icon = CORE_ICONS[iconName];
-        return icon?.width || 1;
-      }
-      /**
-       * 文字幅を考慮したアイコン配置
-       */
-      static alignIcon(iconName, totalWidth) {
-        const icon = this.get(iconName);
-        const iconWidth = this.getWidth(iconName);
-        const padding = Math.max(0, totalWidth - iconWidth);
-        return icon.padEnd(totalWidth - padding + iconWidth);
-      }
-      /**
-       * スピナーフレーム取得
-       */
-      static getSpinnerFrame(index) {
-        const frame = SPINNER_FRAMES[index % SPINNER_FRAMES.length];
-        return frame || "\u25EF";
-      }
-      /**
-       * 利用可能なアイコン一覧
-       */
-      static listAvailable() {
-        return Object.entries(CORE_ICONS).map(([name, icon]) => ({
-          name,
-          icon
-        }));
-      }
-      /**
-       * アイコンの使用例表示
-       */
-      static showUsageExample(iconName) {
-        const icon = CORE_ICONS[iconName];
-        if (!icon) return;
-        console.log(`${icon.symbol} ${iconName} - ${icon.description}`);
-        icon.usage.forEach((usage) => {
-          console.log(`  \u4F8B: ${icon.symbol} ${usage}`);
-        });
-      }
-      /**
-       * 禁止アイコンチェック
-       */
-      static isForbidden(symbol) {
-        return FORBIDDEN_ICONS.includes(symbol);
-      }
-      /**
-       * 安全性検証
-       */
-      static validateIcon(symbol) {
-        const warnings = [];
-        if (this.isForbidden(symbol)) {
-          warnings.push("\u7981\u6B62\u3055\u308C\u305F\u30A2\u30A4\u30B3\u30F3\u3067\u3059");
-        }
-        let estimatedWidth = 1;
-        if (symbol.length > 1) {
-          estimatedWidth = symbol.length;
-          warnings.push("\u8907\u6570\u6587\u5B57\u306E\u30A2\u30A4\u30B3\u30F3\u306F\u8868\u793A\u305A\u308C\u306E\u539F\u56E0\u3068\u306A\u308A\u307E\u3059");
-        }
-        if (/[\u{1F300}-\u{1F9FF}]/u.test(symbol)) {
-          warnings.push("\u7D75\u6587\u5B57\u306F\u7AEF\u672B\u306B\u3088\u3063\u3066\u8868\u793A\u304C\u7570\u306A\u308A\u307E\u3059");
-        }
-        return {
-          isValid: warnings.length === 0,
-          width: estimatedWidth,
-          warnings
-        };
-      }
-    };
-    IconRegistry.get;
-    IconRegistry.getWidth;
-    IconRegistry.alignIcon;
   }
 });
 
@@ -10116,7 +9922,7 @@ var init_OptimizedBox = __esm({
        */
       renderShadow(width) {
         const shadowChar = "\u2593";
-        const shadowColor = SEMANTIC_COLORS.MUTED;
+        const shadowColor = SEMANTIC_COLORS2.MUTED;
         console.log(" " + shadowColor(shadowChar.repeat(width)));
         console.log(shadowColor(shadowChar.repeat(width + 1)));
       }
@@ -10141,11 +9947,11 @@ var init_OptimizedBox = __esm({
       getThemeColor() {
         const themeMap = {
           default: LAYOUT_COLORS.BORDER_SECONDARY,
-          primary: SEMANTIC_COLORS.PRIMARY,
-          success: SEMANTIC_COLORS.SUCCESS,
-          warning: SEMANTIC_COLORS.WARNING,
-          error: SEMANTIC_COLORS.ERROR,
-          info: SEMANTIC_COLORS.INFO,
+          primary: SEMANTIC_COLORS2.PRIMARY,
+          success: SEMANTIC_COLORS2.SUCCESS,
+          warning: SEMANTIC_COLORS2.WARNING,
+          error: SEMANTIC_COLORS2.ERROR,
+          info: SEMANTIC_COLORS2.INFO,
           brand: BRAND_COLORS.BRAND_PRIMARY
         };
         return themeMap[this.options.theme];
@@ -10263,6 +10069,197 @@ var init_OptimizedBox = __esm({
     OptimizedBox.withTitle;
     OptimizedBox.status;
     OptimizedBox.brand;
+  }
+});
+
+// src/ui/design-system/MinimalIconRegistry.ts
+var CORE_ICONS, SPINNER_FRAMES, FORBIDDEN_ICONS, IconRegistry2;
+var init_MinimalIconRegistry = __esm({
+  "src/ui/design-system/MinimalIconRegistry.ts"() {
+    init_cjs_shims();
+    CORE_ICONS = {
+      // システム状態アイコン
+      SUCCESS: {
+        symbol: "\u2713",
+        width: 1,
+        description: "\u6210\u529F\u30FB\u5B8C\u4E86\u72B6\u614B",
+        usage: ["\u30BF\u30B9\u30AF\u5B8C\u4E86", "\u30D3\u30EB\u30C9\u6210\u529F", "\u30C6\u30B9\u30C8\u5408\u683C"]
+      },
+      ERROR: {
+        symbol: "\u2717",
+        width: 1,
+        description: "\u30A8\u30E9\u30FC\u30FB\u5931\u6557\u72B6\u614B",
+        usage: ["\u30A8\u30E9\u30FC\u767A\u751F", "\u30D3\u30EB\u30C9\u5931\u6557", "\u30C6\u30B9\u30C8\u5931\u6557"]
+      },
+      WARNING: {
+        symbol: "!",
+        width: 1,
+        description: "\u8B66\u544A\u30FB\u6CE8\u610F\u559A\u8D77",
+        usage: ["\u8B66\u544A\u30E1\u30C3\u30BB\u30FC\u30B8", "\u30C7\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3", "\u8981\u6CE8\u610F"]
+      },
+      INFO: {
+        symbol: "i",
+        width: 1,
+        description: "\u60C5\u5831\u30FB\u8AAC\u660E",
+        usage: ["\u60C5\u5831\u8868\u793A", "\u30D8\u30EB\u30D7", "\u8AAC\u660E\u6587"]
+      },
+      // プロセス状態アイコン
+      LOADING: {
+        symbol: "\u25EF",
+        width: 1,
+        description: "\u30ED\u30FC\u30C7\u30A3\u30F3\u30B0\u30FB\u51E6\u7406\u4E2D",
+        usage: ["API\u547C\u3073\u51FA\u3057", "\u30D5\u30A1\u30A4\u30EB\u51E6\u7406", "AI\u5FDC\u7B54\u5F85\u3061"]
+      },
+      ARROW: {
+        symbol: "\u2192",
+        width: 1,
+        description: "\u65B9\u5411\u30FB\u9032\u884C",
+        usage: ["\u30D5\u30ED\u30FC\u8868\u793A", "\u30CA\u30D3\u30B2\u30FC\u30B7\u30E7\u30F3", "\u6B21\u306E\u30B9\u30C6\u30C3\u30D7"]
+      }
+    };
+    SPINNER_FRAMES = ["\u280B", "\u2819", "\u2839", "\u2838", "\u283C", "\u2834", "\u2826", "\u2827", "\u2807", "\u280F"];
+    FORBIDDEN_ICONS = [
+      // 絵文字系（レンダリング不安定）
+      "\u{1F680}",
+      "\u{1F389}",
+      "\u{1F3A8}",
+      "\u{1F4CA}",
+      "\u{1F527}",
+      "\u26A1",
+      "\u{1F3AF}",
+      "\u{1F525}",
+      "\u{1F31F}",
+      "\u{1F4AB}",
+      "\u2B50",
+      "\u{1F3AA}",
+      "\u{1F3AD}",
+      "\u{1F52E}",
+      "\u{1F3B2}",
+      "\u{1F3C6}",
+      "\u{1F396}\uFE0F",
+      "\u{1F3C5}",
+      "\u{1F947}",
+      "\u{1F38A}",
+      "\u{1F388}",
+      "\u{1F381}",
+      "\u{1F380}",
+      // 複雑な記号（幅不定）
+      "\u2728",
+      "\u{1F48E}",
+      "\u{1F539}",
+      "\u{1F538}",
+      "\u25C6",
+      "\u25C7",
+      "\u2666",
+      "\u2662",
+      "\u25CF",
+      "\u25CB",
+      "\u25C9",
+      "\u25CE",
+      "\u26AB",
+      "\u26AA",
+      "\u{1F534}",
+      "\u{1F7E1}",
+      // フォント依存記号
+      "\u2605",
+      "\u2606",
+      "\u266A",
+      "\u266B",
+      "\u266C",
+      "\u2669",
+      "\u26BF",
+      "\u26BE"
+    ];
+    IconRegistry2 = class {
+      static {
+        __name(this, "IconRegistry");
+      }
+      /**
+       * 安全なアイコン取得（フォールバック付き）
+       */
+      static get(iconName) {
+        const icon = CORE_ICONS[iconName];
+        if (!icon) {
+          console.warn(`Unknown icon: ${iconName}, falling back to INFO`);
+          return CORE_ICONS.INFO.symbol;
+        }
+        return icon.symbol;
+      }
+      /**
+       * アイコンの文字幅取得
+       */
+      static getWidth(iconName) {
+        const icon = CORE_ICONS[iconName];
+        return icon?.width || 1;
+      }
+      /**
+       * 文字幅を考慮したアイコン配置
+       */
+      static alignIcon(iconName, totalWidth) {
+        const icon = this.get(iconName);
+        const iconWidth = this.getWidth(iconName);
+        const padding = Math.max(0, totalWidth - iconWidth);
+        return icon.padEnd(totalWidth - padding + iconWidth);
+      }
+      /**
+       * スピナーフレーム取得
+       */
+      static getSpinnerFrame(index) {
+        const frame = SPINNER_FRAMES[index % SPINNER_FRAMES.length];
+        return frame || "\u25EF";
+      }
+      /**
+       * 利用可能なアイコン一覧
+       */
+      static listAvailable() {
+        return Object.entries(CORE_ICONS).map(([name, icon]) => ({
+          name,
+          icon
+        }));
+      }
+      /**
+       * アイコンの使用例表示
+       */
+      static showUsageExample(iconName) {
+        const icon = CORE_ICONS[iconName];
+        if (!icon) return;
+        console.log(`${icon.symbol} ${iconName} - ${icon.description}`);
+        icon.usage.forEach((usage) => {
+          console.log(`  \u4F8B: ${icon.symbol} ${usage}`);
+        });
+      }
+      /**
+       * 禁止アイコンチェック
+       */
+      static isForbidden(symbol) {
+        return FORBIDDEN_ICONS.includes(symbol);
+      }
+      /**
+       * 安全性検証
+       */
+      static validateIcon(symbol) {
+        const warnings = [];
+        if (this.isForbidden(symbol)) {
+          warnings.push("\u7981\u6B62\u3055\u308C\u305F\u30A2\u30A4\u30B3\u30F3\u3067\u3059");
+        }
+        let estimatedWidth = 1;
+        if (symbol.length > 1) {
+          estimatedWidth = symbol.length;
+          warnings.push("\u8907\u6570\u6587\u5B57\u306E\u30A2\u30A4\u30B3\u30F3\u306F\u8868\u793A\u305A\u308C\u306E\u539F\u56E0\u3068\u306A\u308A\u307E\u3059");
+        }
+        if (/[\u{1F300}-\u{1F9FF}]/u.test(symbol)) {
+          warnings.push("\u7D75\u6587\u5B57\u306F\u7AEF\u672B\u306B\u3088\u3063\u3066\u8868\u793A\u304C\u7570\u306A\u308A\u307E\u3059");
+        }
+        return {
+          isValid: warnings.length === 0,
+          width: estimatedWidth,
+          warnings
+        };
+      }
+    };
+    IconRegistry2.get;
+    IconRegistry2.getWidth;
+    IconRegistry2.alignIcon;
   }
 });
 
@@ -10425,7 +10422,7 @@ var init_ResponsiveRenderer = __esm({
        * ステータス描画
        */
       static renderStatus(data) {
-        const icon = IconRegistry.get(
+        const icon = IconRegistry2.get(
           data.status === "healthy" ? "SUCCESS" : data.status === "degraded" ? "WARNING" : "ERROR"
         );
         const color = ColorPalette.status(
@@ -10469,7 +10466,7 @@ var init_ResponsiveRenderer = __esm({
         const columnWidth = Math.floor((maxWidth - (columnCount - 1) * 2) / columnCount);
         const headerRow = data.headers.map((header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))).join("  ");
         console.log(headerRow);
-        console.log(SEMANTIC_COLORS.MUTED("\u2500".repeat(maxWidth)));
+        console.log(SEMANTIC_COLORS2.MUTED("\u2500".repeat(maxWidth)));
         data.rows.forEach((row) => {
           const dataRow = data.headers.map(
             (header) => TEXT_HIERARCHY.BODY(LayoutManager.alignText(String(row[header] || ""), columnWidth))
@@ -10485,7 +10482,7 @@ var init_ResponsiveRenderer = __esm({
         const width = Math.min(60, this.context.layout.contentWidth - 20);
         const filled = Math.floor(data.value / data.max * width);
         const empty = width - filled;
-        const bar = SEMANTIC_COLORS.SUCCESS("\u2588".repeat(filled)) + SEMANTIC_COLORS.MUTED("\u2591".repeat(empty));
+        const bar = SEMANTIC_COLORS2.SUCCESS("\u2588".repeat(filled)) + SEMANTIC_COLORS2.MUTED("\u2591".repeat(empty));
         const percentage = Math.round(data.value / data.max * 100);
         const label = data.label ? `${data.label}: ` : "";
         console.log(`${label}${bar} ${percentage}%`);
@@ -10513,7 +10510,7 @@ var init_ResponsiveRenderer = __esm({
        * 省略通知表示
        */
       static renderTruncationNotice(remainingCount) {
-        const message = `${IconRegistry.get("INFO")} ${remainingCount} more items (use wider terminal)`;
+        const message = `${IconRegistry2.get("INFO")} ${remainingCount} more items (use wider terminal)`;
         console.log(TEXT_HIERARCHY.CAPTION(message));
       }
       /**
@@ -10521,7 +10518,7 @@ var init_ResponsiveRenderer = __esm({
        */
       static showResponsiveInfo() {
         console.log(TEXT_HIERARCHY.TITLE("Responsive Renderer Info"));
-        console.log(SEMANTIC_COLORS.MUTED("\u2500".repeat(40)));
+        console.log(SEMANTIC_COLORS2.MUTED("\u2500".repeat(40)));
         console.log(`Mode: ${this.context.mode}`);
         console.log(`Terminal: ${this.context.terminalWidth}x${this.context.terminalHeight}`);
         console.log(`Layout Width: ${this.context.layout.width}`);
@@ -10564,8 +10561,8 @@ function printStatus(health) {
   }
 }
 function renderOverallStatus(health) {
-  const statusIcon = health.overall === "healthy" ? IconRegistry.get("SUCCESS") : health.overall === "degraded" ? IconRegistry.get("WARNING") : IconRegistry.get("ERROR");
-  const statusColor = health.overall === "healthy" ? SEMANTIC_COLORS.SUCCESS : health.overall === "degraded" ? SEMANTIC_COLORS.WARNING : SEMANTIC_COLORS.ERROR;
+  const statusIcon = health.overall === "healthy" ? IconRegistry2.get("SUCCESS") : health.overall === "degraded" ? IconRegistry2.get("WARNING") : IconRegistry2.get("ERROR");
+  const statusColor = health.overall === "healthy" ? SEMANTIC_COLORS2.SUCCESS : health.overall === "degraded" ? SEMANTIC_COLORS2.WARNING : SEMANTIC_COLORS2.ERROR;
   return statusColor(`${statusIcon} Overall Status: ${health.overall.toUpperCase()}`);
 }
 function renderHealthSections(health) {
@@ -10573,8 +10570,8 @@ function renderHealthSections(health) {
   if (health.providers && health.providers.length > 0) {
     sections.push(TEXT_HIERARCHY.SUBTITLE("AI Providers:"));
     health.providers.forEach((provider) => {
-      const statusIcon = provider.health.status === "healthy" ? IconRegistry.get("SUCCESS") : provider.health.status === "degraded" ? IconRegistry.get("WARNING") : IconRegistry.get("ERROR");
-      const statusColor = provider.health.status === "healthy" ? SEMANTIC_COLORS.SUCCESS : provider.health.status === "degraded" ? SEMANTIC_COLORS.WARNING : SEMANTIC_COLORS.ERROR;
+      const statusIcon = provider.health.status === "healthy" ? IconRegistry2.get("SUCCESS") : provider.health.status === "degraded" ? IconRegistry2.get("WARNING") : IconRegistry2.get("ERROR");
+      const statusColor = provider.health.status === "healthy" ? SEMANTIC_COLORS2.SUCCESS : provider.health.status === "degraded" ? SEMANTIC_COLORS2.WARNING : SEMANTIC_COLORS2.ERROR;
       sections.push(`  ${statusColor(statusIcon)} ${provider.name}: ${provider.health.status}`);
     });
     sections.push("");
@@ -10589,7 +10586,7 @@ function renderHealthSections(health) {
   if (health.recommendations && health.recommendations.length > 0) {
     sections.push(TEXT_HIERARCHY.SUBTITLE("Recommendations:"));
     health.recommendations.forEach((rec) => {
-      const icon = rec.type === "error" ? IconRegistry.get("ERROR") : rec.type === "warning" ? IconRegistry.get("WARNING") : IconRegistry.get("INFO");
+      const icon = rec.type === "error" ? IconRegistry2.get("ERROR") : rec.type === "warning" ? IconRegistry2.get("WARNING") : IconRegistry2.get("INFO");
       const message = rec.message || rec;
       sections.push(`  ${icon} ${TEXT_HIERARCHY.CAPTION(message)}`);
     });
@@ -10609,10 +10606,10 @@ function getHealthTheme(overall) {
   }
 }
 function printSuccess(message) {
-  console.log(SEMANTIC_COLORS.SUCCESS(IconRegistry.get("SUCCESS")), TEXT_HIERARCHY.BODY(message));
+  console.log(SEMANTIC_COLORS2.SUCCESS(IconRegistry2.get("SUCCESS")), TEXT_HIERARCHY.BODY(message));
 }
 function printError(message) {
-  console.log(SEMANTIC_COLORS.ERROR(IconRegistry.get("ERROR")), TEXT_HIERARCHY.BODY(message));
+  console.log(SEMANTIC_COLORS2.ERROR(IconRegistry2.get("ERROR")), TEXT_HIERARCHY.BODY(message));
 }
 var init_ui = __esm({
   "src/utils/ui.ts"() {
@@ -25756,6 +25753,7 @@ async function showInteractiveModelSelector(models) {
           renderModels();
           break;
         case "\r":
+          isSelecting = false;
           cleanup();
           const selectedModel = models[selectedIndex];
           console.log(
@@ -25773,11 +25771,13 @@ async function showInteractiveModelSelector(models) {
           resolve();
           break;
         case "\x1B":
+          isSelecting = false;
           cleanup();
           console.log(chalk13__default.default.gray("\n\u{1F4CB} Model selection cancelled\n"));
           resolve();
           break;
         case "":
+          isSelecting = false;
           cleanup();
           console.log(chalk13__default.default.gray("\n\u{1F4CB} Model selection cancelled\n"));
           resolve();
@@ -26813,7 +26813,6 @@ var init_interactive_session = __esm({
     init_dual_memory_engine();
     init_memory_coordinator();
     init_UnifiedColorPalette();
-    init_MinimalIconRegistry();
     init_ui();
     init_ApprovalEngine();
     init_QuickApprovalInterface();
@@ -28360,8 +28359,8 @@ var init_package = __esm({
   "package.json"() {
     package_default = {
       name: "@bonginkan/maria",
-      version: "1.8.12",
-      description: "Enterprise-Grade AI Development Platform - Intelligent CLI with Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, Vector-based Code Search, and Comprehensive Quality Analysis",
+      version: "2.0.3",
+      description: "\u{1F9E0} MARIA Platform v2.0.0 Memory Intelligence Edition - Revolutionary Dual-Layer Memory System with Complete Local AI Integration (Ollama + vLLM + LM Studio), Context-Aware Learning, 50+ Cognitive Modes, and Enterprise-Grade Development Intelligence",
       keywords: [
         "ai",
         "cli",
@@ -28381,6 +28380,15 @@ var init_package = __esm({
         "ai-cli",
         "command-line",
         "typescript",
+        "memory-system",
+        "dual-layer-memory",
+        "context-aware",
+        "personalized-learning",
+        "adaptive-intelligence",
+        "cross-session-learning",
+        "intelligent-caching",
+        "pattern-recognition",
+        "cognitive-modes",
         "code-quality",
         "bug-detection",
         "lint-analysis",
@@ -28405,7 +28413,7 @@ var init_package = __esm({
         "semantic-analysis"
       ],
       author: "Bonginkan Inc.",
-      license: "MIT",
+      license: "SEE LICENSE IN LICENSE",
       homepage: "https://github.com/bonginkan/maria",
       repository: {
         type: "git",

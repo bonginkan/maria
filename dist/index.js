@@ -58,7 +58,7 @@ var dotenv__namespace = /*#__PURE__*/_interopNamespace(dotenv);
 
 // ESM/CJS Compatibility Fix
 const { createRequire } = require('module');
-const __require = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('cli.js', document.baseURI).href)) || __filename);
+const __require = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('index.js', document.baseURI).href)) || __filename);
 global.__require = __require;
 
 // Dynamic import wrapper for CJS compatibility
@@ -6110,6 +6110,9 @@ var init_llm_startup_manager = __esm({
     };
   }
 });
+
+// src/index.ts
+init_cjs_shims();
 
 // src/cli.ts
 init_cjs_shims();
@@ -28568,6 +28571,16 @@ async function checkHealth(options) {
 }
 __name(checkHealth, "checkHealth");
 
+// src/index.ts
+var VERSION = "1.1.0";
+
+exports.DualMemoryEngine = DualMemoryEngine;
+exports.InternalModeService = InternalModeService;
+exports.MemoryCoordinator = MemoryCoordinator;
+exports.System1Memory = System1MemoryManager;
+exports.System2Memory = System2MemoryManager;
+exports.VERSION = VERSION;
 exports.createCLI = createCLI;
-//# sourceMappingURL=cli.js.map
-//# sourceMappingURL=cli.js.map
+exports.getInternalModeService = getInternalModeService2;
+//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.js.map
