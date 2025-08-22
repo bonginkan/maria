@@ -14,6 +14,7 @@ import registerSetupVllmCommand from './commands/setup-vllm';
 import registerCodeRAGCommand from './commands/coderag';
 import registerDocumentCommand from './commands/document';
 import registerApprovalGitCommands from './commands/approval-git';
+import packageJson from '../package.json';
 
 export interface CLIOptions {
   config?: string;
@@ -30,7 +31,7 @@ export function createCLI(): Command {
   program
     .name('maria')
     .description('MARIA - Intelligent CLI Assistant with Multi-Model AI Support')
-    .version('1.2.0');
+    .version(packageJson.version);
 
   // Interactive chat mode (default)
   program

@@ -1,21 +1,29 @@
-# MARIA Platform v1.1.0 - Developer Guide
+# MARIA Platform v1.8.1 - Developer Guide
 
 ## 🎯 Developer Overview
 
-This comprehensive guide provides enterprise developers with detailed technical implementation knowledge for MARIA Platform v1.1.0. It covers architecture patterns, API integration, customization strategies, and advanced deployment scenarios for production environments.
+This comprehensive guide provides enterprise developers and researchers with detailed technical implementation knowledge for MARIA Platform v1.8.1. It covers local LLM integration, advanced coding assistance, research workflow optimization, and enterprise deployment strategies for privacy-first development environments.
+
+## 🔗 Official Resources
+
+- **NPM Package**: https://www.npmjs.com/package/@bonginkan/maria
+- **GitHub Repository**: https://github.com/bonginkan/maria
+- **Homepage**: https://bonginkan.ai/
+- **Documentation**: This guide and accompanying user manual
 
 ## 📋 Table of Contents
 
 1. [Development Environment Setup](#development-environment-setup)
-2. [Architecture Deep Dive](#architecture-deep-dive)
-3. [Code Quality Analysis Integration](#code-quality-analysis-integration)
-4. [Custom Command Development](#custom-command-development)
-5. [AI Provider Integration](#ai-provider-integration)
-6. [Enterprise Deployment](#enterprise-deployment)
-7. [API Reference](#api-reference)
-8. [Testing & Quality Assurance](#testing--quality-assurance)
-9. [Performance Optimization](#performance-optimization)
-10. [Troubleshooting](#troubleshooting)
+2. [Local LLM Integration Architecture](#local-llm-integration-architecture)
+3. [Creative Tools Integration](#creative-tools-integration)
+4. [Core Coding Commands Development](#core-coding-commands-development)
+5. [Advanced Intelligence Features](#advanced-intelligence-features)
+6. [AI Provider Integration](#ai-provider-integration)
+7. [Enterprise Deployment](#enterprise-deployment)
+8. [API Reference](#api-reference)
+9. [Testing & Quality Assurance](#testing--quality-assurance)
+10. [Performance Optimization](#performance-optimization)
+11. [Troubleshooting](#troubleshooting)
 
 ## 🚀 Development Environment Setup
 
@@ -49,7 +57,7 @@ pnpm test
 
 # Link for global CLI testing
 npm link
-maria --version  # Should display 1.1.0
+maria --version  # Should display 1.8.1
 ```
 
 ### Development Scripts
@@ -93,6 +101,155 @@ pnpm deps:audit    # Security audit
 - Prettier
 - GitLens
 - Thunder Client (API testing)
+
+## 🏠 Local LLM Integration Architecture
+
+**Technical Implementation Guide for Privacy-First Development**
+
+### Supported Local LLM Providers
+
+```typescript
+// Provider interface implementation
+interface LocalLLMProvider {
+  name: 'ollama' | 'lmstudio' | 'vllm';
+  endpoint: string;
+  apiFormat: 'ollama' | 'openai-compatible' | 'vllm';
+  healthCheck(): Promise<boolean>;
+  listModels(): Promise<Model[]>;
+}
+```
+
+### Ollama Integration
+
+```typescript
+// Ollama provider configuration
+const ollamaProvider = {
+  endpoint: 'http://localhost:11434',
+  apiFormat: 'ollama',
+  models: ['llama2', 'codellama', 'mistral'],
+  setup: async () => {
+    // Auto-detection and model installation
+    await exec('ollama pull llama2');
+    await exec('ollama pull codellama');
+  }
+};
+```
+
+### LM Studio Integration
+
+```typescript
+// LM Studio provider configuration  
+const lmStudioProvider = {
+  endpoint: 'http://localhost:1234',
+  apiFormat: 'openai-compatible',
+  autoDetect: true,
+  healthCheck: async () => {
+    const response = await fetch('http://localhost:1234/v1/models');
+    return response.ok;
+  }
+};
+```
+
+### vLLM Integration
+
+```typescript
+// vLLM provider configuration
+const vllmProvider = {
+  endpoint: 'http://localhost:8000',
+  apiFormat: 'openai-compatible',
+  deployment: 'server',
+  setup: {
+    requirements: ['python>=3.8', 'cuda>=11.8'],
+    installation: 'pip install vllm'
+  }
+};
+```
+
+## 🎨 Creative Tools Integration
+
+**Technical Setup Requirements for Advanced Features**
+
+### Image Generation Architecture
+
+```typescript
+interface ImageGenerationProvider {
+  type: 'local' | 'cloud';
+  backend: 'comfyui' | 'sdwebui' | 'openai' | 'replicate';
+  endpoint?: string;
+  apiKey?: string;
+}
+
+// Local image generation setup
+const localImageGen = {
+  comfyui: {
+    endpoint: 'http://localhost:8188',
+    setup: 'git clone https://github.com/comfyanonymous/ComfyUI.git'
+  },
+  sdwebui: {
+    endpoint: 'http://localhost:7860',  
+    setup: 'git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git'
+  }
+};
+```
+
+### Video Generation Architecture
+
+```typescript
+interface VideoGenerationConfig {
+  provider: 'runpod' | 'local' | 'cloud';
+  requirements: {
+    ffmpeg: boolean;
+    gpu: boolean;
+    storage: string; // '10GB+'
+  };
+}
+
+// Video processing pipeline
+const videoProcessing = {
+  dependencies: ['ffmpeg', 'python', 'torch'],
+  localSetup: {
+    ffmpeg: 'brew install ffmpeg',
+    models: ['stable-video-diffusion', 'animatediff']
+  }
+};
+```
+
+### Voice Integration Architecture
+
+```typescript
+interface VoiceConfig {
+  stt: 'whisper-local' | 'whisper-api' | 'browser-api';
+  tts: 'local' | 'openai' | 'elevenlabs';
+  realtime: boolean;
+}
+
+// Voice processing setup
+const voiceSetup = {
+  whisperLocal: {
+    model: 'whisper-base',
+    installation: 'automatic download on first use'
+  },
+  browserSTT: {
+    api: 'webkitSpeechRecognition',
+    fallback: 'SpeechRecognition'
+  }
+};
+```
+
+### Development Integration Points
+
+```bash
+# Environment configuration for development
+export MARIA_LOCAL_LLM_PROVIDER="ollama"
+export MARIA_IMAGE_PROVIDER="comfyui"  
+export MARIA_VIDEO_PROVIDER="local"
+export MARIA_VOICE_PROVIDER="whisper-local"
+
+# Development testing
+pnpm test:local-llm
+pnpm test:creative-tools
+pnpm test:integration
+```
 
 ## 🏗️ Architecture Deep Dive
 
