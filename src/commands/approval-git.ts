@@ -9,6 +9,50 @@ import { ApprovalRepositoryManager } from '../services/approval-git/ApprovalRepo
 import { ApprovalCommitManager } from '../services/approval-git/ApprovalCommit';
 import { ApprovalEngine } from '../services/approval-engine/ApprovalEngine';
 
+interface ApprovalLogOptions {
+  number?: string;
+  oneline?: boolean;
+  author?: string;
+  since?: string;
+  grep?: string;
+  branch?: string;
+}
+
+interface ApprovalBranchOptions {
+  delete?: string;
+  forceDelete?: string;
+  create?: string;
+  merged?: boolean;
+  checkout?: string;
+}
+
+interface ApprovalMergeOptions {
+  target?: string;
+  message?: string;
+  noFf?: boolean;
+}
+
+interface ApprovalRevertOptions {
+  message?: string;
+  noCommit?: boolean;
+}
+
+interface ApprovalTagOptions {
+  delete?: string;
+  force?: boolean;
+  message?: string;
+  list?: boolean;
+}
+
+interface ApprovalStatusOptions {
+  detailed?: boolean;
+}
+
+interface ApprovalShowOptions {
+  diff?: boolean;
+  tags?: boolean;
+}
+
 export default function registerApprovalGitCommands(program: Command) {
   const approvalGroup = program
     .command('approval')
@@ -138,7 +182,7 @@ export default function registerApprovalGitCommands(program: Command) {
 /**
  * Handle approval log command
  */
-async function handleApprovalLog(options: any): Promise<void> {
+async function handleApprovalLog(options: ApprovalLogOptions): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   const logOptions = {
@@ -180,7 +224,7 @@ async function handleApprovalLog(options: any): Promise<void> {
 /**
  * Handle approval branch command
  */
-async function handleApprovalBranch(branchName: string, options: any): Promise<void> {
+async function handleApprovalBranch(branchName: string, options: ApprovalBranchOptions): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   // Delete branch
@@ -253,7 +297,7 @@ async function handleApprovalBranch(branchName: string, options: any): Promise<v
 /**
  * Handle approval merge command
  */
-async function handleApprovalMerge(sourceBranch: string, options: any): Promise<void> {
+async function handleApprovalMerge(sourceBranch: string, options: ApprovalMergeOptions): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
   const targetBranch = options.target || 'main';
 
@@ -276,7 +320,7 @@ async function handleApprovalMerge(sourceBranch: string, options: any): Promise<
 /**
  * Handle approval revert command
  */
-async function handleApprovalRevert(commitId: string, options: any): Promise<void> {
+async function handleApprovalRevert(commitId: string, options: ApprovalRevertOptions): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   try {
