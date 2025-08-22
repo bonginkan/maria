@@ -13,7 +13,7 @@ export class ValidationMiddleware implements IMiddleware {
   async execute(
     command: ISlashCommand,
     args: CommandArgs,
-    context: CommandContext,
+    _context: CommandContext,
     next: () => Promise<CommandResult>,
   ): Promise<CommandResult> {
     // Perform basic validation

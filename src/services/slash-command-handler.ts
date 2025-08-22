@@ -432,7 +432,7 @@ export class SlashCommandHandler {
       let message = `📋 Operation Mode: ${currentMode}\n`;
 
       if (currentInternalMode) {
-        message += `🧠 Internal Mode: ✽ ${currentInternalMode.displayName} - ${currentInternalMode.description}\n`;
+        message += `🧠 Internal Mode: ✽ ${currentInternalMode.name} - ${currentInternalMode.description}\n`;
       }
 
       message += `\nOperation modes: ${availableModes.join(', ')}\n`;
@@ -498,7 +498,7 @@ export class SlashCommandHandler {
       if (currentMode) {
         return {
           success: true,
-          message: `🧠 Current Internal Mode: ✽ ${currentMode.displayName}\n${currentMode.description}\nCategory: ${currentMode.category}`,
+          message: `🧠 Current Internal Mode: ✽ ${currentMode.name}\n${currentMode.description}\nCategory: ${currentMode.category}`,
           data: { currentMode },
         };
       } else {
@@ -531,7 +531,7 @@ export class SlashCommandHandler {
           message += `${chalk.cyan(`📋 ${category.toUpperCase()}`)} (${modes.length} modes)\n`;
           modes.forEach((mode: ModeDefinition) => {
             const symbol = mode.symbol || '✽';
-            message += `  ${chalk.gray(symbol)} ${chalk.white(mode.displayName)} - ${mode.description}\n`;
+            message += `  ${chalk.gray(symbol)} ${chalk.white(mode.name)} - ${mode.description}\n`;
           });
           message += '\n';
         }
@@ -560,7 +560,7 @@ export class SlashCommandHandler {
         let message = `📋 ${chalk.bold('Recent Internal Mode History')}\n\n`;
         recent.reverse().forEach((entry: unknown, index: number) => {
           const timeStr = entry.timestamp.toLocaleTimeString();
-          message += `${chalk.gray(`${index + 1}.`)} ${chalk.white(entry.mode.displayName)} ${chalk.gray(`(${timeStr})`)}\n`;
+          message += `${chalk.gray(`${index + 1}.`)} ${chalk.white(entry.mode.name)} ${chalk.gray(`(${timeStr})`)}\n`;
         });
 
         return {
@@ -619,8 +619,8 @@ export class SlashCommandHandler {
           .find(
             (mode: ModeDefinition) =>
               mode.id.toLowerCase() === modeName ||
-              mode.displayName.toLowerCase() === modeName ||
-              mode.displayName.toLowerCase().includes(modeName),
+              mode.name.toLowerCase() === modeName ||
+              mode.name.toLowerCase().includes(modeName),
           );
 
         if (!targetMode) {
@@ -635,13 +635,13 @@ export class SlashCommandHandler {
         if (success) {
           return {
             success: true,
-            message: `🧠 Switched to internal mode: ✽ ${targetMode.displayName}\n${targetMode.description}`,
+            message: `🧠 Switched to internal mode: ✽ ${targetMode.name}\n${targetMode.description}`,
             data: { mode: targetMode },
           };
         } else {
           return {
             success: false,
-            message: `Failed to switch to internal mode: ${targetMode.displayName}`,
+            message: `Failed to switch to internal mode: ${targetMode.name}`,
           };
         }
       }

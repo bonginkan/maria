@@ -4,8 +4,8 @@ import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './
 export class OpenAIProvider extends BaseAIProvider {
   readonly name = 'OpenAI';
   readonly models = [
-    'gpt-5-2025-08-07',
-    'gpt-5-mini-2025-08-07',
+    'gpt-5',
+    'gpt-5-mini',
     'gpt-4o',
     'gpt-4o-mini',
     'gpt-4-turbo',

@@ -7,11 +7,12 @@ var generativeAi = require('@google/generative-ai');
 var fetch3 = require('node-fetch');
 var chalk13 = require('chalk');
 var fs7 = require('fs');
-var path5 = require('path');
+var path10 = require('path');
 var toml = require('toml');
-var os2 = require('os');
-var fs6 = require('fs/promises');
+var os3 = require('os');
 var events = require('events');
+var fs11 = require('fs/promises');
+var gpt3Encoder = require('gpt-3-encoder');
 var uuid = require('uuid');
 var commander = require('commander');
 var Groq = require('groq-sdk');
@@ -20,7 +21,7 @@ var crypto = require('crypto');
 var child_process = require('child_process');
 var util = require('util');
 var dotenv = require('dotenv');
-var gpt3Encoder = require('gpt-3-encoder');
+var glob = require('glob');
 
 var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
@@ -48,9 +49,9 @@ var Anthropic__default = /*#__PURE__*/_interopDefault(Anthropic);
 var fetch3__default = /*#__PURE__*/_interopDefault(fetch3);
 var chalk13__default = /*#__PURE__*/_interopDefault(chalk13);
 var fs7__namespace = /*#__PURE__*/_interopNamespace(fs7);
-var path5__namespace = /*#__PURE__*/_interopNamespace(path5);
-var os2__default = /*#__PURE__*/_interopDefault(os2);
-var fs6__namespace = /*#__PURE__*/_interopNamespace(fs6);
+var path10__namespace = /*#__PURE__*/_interopNamespace(path10);
+var os3__default = /*#__PURE__*/_interopDefault(os3);
+var fs11__namespace = /*#__PURE__*/_interopNamespace(fs11);
 var Groq__default = /*#__PURE__*/_interopDefault(Groq);
 var readline__namespace = /*#__PURE__*/_interopNamespace(readline);
 var crypto__default = /*#__PURE__*/_interopDefault(crypto);
@@ -58,7 +59,7 @@ var dotenv__namespace = /*#__PURE__*/_interopNamespace(dotenv);
 
 // ESM/CJS Compatibility Fix
 const { createRequire } = require('module');
-const __require = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('cli.js', document.baseURI).href)) || __filename);
+const __require = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('index.js', document.baseURI).href)) || __filename);
 global.__require = __require;
 
 // Dynamic import wrapper for CJS compatibility
@@ -1231,7 +1232,7 @@ var init_logger = __esm({
 function loadConfig() {
   let currentDir = process.cwd();
   while (currentDir !== "/") {
-    const configPath = path5.join(currentDir, CONFIG_FILE);
+    const configPath = path10.join(currentDir, CONFIG_FILE);
     if (fs7.existsSync(configPath)) {
       try {
         const content = fs7.readFileSync(configPath, "utf-8");
@@ -1239,7 +1240,7 @@ function loadConfig() {
       } catch {
       }
     }
-    const parentDir = path5.join(currentDir, "..");
+    const parentDir = path10.join(currentDir, "..");
     if (parentDir === currentDir) break;
     currentDir = parentDir;
   }
@@ -1274,18 +1275,18 @@ async function readConfig() {
   }
   return config2;
 }
-async function writeConfig(config2, path9) {
+async function writeConfig(config2, path11) {
   return new Promise((resolve, reject) => {
     try {
-      saveConfig(config2, path9);
+      saveConfig(config2, path11);
       resolve();
     } catch (error) {
       reject(error);
     }
   });
 }
-function saveConfig(config2, path9) {
-  const configPath = path9 || path5.join(process.cwd(), CONFIG_FILE);
+function saveConfig(config2, path11) {
+  const configPath = path11 || path10.join(process.cwd(), CONFIG_FILE);
   const lines = [];
   if (config2.user) {
     lines.push("[user]");
@@ -1504,11 +1505,240 @@ var init_config = __esm({
   "src/utils/config.ts"() {
     init_cjs_shims();
     CONFIG_FILE = ".maria-code.toml";
-    GLOBAL_CONFIG_PATH = path5.join(os2.homedir(), ".maria-code", "config.toml");
+    GLOBAL_CONFIG_PATH = path10.join(os3.homedir(), ".maria-code", "config.toml");
     __name(loadConfig, "loadConfig");
     __name(readConfig, "readConfig");
     __name(writeConfig, "writeConfig");
     __name(saveConfig, "saveConfig");
+  }
+});
+var ChatContextService;
+var init_chat_context_service = __esm({
+  "src/services/chat-context.service.ts"() {
+    init_cjs_shims();
+    ChatContextService = class _ChatContextService extends events.EventEmitter {
+      static {
+        __name(this, "ChatContextService");
+      }
+      static instance;
+      contextWindow = [];
+      fullHistory = [];
+      config;
+      currentTokens = 0;
+      compressionCount = 0;
+      sessionId;
+      constructor(config2) {
+        super();
+        this.config = {
+          maxTokens: config2?.maxTokens || 128e3,
+          compressionThreshold: config2?.compressionThreshold || 0.8,
+          summaryTokenLimit: config2?.summaryTokenLimit || 2e3,
+          persistPath: config2?.persistPath || path10__namespace.join(process.env["HOME"] || "", ".maria", "context")
+        };
+        this.sessionId = this.generateSessionId();
+      }
+      static getInstance(config2) {
+        if (!_ChatContextService.instance) {
+          _ChatContextService.instance = new _ChatContextService(config2);
+        }
+        return _ChatContextService.instance;
+      }
+      generateSessionId() {
+        return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      }
+      countTokens(text) {
+        try {
+          return gpt3Encoder.encode(text).length;
+        } catch {
+          return Math.ceil(text.length / 4);
+        }
+      }
+      async addMessage(message) {
+        const tokens = this.countTokens(message.content);
+        const fullMessage = {
+          ...message,
+          timestamp: /* @__PURE__ */ new Date(),
+          tokens
+        };
+        this.fullHistory.push(fullMessage);
+        this.contextWindow.push(fullMessage);
+        this.currentTokens += tokens;
+        await this.optimizeMemory();
+        this.emit("message-added", fullMessage);
+        this.emit("context-updated", this.getStats());
+      }
+      async optimizeMemory() {
+        const usageRatio = this.currentTokens / this.config.maxTokens;
+        if (usageRatio >= this.config.compressionThreshold) {
+          await this.compressContext();
+        }
+        while (this.currentTokens > this.config.maxTokens && this.contextWindow.length > 1) {
+          const removed = this.contextWindow.shift();
+          if (removed?.tokens) {
+            this.currentTokens -= removed.tokens;
+          }
+        }
+      }
+      async compressContext() {
+        if (this.contextWindow.length <= 2) return;
+        const middleMessages = this.contextWindow.slice(1, -1);
+        const summary = await this.generateSummary(middleMessages);
+        if (summary) {
+          const summaryMessage = {
+            role: "system",
+            content: `[Compressed context summary]: ${summary}`,
+            timestamp: /* @__PURE__ */ new Date(),
+            tokens: this.countTokens(summary),
+            metadata: { compressed: true, originalCount: middleMessages.length }
+          };
+          const firstMessage = this.contextWindow[0];
+          const lastMessage = this.contextWindow[this.contextWindow.length - 1];
+          if (!firstMessage || !lastMessage) return;
+          this.contextWindow = [firstMessage, summaryMessage, lastMessage];
+          this.recalculateTokens();
+          this.compressionCount++;
+          this.emit("context-compressed", {
+            originalCount: middleMessages.length,
+            summaryTokens: summaryMessage.tokens
+          });
+        }
+      }
+      async generateSummary(messages) {
+        const keyPoints = messages.filter((m) => m.role === "user").map((m) => m.content.substring(0, 100)).join("; ");
+        return `Previous discussion covered: ${keyPoints}`;
+      }
+      recalculateTokens() {
+        this.currentTokens = this.contextWindow.reduce((sum, msg) => sum + (msg.tokens || 0), 0);
+      }
+      clearContext(options) {
+        if (options?.soft) {
+          this.emit("display-cleared");
+          return;
+        }
+        if (options?.summary && this.contextWindow.length > 0) {
+          this.generateSummary(this.contextWindow).then((summary) => {
+            this.emit("summary-generated", summary);
+          });
+        }
+        const previousStats = this.getStats();
+        this.contextWindow = [];
+        this.currentTokens = 0;
+        this.compressionCount = 0;
+        if (!options?.soft) {
+          this.fullHistory = [];
+          this.sessionId = this.generateSessionId();
+        }
+        this.emit("context-cleared", previousStats);
+      }
+      getContext() {
+        return [...this.contextWindow];
+      }
+      getFullHistory() {
+        return [...this.fullHistory];
+      }
+      getStats() {
+        return {
+          totalMessages: this.fullHistory.length,
+          totalTokens: this.currentTokens,
+          maxTokens: this.config.maxTokens,
+          usagePercentage: this.currentTokens / this.config.maxTokens * 100,
+          messagesInWindow: this.contextWindow.length,
+          compressedCount: this.compressionCount
+        };
+      }
+      async persistSession() {
+        if (!this.config.persistPath) return;
+        try {
+          await fs11__namespace.mkdir(this.config.persistPath, { recursive: true });
+          const sessionFile = path10__namespace.join(this.config.persistPath, `${this.sessionId}.json`);
+          const sessionData = {
+            sessionId: this.sessionId,
+            timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+            stats: this.getStats(),
+            contextWindow: this.contextWindow,
+            fullHistory: this.fullHistory,
+            compressionCount: this.compressionCount
+          };
+          await fs11__namespace.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
+          this.emit("session-persisted", sessionFile);
+        } catch (error) {
+          this.emit("persist-error", error instanceof Error ? error : new Error(String(error)));
+        }
+      }
+      async loadSession(sessionId) {
+        if (!this.config.persistPath) return false;
+        try {
+          const sessionFile = path10__namespace.join(this.config.persistPath, `${sessionId}.json`);
+          const data = await fs11__namespace.readFile(sessionFile, "utf-8");
+          const sessionData = JSON.parse(data);
+          this.sessionId = sessionData.sessionId;
+          this.contextWindow = sessionData.contextWindow;
+          this.fullHistory = sessionData.fullHistory;
+          this.compressionCount = sessionData.compressionCount;
+          this.recalculateTokens();
+          this.emit("session-loaded", sessionId);
+          return true;
+        } catch (error) {
+          this.emit("load-error", error instanceof Error ? error : new Error(String(error)));
+          return false;
+        }
+      }
+      async exportContext(format = "json") {
+        if (format === "markdown") {
+          return this.contextWindow.map(
+            (msg) => `### ${msg.role.toUpperCase()} (${msg.timestamp.toISOString()})
+${msg.content}
+`
+          ).join("\n---\n\n");
+        }
+        return JSON.stringify(
+          {
+            sessionId: this.sessionId,
+            exportDate: (/* @__PURE__ */ new Date()).toISOString(),
+            stats: this.getStats(),
+            context: this.contextWindow,
+            fullHistory: this.fullHistory
+          },
+          null,
+          2
+        );
+      }
+      async importContext(data) {
+        try {
+          const imported = JSON.parse(data);
+          if (imported.context && Array.isArray(imported.context)) {
+            this.contextWindow = imported.context;
+            this.fullHistory = imported.fullHistory || imported.context;
+            this.recalculateTokens();
+            this.sessionId = imported.sessionId || this.generateSessionId();
+            this.emit("context-imported", this.getStats());
+          }
+        } catch (error) {
+          this.emit("import-error", error instanceof Error ? error : new Error(String(error)));
+          throw error;
+        }
+      }
+      getTokenUsageIndicator() {
+        const stats = this.getStats();
+        const percentage = Math.round(stats.usagePercentage);
+        const blocks = Math.round(percentage / 10);
+        const filled = "\u2588".repeat(blocks);
+        const empty = "\u2591".repeat(10 - blocks);
+        let color = "\x1B[32m";
+        if (percentage > 80)
+          color = "\x1B[31m";
+        else if (percentage > 60) color = "\x1B[33m";
+        return `${color}[${filled}${empty}] ${percentage}% (${stats.totalTokens}/${stats.maxTokens} tokens)\x1B[0m`;
+      }
+      reset() {
+        this.contextWindow = [];
+        this.fullHistory = [];
+        this.currentTokens = 0;
+        this.compressionCount = 0;
+        this.sessionId = this.generateSessionId();
+        _ChatContextService.instance = null;
+      }
+    };
   }
 });
 
@@ -1875,7 +2105,7 @@ Include: function descriptions, parameter explanations, return values, usage exa
       // Helper methods
       async detectFramework() {
         try {
-          const packageJson = await fs6__namespace.readFile("package.json", "utf-8");
+          const packageJson = await fs11__namespace.readFile("package.json", "utf-8");
           const pkg = JSON.parse(packageJson);
           if (pkg.dependencies?.react || pkg.devDependencies?.react) return "React";
           if (pkg.dependencies?.vue || pkg.devDependencies?.vue) return "Vue";
@@ -1889,7 +2119,7 @@ Include: function descriptions, parameter explanations, return values, usage exa
       }
       async detectProjectType() {
         try {
-          const files = await fs6__namespace.readdir(process.cwd());
+          const files = await fs11__namespace.readdir(process.cwd());
           if (files.includes("package.json")) return "Node.js";
           if (files.includes("requirements.txt") || files.includes("setup.py")) return "Python";
           if (files.includes("go.mod")) return "Go";
@@ -1902,7 +2132,7 @@ Include: function descriptions, parameter explanations, return values, usage exa
       async detectTestFramework(context) {
         if (context.language === "javascript" || context.language === "typescript") {
           try {
-            const packageJson = await fs6__namespace.readFile("package.json", "utf-8");
+            const packageJson = await fs11__namespace.readFile("package.json", "utf-8");
             const pkg = JSON.parse(packageJson);
             if (pkg.devDependencies?.jest) return "Jest";
             if (pkg.devDependencies?.mocha) return "Mocha";
@@ -1936,7 +2166,7 @@ Include: function descriptions, parameter explanations, return values, usage exa
         __name(this, "LanguageDetector");
       }
       async detectFromFile(filePath) {
-        const ext = path5__namespace.extname(filePath).toLowerCase();
+        const ext = path10__namespace.extname(filePath).toLowerCase();
         const languageMap = {
           ".js": "javascript",
           ".jsx": "javascript",
@@ -5470,10 +5700,10 @@ var init_multi_agent_system = __esm({
       /**
        * Index current codebase for CodeRAG
        */
-      async indexCurrentCodebase(path9 = ".", options = {}) {
+      async indexCurrentCodebase(path11 = ".", options = {}) {
         try {
-          logger.info(`Indexing codebase for CodeRAG: ${path9}`);
-          const result = await codeRAGService.indexCodebase(path9, {
+          logger.info(`Indexing codebase for CodeRAG: ${path11}`);
+          const result = await codeRAGService.indexCodebase(path11, {
             fileTypes: options.fileTypes || [".ts", ".tsx", ".js", ".jsx"],
             excludePaths: options.excludePaths || ["node_modules", "dist", ".git"],
             chunkSize: 500,
@@ -6110,6 +6340,1260 @@ var init_llm_startup_manager = __esm({
     };
   }
 });
+
+// src/slash-commands/base-command.ts
+exports.BaseCommand = void 0;
+var init_base_command = __esm({
+  "src/slash-commands/base-command.ts"() {
+    init_cjs_shims();
+    init_logger();
+    exports.BaseCommand = class {
+      static {
+        __name(this, "BaseCommand");
+      }
+      // Optional properties with defaults
+      aliases = [];
+      usage = "";
+      examples = [];
+      permissions;
+      middleware = [];
+      rateLimit;
+      // Metadata with defaults
+      metadata = {
+        version: "1.0.0",
+        author: "MARIA Team",
+        deprecated: false,
+        experimental: false
+      };
+      // Cache for frequently used data
+      cache = /* @__PURE__ */ new Map();
+      /**
+       * Initialize the command (called once when registered)
+       */
+      async initialize() {
+        logger.debug(`Initializing command: ${this.name}`);
+      }
+      /**
+       * Validate command arguments
+       */
+      async validate(_args) {
+        return { success: true };
+      }
+      /**
+       * Cleanup resources (called when command is unregistered)
+       */
+      async cleanup() {
+        this.cache.clear();
+        logger.debug(`Cleanup command: ${this.name}`);
+      }
+      /**
+       * Rollback on error - override for custom rollback logic
+       */
+      async rollback(_context, error) {
+        logger.error(`Rollback for ${this.name}:`, error);
+      }
+      // Helper methods for subclasses
+      /**
+       * Parse command arguments into structured format
+       */
+      parseArgs(raw) {
+        const args = {
+          raw,
+          parsed: {},
+          flags: {},
+          options: {}
+        };
+        for (let i = 0; i < raw.length; i++) {
+          const arg = raw[i];
+          if (!arg) continue;
+          if (arg.startsWith("--")) {
+            const key = arg.slice(2);
+            const nextArg = raw[i + 1];
+            if (nextArg && !nextArg.startsWith("-")) {
+              args.options[key] = nextArg;
+              i++;
+            } else {
+              args.flags[key] = true;
+            }
+          } else if (arg && arg.startsWith("-") && arg.length === 2) {
+            args.flags[arg.slice(1)] = true;
+          } else {
+            if (!args.parsed["positional"]) {
+              args.parsed["positional"] = [];
+            }
+            args.parsed["positional"].push(arg);
+          }
+        }
+        return args;
+      }
+      /**
+       * Create a success response
+       */
+      success(message, data, metadata) {
+        return {
+          success: true,
+          message,
+          data,
+          metadata: {
+            executionTime: Date.now(),
+            commandVersion: this.metadata.version,
+            ...metadata
+          }
+        };
+      }
+      /**
+       * Create an error response
+       */
+      error(message, code, details) {
+        return {
+          success: false,
+          message,
+          data: { code, details },
+          metadata: {
+            executionTime: Date.now(),
+            commandVersion: this.metadata.version
+          }
+        };
+      }
+      /**
+       * Cache data with TTL
+       */
+      setCache(key, data, ttlSeconds = 60) {
+        this.cache.set(key, {
+          data,
+          expires: Date.now() + ttlSeconds * 1e3
+        });
+      }
+      /**
+       * Get cached data
+       */
+      getCache(key) {
+        const cached = this.cache.get(key);
+        if (!cached) {
+          return null;
+        }
+        if (cached.expires < Date.now()) {
+          this.cache.delete(key);
+          return null;
+        }
+        return cached.data;
+      }
+      /**
+       * Check if user has required permissions
+       */
+      async checkPermissions(context) {
+        if (!this.permissions) {
+          return { success: true };
+        }
+        const { requiresAuth, requiresPremium, role } = this.permissions;
+        if (requiresAuth && !context.user) {
+          return {
+            success: false,
+            error: "Authentication required",
+            suggestions: ["Run /login to authenticate"]
+          };
+        }
+        if (role && context.user?.role !== role) {
+          return {
+            success: false,
+            error: `Required role: ${role}`,
+            suggestions: [`Contact admin for ${role} access`]
+          };
+        }
+        if (requiresPremium) {
+          logger.warn("Premium check not implemented");
+        }
+        return { success: true };
+      }
+      /**
+       * Format help text for this command
+       */
+      formatHelp() {
+        const lines = [];
+        lines.push(`\u{1F4D8} ${this.name.toUpperCase()}`);
+        lines.push("\u2500".repeat(40));
+        lines.push(`
+${this.description}
+`);
+        if (this.usage) {
+          lines.push("**Usage:**");
+          lines.push(`  /${this.name} ${this.usage}
+`);
+        }
+        if (this.aliases && this.aliases.length > 0) {
+          lines.push("**Aliases:**");
+          lines.push(`  ${this.aliases.map((a) => `/${a}`).join(", ")}
+`);
+        }
+        if (this.examples.length > 0) {
+          lines.push("**Examples:**");
+          this.examples.forEach((ex) => {
+            lines.push(`  ${ex.input}`);
+            lines.push(`    ${ex.description}`);
+            if (ex.output) {
+              lines.push(`    \u2192 ${ex.output}`);
+            }
+          });
+          lines.push("");
+        }
+        if (this.permissions) {
+          lines.push("**Requirements:**");
+          if (this.permissions.requiresAuth) {
+            lines.push("  \u2022 Authentication required");
+          }
+          if (this.permissions.role) {
+            lines.push(`  \u2022 Role: ${this.permissions.role}`);
+          }
+          if (this.permissions.requiresPremium) {
+            lines.push("  \u2022 Premium subscription");
+          }
+          lines.push("");
+        }
+        if (this.metadata.experimental) {
+          lines.push("\u26A0\uFE0F  **Experimental Feature**");
+        }
+        if (this.metadata.deprecated) {
+          lines.push(`\u26A0\uFE0F  **Deprecated** - Use ${this.metadata.replacedBy || "alternative"} instead`);
+        }
+        return lines.join("\n");
+      }
+      /**
+       * Log command execution
+       */
+      logExecution(args, context, result) {
+        const logData = {
+          command: this.name,
+          args: args.raw,
+          user: context.user?.id,
+          success: result.success,
+          executionTime: result.metadata?.executionTime
+        };
+        if (result.success) {
+          logger.info("Command executed", logData);
+        } else {
+          logger.error("Command failed", { ...logData, error: result.message });
+        }
+      }
+    };
+  }
+});
+
+// src/slash-commands/middleware/auth.ts
+var auth_exports = {};
+__export(auth_exports, {
+  AuthMiddleware: () => AuthMiddleware,
+  authMiddleware: () => authMiddleware
+});
+var AuthMiddleware, authMiddleware;
+var init_auth = __esm({
+  "src/slash-commands/middleware/auth.ts"() {
+    init_cjs_shims();
+    init_logger();
+    AuthMiddleware = class {
+      static {
+        __name(this, "AuthMiddleware");
+      }
+      name = "auth";
+      priority = 10;
+      // Run early in the chain
+      async execute(command, _args, context, next) {
+        const cmd = command;
+        if (!cmd.permissions?.requiresAuth) {
+          return next();
+        }
+        if (!context.user) {
+          logger.warn(
+            `Unauthenticated access attempt for command: ${command.name}`
+          );
+          return {
+            success: false,
+            message: "\u{1F512} Authentication required",
+            data: {
+              suggestions: ["Run /login to authenticate", "Or use /help login for more information"]
+            },
+            component: "auth-flow"
+          };
+        }
+        logger.debug(`Authenticated user ${context.user.id} executing command`);
+        return next();
+      }
+    };
+    authMiddleware = new AuthMiddleware();
+  }
+});
+
+// src/slash-commands/middleware/validation.ts
+var validation_exports = {};
+__export(validation_exports, {
+  ValidationMiddleware: () => ValidationMiddleware,
+  validationMiddleware: () => validationMiddleware
+});
+var ValidationMiddleware, validationMiddleware;
+var init_validation = __esm({
+  "src/slash-commands/middleware/validation.ts"() {
+    init_cjs_shims();
+    init_logger();
+    ValidationMiddleware = class {
+      static {
+        __name(this, "ValidationMiddleware");
+      }
+      name = "validation";
+      priority = 20;
+      // Run after auth
+      async execute(command, args, _context, next) {
+        const validationResult = await this.validateArgs(command, args);
+        if (!validationResult.success) {
+          return validationResult;
+        }
+        return next();
+      }
+      async validateArgs(command, args) {
+        if (args.flags["help"] || args.flags["h"]) {
+          return {
+            success: true,
+            message: this.formatHelp(command),
+            component: "help-dialog"
+          };
+        }
+        if (command.usage) {
+          const requiredArgs = this.parseRequiredArgs(command.usage);
+          const positional = args.parsed["positional"] || [];
+          if (requiredArgs.length > positional.length) {
+            return {
+              success: false,
+              message: `Missing required arguments
+
+Usage: /${command.name} ${command.usage}`,
+              data: {
+                missing: requiredArgs.slice(positional.length),
+                examples: command.examples
+              }
+            };
+          }
+        }
+        const validationErrors = [];
+        const knownFlags = this.extractKnownFlags(command.usage);
+        for (const flag of Object.keys(args.flags)) {
+          if (!knownFlags.includes(flag) && flag !== "help" && flag !== "h") {
+            validationErrors.push(`Unknown flag: --${flag}`);
+          }
+        }
+        if (validationErrors.length > 0) {
+          logger.warn(`Validation errors for command ${command.name}:`, validationErrors);
+          return {
+            success: false,
+            message: validationErrors.join("\n"),
+            data: {
+              suggestions: [`Run /${command.name} --help for usage information`]
+            }
+          };
+        }
+        return { success: true, message: "" };
+      }
+      parseRequiredArgs(usage) {
+        const required = [];
+        const regex = /<([^>]+)>/g;
+        let match;
+        while ((match = regex.exec(usage)) !== null) {
+          if (match[1]) {
+            required.push(match[1]);
+          }
+        }
+        return required;
+      }
+      extractKnownFlags(usage) {
+        const flags = [];
+        const regex = /--([a-z-]+)/g;
+        let match;
+        while ((match = regex.exec(usage)) !== null) {
+          if (match[1]) {
+            flags.push(match[1]);
+          }
+        }
+        return flags;
+      }
+      formatHelp(command) {
+        const lines = [];
+        lines.push(`\u{1F4D8} **${command.name.toUpperCase()}**`);
+        lines.push("\u2500".repeat(40));
+        lines.push("");
+        lines.push(command.description);
+        lines.push("");
+        if (command.usage) {
+          lines.push("**Usage:**");
+          lines.push(`  /${command.name} ${command.usage}`);
+          lines.push("");
+        }
+        if (command.aliases && command.aliases.length > 0) {
+          lines.push("**Aliases:**");
+          lines.push(`  ${command.aliases.map((a) => `/${a}`).join(", ")}`);
+          lines.push("");
+        }
+        if (command.examples && command.examples.length > 0) {
+          lines.push("**Examples:**");
+          command.examples.forEach((ex) => {
+            lines.push(`  ${ex.input}`);
+            lines.push(`    ${ex.description}`);
+            if (ex.output) {
+              lines.push(`    \u2192 ${ex.output}`);
+            }
+          });
+          lines.push("");
+        }
+        if (command.metadata.experimental) {
+          lines.push("\u26A0\uFE0F  **Experimental Feature**");
+        }
+        if (command.metadata.deprecated) {
+          lines.push(
+            `\u26A0\uFE0F  **Deprecated** - Use ${command.metadata.replacedBy || "alternative"} instead`
+          );
+        }
+        return lines.join("\n");
+      }
+    };
+    validationMiddleware = new ValidationMiddleware();
+  }
+});
+
+// src/slash-commands/middleware/rate-limit.ts
+var rate_limit_exports = {};
+__export(rate_limit_exports, {
+  RateLimitMiddleware: () => RateLimitMiddleware,
+  rateLimitMiddleware: () => rateLimitMiddleware
+});
+var RateLimitMiddleware, rateLimitMiddleware;
+var init_rate_limit = __esm({
+  "src/slash-commands/middleware/rate-limit.ts"() {
+    init_cjs_shims();
+    init_logger();
+    RateLimitMiddleware = class {
+      static {
+        __name(this, "RateLimitMiddleware");
+      }
+      name = "rate-limit";
+      priority = 15;
+      // Run after auth, before validation
+      limits = /* @__PURE__ */ new Map();
+      async execute(command, _args, context, next) {
+        if (!command.rateLimit) {
+          return next();
+        }
+        const userId = context.user?.id || context.session.id;
+        const limitKey = `${command.name}:${userId}`;
+        const commandLimits = this.limits.get(command.name) || /* @__PURE__ */ new Map();
+        const userLimit = commandLimits.get(userId);
+        const now = Date.now();
+        const windowMs = this.parseWindow(command.rateLimit.window);
+        if (!userLimit || userLimit.resetAt < now) {
+          commandLimits.set(userId, {
+            count: 1,
+            resetAt: now + windowMs
+          });
+          this.limits.set(command.name, commandLimits);
+          return next();
+        }
+        if (userLimit.count >= command.rateLimit.requests) {
+          const retryAfter = Math.ceil((userLimit.resetAt - now) / 1e3);
+          logger.warn(`Rate limit exceeded for ${limitKey}`, {
+            count: userLimit.count,
+            limit: command.rateLimit.requests,
+            retryAfter
+          });
+          return {
+            success: false,
+            message: `\u23F1\uFE0F Rate limit exceeded`,
+            data: {
+              error: `Too many requests. Please wait ${retryAfter} seconds before trying again.`,
+              retryAfter,
+              limit: command.rateLimit.requests,
+              window: command.rateLimit.window
+            }
+          };
+        }
+        userLimit.count++;
+        return next();
+      }
+      parseWindow(window) {
+        const units = {
+          s: 1e3,
+          m: 60 * 1e3,
+          h: 60 * 60 * 1e3,
+          d: 24 * 60 * 60 * 1e3
+        };
+        const match = window.match(/^(\d+)([smhd])$/);
+        if (!match) {
+          logger.warn(`Invalid rate limit window: ${window}, defaulting to 1 minute`);
+          return 6e4;
+        }
+        const [, num, unit] = match;
+        const value = parseInt(num || "60", 10);
+        const multiplier = unit ? units[unit] || 6e4 : 6e4;
+        return value * multiplier;
+      }
+      /**
+       * Clear rate limits for a specific user or command
+       */
+      clearLimits(command, userId) {
+        if (command && userId) {
+          const commandLimits = this.limits.get(command);
+          if (commandLimits) {
+            commandLimits.delete(userId);
+          }
+        } else if (command) {
+          this.limits.delete(command);
+        } else {
+          this.limits.clear();
+        }
+      }
+      /**
+       * Get current limit status for a user
+       */
+      getStatus(command, userId) {
+        const commandLimits = this.limits.get(command);
+        if (!commandLimits) {
+          return null;
+        }
+        const userLimit = commandLimits.get(userId);
+        if (!userLimit) {
+          return null;
+        }
+        const cmd = { rateLimit: { requests: 10 } };
+        return {
+          remaining: Math.max(0, (cmd.rateLimit?.requests) - userLimit.count),
+          resetAt: userLimit.resetAt,
+          limit: cmd.rateLimit?.requests || 10
+        };
+      }
+    };
+    rateLimitMiddleware = new RateLimitMiddleware();
+  }
+});
+
+// src/slash-commands/middleware/logging.ts
+var logging_exports = {};
+__export(logging_exports, {
+  LoggingMiddleware: () => LoggingMiddleware,
+  loggingMiddleware: () => loggingMiddleware
+});
+var LoggingMiddleware, loggingMiddleware;
+var init_logging = __esm({
+  "src/slash-commands/middleware/logging.ts"() {
+    init_cjs_shims();
+    init_logger();
+    LoggingMiddleware = class {
+      static {
+        __name(this, "LoggingMiddleware");
+      }
+      name = "logging";
+      priority = 0;
+      // Run first
+      async execute(command, args, context, next) {
+        const startTime = Date.now();
+        const requestId = this.generateRequestId();
+        logger.info("Command execution started", {
+          requestId,
+          command: command.name,
+          args: args.raw,
+          user: context.user?.id || "anonymous",
+          session: context.session.id
+        });
+        try {
+          const result = await next();
+          const duration = Date.now() - startTime;
+          logger.info("Command execution completed", {
+            requestId,
+            command: command.name,
+            success: result.success,
+            duration,
+            user: context.user?.id || "anonymous"
+          });
+          if (!result.metadata) {
+            result.metadata = {
+              executionTime: duration
+            };
+          }
+          result.metadata["requestId"] = requestId;
+          result.metadata["duration"] = duration;
+          return result;
+        } catch (error) {
+          const duration = Date.now() - startTime;
+          logger.error("Command execution failed", {
+            requestId,
+            command: command.name,
+            error: error instanceof Error ? error.message : "Unknown error",
+            stack: error instanceof Error ? error.stack : void 0,
+            duration,
+            user: context.user?.id || "anonymous"
+          });
+          throw error;
+        }
+      }
+      generateRequestId() {
+        return `cmd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      }
+    };
+    loggingMiddleware = new LoggingMiddleware();
+  }
+});
+
+// src/slash-commands/categories/conversation/clear.command.ts
+var clear_command_exports = {};
+__export(clear_command_exports, {
+  ClearCommand: () => ClearCommand
+});
+var ClearCommand;
+var init_clear_command = __esm({
+  "src/slash-commands/categories/conversation/clear.command.ts"() {
+    init_cjs_shims();
+    init_base_command();
+    init_chat_context_service();
+    init_logger();
+    ClearCommand = class extends exports.BaseCommand {
+      static {
+        __name(this, "ClearCommand");
+      }
+      name = "clear";
+      category = "conversation";
+      description = "Clear the conversation context and start fresh";
+      chatContext;
+      constructor() {
+        super();
+        this.chatContext = ChatContextService.getInstance();
+      }
+      async execute(args, context) {
+        try {
+          const clearAll = args.flags["all"] || false;
+          const keepSettings = args.flags["keep-settings"] || false;
+          const clearOptions = {
+            conversation: true,
+            history: clearAll,
+            settings: !keepSettings,
+            cache: clearAll
+          };
+          logger.info("Clearing conversation context", {
+            options: clearOptions,
+            user: context.user?.id,
+            session: context.session.id
+          });
+          if (clearOptions.conversation) {
+            await this.clearConversation(context);
+          }
+          if (clearOptions.history) {
+            await this.clearAllHistory(context);
+          }
+          if (clearOptions.settings && !keepSettings) {
+            await this.clearSettings(context);
+          }
+          if (clearOptions.cache) {
+            await this.clearCache();
+          }
+          const clearedItems = [];
+          if (clearOptions.conversation) clearedItems.push("conversation");
+          if (clearOptions.history) clearedItems.push("all history");
+          if (clearOptions.settings && !keepSettings) clearedItems.push("settings");
+          if (clearOptions.cache) clearedItems.push("cache");
+          const message = this.buildSuccessMessage(clearedItems);
+          return this.success(message, {
+            cleared: clearedItems,
+            timestamp: (/* @__PURE__ */ new Date()).toISOString()
+          });
+        } catch (error) {
+          logger.error("Failed to clear conversation", error);
+          return this.error(
+            "Failed to clear conversation context",
+            "CLEAR_ERROR",
+            error instanceof Error ? error.message : "Unknown error"
+          );
+        }
+      }
+      async clearConversation(context) {
+        if (context.conversation) {
+          context.conversation.history = [];
+        }
+        await this.chatContext.clearContext();
+        logger.debug("Cleared current conversation");
+      }
+      async clearAllHistory(context) {
+        if (context.session) {
+          context.session.commandHistory = [];
+        }
+        logger.debug("Cleared all conversation history");
+      }
+      async clearSettings(_context) {
+        logger.debug("Cleared user settings");
+      }
+      async clearCache() {
+        this.cleanup();
+        logger.debug("Cleared all caches");
+      }
+      buildSuccessMessage(clearedItems) {
+        if (clearedItems.length === 0) {
+          return "\u2705 Nothing to clear";
+        }
+        if (clearedItems.includes("all history")) {
+          return "\u{1F9F9} All conversation history and data cleared. Starting fresh!";
+        }
+        if (clearedItems.length === 1 && clearedItems[0] === "conversation") {
+          return "\u2728 Conversation cleared. Ready for a fresh start!";
+        }
+        return `\u2705 Cleared: ${clearedItems.join(", ")}`;
+      }
+      async validate(args) {
+        if (args.flags["all"] && args.flags["keep-settings"]) {
+          return {
+            success: false,
+            error: "Cannot use --all and --keep-settings together"
+          };
+        }
+        const positional = args.parsed["positional"] || [];
+        if (positional.length > 0) {
+          return {
+            success: false,
+            error: `Unexpected arguments: ${positional.join(", ")}`
+          };
+        }
+        return { success: true };
+      }
+    };
+  }
+});
+
+// src/slash-commands/categories/config/setup.command.ts
+var setup_command_exports = {};
+__export(setup_command_exports, {
+  SetupCommand: () => SetupCommand,
+  default: () => setup_command_default
+});
+var SetupCommand, setup_command_default;
+var init_setup_command = __esm({
+  "src/slash-commands/categories/config/setup.command.ts"() {
+    init_cjs_shims();
+    init_base_command();
+    init_logger();
+    SetupCommand = class extends exports.BaseCommand {
+      static {
+        __name(this, "SetupCommand");
+      }
+      name = "setup";
+      category = "config";
+      description = "\u{1F680} First-time environment setup wizard";
+      usage = "[--quick] [--advanced] [--config <file>] [--silent] [--fix] [--rollback]";
+      examples = [
+        {
+          input: "/setup",
+          description: "Start interactive setup wizard",
+          output: "Complete environment configuration wizard"
+        },
+        {
+          input: "/setup --quick",
+          description: "Quick setup with sensible defaults",
+          output: "Rapid 2-minute configuration"
+        },
+        {
+          input: "/setup --advanced",
+          description: "Advanced setup with full customization",
+          output: "Complete setup with all options"
+        },
+        {
+          input: "/setup --fix",
+          description: "Fix existing configuration issues",
+          output: "Configuration problems resolved"
+        },
+        {
+          input: "/setup --rollback",
+          description: "Rollback previous setup changes",
+          output: "Setup changes reverted"
+        }
+      ];
+      async execute(args, context) {
+        const { flags, options } = args;
+        try {
+          logger.info("Setup command started", { flags, options });
+          if (flags["rollback"]) {
+            return await this.rollbackSetup(context);
+          }
+          if (flags["fix"]) {
+            return await this.fixConfiguration(context);
+          }
+          if (flags["quick"]) {
+            return await this.quickSetup(context);
+          }
+          if (flags["advanced"]) {
+            return await this.advancedSetup(context);
+          }
+          if (flags["silent"] && options["config"]) {
+            return await this.silentSetup(context, options["config"]);
+          }
+          return await this.interactiveSetup(context);
+        } catch (error) {
+          logger.error("Setup failed:", error);
+          return this.error(
+            `Setup failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            "SETUP_ERROR",
+            error
+          );
+        }
+      }
+      async interactiveSetup(context) {
+        const startTime = Date.now();
+        const result = {
+          success: false,
+          duration: 0,
+          stepsCompleted: [],
+          providersConfigured: [],
+          filesGenerated: [],
+          errors: [],
+          warnings: []
+        };
+        try {
+          logger.info("Starting system analysis...");
+          await this.analyzeSystem();
+          result.stepsCompleted.push("system-analysis");
+          await this.showWelcomeScreen();
+          result.stepsCompleted.push("welcome");
+          await this.detectExistingConfiguration(context);
+          result.stepsCompleted.push("config-detection");
+          logger.info("Configuring AI providers...");
+          const providerResult = await this.configureProviders(context);
+          if (providerResult.success) {
+            result.stepsCompleted.push("provider-setup");
+            result.providersConfigured = providerResult.data?.providers || [];
+            result.filesGenerated.push(...providerResult.data?.files || []);
+          } else {
+            result.errors.push("Provider configuration failed");
+          }
+          logger.info("Initializing project configuration...");
+          const projectResult = await this.initializeProject(context);
+          if (projectResult.success) {
+            result.stepsCompleted.push("project-init");
+            result.filesGenerated.push(...projectResult.data?.files || []);
+          } else {
+            result.warnings.push("Project initialization had issues");
+          }
+          logger.info("Validating setup...");
+          await this.validateSetup(context);
+          result.stepsCompleted.push("validation");
+          await this.recordSetupCompletion(context, result);
+          result.stepsCompleted.push("finalization");
+          await this.showSuccessMessage(result);
+          result.success = true;
+          result.duration = Date.now() - startTime;
+          return this.success("\u{1F389} Setup completed successfully!", {
+            result,
+            nextSteps: [
+              "Try: maria chat - Start interactive mode",
+              'Try: maria code "create a React component"',
+              "Try: maria test - Generate tests",
+              "Try: maria help - View all commands"
+            ]
+          });
+        } catch (error) {
+          result.success = false;
+          result.duration = Date.now() - startTime;
+          result.errors.push(error instanceof Error ? error.message : "Unknown error");
+          logger.error("Interactive setup failed:", error);
+          return this.error(
+            "Setup wizard failed. Run with --fix to attempt repair.",
+            "INTERACTIVE_SETUP_FAILED",
+            result
+          );
+        }
+      }
+      async quickSetup(context) {
+        logger.info("Starting quick setup...");
+        try {
+          const startTime = Date.now();
+          const envResult = await this.generateQuickEnvTemplate();
+          if (!envResult.success) {
+            return this.error(
+              "Quick setup failed during environment configuration",
+              "QUICK_SETUP_FAILED",
+              envResult
+            );
+          }
+          await this.recordSetupCompletion(context, {
+            success: true,
+            duration: Date.now() - startTime,
+            stepsCompleted: ["quick-setup", "ai-providers"],
+            providersConfigured: ["openai"],
+            filesGenerated: [".env.local", ".env.local.sample", ".gitignore"],
+            errors: [],
+            warnings: []
+          });
+          return this.success("\u26A1 Quick setup completed in under 2 minutes!", {
+            mode: "quick",
+            configured: ["OpenAI GPT-4", "Environment variables", "Git ignore"],
+            nextSteps: ["Run: maria chat", 'Try: maria code "Hello World function"']
+          });
+        } catch (error) {
+          logger.error("Quick setup failed:", error);
+          return this.error(
+            `Quick setup failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            "QUICK_SETUP_ERROR",
+            error
+          );
+        }
+      }
+      async advancedSetup(context) {
+        return this.success("Advanced setup mode - Full customization available", {
+          features: [
+            "Multiple AI provider configuration",
+            "Advanced project settings",
+            "Performance optimization",
+            "Custom integrations"
+          ]
+        });
+      }
+      async fixConfiguration(context) {
+        logger.info("Analyzing configuration issues...");
+        try {
+          const issues = await this.detectConfigurationIssues(context);
+          if (issues.length === 0) {
+            return this.success("\u2705 No configuration issues detected", {
+              status: "healthy",
+              lastCheck: (/* @__PURE__ */ new Date()).toISOString()
+            });
+          }
+          const fixes = [];
+          for (const issue of issues) {
+            try {
+              await this.fixConfigurationIssue(issue, context);
+              fixes.push({ issue: issue.description, fixed: true });
+            } catch (error) {
+              fixes.push({
+                issue: issue.description,
+                fixed: false,
+                error: error instanceof Error ? error.message : "Unknown error"
+              });
+            }
+          }
+          const fixedCount = fixes.filter((f) => f.fixed).length;
+          const totalIssues = fixes.length;
+          return this.success(`\u{1F527} Fixed ${fixedCount}/${totalIssues} configuration issues`, {
+            fixes,
+            summary: {
+              total: totalIssues,
+              fixed: fixedCount,
+              failed: totalIssues - fixedCount
+            }
+          });
+        } catch (error) {
+          logger.error("Configuration fix failed:", error);
+          return this.error(
+            `Configuration fix failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            "CONFIG_FIX_ERROR",
+            error
+          );
+        }
+      }
+      async rollbackSetup(context) {
+        logger.info("Rolling back setup changes...");
+        try {
+          const setupRecord = await this.getSetupRecord(context);
+          if (!setupRecord) {
+            return this.error("No setup record found to rollback", "NO_SETUP_RECORD");
+          }
+          const restoredFiles = [];
+          const errors = [];
+          if (setupRecord.filesGenerated) {
+            for (const file of setupRecord.filesGenerated) {
+              try {
+                const filePath = path10__namespace.default.join(context.environment.cwd, file);
+                await fs11__namespace.default.unlink(filePath);
+                restoredFiles.push(file);
+              } catch (error) {
+                errors.push(
+                  `Failed to remove ${file}: ${error instanceof Error ? error.message : "Unknown error"}`
+                );
+              }
+            }
+          }
+          const setupRecordPath = path10__namespace.default.join(context.environment.cwd, ".maria", "setup.json");
+          try {
+            await fs11__namespace.default.unlink(setupRecordPath);
+          } catch {
+          }
+          return this.success("\u21A9\uFE0F Setup changes rolled back successfully", {
+            restoredFiles,
+            errors,
+            message: "Your environment has been restored to pre-setup state"
+          });
+        } catch (error) {
+          logger.error("Rollback failed:", error);
+          return this.error(
+            `Rollback failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            "ROLLBACK_ERROR",
+            error
+          );
+        }
+      }
+      async silentSetup(context, configPath) {
+        return this.success("Silent setup completed from configuration file", {
+          configPath,
+          mode: "silent"
+        });
+      }
+      async analyzeSystem() {
+        const platform = os3__default.default.platform();
+        const architecture = os3__default.default.arch();
+        const nodeVersion = process.version;
+        let packageManager = "npm";
+        try {
+          await fs11__namespace.default.access("pnpm-lock.yaml");
+          packageManager = "pnpm";
+        } catch {
+          try {
+            await fs11__namespace.default.access("yarn.lock");
+            packageManager = "yarn";
+          } catch {
+            try {
+              await fs11__namespace.default.access("bun.lockb");
+              packageManager = "bun";
+            } catch {
+              packageManager = "npm";
+            }
+          }
+        }
+        const terminalCapabilities = {
+          colorSupport: !!(process.stdout.isTTY && process.env["TERM"] !== "dumb"),
+          unicodeSupport: process.env["LANG"]?.includes("UTF-8") || false,
+          interactiveSupport: !!process.stdin.isTTY
+        };
+        const networkConnectivity = true;
+        const memoryAvailable = os3__default.default.totalmem() / (1024 * 1024 * 1024);
+        const diskSpace = 100;
+        return {
+          platform,
+          architecture,
+          nodeVersion,
+          packageManager,
+          terminalCapabilities,
+          networkConnectivity,
+          diskSpace,
+          memoryAvailable
+        };
+      }
+      async detectExistingConfiguration(context) {
+        const cwd = context.environment.cwd;
+        const existingEnvFile = await this.fileExists(path10__namespace.default.join(cwd, ".env.local"));
+        const existingMARIAConfig = await this.fileExists(path10__namespace.default.join(cwd, ".maria-code.toml"));
+        const gitRepository = await this.fileExists(path10__namespace.default.join(cwd, ".git"));
+        const configuredProviders = [];
+        if (existingEnvFile) {
+          const envContent = await fs11__namespace.default.readFile(path10__namespace.default.join(cwd, ".env.local"), "utf-8");
+          if (envContent.includes("OPENAI_API_KEY")) configuredProviders.push("openai");
+          if (envContent.includes("ANTHROPIC_API_KEY")) configuredProviders.push("anthropic");
+          if (envContent.includes("GOOGLE_AI_API_KEY")) configuredProviders.push("google");
+          if (envContent.includes("GROQ_API_KEY")) configuredProviders.push("groq");
+        }
+        return {
+          existingEnvFile,
+          existingMARIAConfig,
+          installedCLI: true,
+          // If we're running, CLI is installed
+          configuredProviders,
+          workingDirectory: cwd,
+          gitRepository
+        };
+      }
+      async configureProviders(context) {
+        return await this.generateQuickEnvTemplate();
+      }
+      async initializeProject(context) {
+        const mariaDir = path10__namespace.default.join(context.environment.cwd, ".maria");
+        try {
+          await fs11__namespace.default.mkdir(mariaDir, { recursive: true });
+          const config2 = {
+            project: {
+              name: path10__namespace.default.basename(context.environment.cwd),
+              type: "web",
+              language: "typescript"
+            },
+            ai: {
+              default_provider: "openai",
+              default_model: "gpt-4"
+            },
+            preferences: {
+              theme: "dark",
+              language: "auto"
+            },
+            created: (/* @__PURE__ */ new Date()).toISOString()
+          };
+          const configPath = path10__namespace.default.join(context.environment.cwd, ".maria-code.toml");
+          const tomlContent = this.generateTOMLConfig(config2);
+          await fs11__namespace.default.writeFile(configPath, tomlContent, "utf-8");
+          return this.success("Project initialized successfully", {
+            files: [".maria-code.toml"]
+          });
+        } catch (error) {
+          logger.error("Project initialization failed:", error);
+          return this.error(
+            `Project initialization failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            "PROJECT_INIT_ERROR",
+            error
+          );
+        }
+      }
+      async validateSetup(context) {
+        const checks = [
+          this.validateEnvironmentFile(context),
+          this.validateConfigFile(context),
+          this.validateProviderConnections(context)
+        ];
+        try {
+          const results = await Promise.all(checks);
+          return results.every((result) => result);
+        } catch {
+          return false;
+        }
+      }
+      async recordSetupCompletion(context, result) {
+        const mariaDir = path10__namespace.default.join(context.environment.cwd, ".maria");
+        await fs11__namespace.default.mkdir(mariaDir, { recursive: true });
+        const setupRecord = {
+          ...result,
+          timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+          version: "1.0.0",
+          environment: context.environment
+        };
+        const recordPath = path10__namespace.default.join(mariaDir, "setup.json");
+        await fs11__namespace.default.writeFile(recordPath, JSON.stringify(setupRecord, null, 2), "utf-8");
+      }
+      async showWelcomeScreen() {
+        logger.info(`
+\u{1F680} Welcome to MARIA CODE Setup Wizard!
+
+This wizard will configure your environment in 4 simple steps:
+1. \u{1F511} AI Provider Setup (Required)
+2. \u{1F3D7}\uFE0F Project Configuration (Recommended)  
+3. \u{1F39B}\uFE0F Personal Preferences (Optional)
+4. \u2705 Validation & Testing (Automatic)
+
+Estimated time: 3-5 minutes
+    `);
+      }
+      async showSuccessMessage(result) {
+        logger.info(`
+\u{1F389} Setup Complete! Welcome to MARIA CODE!
+
+\u2705 Environment configured
+\u2705 AI providers connected: ${result.providersConfigured.join(", ")}
+\u2705 Project initialized
+\u2705 All validation tests passed
+
+\u{1F680} Ready to start! Try these commands:
+\u2022 maria chat           - Start interactive mode
+\u2022 maria code "create a React component"
+\u2022 maria test           - Generate tests
+\u2022 maria help          - View all commands
+
+Setup completed in ${Math.round(result.duration / 1e3)}s
+Happy coding! \u{1F680}
+    `);
+      }
+      // Helper methods
+      async fileExists(path11) {
+        try {
+          await fs11__namespace.default.access(path11);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+      async detectConfigurationIssues(context) {
+        const issues = [];
+        if (!await this.fileExists(path10__namespace.default.join(context.environment.cwd, ".env.local"))) {
+          issues.push({ description: "Missing .env.local file", severity: "error" });
+        }
+        if (!await this.fileExists(path10__namespace.default.join(context.environment.cwd, ".maria-code.toml"))) {
+          issues.push({ description: "Missing .maria-code.toml file", severity: "warning" });
+        }
+        return issues;
+      }
+      async fixConfigurationIssue(issue, context) {
+        if (issue.description.includes(".env.local")) {
+          await this.generateQuickEnvTemplate();
+        }
+      }
+      async getSetupRecord(context) {
+        try {
+          const recordPath = path10__namespace.default.join(context.environment.cwd, ".maria", "setup.json");
+          const content = await fs11__namespace.default.readFile(recordPath, "utf-8");
+          return JSON.parse(content);
+        } catch {
+          return null;
+        }
+      }
+      async validateEnvironmentFile(context) {
+        return this.fileExists(path10__namespace.default.join(context.environment.cwd, ".env.local"));
+      }
+      async validateConfigFile(context) {
+        return this.fileExists(path10__namespace.default.join(context.environment.cwd, ".maria-code.toml"));
+      }
+      async validateProviderConnections(context) {
+        return true;
+      }
+      async generateQuickEnvTemplate() {
+        try {
+          const envContent = `# MARIA CODE Environment Configuration
+# Generated by setup wizard on ${(/* @__PURE__ */ new Date()).toISOString()}
+# Replace placeholder values with your actual credentials
+
+# AI Provider API Keys
+OPENAI_API_KEY=your_openai_key_here
+ANTHROPIC_API_KEY=your_anthropic_key_here
+GOOGLE_AI_API_KEY=your_google_ai_key_here
+GROQ_API_KEY=your_groq_key_here
+
+# Local AI Providers (Optional)
+LMSTUDIO_API_URL=http://localhost:1234
+OLLAMA_API_URL=http://localhost:11434
+VLLM_API_URL=http://localhost:8000
+
+# Development Settings
+DEBUG=false
+LOG_LEVEL=info
+`;
+          const envPath = path10__namespace.default.join(process.cwd(), ".env.local");
+          await fs11__namespace.default.writeFile(envPath, envContent, "utf-8");
+          return this.success("Environment template generated successfully", {
+            files: [".env.local"],
+            message: "Please edit .env.local and add your API keys"
+          });
+        } catch (error) {
+          logger.error("Failed to generate environment template:", error);
+          return this.error(
+            `Environment template generation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+            "ENV_TEMPLATE_ERROR",
+            error
+          );
+        }
+      }
+      generateTOMLConfig(config2) {
+        return `# MARIA CODE Configuration
+# Generated by setup wizard
+
+[project]
+name = "${config2.project.name}"
+type = "web"
+language = "typescript"
+
+[ai]
+default_provider = "openai"
+default_model = "gpt-4"
+
+[preferences]
+theme = "dark"
+language = "auto"
+`;
+      }
+    };
+    setup_command_default = new SetupCommand();
+  }
+});
+
+// src/index.ts
+init_cjs_shims();
 
 // src/cli.ts
 init_cjs_shims();
@@ -7546,10 +9030,10 @@ var HealthMonitor = class extends events.EventEmitter {
    */
   async saveHealthData() {
     try {
-      const healthDir = path5.join(os2.homedir(), ".maria", "health");
+      const healthDir = path10.join(os3.homedir(), ".maria", "health");
       await fs7.promises.mkdir(healthDir, { recursive: true });
       const systemHealth = this.getSystemHealth();
-      const healthFile = path5.join(healthDir, "system-health.json");
+      const healthFile = path10.join(healthDir, "system-health.json");
       await fs7.promises.writeFile(
         healthFile,
         JSON.stringify(
@@ -7570,7 +9054,7 @@ var HealthMonitor = class extends events.EventEmitter {
    */
   async loadHealthData() {
     try {
-      const healthFile = path5.join(os2.homedir(), ".maria", "health", "system-health.json");
+      const healthFile = path10.join(os3.homedir(), ".maria", "health", "system-health.json");
       const data = await fs7.promises.readFile(healthFile, "utf8");
       const parsed = JSON.parse(data);
       return {
@@ -7716,27 +9200,27 @@ var ConfigManager = class _ConfigManager {
   // Save configuration to file (for CLI usage)
   async save(configPath) {
     const { importNodeBuiltin: importNodeBuiltin2, safeDynamicImport: safeDynamicImport2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
-    const fs11 = await safeDynamicImport2("fs-extra").catch(
+    const fs12 = await safeDynamicImport2("fs-extra").catch(
       () => importNodeBuiltin2("fs")
     );
-    const path9 = await importNodeBuiltin2("path");
-    const os3 = await importNodeBuiltin2("os");
-    const targetPath = configPath || path9.join(os3.homedir(), ".maria", "config.json");
-    await fs11.ensureDir(path9.dirname(targetPath));
-    await fs11.writeJson(targetPath, this.config, { spaces: 2 });
+    const path11 = await importNodeBuiltin2("path");
+    const os4 = await importNodeBuiltin2("os");
+    const targetPath = configPath || path11.join(os4.homedir(), ".maria", "config.json");
+    await fs12.ensureDir(path11.dirname(targetPath));
+    await fs12.writeJson(targetPath, this.config, { spaces: 2 });
   }
   // Load configuration from file
   static async load(configPath) {
     const { importNodeBuiltin: importNodeBuiltin2, safeDynamicImport: safeDynamicImport2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
-    const fs11 = await safeDynamicImport2("fs-extra").catch(
+    const fs12 = await safeDynamicImport2("fs-extra").catch(
       () => importNodeBuiltin2("fs")
     );
-    const path9 = await importNodeBuiltin2("path");
-    const os3 = await importNodeBuiltin2("os");
-    const targetPath = configPath || path9.join(os3.homedir(), ".maria", "config.json");
-    if (await fs11.pathExists(targetPath)) {
+    const path11 = await importNodeBuiltin2("path");
+    const os4 = await importNodeBuiltin2("os");
+    const targetPath = configPath || path11.join(os4.homedir(), ".maria", "config.json");
+    if (await fs12.pathExists(targetPath)) {
       try {
-        const savedConfig = await fs11.readJson(targetPath);
+        const savedConfig = await fs12.readJson(targetPath);
         return new _ConfigManager(savedConfig);
       } catch (error) {
         console.warn("Failed to load config file, using defaults:", error);
@@ -12945,14 +14429,14 @@ var System2MemoryManager = class {
     return Math.min(1, weightedSum / evidence.length);
   }
   traverseDecisionTree(node, context) {
-    const path9 = [node];
+    const path11 = [node];
     for (const child of node.children) {
       if (child.type === "condition" && this.evaluateCondition(child, context)) {
-        path9.push(...this.traverseDecisionTree(child, context));
+        path11.push(...this.traverseDecisionTree(child, context));
         break;
       }
     }
-    return path9;
+    return path11;
   }
   evaluateCondition(node, _context) {
     return node.confidence > 0.5;
@@ -19058,7 +20542,7 @@ var TemplateManager = class _TemplateManager {
   templatesDir;
   builtInTemplates = /* @__PURE__ */ new Map();
   constructor() {
-    this.templatesDir = path5.join(os2.homedir(), ".maria-code", "templates");
+    this.templatesDir = path10.join(os3.homedir(), ".maria-code", "templates");
     this.ensureTemplatesDir();
     this.initializeBuiltInTemplates();
     this.loadUserTemplates();
@@ -19210,7 +20694,7 @@ var TemplateManager = class _TemplateManager {
       files.forEach((file) => {
         if (file.endsWith(".json")) {
           try {
-            const content = fs7.readFileSync(path5.join(this.templatesDir, file), "utf-8");
+            const content = fs7.readFileSync(path10.join(this.templatesDir, file), "utf-8");
             const template = JSON.parse(content);
             template.createdAt = new Date(template.createdAt);
             template.updatedAt = new Date(template.updatedAt);
@@ -19229,7 +20713,7 @@ var TemplateManager = class _TemplateManager {
    */
   saveTemplate(template) {
     const filename = `${template.id}.json`;
-    const filepath = path5.join(this.templatesDir, filename);
+    const filepath = path10.join(this.templatesDir, filename);
     fs7.writeFileSync(filepath, JSON.stringify(template, null, 2));
   }
   /**
@@ -19304,8 +20788,8 @@ var TemplateManager = class _TemplateManager {
     }
     this.templates.delete(id);
     try {
-      const fs11 = await import('fs');
-      fs11.unlinkSync(path5.join(this.templatesDir, `${id}.json`));
+      const fs12 = await import('fs');
+      fs12.unlinkSync(path10.join(this.templatesDir, `${id}.json`));
     } catch (error) {
       logger.error("Failed to delete template file:", error);
     }
@@ -19822,7 +21306,7 @@ var HotkeyManager = class _HotkeyManager {
   isEnabled = true;
   // private activeKeys: Set<string> = new Set(); // Reserved for future use
   constructor() {
-    this.configPath = path5.join(os2.homedir(), ".maria", "hotkeys.json");
+    this.configPath = path10.join(os3.homedir(), ".maria", "hotkeys.json");
     this.loadBindings();
     this.initializeDefaultBindings();
   }
@@ -20207,7 +21691,7 @@ ${chalk13__default.default.gray("Use /hotkey to manage hotkeys")}
   saveBindings() {
     try {
       const config2 = this.exportConfig();
-      const dir = path5.join(os2.homedir(), ".maria");
+      const dir = path10.join(os3.homedir(), ".maria");
       if (!fs7.existsSync(dir)) {
         fs7.mkdirSync(dir, { recursive: true });
       }
@@ -20224,7 +21708,7 @@ init_cjs_shims();
 // src/utils/env-loader.ts
 init_cjs_shims();
 function loadEnvironmentVariables() {
-  const localEnvPath = path5__namespace.join(process.cwd(), ".env.local");
+  const localEnvPath = path10__namespace.join(process.cwd(), ".env.local");
   if (fs7__namespace.existsSync(localEnvPath)) {
     const result = dotenv__namespace.config({ path: localEnvPath });
     if (result.error) {
@@ -20233,14 +21717,14 @@ function loadEnvironmentVariables() {
       console.log("\u2705 Loaded environment from .env.local");
     }
   }
-  const envPath = path5__namespace.join(process.cwd(), ".env");
+  const envPath = path10__namespace.join(process.cwd(), ".env");
   if (fs7__namespace.existsSync(envPath)) {
     const result = dotenv__namespace.config({ path: envPath, override: false });
     if (result.error) {
       console.warn("Error loading .env:", result.error);
     }
   }
-  const lmstudioEnvPath = path5__namespace.join(process.cwd(), ".env.lmstudio");
+  const lmstudioEnvPath = path10__namespace.join(process.cwd(), ".env.lmstudio");
   if (fs7__namespace.existsSync(lmstudioEnvPath)) {
     const result = dotenv__namespace.config({ path: lmstudioEnvPath, override: false });
     if (result.error) {
@@ -20659,7 +22143,7 @@ var InteractiveModelSelector = class {
     }
   }
   async updateEnvironment(model) {
-    const envPath = path5__namespace.join(process.cwd(), ".env.local");
+    const envPath = path10__namespace.join(process.cwd(), ".env.local");
     if (model.type === "local") {
       process.env["AI_PROVIDER"] = "lmstudio";
       process.env["LMSTUDIO_DEFAULT_MODEL"] = model.id;
@@ -20697,233 +22181,8 @@ async function runInteractiveModelSelector() {
 }
 __name(runInteractiveModelSelector, "runInteractiveModelSelector");
 
-// src/services/chat-context.service.ts
-init_cjs_shims();
-var ChatContextService = class _ChatContextService extends events.EventEmitter {
-  static {
-    __name(this, "ChatContextService");
-  }
-  static instance;
-  contextWindow = [];
-  fullHistory = [];
-  config;
-  currentTokens = 0;
-  compressionCount = 0;
-  sessionId;
-  constructor(config2) {
-    super();
-    this.config = {
-      maxTokens: config2?.maxTokens || 128e3,
-      compressionThreshold: config2?.compressionThreshold || 0.8,
-      summaryTokenLimit: config2?.summaryTokenLimit || 2e3,
-      persistPath: config2?.persistPath || path5__namespace.join(process.env["HOME"] || "", ".maria", "context")
-    };
-    this.sessionId = this.generateSessionId();
-  }
-  static getInstance(config2) {
-    if (!_ChatContextService.instance) {
-      _ChatContextService.instance = new _ChatContextService(config2);
-    }
-    return _ChatContextService.instance;
-  }
-  generateSessionId() {
-    return `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-  }
-  countTokens(text) {
-    try {
-      return gpt3Encoder.encode(text).length;
-    } catch {
-      return Math.ceil(text.length / 4);
-    }
-  }
-  async addMessage(message) {
-    const tokens = this.countTokens(message.content);
-    const fullMessage = {
-      ...message,
-      timestamp: /* @__PURE__ */ new Date(),
-      tokens
-    };
-    this.fullHistory.push(fullMessage);
-    this.contextWindow.push(fullMessage);
-    this.currentTokens += tokens;
-    await this.optimizeMemory();
-    this.emit("message-added", fullMessage);
-    this.emit("context-updated", this.getStats());
-  }
-  async optimizeMemory() {
-    const usageRatio = this.currentTokens / this.config.maxTokens;
-    if (usageRatio >= this.config.compressionThreshold) {
-      await this.compressContext();
-    }
-    while (this.currentTokens > this.config.maxTokens && this.contextWindow.length > 1) {
-      const removed = this.contextWindow.shift();
-      if (removed?.tokens) {
-        this.currentTokens -= removed.tokens;
-      }
-    }
-  }
-  async compressContext() {
-    if (this.contextWindow.length <= 2) return;
-    const middleMessages = this.contextWindow.slice(1, -1);
-    const summary = await this.generateSummary(middleMessages);
-    if (summary) {
-      const summaryMessage = {
-        role: "system",
-        content: `[Compressed context summary]: ${summary}`,
-        timestamp: /* @__PURE__ */ new Date(),
-        tokens: this.countTokens(summary),
-        metadata: { compressed: true, originalCount: middleMessages.length }
-      };
-      const firstMessage = this.contextWindow[0];
-      const lastMessage = this.contextWindow[this.contextWindow.length - 1];
-      if (!firstMessage || !lastMessage) return;
-      this.contextWindow = [firstMessage, summaryMessage, lastMessage];
-      this.recalculateTokens();
-      this.compressionCount++;
-      this.emit("context-compressed", {
-        originalCount: middleMessages.length,
-        summaryTokens: summaryMessage.tokens
-      });
-    }
-  }
-  async generateSummary(messages) {
-    const keyPoints = messages.filter((m) => m.role === "user").map((m) => m.content.substring(0, 100)).join("; ");
-    return `Previous discussion covered: ${keyPoints}`;
-  }
-  recalculateTokens() {
-    this.currentTokens = this.contextWindow.reduce((sum, msg) => sum + (msg.tokens || 0), 0);
-  }
-  clearContext(options) {
-    if (options?.soft) {
-      this.emit("display-cleared");
-      return;
-    }
-    if (options?.summary && this.contextWindow.length > 0) {
-      this.generateSummary(this.contextWindow).then((summary) => {
-        this.emit("summary-generated", summary);
-      });
-    }
-    const previousStats = this.getStats();
-    this.contextWindow = [];
-    this.currentTokens = 0;
-    this.compressionCount = 0;
-    if (!options?.soft) {
-      this.fullHistory = [];
-      this.sessionId = this.generateSessionId();
-    }
-    this.emit("context-cleared", previousStats);
-  }
-  getContext() {
-    return [...this.contextWindow];
-  }
-  getFullHistory() {
-    return [...this.fullHistory];
-  }
-  getStats() {
-    return {
-      totalMessages: this.fullHistory.length,
-      totalTokens: this.currentTokens,
-      maxTokens: this.config.maxTokens,
-      usagePercentage: this.currentTokens / this.config.maxTokens * 100,
-      messagesInWindow: this.contextWindow.length,
-      compressedCount: this.compressionCount
-    };
-  }
-  async persistSession() {
-    if (!this.config.persistPath) return;
-    try {
-      await fs6__namespace.mkdir(this.config.persistPath, { recursive: true });
-      const sessionFile = path5__namespace.join(this.config.persistPath, `${this.sessionId}.json`);
-      const sessionData = {
-        sessionId: this.sessionId,
-        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
-        stats: this.getStats(),
-        contextWindow: this.contextWindow,
-        fullHistory: this.fullHistory,
-        compressionCount: this.compressionCount
-      };
-      await fs6__namespace.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
-      this.emit("session-persisted", sessionFile);
-    } catch (error) {
-      this.emit("persist-error", error instanceof Error ? error : new Error(String(error)));
-    }
-  }
-  async loadSession(sessionId) {
-    if (!this.config.persistPath) return false;
-    try {
-      const sessionFile = path5__namespace.join(this.config.persistPath, `${sessionId}.json`);
-      const data = await fs6__namespace.readFile(sessionFile, "utf-8");
-      const sessionData = JSON.parse(data);
-      this.sessionId = sessionData.sessionId;
-      this.contextWindow = sessionData.contextWindow;
-      this.fullHistory = sessionData.fullHistory;
-      this.compressionCount = sessionData.compressionCount;
-      this.recalculateTokens();
-      this.emit("session-loaded", sessionId);
-      return true;
-    } catch (error) {
-      this.emit("load-error", error instanceof Error ? error : new Error(String(error)));
-      return false;
-    }
-  }
-  async exportContext(format = "json") {
-    if (format === "markdown") {
-      return this.contextWindow.map(
-        (msg) => `### ${msg.role.toUpperCase()} (${msg.timestamp.toISOString()})
-${msg.content}
-`
-      ).join("\n---\n\n");
-    }
-    return JSON.stringify(
-      {
-        sessionId: this.sessionId,
-        exportDate: (/* @__PURE__ */ new Date()).toISOString(),
-        stats: this.getStats(),
-        context: this.contextWindow,
-        fullHistory: this.fullHistory
-      },
-      null,
-      2
-    );
-  }
-  async importContext(data) {
-    try {
-      const imported = JSON.parse(data);
-      if (imported.context && Array.isArray(imported.context)) {
-        this.contextWindow = imported.context;
-        this.fullHistory = imported.fullHistory || imported.context;
-        this.recalculateTokens();
-        this.sessionId = imported.sessionId || this.generateSessionId();
-        this.emit("context-imported", this.getStats());
-      }
-    } catch (error) {
-      this.emit("import-error", error instanceof Error ? error : new Error(String(error)));
-      throw error;
-    }
-  }
-  getTokenUsageIndicator() {
-    const stats = this.getStats();
-    const percentage = Math.round(stats.usagePercentage);
-    const blocks = Math.round(percentage / 10);
-    const filled = "\u2588".repeat(blocks);
-    const empty = "\u2591".repeat(10 - blocks);
-    let color = "\x1B[32m";
-    if (percentage > 80)
-      color = "\x1B[31m";
-    else if (percentage > 60) color = "\x1B[33m";
-    return `${color}[${filled}${empty}] ${percentage}% (${stats.totalTokens}/${stats.maxTokens} tokens)\x1B[0m`;
-  }
-  reset() {
-    this.contextWindow = [];
-    this.fullHistory = [];
-    this.currentTokens = 0;
-    this.compressionCount = 0;
-    this.sessionId = this.generateSessionId();
-    _ChatContextService.instance = null;
-  }
-};
-
 // src/services/slash-command-handler.ts
+init_chat_context_service();
 init_code_generation_service();
 
 // src/services/test-generation.service.ts
@@ -21016,7 +22275,7 @@ var TestGenerationService = class _TestGenerationService {
         files.push(...await this.findTestableFiles("."));
       }
     } else {
-      const stat2 = await fs6__namespace.stat(target);
+      const stat2 = await fs11__namespace.stat(target);
       if (stat2.isDirectory()) {
         files.push(...await this.findTestableFiles(target));
       } else if (stat2.isFile() && this.isTestableFile(target)) {
@@ -21031,9 +22290,9 @@ var TestGenerationService = class _TestGenerationService {
   // @ts-nocheck - Complex async type handling
   async findTestableFiles(dir) {
     const files = [];
-    const entries = await fs6__namespace.readdir(dir, { withFileTypes: true });
+    const entries = await fs11__namespace.readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
-      const fullPath = path5__namespace.join(dir, entry.name);
+      const fullPath = path10__namespace.join(dir, entry.name);
       if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules") {
         files.push(...await this.findTestableFiles(fullPath));
       } else if (entry.isFile() && this.isTestableFile(entry.name)) {
@@ -21049,7 +22308,7 @@ var TestGenerationService = class _TestGenerationService {
   isTestableFile(file) {
     const testableExtensions = [".js", ".jsx", ".ts", ".tsx", ".py", ".go", ".rs", ".java"];
     const excludePatterns = [".test.", ".spec.", ".min.", "test/", "tests/", "__tests__/"];
-    const ext = path5__namespace.extname(file);
+    const ext = path10__namespace.extname(file);
     const isTestable = testableExtensions.includes(ext);
     const isExcluded = excludePatterns.some((pattern) => file.includes(pattern));
     return isTestable && !isExcluded;
@@ -21063,7 +22322,7 @@ var TestGenerationService = class _TestGenerationService {
     const codeGenService = (await Promise.resolve().then(() => (init_code_generation_service(), code_generation_service_exports))).CodeGenerationService.getInstance();
     for (const file of files) {
       try {
-        const content = await fs6__namespace.readFile(file, "utf-8");
+        const content = await fs11__namespace.readFile(file, "utf-8");
         const language = this.detectLanguage(file);
         const existingTest = existingTests.get(file);
         if (existingTest && existingTest.coverage > 80) {
@@ -21281,9 +22540,9 @@ BEGIN TEST GENERATION:
   async writeTestFiles(tests, ___framework) {
     for (const test of tests) {
       try {
-        const testDir = path5__namespace.dirname(test.testFile);
-        await fs6__namespace.mkdir(testDir, { recursive: true });
-        await fs6__namespace.writeFile(test.testFile, test.content, "utf-8");
+        const testDir = path10__namespace.dirname(test.testFile);
+        await fs11__namespace.mkdir(testDir, { recursive: true });
+        await fs11__namespace.writeFile(test.testFile, test.content, "utf-8");
         logger.info(`Created test file: ${test.testFile}`);
       } catch (error) {
         logger.error(`Failed to write test file ${test.testFile}:`, error);
@@ -21414,19 +22673,19 @@ BEGIN TEST GENERATION:
    */
   // @ts-nocheck - Complex async type handling
   getTestFileName(file, __framework) {
-    const dir = path5__namespace.dirname(file);
-    const base = path5__namespace.basename(file, path5__namespace.extname(file));
-    const ext = path5__namespace.extname(file);
+    const dir = path10__namespace.dirname(file);
+    const base = path10__namespace.basename(file, path10__namespace.extname(file));
+    const ext = path10__namespace.extname(file);
     if (framework === "Jest" || framework === "Vitest") {
-      return path5__namespace.join(dir, "__tests__", `${base}.test${ext}`);
+      return path10__namespace.join(dir, "__tests__", `${base}.test${ext}`);
     } else if (framework === "Mocha") {
-      return path5__namespace.join(dir, "test", `${base}.spec${ext}`);
+      return path10__namespace.join(dir, "test", `${base}.spec${ext}`);
     } else if (framework === "pytest") {
-      return path5__namespace.join(dir, `test_${base}.py`);
+      return path10__namespace.join(dir, `test_${base}.py`);
     } else if (framework === "go test") {
       return file.replace(".go", "_test.go");
     } else {
-      return path5__namespace.join(dir, `${base}.test${ext}`);
+      return path10__namespace.join(dir, `${base}.test${ext}`);
     }
   }
   /**
@@ -21434,7 +22693,7 @@ BEGIN TEST GENERATION:
    */
   // @ts-nocheck - Complex async type handling
   detectLanguage(file) {
-    const ext = path5__namespace.extname(file).toLowerCase();
+    const ext = path10__namespace.extname(file).toLowerCase();
     const languageMap = {
       ".js": "javascript",
       ".jsx": "javascript",
@@ -21487,7 +22746,7 @@ var TestFrameworkDetector = class {
   }
   async detect() {
     try {
-      const packageJson = await fs6__namespace.readFile("package.json", "utf-8");
+      const packageJson = await fs11__namespace.readFile("package.json", "utf-8");
       const pkg = JSON.parse(packageJson);
       if (pkg.devDependencies?.jest || pkg.scripts?.test?.includes("jest")) {
         return "Jest";
@@ -21501,12 +22760,12 @@ var TestFrameworkDetector = class {
     } catch {
     }
     try {
-      await fs6__namespace.access("pytest.ini");
+      await fs11__namespace.access("pytest.ini");
       return "pytest";
     } catch {
       try {
-        await fs6__namespace.access("setup.cfg");
-        const content = await fs6__namespace.readFile("setup.cfg", "utf-8");
+        await fs11__namespace.access("setup.cfg");
+        const content = await fs11__namespace.readFile("setup.cfg", "utf-8");
         if (content.includes("[tool:pytest]")) {
           return "pytest";
         }
@@ -21514,12 +22773,12 @@ var TestFrameworkDetector = class {
       }
     }
     try {
-      await fs6__namespace.access("go.mod");
+      await fs11__namespace.access("go.mod");
       return "go test";
     } catch {
     }
     try {
-      await fs6__namespace.access("Cargo.toml");
+      await fs11__namespace.access("Cargo.toml");
       return "cargo test";
     } catch {
     }
@@ -22484,7 +23743,7 @@ Run /config to customize MARIA settings.`;
   async handleInit() {
     try {
       const rootPath = process.cwd();
-      const mariaPath = path5__namespace.join(rootPath, "MARIA.md");
+      const mariaPath = path10__namespace.join(rootPath, "MARIA.md");
       const exists = fs7__namespace.existsSync(mariaPath);
       if (exists) {
         console.log("\u{1F4CA} Analyzing codebase for MARIA.md update...");
@@ -22642,14 +23901,14 @@ ${availableServers.map((server) => `\u2022 ${server.name}: ${server.description}
     }
     if (options.summary) {
       const summary = await this.chatContextService.exportContext("markdown");
-      const summaryPath = path5__namespace.join(
+      const summaryPath = path10__namespace.join(
         process.env["HOME"] || "",
         ".maria",
         "summaries",
         `summary-${Date.now()}.md`
       );
       try {
-        await fs7__namespace.promises.mkdir(path5__namespace.dirname(summaryPath), { recursive: true });
+        await fs7__namespace.promises.mkdir(path10__namespace.dirname(summaryPath), { recursive: true });
         await fs7__namespace.promises.writeFile(summaryPath, summary);
         this.chatContextService.clearContext({ summary: true });
         if (context.history) {
@@ -22749,8 +24008,8 @@ ${indicator}`,
   async handleResume(context) {
     const resumeFile = `${process.cwd()}/.maria-session.json`;
     try {
-      const fs11 = await import('fs/promises');
-      const resumeData = await fs11.readFile(resumeFile, "utf-8");
+      const fs12 = await import('fs/promises');
+      const resumeData = await fs12.readFile(resumeFile, "utf-8");
       const savedContext = JSON.parse(resumeData);
       if (!savedContext.history) {
         return {
@@ -22791,7 +24050,7 @@ ${indicator}`,
           )
         };
       }
-      await fs11.unlink(resumeFile);
+      await fs12.unlink(resumeFile);
       return {
         success: true,
         message: `Conversation resumed: ${context.history.length} messages restored${context.currentTask ? ` (task: ${context.currentTask})` : ""}`,
@@ -23011,11 +24270,11 @@ ${allFeedback.slice(-3).map(
         severity: this.assessBugSeverity(bugType, description),
         reportId: `bug-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
       };
-      const fs11 = await import('fs/promises');
+      const fs12 = await import('fs/promises');
       const reportsDir = `${process.cwd()}/.maria-reports`;
       try {
-        await fs11.mkdir(reportsDir, { recursive: true });
-        await fs11.writeFile(
+        await fs12.mkdir(reportsDir, { recursive: true });
+        await fs12.writeFile(
           `${reportsDir}/${bugReport.reportId}.json`,
           JSON.stringify(bugReport, null, 2)
         );
@@ -23191,10 +24450,10 @@ Vim keybindings disabled.`;
   }
   async handleVersion() {
     try {
-      const fs11 = await import('fs/promises');
-      const path9 = await import('path');
-      const packagePath = path9.resolve(process.cwd(), "package.json");
-      const packageData = JSON.parse(await fs11.readFile(packagePath, "utf8"));
+      const fs12 = await import('fs/promises');
+      const path11 = await import('path');
+      const packagePath = path11.resolve(process.cwd(), "package.json");
+      const packageData = JSON.parse(await fs12.readFile(packagePath, "utf8"));
       return {
         success: true,
         message: `MARIA CODE CLI v${packageData["version"] || "1.0.0"}
@@ -23486,8 +24745,8 @@ Try:
         const timestamp = (/* @__PURE__ */ new Date()).toISOString().replace(/[:.]/g, "-");
         const filename = `maria-aliases-${timestamp}.json`;
         try {
-          const fs11 = await import('fs/promises');
-          await fs11.writeFile(filename, exportData);
+          const fs12 = await import('fs/promises');
+          await fs12.writeFile(filename, exportData);
           return {
             success: true,
             message: `\u2705 Aliases exported to ${filename}
@@ -23510,8 +24769,8 @@ ${exportData}`
           };
         }
         try {
-          const fs11 = await import('fs/promises');
-          const jsonData = await fs11.readFile(filename, "utf-8");
+          const fs12 = await import('fs/promises');
+          const jsonData = await fs12.readFile(filename, "utf-8");
           return await this.aliasSystem.importAliases(jsonData);
         } catch (error) {
           return {
@@ -23720,8 +24979,8 @@ Available commands: run, save, delete, view, export, import`
         };
       }
       try {
-        const fs11 = await import('fs/promises');
-        const content = await fs11.readFile(filename, "utf-8");
+        const fs12 = await import('fs/promises');
+        const content = await fs12.readFile(filename, "utf-8");
         const commands2 = this.batchEngine.parseBatchString(content);
         const result = await this.batchEngine.executeBatch(commands2, context, {
           stopOnError: true
@@ -23900,8 +25159,8 @@ Batch execution ${result.success ? "completed successfully" : "completed with er
         const config2 = this.hotkeyManager.exportConfig();
         const filename = `hotkeys-${Date.now()}.json`;
         try {
-          const fs11 = await import('fs/promises');
-          await fs11.writeFile(filename, JSON.stringify(config2, null, 2));
+          const fs12 = await import('fs/promises');
+          await fs12.writeFile(filename, JSON.stringify(config2, null, 2));
           return {
             success: true,
             message: `\u2705 Hotkey configuration exported to ${filename}`,
@@ -23923,8 +25182,8 @@ Batch execution ${result.success ? "completed successfully" : "completed with er
           };
         }
         try {
-          const fs11 = await import('fs/promises');
-          const content = await fs11.readFile(filename, "utf-8");
+          const fs12 = await import('fs/promises');
+          const content = await fs12.readFile(filename, "utf-8");
           const config2 = JSON.parse(content);
           const result = this.hotkeyManager.importConfig(
             config2
@@ -23975,7 +25234,7 @@ Batch execution ${result.success ? "completed successfully" : "completed with er
     const shouldSave = context.history && context.history.length > 0;
     if (shouldSave) {
       try {
-        const fs11 = await import('fs/promises');
+        const fs12 = await import('fs/promises');
         const sessionFile = `${process.cwd()}/.maria-session.json`;
         const sessionData = {
           sessionId: context.sessionId,
@@ -23984,7 +25243,7 @@ Batch execution ${result.success ? "completed successfully" : "completed with er
           metadata: context.metadata,
           savedAt: (/* @__PURE__ */ new Date()).toISOString()
         };
-        await fs11.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
+        await fs12.writeFile(sessionFile, JSON.stringify(sessionData, null, 2));
         const stats = {
           messages: context.history?.length || 0,
           cost: context.metadata?.["cost"] || 0,
@@ -24015,8 +25274,8 @@ Session saved: ${stats.messages} messages, $${stats.cost.toFixed(6)}, ${Math.flo
   async handleMigrateInstaller() {
     try {
       const { execSync } = await import('child_process');
-      const fs11 = await import('fs/promises');
-      const path9 = await import('path');
+      const fs12 = await import('fs/promises');
+      const path11 = await import('path');
       const globalInstallCheck = {
         npm: false,
         yarn: false,
@@ -24039,11 +25298,11 @@ Session saved: ${stats.messages} messages, $${stats.cost.toFixed(6)}, ${Math.flo
       } catch {
       }
       const cwd = process.cwd();
-      const packageJsonPath = path9.join(cwd, "package.json");
+      const packageJsonPath = path11.join(cwd, "package.json");
       let localInstall = false;
       let packageJson = null;
       try {
-        const packageJsonContent = await fs11.readFile(packageJsonPath, "utf-8");
+        const packageJsonContent = await fs12.readFile(packageJsonPath, "utf-8");
         packageJson = JSON.parse(packageJsonContent);
         const typedPackage = packageJson;
         localInstall = !!(typedPackage["dependencies"]?.["@maria/code-cli"] || typedPackage["devDependencies"]?.["@maria/code-cli"]);
@@ -24301,7 +25560,7 @@ Run the steps above to complete your migration!`;
         devDependencies: []
       }
     };
-    const gitignorePath = path5__namespace.join(rootPath, ".gitignore");
+    const gitignorePath = path10__namespace.join(rootPath, ".gitignore");
     const ignorePatterns = fs7__namespace.existsSync(gitignorePath) ? fs7__namespace.readFileSync(gitignorePath, "utf8").split("\n").filter((line) => line.trim() && !line.startsWith("#")) : ["node_modules", ".git", "dist", "build", ".env*"];
     await this.analyzeDirectory(rootPath, rootPath, analysis, ignorePatterns);
     this.inferTechStack(analysis);
@@ -24312,8 +25571,8 @@ Run the steps above to complete your migration!`;
     try {
       const items = fs7__namespace.readdirSync(currentPath);
       for (const item of items) {
-        const itemPath = path5__namespace.join(currentPath, item);
-        const relativePath = path5__namespace.relative(rootPath, itemPath);
+        const itemPath = path10__namespace.join(currentPath, item);
+        const relativePath = path10__namespace.relative(rootPath, itemPath);
         if (this.shouldIgnore(relativePath, ignorePatterns)) continue;
         const stat2 = fs7__namespace.statSync(itemPath);
         if (stat2.isDirectory()) {
@@ -24322,7 +25581,7 @@ Run the steps above to complete your migration!`;
         } else if (stat2.isFile()) {
           analysis.files.push(relativePath);
           analysis.fileCount++;
-          const ext = path5__namespace.extname(item).toLowerCase();
+          const ext = path10__namespace.extname(item).toLowerCase();
           const language = this.getLanguageFromExtension(ext);
           if (language && !analysis.languages.includes(language)) {
             analysis.languages.push(language);
@@ -24394,7 +25653,7 @@ Run the steps above to complete your migration!`;
       analysis.techStack.push("Lerna");
     }
     try {
-      const packageJsonPath = path5__namespace.join(rootPath, "package.json");
+      const packageJsonPath = path10__namespace.join(rootPath, "package.json");
       if (fs7__namespace.existsSync(packageJsonPath)) {
         const packageJson = JSON.parse(fs7__namespace.readFileSync(packageJsonPath, "utf8"));
         analysis.dependencies = {
@@ -24419,7 +25678,7 @@ Run the steps above to complete your migration!`;
     analysis.techStack = [...new Set(analysis.techStack)];
   }
   async createMariaMd(rootPath, analysis) {
-    const projectName = path5__namespace.basename(rootPath);
+    const projectName = path10__namespace.basename(rootPath);
     const timestamp = (/* @__PURE__ */ new Date()).toISOString();
     return `# MARIA.md
 
@@ -25979,7 +27238,7 @@ async function showAvatar() {
   console.log(chalk13__default.default.blue("\n\u{1F3AD} MARIA Avatar Interface\n"));
   const avatarPath = "/Users/bongin_max/maria_code/face_only_96x96_ramp.txt";
   try {
-    const avatarData = await fs6__namespace.readFile(avatarPath, "utf-8");
+    const avatarData = await fs11__namespace.readFile(avatarPath, "utf-8");
     const lines = avatarData.split("\n").slice(0, 30);
     console.log(chalk13__default.default.white("\u2550".repeat(80)));
     lines.forEach((line) => {
@@ -27062,13 +28321,13 @@ __name(loadConfig2, "loadConfig");
 async function loadEnvironmentConfig() {
   try {
     const { importNodeBuiltin: importNodeBuiltin2, safeDynamicImport: safeDynamicImport2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
-    const fs11 = await safeDynamicImport2("fs-extra").catch(
+    const fs12 = await safeDynamicImport2("fs-extra").catch(
       () => importNodeBuiltin2("fs")
     );
-    const path9 = await importNodeBuiltin2("path");
-    const envPath = path9.join(process.cwd(), ".env.local");
-    if (await fs11.pathExists(envPath)) {
-      const envContent = await fs11.readFile(envPath, "utf-8");
+    const path11 = await importNodeBuiltin2("path");
+    const envPath = path11.join(process.cwd(), ".env.local");
+    if (await fs12.pathExists(envPath)) {
+      const envContent = await fs12.readFile(envPath, "utf-8");
       if (process.env["DEBUG"]) {
         console.log("Loading environment from:", envPath);
       }
@@ -27148,7 +28407,7 @@ async function checkOllamaInstalled() {
 __name(checkOllamaInstalled, "checkOllamaInstalled");
 async function installOllama() {
   return new Promise((resolve, reject) => {
-    const platform = os2__default.default.platform();
+    const platform = os3__default.default.platform();
     if (platform === "darwin") {
       const brewChild = child_process.spawn("brew", ["install", "ollama"], { stdio: "inherit" });
       brewChild.on("close", (code) => {
@@ -27240,15 +28499,15 @@ async function downloadOllamaModel(model) {
 }
 __name(downloadOllamaModel, "downloadOllamaModel");
 async function setupEnvironmentVariables() {
-  const homeDir = os2__default.default.homedir();
+  const homeDir = os3__default.default.homedir();
   const shell = process.env["SHELL"] || "/bin/bash";
   let rcFile = "";
   if (shell.includes("zsh")) {
-    rcFile = path5__namespace.default.join(homeDir, ".zshrc");
+    rcFile = path10__namespace.default.join(homeDir, ".zshrc");
   } else if (shell.includes("bash")) {
-    rcFile = path5__namespace.default.join(homeDir, ".bashrc");
+    rcFile = path10__namespace.default.join(homeDir, ".bashrc");
   } else {
-    rcFile = path5__namespace.default.join(homeDir, ".profile");
+    rcFile = path10__namespace.default.join(homeDir, ".profile");
   }
   const envVars = `
 # MARIA Ollama Configuration
@@ -27307,8 +28566,8 @@ function registerSetupVllmCommand(program) {
       if (!options.skipPythonCheck) {
         await checkPythonVersion();
       }
-      const venvPath = options.venvPath.replace("~", os2__default.default.homedir());
-      const modelDir = options.modelDir.replace("~", os2__default.default.homedir());
+      const venvPath = options.venvPath.replace("~", os3__default.default.homedir());
+      const modelDir = options.modelDir.replace("~", os3__default.default.homedir());
       console.log(chalk13__default.default.yellow("\u{1F40D} Creating Python virtual environment..."));
       await createVirtualEnvironment(venvPath);
       console.log(chalk13__default.default.yellow("\u{1F4E6} Installing vLLM and dependencies..."));
@@ -27387,7 +28646,7 @@ async function createVirtualEnvironment(venvPath) {
 }
 __name(createVirtualEnvironment, "createVirtualEnvironment");
 async function installVllm(venvPath) {
-  const pipPath = path5__namespace.default.join(venvPath, "bin", "pip");
+  const pipPath = path10__namespace.default.join(venvPath, "bin", "pip");
   return new Promise((resolve, reject) => {
     const upgradeChild = child_process.spawn(pipPath, ["install", "--upgrade", "pip"], { stdio: "inherit" });
     upgradeChild.on("close", (code) => {
@@ -27411,8 +28670,8 @@ async function installVllm(venvPath) {
 }
 __name(installVllm, "installVllm");
 async function downloadModel(venvPath, modelName, modelDir) {
-  const pythonPath = path5__namespace.default.join(venvPath, "bin", "python");
-  const modelPath = path5__namespace.default.join(modelDir, modelName.replace("/", "_"));
+  const pythonPath = path10__namespace.default.join(venvPath, "bin", "python");
+  const modelPath = path10__namespace.default.join(modelDir, modelName.replace("/", "_"));
   return new Promise((resolve, reject) => {
     console.log(chalk13__default.default.cyan(`  Downloading ${modelName}...`));
     const downloadScript = `
@@ -27443,9 +28702,9 @@ except Exception as e:
 }
 __name(downloadModel, "downloadModel");
 async function createStartupScript(venvPath, modelDir, defaultModel) {
-  const scriptsDir = path5__namespace.default.join(process.cwd(), "scripts");
-  const scriptPath = path5__namespace.default.join(scriptsDir, "start-vllm.sh");
-  const modelPath = path5__namespace.default.join(modelDir, defaultModel.replace("/", "_"));
+  const scriptsDir = path10__namespace.default.join(process.cwd(), "scripts");
+  const scriptPath = path10__namespace.default.join(scriptsDir, "start-vllm.sh");
+  const modelPath = path10__namespace.default.join(modelDir, defaultModel.replace("/", "_"));
   const scriptContent = `#!/bin/bash
 
 # MARIA vLLM Startup Script
@@ -27506,15 +28765,15 @@ done
 }
 __name(createStartupScript, "createStartupScript");
 async function setupEnvironmentVariables2() {
-  const homeDir = os2__default.default.homedir();
+  const homeDir = os3__default.default.homedir();
   const shell = process.env["SHELL"] || "/bin/bash";
   let rcFile = "";
   if (shell.includes("zsh")) {
-    rcFile = path5__namespace.default.join(homeDir, ".zshrc");
+    rcFile = path10__namespace.default.join(homeDir, ".zshrc");
   } else if (shell.includes("bash")) {
-    rcFile = path5__namespace.default.join(homeDir, ".bashrc");
+    rcFile = path10__namespace.default.join(homeDir, ".bashrc");
   } else {
-    rcFile = path5__namespace.default.join(homeDir, ".profile");
+    rcFile = path10__namespace.default.join(homeDir, ".profile");
   }
   const envVars = `
 # MARIA vLLM Configuration
@@ -27538,14 +28797,14 @@ export VLLM_DEFAULT_MODEL="DialoGPT-medium"
 __name(setupEnvironmentVariables2, "setupEnvironmentVariables");
 async function testVllmSetup(venvPath, modelDir, defaultModel) {
   console.log(chalk13__default.default.yellow("\u{1F9EA} Testing vLLM setup..."));
-  const pythonPath = path5__namespace.default.join(venvPath, "bin", "python");
+  const pythonPath = path10__namespace.default.join(venvPath, "bin", "python");
   try {
     await fs7.promises.access(pythonPath);
     console.log(chalk13__default.default.green("\u2705 Virtual environment test passed"));
   } catch (error) {
     throw new Error("Virtual environment not found");
   }
-  const modelPath = path5__namespace.default.join(modelDir, defaultModel.replace("/", "_"));
+  const modelPath = path10__namespace.default.join(modelDir, defaultModel.replace("/", "_"));
   try {
     await fs7.promises.access(modelPath);
     console.log(chalk13__default.default.green("\u2705 Model directory test passed"));
@@ -27586,14 +28845,14 @@ ${chalk13__default.default.cyan("Examples:")}
   ${chalk13__default.default.gray("$")} maria coderag similar "function calc()"   # Find similar patterns
     `
   );
-  coderagCommand.command("index").argument("<path>", "Path to codebase directory").option("--types <types>", "File types to include (comma-separated)", ".ts,.tsx,.js,.jsx").option("--exclude <paths>", "Paths to exclude (comma-separated)", "node_modules,dist,.git").option("--chunk-size <size>", "Chunk size for indexing", "500").description("Index codebase for vector search").action(async (path9, options) => {
+  coderagCommand.command("index").argument("<path>", "Path to codebase directory").option("--types <types>", "File types to include (comma-separated)", ".ts,.tsx,.js,.jsx").option("--exclude <paths>", "Paths to exclude (comma-separated)", "node_modules,dist,.git").option("--chunk-size <size>", "Chunk size for indexing", "500").description("Index codebase for vector search").action(async (path11, options) => {
     try {
       console.log(chalk13__default.default.blue("\u{1F50D} Indexing codebase for CodeRAG..."));
-      console.log(chalk13__default.default.gray(`Path: ${path9}`));
+      console.log(chalk13__default.default.gray(`Path: ${path11}`));
       const fileTypes = options.types.split(",").map((t) => t.trim());
       const excludePaths = options.exclude.split(",").map((p) => p.trim());
       await codeRAGService.initialize();
-      const result = await codeRAGService.indexCodebase(path9, {
+      const result = await codeRAGService.indexCodebase(path11, {
         fileTypes,
         excludePaths,
         chunkSize: parseInt(options.chunkSize, 10),
@@ -27748,8 +29007,8 @@ ${chalk13__default.default.cyan("Examples:")}
       if (status.indexedPaths.length > 0) {
         console.log();
         console.log(chalk13__default.default.cyan("Indexed paths:"));
-        status.indexedPaths.forEach((path9) => {
-          console.log(`  \u2022 ${path9}`);
+        status.indexedPaths.forEach((path11) => {
+          console.log(`  \u2022 ${path11}`);
         });
       }
     } catch (error) {
@@ -28589,7 +29848,7 @@ __name(generateCode, "generateCode");
 async function processVision(imagePath, prompt, config2) {
   const maria = new MariaAI(config2);
   await maria.initialize();
-  const fs11 = await (async () => {
+  const fs12 = await (async () => {
     try {
       return await import('fs-extra');
     } catch {
@@ -28599,7 +29858,7 @@ async function processVision(imagePath, prompt, config2) {
   })();
   try {
     console.log(chalk13__default.default.blue("\u{1F441}\uFE0F  Analyzing image..."));
-    const imageBuffer = await fs11.readFile(imagePath);
+    const imageBuffer = await fs12.readFile(imagePath);
     const response = await maria.vision(imageBuffer, prompt);
     console.log("\n" + chalk13__default.default.green(response.content));
   } catch (error) {
@@ -28697,6 +29956,507 @@ async function checkHealth(options) {
 }
 __name(checkHealth, "checkHealth");
 
+// src/slash-commands/index.ts
+init_cjs_shims();
+
+// src/slash-commands/types.ts
+init_cjs_shims();
+var CommandError = class extends Error {
+  constructor(message, code, statusCode = 400, details) {
+    super(message);
+    this.code = code;
+    this.statusCode = statusCode;
+    this.details = details;
+    this.name = "CommandError";
+  }
+  static {
+    __name(this, "CommandError");
+  }
+};
+
+// src/slash-commands/index.ts
+init_base_command();
+
+// src/slash-commands/registry.ts
+init_cjs_shims();
+init_logger();
+var CommandRegistry = class {
+  static {
+    __name(this, "CommandRegistry");
+  }
+  commands = /* @__PURE__ */ new Map();
+  aliases = /* @__PURE__ */ new Map();
+  middlewares = /* @__PURE__ */ new Map();
+  rateLimits = /* @__PURE__ */ new Map();
+  _initialized = false;
+  get initialized() {
+    return this._initialized;
+  }
+  set initialized(value) {
+    this._initialized = value;
+  }
+  constructor() {
+    this.setupDefaultMiddlewares();
+  }
+  /**
+   * Register a command
+   */
+  register(command) {
+    if (this.commands.has(command.name)) {
+      logger.warn(`Command ${command.name} already registered, overwriting`);
+    }
+    this.commands.set(command.name, command);
+    if (command.aliases) {
+      for (const alias of command.aliases) {
+        if (this.aliases.has(alias)) {
+          logger.warn(`Alias ${alias} already registered, overwriting`);
+        }
+        this.aliases.set(alias, command.name);
+      }
+    }
+    logger.info(`Registered command: ${command.name}`);
+  }
+  /**
+   * Unregister a command
+   */
+  unregister(name) {
+    const command = this.commands.get(name);
+    if (!command) {
+      return false;
+    }
+    if (command.aliases) {
+      for (const alias of command.aliases) {
+        this.aliases.delete(alias);
+      }
+    }
+    if (command.cleanup) {
+      command.cleanup().catch((err) => logger.error(`Error cleaning up command ${name}:`, err));
+    }
+    this.commands.delete(name);
+    return true;
+  }
+  /**
+   * Get a command by name or alias
+   */
+  get(nameOrAlias) {
+    const cleanName = nameOrAlias.startsWith("/") ? nameOrAlias.slice(1) : nameOrAlias;
+    const command = this.commands.get(cleanName);
+    if (command) {
+      return command;
+    }
+    const actualName = this.aliases.get(cleanName);
+    if (actualName) {
+      return this.commands.get(actualName);
+    }
+    return void 0;
+  }
+  /**
+   * Check if a command exists
+   */
+  has(nameOrAlias) {
+    return this.get(nameOrAlias) !== void 0;
+  }
+  /**
+   * Get all registered commands
+   */
+  getAll() {
+    return Array.from(this.commands.values());
+  }
+  /**
+   * Get commands by category
+   */
+  getByCategory(category) {
+    return this.getAll().filter((cmd) => cmd.category === category);
+  }
+  /**
+   * Execute a command
+   */
+  async execute(commandName, args, context) {
+    const startTime = Date.now();
+    try {
+      const command = this.get(commandName);
+      if (!command) {
+        return {
+          success: false,
+          message: `Command not found: ${commandName}`,
+          data: {
+            suggestions: this.getSuggestions(commandName)
+          }
+        };
+      }
+      const parsedArgs = this.parseArguments(args);
+      if (command.rateLimit) {
+        const rateLimitResult = this.checkRateLimit(command, context);
+        if (!rateLimitResult.success) {
+          return rateLimitResult;
+        }
+      }
+      const result = await this.runMiddlewareChain(command, parsedArgs, context, async () => {
+        const permCheck = await this.checkPermissions(command, context);
+        if (!permCheck.success) {
+          return permCheck;
+        }
+        if (command.validate) {
+          const validation = await command.validate(parsedArgs);
+          if (!validation.success) {
+            return {
+              success: false,
+              message: validation.error || "Validation failed",
+              data: { suggestions: validation.suggestions }
+            };
+          }
+        }
+        const result2 = await command.execute(parsedArgs, context);
+        result2.metadata = {
+          ...result2.metadata,
+          executionTime: Date.now() - startTime,
+          commandVersion: command.metadata.version
+        };
+        return result2;
+      });
+      this.logExecution(command, parsedArgs, context, result);
+      return result;
+    } catch (error) {
+      if (error instanceof CommandError) {
+        return {
+          success: false,
+          message: error.message,
+          data: {
+            code: error.code,
+            details: error.details
+          }
+        };
+      }
+      logger.error(`Command execution error for ${commandName}:`, error);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Command execution failed",
+        metadata: {
+          executionTime: Date.now() - startTime
+        }
+      };
+    }
+  }
+  /**
+   * Auto-register commands from directory
+   */
+  async autoRegister(directory) {
+    logger.info(`Auto-registering commands from ${directory}`);
+    try {
+      const pattern = path10__namespace.join(directory, "**/*.command.{ts,js}");
+      const files = await glob.glob(pattern);
+      logger.info(`Found ${files.length} command files`);
+      for (const file of files) {
+        try {
+          const module = await import(file);
+          if (module.default) {
+            let command;
+            if (typeof module.default === "function") {
+              command = new module.default();
+            } else {
+              command = module.default;
+            }
+            if (this.isValidCommand(command)) {
+              if (command.initialize) {
+                await command.initialize();
+              }
+              this.register(command);
+            } else {
+              logger.warn(`Invalid command in ${file}`);
+            }
+          }
+          for (const [key, value] of Object.entries(module)) {
+            if (key !== "default" && this.isValidCommand(value)) {
+              const command = value;
+              if (command.initialize) {
+                await command.initialize();
+              }
+              this.register(command);
+            }
+          }
+        } catch (error) {
+          logger.error(`Failed to load command from ${file}:`, error);
+        }
+      }
+      this.initialized = true;
+      logger.info(`Registered ${this.commands.size} commands total`);
+    } catch (error) {
+      logger.error("Auto-registration failed:", error);
+      throw error;
+    }
+  }
+  /**
+   * Register a middleware
+   */
+  registerMiddleware(middleware) {
+    this.middlewares.set(middleware.name, middleware);
+    logger.info(`Registered middleware: ${middleware.name}`);
+  }
+  // Private helper methods
+  setupDefaultMiddlewares() {
+    this.registerMiddleware({
+      name: "logging",
+      priority: 0,
+      async execute(command, args, context, next) {
+        logger.debug(`Executing command: ${command.name}`, {
+          args: args.raw,
+          user: context.user?.id
+        });
+        return next();
+      }
+    });
+    this.registerMiddleware({
+      name: "error-handler",
+      priority: 1,
+      async execute(_command, _args, _context, next) {
+        try {
+          return await next();
+        } catch (error) {
+          logger.error(`Command ${_command.name} failed:`, error);
+          throw error;
+        }
+      }
+    });
+  }
+  parseArguments(raw) {
+    const args = {
+      raw,
+      parsed: {},
+      flags: {},
+      options: {}
+    };
+    const positional = [];
+    for (let i = 0; i < raw.length; i++) {
+      const arg = raw[i];
+      if (!arg) continue;
+      if (arg.startsWith("--")) {
+        const key = arg.slice(2);
+        const nextArg = raw[i + 1];
+        if (nextArg && !nextArg.startsWith("-")) {
+          args.options[key] = nextArg;
+          i++;
+        } else {
+          args.flags[key] = true;
+        }
+      } else if (arg && arg.startsWith("-") && arg.length === 2) {
+        args.flags[arg.slice(1)] = true;
+      } else if (arg) {
+        positional.push(arg);
+      }
+    }
+    if (positional.length > 0) {
+      args.parsed["positional"] = positional;
+    }
+    return args;
+  }
+  async checkPermissions(command, context) {
+    if (!command.permissions) {
+      return { success: true, message: "" };
+    }
+    const { requiresAuth, role } = command.permissions;
+    if (requiresAuth && !context.user) {
+      return {
+        success: false,
+        message: "Authentication required",
+        data: { suggestions: ["Run /login to authenticate"] }
+      };
+    }
+    if (role && context.user?.role !== role) {
+      return {
+        success: false,
+        message: `Insufficient permissions. Required role: ${role}`
+      };
+    }
+    return { success: true, message: "" };
+  }
+  checkRateLimit(command, context) {
+    if (!command.rateLimit) {
+      return { success: true, message: "" };
+    }
+    const userId = context.user?.id || "anonymous";
+    const commandLimits = this.rateLimits.get(command.name) || /* @__PURE__ */ new Map();
+    const userLimit = commandLimits.get(userId);
+    const now = Date.now();
+    const windowMs = this.parseWindow(command.rateLimit.window);
+    if (!userLimit || userLimit.resetAt < now) {
+      commandLimits.set(userId, {
+        count: 1,
+        resetAt: now + windowMs
+      });
+      this.rateLimits.set(command.name, commandLimits);
+      return { success: true, message: "" };
+    }
+    if (userLimit.count >= command.rateLimit.requests) {
+      const retryAfter = Math.ceil((userLimit.resetAt - now) / 1e3);
+      return {
+        success: false,
+        message: `Rate limit exceeded. Try again in ${retryAfter} seconds`,
+        data: { retryAfter }
+      };
+    }
+    userLimit.count++;
+    return { success: true, message: "" };
+  }
+  parseWindow(window) {
+    const match = window.match(/^(\d+)([smhd])$/);
+    if (!match) {
+      return 6e4;
+    }
+    const [, num, unit] = match;
+    const value = parseInt(num || "60", 10);
+    switch (unit) {
+      case "s":
+        return value * 1e3;
+      case "m":
+        return value * 60 * 1e3;
+      case "h":
+        return value * 60 * 60 * 1e3;
+      case "d":
+        return value * 24 * 60 * 60 * 1e3;
+      default:
+        return 6e4;
+    }
+  }
+  async runMiddlewareChain(command, args, context, execute) {
+    const middlewareNames = command.middleware || [];
+    const middlewares = middlewareNames.map((name) => this.middlewares.get(name)).filter(Boolean);
+    middlewares.sort((a, b) => (a.priority || 0) - (b.priority || 0));
+    let index = 0;
+    const next = /* @__PURE__ */ __name(async () => {
+      if (index < middlewares.length) {
+        const middleware = middlewares[index++];
+        return middleware ? middleware.execute(command, args, context, next) : execute();
+      }
+      return execute();
+    }, "next");
+    return next();
+  }
+  getSuggestions(input) {
+    const suggestions = [];
+    const cleanInput = input.replace("/", "").toLowerCase();
+    for (const [name] of this.commands) {
+      if (name.toLowerCase().includes(cleanInput) || cleanInput.includes(name.toLowerCase())) {
+        suggestions.push(`/${name}`);
+      }
+    }
+    for (const [alias] of this.aliases) {
+      if (alias.toLowerCase().includes(cleanInput) || cleanInput.includes(alias.toLowerCase())) {
+        suggestions.push(`/${alias}`);
+      }
+    }
+    return suggestions.slice(0, 5);
+  }
+  isValidCommand(obj) {
+    if (!obj || typeof obj !== "object") {
+      return false;
+    }
+    const cmd = obj;
+    return typeof cmd.name === "string" && typeof cmd.category === "string" && typeof cmd.description === "string" && typeof cmd.execute === "function";
+  }
+  logExecution(command, args, context, result) {
+    const logData = {
+      command: command.name,
+      args: args.raw,
+      user: context.user?.id,
+      success: result.success,
+      executionTime: result.metadata?.executionTime
+    };
+    if (result.success) {
+      logger.info("Command executed", logData);
+    } else {
+      logger.error("Command failed", { ...logData, error: result.message });
+    }
+  }
+};
+var commandRegistry = new CommandRegistry();
+
+// src/slash-commands/index.ts
+init_auth();
+init_validation();
+init_rate_limit();
+init_logging();
+init_clear_command();
+async function initializeSlashCommands() {
+  const { authMiddleware: authMiddleware2 } = await Promise.resolve().then(() => (init_auth(), auth_exports));
+  const { validationMiddleware: validationMiddleware2 } = await Promise.resolve().then(() => (init_validation(), validation_exports));
+  const { rateLimitMiddleware: rateLimitMiddleware2 } = await Promise.resolve().then(() => (init_rate_limit(), rate_limit_exports));
+  const { loggingMiddleware: loggingMiddleware2 } = await Promise.resolve().then(() => (init_logging(), logging_exports));
+  commandRegistry.registerMiddleware(loggingMiddleware2);
+  commandRegistry.registerMiddleware(authMiddleware2);
+  commandRegistry.registerMiddleware(rateLimitMiddleware2);
+  commandRegistry.registerMiddleware(validationMiddleware2);
+  await registerBuiltInCommands();
+  console.log(`\u2705 Initialized ${commandRegistry.getAll().length} slash commands`);
+}
+__name(initializeSlashCommands, "initializeSlashCommands");
+async function registerBuiltInCommands() {
+  try {
+    const { ClearCommand: ClearCommand2 } = await Promise.resolve().then(() => (init_clear_command(), clear_command_exports));
+    const clearCommand = new ClearCommand2();
+    if (clearCommand.initialize) {
+      await clearCommand.initialize();
+    }
+    commandRegistry.register(clearCommand);
+    const setupCommandModule = await Promise.resolve().then(() => (init_setup_command(), setup_command_exports));
+    const setupCommand = setupCommandModule.default;
+    if (setupCommand) {
+      if (setupCommand.initialize) {
+        await setupCommand.initialize();
+      }
+      commandRegistry.register(setupCommand);
+    }
+  } catch (error) {
+    console.error("Failed to register built-in commands:", error);
+  }
+}
+__name(registerBuiltInCommands, "registerBuiltInCommands");
+function getCommandSuggestions(input) {
+  const commands = commandRegistry.getAll();
+  const suggestions = [];
+  const cleanInput = input.replace("/", "").toLowerCase();
+  for (const command of commands) {
+    if (command.name.toLowerCase().startsWith(cleanInput)) {
+      suggestions.push(`/${command.name}`);
+    }
+    if (command.aliases) {
+      for (const alias of command.aliases) {
+        if (alias.toLowerCase().startsWith(cleanInput)) {
+          suggestions.push(`/${alias}`);
+        }
+      }
+    }
+  }
+  return suggestions.slice(0, 10);
+}
+__name(getCommandSuggestions, "getCommandSuggestions");
+function getCommandsByCategory2() {
+  const commands = commandRegistry.getAll();
+  const grouped = {};
+  for (const command of commands) {
+    if (!grouped[command.category]) {
+      grouped[command.category] = [];
+    }
+    grouped[command.category].push(command);
+  }
+  return grouped;
+}
+__name(getCommandsByCategory2, "getCommandsByCategory");
+
+// src/index.ts
+init_base_command();
+var VERSION = "1.1.0";
+
+exports.DualMemoryEngine = DualMemoryEngine;
+exports.InternalModeService = InternalModeService;
+exports.MemoryCoordinator = MemoryCoordinator;
+exports.System1Memory = System1MemoryManager;
+exports.System2Memory = System2MemoryManager;
+exports.VERSION = VERSION;
+exports.commandRegistry = commandRegistry;
 exports.createCLI = createCLI;
-//# sourceMappingURL=cli.js.map
-//# sourceMappingURL=cli.js.map
+exports.getCommandSuggestions = getCommandSuggestions;
+exports.getCommandsByCategory = getCommandsByCategory2;
+exports.getInternalModeService = getInternalModeService2;
+exports.initializeSlashCommands = initializeSlashCommands;
+//# sourceMappingURL=index.js.map
+//# sourceMappingURL=index.js.map

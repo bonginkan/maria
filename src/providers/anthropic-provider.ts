@@ -4,7 +4,7 @@ import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './
 export class AnthropicProvider extends BaseAIProvider {
   readonly name = 'Anthropic';
   readonly models = [
-    'claude-opus-4.1',
+    'claude-4.1',
     'claude-3-5-sonnet-20241022',
     'claude-3-5-haiku-20241022',
     'claude-3-opus-20240229',

@@ -2,6 +2,312 @@ export { createCLI } from './cli.js';
 import { EventEmitter } from 'events';
 import 'commander';
 
+interface ConversationMessage {
+    id: string;
+    role: 'user' | 'assistant' | 'system';
+    content: string;
+    timestamp: Date;
+    model?: string;
+    tokensUsed?: number;
+    metadata?: Record<string, unknown>;
+}
+interface ConversationContext {
+    id: string;
+    messages: ConversationMessage[];
+    sessionId: string;
+    userId?: string;
+    startTime: Date;
+    lastActivity: Date;
+    config: ConversationConfig;
+    preferences?: UserPreferences;
+    history?: ConversationHistory[];
+    currentTask?: string;
+    hasErrors?: boolean;
+    isUrgent?: boolean;
+    isInteractive?: boolean;
+    metadata?: Record<string, unknown>;
+}
+interface ConversationHistory {
+    timestamp: Date;
+    action: string;
+    data?: Record<string, unknown>;
+}
+interface UserPreferences {
+    mode?: 'chat' | 'research' | 'command' | 'creative';
+    defaultModel?: string;
+    temperature?: number;
+    maxTokens?: number;
+    autoSave?: boolean;
+    language?: string;
+    theme?: 'light' | 'dark' | 'auto';
+    verbosity?: 'normal' | 'verbose' | 'quiet';
+    autoMode?: boolean;
+}
+interface ConversationConfig {
+    model: string;
+    maxTokens?: number;
+    temperature?: number;
+    stream?: boolean;
+    systemPrompt?: string;
+    tools?: string[];
+    safetySettings?: SafetySettings;
+}
+interface SafetySettings {
+    enableContentFilter: boolean;
+    restrictedTopics: string[];
+    maxPromptLength: number;
+    allowFileAccess: boolean;
+    allowNetworkAccess: boolean;
+}
+
+/**
+ * Slash Command Type Definitions
+ * Core types for the microservice-based command architecture
+ */
+
+type CommandCategory = 'auth' | 'config' | 'project' | 'development' | 'media' | 'conversation' | 'advanced' | 'system';
+interface CommandArgs {
+    raw: string[];
+    parsed: Record<string, unknown>;
+    flags: Record<string, boolean>;
+    options: Record<string, string>;
+}
+interface CommandContext {
+    conversation: ConversationContext;
+    user?: {
+        id: string;
+        email?: string;
+        role?: string;
+    };
+    session: {
+        id: string;
+        startTime: Date;
+        commandHistory: string[];
+    };
+    environment: {
+        cwd: string;
+        platform: string;
+        nodeVersion: string;
+    };
+}
+interface CommandResult {
+    success: boolean;
+    message: string;
+    data?: unknown;
+    component?: ComponentType;
+    requiresInput?: boolean;
+    metadata?: {
+        executionTime: number;
+        memoryUsed?: number;
+        commandVersion?: string;
+    };
+}
+type ComponentType = 'config-panel' | 'auth-flow' | 'help-dialog' | 'status-display' | 'system-diagnostics' | 'cost-display' | 'agents-display' | 'mcp-display' | 'model-selector' | 'image-generator' | 'video-generator' | 'avatar-generator' | 'voice-assistant';
+interface ValidationResult {
+    success: boolean;
+    error?: string;
+    suggestions?: string[];
+}
+interface CommandMetadata {
+    version: string;
+    author: string;
+    deprecated?: boolean;
+    experimental?: boolean;
+    since?: string;
+    replacedBy?: string;
+}
+interface CommandPermission {
+    role?: string;
+    scope?: string[];
+    requiresAuth?: boolean;
+    requiresPremium?: boolean;
+}
+interface CommandExample {
+    input: string;
+    description: string;
+    output?: string;
+}
+interface ISlashCommand {
+    name: string;
+    aliases?: string[];
+    category: CommandCategory;
+    description: string;
+    usage: string;
+    examples: CommandExample[];
+    permissions?: CommandPermission;
+    middleware?: string[];
+    rateLimit?: {
+        requests: number;
+        window: string;
+    };
+    initialize?(): Promise<void>;
+    validate?(args: CommandArgs): Promise<ValidationResult>;
+    execute(args: CommandArgs, context: CommandContext): Promise<CommandResult>;
+    cleanup?(): Promise<void>;
+    rollback?(context: CommandContext, error: Error): Promise<void>;
+    metadata: CommandMetadata;
+}
+type MiddlewareNext = () => Promise<CommandResult>;
+interface IMiddleware {
+    name: string;
+    priority?: number;
+    execute(command: ISlashCommand, args: CommandArgs, context: CommandContext, next: MiddlewareNext): Promise<CommandResult>;
+}
+
+/**
+ * Base Command Class
+ * Abstract base class for all slash commands
+ */
+
+declare abstract class BaseCommand implements ISlashCommand {
+    abstract name: string;
+    abstract category: CommandCategory;
+    abstract description: string;
+    aliases?: string[];
+    usage: string;
+    examples: CommandExample[];
+    permissions?: CommandPermission;
+    middleware?: string[];
+    rateLimit?: {
+        requests: number;
+        window: string;
+    };
+    metadata: CommandMetadata;
+    private cache;
+    /**
+     * Initialize the command (called once when registered)
+     */
+    initialize(): Promise<void>;
+    /**
+     * Validate command arguments
+     */
+    validate(_args: CommandArgs): Promise<ValidationResult>;
+    /**
+     * Execute the command - must be implemented by subclasses
+     */
+    abstract execute(args: CommandArgs, context: CommandContext): Promise<CommandResult>;
+    /**
+     * Cleanup resources (called when command is unregistered)
+     */
+    cleanup(): Promise<void>;
+    /**
+     * Rollback on error - override for custom rollback logic
+     */
+    rollback(_context: CommandContext, error: Error): Promise<void>;
+    /**
+     * Parse command arguments into structured format
+     */
+    protected parseArgs(raw: string[]): CommandArgs;
+    /**
+     * Create a success response
+     */
+    protected success(message: string, data?: unknown, metadata?: Partial<CommandResult['metadata']>): CommandResult;
+    /**
+     * Create an error response
+     */
+    protected error(message: string, code?: string, details?: unknown): CommandResult;
+    /**
+     * Cache data with TTL
+     */
+    protected setCache(key: string, data: unknown, ttlSeconds?: number): void;
+    /**
+     * Get cached data
+     */
+    protected getCache<T = unknown>(key: string): T | null;
+    /**
+     * Check if user has required permissions
+     */
+    protected checkPermissions(context: CommandContext): Promise<ValidationResult>;
+    /**
+     * Format help text for this command
+     */
+    formatHelp(): string;
+    /**
+     * Log command execution
+     */
+    protected logExecution(args: CommandArgs, context: CommandContext, result: CommandResult): void;
+}
+
+/**
+ * Command Registry System
+ * Central registry for all slash commands with auto-discovery
+ */
+
+declare class CommandRegistry {
+    private commands;
+    private aliases;
+    private middlewares;
+    private rateLimits;
+    private _initialized;
+    private get initialized();
+    private set initialized(value);
+    constructor();
+    /**
+     * Register a command
+     */
+    register(command: ISlashCommand): void;
+    /**
+     * Unregister a command
+     */
+    unregister(name: string): boolean;
+    /**
+     * Get a command by name or alias
+     */
+    get(nameOrAlias: string): ISlashCommand | undefined;
+    /**
+     * Check if a command exists
+     */
+    has(nameOrAlias: string): boolean;
+    /**
+     * Get all registered commands
+     */
+    getAll(): ISlashCommand[];
+    /**
+     * Get commands by category
+     */
+    getByCategory(category: string): ISlashCommand[];
+    /**
+     * Execute a command
+     */
+    execute(commandName: string, args: string[], context: CommandContext): Promise<CommandResult>;
+    /**
+     * Auto-register commands from directory
+     */
+    autoRegister(directory: string): Promise<void>;
+    /**
+     * Register a middleware
+     */
+    registerMiddleware(middleware: IMiddleware): void;
+    private setupDefaultMiddlewares;
+    private parseArguments;
+    private checkPermissions;
+    private checkRateLimit;
+    private parseWindow;
+    private runMiddlewareChain;
+    private getSuggestions;
+    private isValidCommand;
+    private logExecution;
+}
+declare const commandRegistry: CommandRegistry;
+
+/**
+ * Slash Commands Module
+ * Export all command system components
+ */
+
+/**
+ * Initialize the slash command system
+ */
+declare function initializeSlashCommands(): Promise<void>;
+/**
+ * Get command suggestions for auto-complete
+ */
+declare function getCommandSuggestions(input: string): string[];
+/**
+ * Get all commands grouped by category
+ */
+declare function getCommandsByCategory(): Record<string, ISlashCommand[]>;
+
 /**
  * MARIA Memory System - Core Type Definitions
  *
@@ -1148,4 +1454,4 @@ declare function getInternalModeService(config?: Partial<ModeConfig>): InternalM
 
 declare const VERSION = "1.1.0";
 
-export { DualMemoryEngine, InternalModeService, MemoryCoordinator, type MemoryEvent, type MemoryResponse, type ModeConfig, type ModeContext, type ModeDefinition, type ModeRecognitionResult, type QualityMetrics, type ReasoningTrace, System1MemoryManager as System1Memory, System2MemoryManager as System2Memory, type UserPreferenceSet, VERSION, getInternalModeService };
+export { BaseCommand, type CommandArgs, type CommandContext, type CommandResult, DualMemoryEngine, type IMiddleware, type ISlashCommand, InternalModeService, MemoryCoordinator, type MemoryEvent, type MemoryResponse, type ModeConfig, type ModeContext, type ModeDefinition, type ModeRecognitionResult, type QualityMetrics, type ReasoningTrace, System1MemoryManager as System1Memory, System2MemoryManager as System2Memory, type UserPreferenceSet, VERSION, commandRegistry, getCommandSuggestions, getCommandsByCategory, getInternalModeService, initializeSlashCommands };

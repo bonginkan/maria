@@ -6,6 +6,22 @@
 // CLI entry point
 export { createCLI } from './cli';
 
+// Slash Commands System Exports
+export {
+  commandRegistry,
+  initializeSlashCommands,
+  getCommandSuggestions,
+  getCommandsByCategory,
+} from './slash-commands';
+export type {
+  ISlashCommand,
+  CommandArgs,
+  CommandContext,
+  CommandResult,
+  IMiddleware,
+} from './slash-commands/types';
+export { BaseCommand } from './slash-commands/base-command';
+
 // Memory System Exports
 export { DualMemoryEngine } from './services/memory-system/dual-memory-engine';
 export { MemoryCoordinator } from './services/memory-system/memory-coordinator';

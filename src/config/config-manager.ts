@@ -22,6 +22,8 @@ export class ConfigManager {
       healthMonitoring: true,
       language: 'auto',
       offlineMode: false,
+      model: 'gpt-5-mini',
+      provider: 'openai',
     };
   }
 

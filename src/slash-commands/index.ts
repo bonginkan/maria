@@ -24,7 +24,6 @@ import { ISlashCommand } from './types';
 export { commandRegistry };
 
 // Initialize and auto-register commands
-import * as path from 'path';
 
 /**
  * Initialize the slash command system
@@ -41,11 +40,37 @@ export async function initializeSlashCommands(): Promise<void> {
   commandRegistry.registerMiddleware(rateLimitMiddleware);
   commandRegistry.registerMiddleware(validationMiddleware);
 
-  // Auto-register all commands from categories directory
-  const categoriesPath = path.join(__dirname, 'categories');
-  await commandRegistry.autoRegister(categoriesPath);
+  // Manually register known commands (for bundled environment)
+  await registerBuiltInCommands();
 
   console.log(`✅ Initialized ${commandRegistry.getAll().length} slash commands`);
+}
+
+/**
+ * Register built-in commands manually (for bundled environment)
+ */
+async function registerBuiltInCommands(): Promise<void> {
+  try {
+    // Register clear command
+    const { ClearCommand } = await import('./categories/conversation/clear.command');
+    const clearCommand = new ClearCommand();
+    if (clearCommand.initialize) {
+      await clearCommand.initialize();
+    }
+    commandRegistry.register(clearCommand);
+
+    // Register setup command
+    const setupCommandModule = await import('./categories/config/setup.command');
+    const setupCommand = setupCommandModule.default;
+    if (setupCommand) {
+      if (setupCommand.initialize) {
+        await setupCommand.initialize();
+      }
+      commandRegistry.register(setupCommand);
+    }
+  } catch (error) {
+    console.error('Failed to register built-in commands:', error);
+  }
 }
 
 /**

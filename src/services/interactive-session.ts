@@ -669,21 +669,45 @@ async function showModels(maria: MariaAI): Promise<void> {
   try {
     const models = await maria.getModels();
     const available = models.filter((m) => m.available);
+    const unavailable = models.filter((m) => !m.available);
 
-    if (available.length === 0) {
-      console.log(chalk.yellow('No models available'));
+    if (available.length === 0 && unavailable.length === 0) {
+      console.log(chalk.yellow('No models found'));
       return;
     }
 
-    for (const model of available) {
-      const provider = chalk.gray(`[${model.provider}]`);
-      const capabilities = model.capabilities
-        ? model.capabilities.join(', ')
-        : 'No capabilities listed';
-      console.log(`✅ ${chalk.bold(model.name)} ${provider}`);
-      console.log(`   ${chalk.gray(capabilities)}`);
+    // Show available models first
+    if (available.length > 0) {
+      console.log(chalk.green('✅ Available Models:'));
+      for (const model of available) {
+        const provider = chalk.gray(`[${model.provider}]`);
+        const capabilities = model.capabilities
+          ? model.capabilities.join(', ')
+          : 'No capabilities listed';
+        console.log(`  ✅ ${chalk.bold(model.name)} ${provider}`);
+        console.log(`     ${chalk.gray(capabilities)}`);
+      }
+      console.log('');
     }
-    console.log('');
+
+    // Show unavailable cloud models
+    if (unavailable.length > 0) {
+      console.log(chalk.yellow('⚠️  Cloud Models (Require API Keys):'));
+      for (const model of unavailable) {
+        const provider = chalk.gray(`[${model.provider}]`);
+        const capabilities = model.capabilities
+          ? model.capabilities.join(', ')
+          : 'No capabilities listed';
+        console.log(`  ❌ ${chalk.white(model.name)} ${provider}`);
+        console.log(`     ${chalk.gray(capabilities)}`);
+      }
+      console.log('');
+      console.log(chalk.gray('💡 To use cloud models, set environment variables:'));
+      console.log(chalk.cyan('   export OPENAI_API_KEY=your_key'));
+      console.log(chalk.cyan('   export ANTHROPIC_API_KEY=your_key'));
+      console.log(chalk.cyan('   export GOOGLE_API_KEY=your_key'));
+      console.log('');
+    }
   } catch (error: unknown) {
     console.error(chalk.red('❌ Failed to get models:'), error);
   }
@@ -782,24 +806,32 @@ async function showModelSelector(maria: MariaAI, args: string[]): Promise<void> 
   try {
     const models = await maria.getModels();
     const available = models.filter((m) => m.available);
+    const allModels = models; // Include both available and unavailable
 
     if (args.length > 0) {
       // Model selection mode
       const modelName = args.join(' ');
-      const targetModel = available.find(
+      const targetModel = allModels.find(
         (m) =>
           m.name.toLowerCase().includes(modelName.toLowerCase()) ||
           m.provider.toLowerCase().includes(modelName.toLowerCase()),
       );
 
       if (targetModel) {
-        console.log(
-          chalk.green(`✅ Target model found: ${targetModel.name} (${targetModel.provider})`),
-        );
-        console.log(chalk.yellow('Note: Model switching will be implemented in a future version'));
-        console.log(
-          chalk.gray('Currently, you can switch models using environment variables or CLI options'),
-        );
+        if (targetModel.available) {
+          console.log(
+            chalk.green(`✅ Target model found: ${targetModel.name} (${targetModel.provider})`),
+          );
+          console.log(chalk.yellow('Note: Model switching will be implemented in a future version'));
+          console.log(
+            chalk.gray('Currently, you can switch models using environment variables or CLI options'),
+          );
+        } else {
+          console.log(
+            chalk.yellow(`⚠️  Target model found but unavailable: ${targetModel.name} (${targetModel.provider})`),
+          );
+          console.log(chalk.gray(`This model requires API key for ${targetModel.provider}`));
+        }
       } else {
         console.log(chalk.red(`❌ Model not found: ${modelName}`));
         console.log(chalk.gray('Available models listed below:'));
@@ -808,19 +840,20 @@ async function showModelSelector(maria: MariaAI, args: string[]): Promise<void> 
     }
 
     // Interactive model selection
-    await showInteractiveModelSelector(available);
+    await showInteractiveModelSelector(allModels, maria);
   } catch (error: unknown) {
     console.error(chalk.red('❌ Failed to access model selector:'), error);
   }
 }
 
-async function showInteractiveModelSelector(models: any[]): Promise<void> {
+async function showInteractiveModelSelector(models: any[], maria: MariaAI): Promise<void> {
   if (models.length === 0) {
     console.log(chalk.yellow('No models available'));
     return;
   }
 
   let selectedIndex = 0;
+  let isSelecting = true;
 
   // Set up readline for capturing keystrokes
   const stdin = process.stdin;
@@ -833,28 +866,45 @@ async function showInteractiveModelSelector(models: any[]): Promise<void> {
     process.stdout.write('\x1B[2J\x1B[0;0f');
     console.log(chalk.blue('🤖 AI Model Selector\n'));
     console.log(chalk.gray('Use ↑/↓ to navigate, Enter to select, Esc to cancel\n'));
+    
+    // Show current active model
+    const currentModel = maria.getCurrentModel();
+    if (currentModel) {
+      console.log(chalk.green(`🎯 Current Active Model: ${currentModel.name} (${currentModel.provider})\n`));
+    } else {
+      console.log(chalk.yellow(`🎯 Current Active Model: gpt-5-mini (openai) - Default\n`));
+    }
+    
     console.log(chalk.yellow('📋 Available AI Models:\n'));
 
     models.forEach((model, index) => {
-      const status = model.available ? '✅' : '⚠️';
+      const status = model.available ? '✅' : '❌';
       const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : '';
       const isSelected = index === selectedIndex;
+      const availabilityNote = model.available ? '' : ' (API key required)';
 
       if (isSelected) {
         console.log(
-          chalk.bgBlue.white(`  ▶ ${status} ${model.name} [${model.provider}]${pricing}`),
+          chalk.bgBlue.white(`  ▶ ${status} ${model.name} [${model.provider}]${pricing}${availabilityNote}`),
         );
         console.log(chalk.bgBlue.white(`     ${model.description}`));
         if (model.capabilities && model.capabilities.length > 0) {
           console.log(chalk.bgBlue.white(`     Capabilities: ${model.capabilities.join(', ')}`));
         }
+        if (!model.available) {
+          console.log(chalk.bgBlue.white(`     Status: Requires ${model.provider.toUpperCase()}_API_KEY environment variable`));
+        }
       } else {
+        const nameColor = model.available ? chalk.bold : chalk.white;
         console.log(
-          `  ${status} ${chalk.bold(model.name)} ${chalk.gray(`[${model.provider}]`)}${pricing}`,
+          `  ${status} ${nameColor(model.name)} ${chalk.gray(`[${model.provider}]`)}${pricing}${availabilityNote}`,
         );
         console.log(`     ${chalk.gray(model.description)}`);
         if (model.capabilities && model.capabilities.length > 0) {
           console.log(`     ${chalk.cyan('Capabilities:')} ${model.capabilities.join(', ')}`);
+        }
+        if (!model.available) {
+          console.log(`     ${chalk.yellow('Status:')} Requires ${model.provider.toUpperCase()}_API_KEY environment variable`);
         }
       }
       console.log('');
@@ -868,7 +918,7 @@ async function showInteractiveModelSelector(models: any[]): Promise<void> {
   };
 
   return new Promise((resolve) => {
-    const handleKeypress = (chunk: string) => {
+    const handleKeypress = async (chunk: string) => {
       const key = chunk.toString();
 
       switch (key) {
@@ -884,17 +934,31 @@ async function showInteractiveModelSelector(models: any[]): Promise<void> {
           isSelecting = false;
           cleanup();
           const selectedModel = models[selectedIndex];
-          console.log(
-            chalk.green(`\n✅ Selected: ${selectedModel.name} (${selectedModel.provider})`),
-          );
-          console.log(
-            chalk.yellow('Note: Model switching will be implemented in a future version'),
-          );
-          console.log(
-            chalk.gray(
-              'Currently, you can switch models using environment variables or CLI options\n',
-            ),
-          );
+          
+          // Attempt to switch to the selected model
+          if (selectedModel.available) {
+            try {
+              const result = await maria.switchModel(selectedModel.id);
+              if (result.success) {
+                console.log(chalk.green(`\n✅ ${result.message}`));
+                console.log(chalk.gray('Model switch completed successfully\n'));
+              } else {
+                console.log(chalk.red(`\n❌ ${result.message}\n`));
+              }
+            } catch (error) {
+              console.log(chalk.red(`\n❌ Failed to switch model: ${error}\n`));
+            }
+          } else {
+            console.log(
+              chalk.yellow(`\n⚠️  Selected: ${selectedModel.name} (${selectedModel.provider})`),
+            );
+            console.log(
+              chalk.red(`❌ This model is not available. Please set ${selectedModel.provider.toUpperCase()}_API_KEY environment variable.`),
+            );
+            console.log(chalk.gray('Example:'));
+            console.log(chalk.cyan(`   export ${selectedModel.provider.toUpperCase()}_API_KEY=your_api_key`));
+            console.log('');
+          }
           resolve();
           break;
         case '\u001b': // Esc key
@@ -1685,7 +1749,7 @@ async function handleModeCommand(args: string[]): Promise<void> {
 
     if (currentMode) {
       console.log(
-        chalk.cyan('Internal Mode:') + ` ✽ ${currentMode.displayName} - ${currentMode.description}`,
+        chalk.cyan('Internal Mode:') + ` ✽ ${currentMode.name} - ${currentMode.description}`,
       );
       console.log(chalk.cyan('Category:') + ` ${currentMode.category}`);
     } else {
@@ -1724,7 +1788,7 @@ async function handleInternalModeCommands(args: string[], modeService: unknown):
     const currentMode = modeService.getCurrentMode();
     if (currentMode) {
       console.log(chalk.blue('\n🧠 Current Internal Mode:\n'));
-      console.log(`✽ ${chalk.white(currentMode.displayName)}`);
+      console.log(`✽ ${chalk.white(currentMode.name)}`);
       console.log(chalk.gray(currentMode.description));
       console.log(chalk.cyan('Category:') + ` ${currentMode.category}`);
       console.log('');
@@ -1758,7 +1822,7 @@ async function handleInternalModeCommands(args: string[], modeService: unknown):
         modes.forEach((mode: unknown) => {
           const symbol = mode.symbol || '✽';
           console.log(
-            `  ${chalk.gray(symbol)} ${chalk.white(mode.displayName)} - ${mode.description}`,
+            `  ${chalk.gray(symbol)} ${chalk.white(mode.name)} - ${mode.description}`,
           );
         });
         console.log('');
@@ -1781,7 +1845,7 @@ async function handleInternalModeCommands(args: string[], modeService: unknown):
       recent.reverse().forEach((entry: unknown, index: number) => {
         const timeStr = entry.timestamp.toLocaleTimeString();
         console.log(
-          `${chalk.gray(`${index + 1}.`)} ${chalk.white(entry.mode.displayName)} ${chalk.gray(`(${timeStr})`)}`,
+          `${chalk.gray(`${index + 1}.`)} ${chalk.white(entry.mode.name)} ${chalk.gray(`(${timeStr})`)}`,
         );
       });
       console.log('');
@@ -1829,8 +1893,8 @@ async function handleInternalModeCommands(args: string[], modeService: unknown):
         .find(
           (mode: unknown) =>
             mode.id.toLowerCase() === modeName ||
-            mode.displayName.toLowerCase() === modeName ||
-            mode.displayName.toLowerCase().includes(modeName),
+            mode.name.toLowerCase() === modeName ||
+            mode.name.toLowerCase().includes(modeName),
         );
 
       if (!targetMode) {
@@ -1842,10 +1906,10 @@ async function handleInternalModeCommands(args: string[], modeService: unknown):
       const success = await modeService.setMode(targetMode, 'manual');
 
       if (success) {
-        console.log(chalk.green(`🧠 Switched to internal mode: ✽ ${targetMode.displayName}`));
+        console.log(chalk.green(`🧠 Switched to internal mode: ✽ ${targetMode.name}`));
         console.log(chalk.gray(targetMode.description));
       } else {
-        console.log(chalk.red(`Failed to switch to internal mode: ${targetMode.displayName}`));
+        console.log(chalk.red(`Failed to switch to internal mode: ${targetMode.name}`));
       }
       break;
     }

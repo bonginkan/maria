@@ -120,7 +120,7 @@ export class ClearCommand extends BaseCommand {
     logger.debug('Cleared all conversation history');
   }
 
-  private async clearSettings(context: CommandContext): Promise<void> {
+  private async clearSettings(_context: CommandContext): Promise<void> {
     // Clear user-specific settings
     // This would typically clear model preferences, etc.
     // TODO: Implement settings clearing based on your settings structure

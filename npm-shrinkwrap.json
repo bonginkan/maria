@@ -1,12 +1,20 @@
 {
   "name": "@bonginkan/maria",
+<<<<<<<< HEAD:npm-shrinkwrap.json
+  "version": "2.0.6",
+========
   "version": "1.8.5",
+>>>>>>>> 82c8cb7f6fa3b32fac65ed243f59f880b8a512b0:maria-oss/npm-shrinkwrap.json
   "lockfileVersion": 3,
   "requires": true,
   "packages": {
     "": {
       "name": "@bonginkan/maria",
+<<<<<<<< HEAD:npm-shrinkwrap.json
+      "version": "2.0.6",
+========
       "version": "1.8.5",
+>>>>>>>> 82c8cb7f6fa3b32fac65ed243f59f880b8a512b0:maria-oss/npm-shrinkwrap.json
       "license": "SEE LICENSE IN LICENSE",
       "dependencies": {
         "@anthropic-ai/sdk": "^0.20.0",

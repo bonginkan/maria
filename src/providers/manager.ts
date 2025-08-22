@@ -149,6 +149,7 @@ export class AIProviderManager {
   async getAvailableModels(): Promise<ModelInfo[]> {
     const allModels: ModelInfo[] = [];
 
+    // First add available providers (working providers)
     for (const providerName of this.availableProviders) {
       const provider = this.providers.get(providerName);
       if (provider) {
@@ -169,6 +170,33 @@ export class AIProviderManager {
         } catch (error: unknown) {
           // Skip provider with model loading issues
         }
+      }
+    }
+
+    // Add unavailable cloud providers for configuration purposes
+    const cloudProviders = ['openai', 'anthropic', 'google', 'grok'];
+    const defaultCloudModels = {
+      openai: ['gpt-5', 'gpt-5-mini', 'gpt-4o', 'gpt-4o-mini', 'o1-preview', 'o1-mini'],
+      anthropic: ['claude-4.1', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-3-opus-20240229'],
+      google: ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'],
+      grok: ['grok-4', 'grok-beta', 'grok-2']
+    };
+
+    for (const providerName of cloudProviders) {
+      // Only add if not already available
+      if (!this.availableProviders.has(providerName)) {
+        const models = defaultCloudModels[providerName as keyof typeof defaultCloudModels] || [];
+        const modelInfos: ModelInfo[] = models.map((modelName) => ({
+          id: `${providerName}-${modelName}`,
+          name: modelName,
+          provider: providerName,
+          description: `${modelName} from ${providerName}`,
+          contextLength: 8192,
+          capabilities: ['text', 'code', 'vision'],
+          available: false, // Mark as unavailable (need API key)
+          recommendedFor: ['general'],
+        }));
+        allModels.push(...modelInfos);
       }
     }
 

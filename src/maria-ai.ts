@@ -171,6 +171,61 @@ export class MariaAI {
   }
 
   /**
+   * Switch to a specific model
+   */
+  async switchModel(modelId: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const models = await this.getModels();
+      const targetModel = models.find(m => m.id === modelId || m.name === modelId);
+      
+      if (!targetModel) {
+        return {
+          success: false,
+          message: `Model not found: ${modelId}`
+        };
+      }
+
+      if (!targetModel.available) {
+        return {
+          success: false,
+          message: `Model ${targetModel.name} is not available. Please check API keys.`
+        };
+      }
+
+      // Update configuration to use the selected model
+      this.config.set('model', targetModel.name);
+      this.config.set('provider', targetModel.provider);
+
+      // Update router to prefer this provider/model
+      this.router.updatePreferredProvider(targetModel.provider, targetModel.name);
+
+      return {
+        success: true,
+        message: `Switched to ${targetModel.name} (${targetModel.provider})`
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Failed to switch model: ${error instanceof Error ? error.message : 'Unknown error'}`
+      };
+    }
+  }
+
+  /**
+   * Get current active model
+   */
+  getCurrentModel(): { name: string; provider: string } | null {
+    const currentModel = this.config.get('model');
+    const currentProvider = this.config.get('provider');
+    
+    if (currentModel && currentProvider) {
+      return { name: currentModel as string, provider: currentProvider as string };
+    }
+    
+    return null;
+  }
+
+  /**
    * Get current configuration
    */
   getConfig(): unknown {

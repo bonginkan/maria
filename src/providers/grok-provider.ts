@@ -5,7 +5,9 @@ import { BaseAIProvider, Message, CompletionOptions, CodeReviewResult } from './
 export class GrokProvider extends BaseAIProvider {
   readonly name = 'Grok';
   readonly models = [
-    'grok-4-0709',
+    'grok-4',
+    'grok-beta',
+    'grok-2',
     'llama-3.3-70b-versatile',
     'llama-3.1-70b-versatile',
     'llama-3.1-8b-instant',

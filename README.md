@@ -88,6 +88,7 @@ Vietnamese: "viết code"           → /code
 ### 💻 **AI-Powered Coding Assistant**
 
 **Professional development with intelligent AI assistance:**
+
 ```bash
 /code     # Generate any code instantly with AI
 /review   # Professional code review & optimization
@@ -97,6 +98,7 @@ Vietnamese: "viết code"           → /code
 ```
 
 **Real Results for Engineers:**
+
 - Generates production-ready code in seconds
 - Detects 40+ bug patterns with AI analysis
 - Automatically fixes ESLint and TypeScript issues
@@ -106,6 +108,7 @@ Vietnamese: "viết code"           → /code
 ### 🏠 **Complete Local LLM Integration**
 
 **Privacy-first development with local AI models:**
+
 ```bash
 /setup    # One-command setup for Ollama, vLLM, LM Studio
 /model    # Switch between cloud & local models instantly
@@ -113,6 +116,7 @@ Vietnamese: "viết code"           → /code
 ```
 
 **Privacy & Performance Benefits:**
+
 - Your code never leaves your machine
 - Works 100% offline with local models
 - Supports 20+ local LLM models
@@ -122,6 +126,7 @@ Vietnamese: "viết code"           → /code
 ### 🧠 **Advanced Intelligence for Researchers**
 
 **Sophisticated AI features for research & complex projects:**
+
 ```bash
 /mode     # Access 50+ cognitive modes (✽ Thinking, ✽ Analyzing...)
 /memory   # Intelligent context preservation across sessions
@@ -130,6 +135,7 @@ Vietnamese: "viết code"           → /code
 ```
 
 **Research-Grade Features:**
+
 - 50+ internal cognitive modes for different thinking patterns
 - Cross-session learning and knowledge retention
 - Multi-agent orchestration for complex tasks
@@ -138,6 +144,7 @@ Vietnamese: "viết code"           → /code
 ### 🎨 **Creative Tools & Documentation**
 
 **Bonus features for presentations and documentation:**
+
 ```bash
 /image    # AI image generation for presentations & documentation
 /video    # Create demo videos & tutorials
@@ -146,6 +153,7 @@ Vietnamese: "viết code"           → /code
 ```
 
 **Creative Benefits:**
+
 - Generate diagrams and visuals for technical documentation
 - Create demo videos for project presentations
 - Interactive avatar for engaging user experiences
@@ -156,17 +164,18 @@ Vietnamese: "viết code"           → /code
 ```bash
 # Natural language commands for complex tasks:
 "Create a React component for user authentication"
-"Fix this TypeScript error in my API"  
+"Fix this TypeScript error in my API"
 "Generate comprehensive tests for my algorithm"
 "Set up Ollama with local LLM models"
 "Switch to thinking mode for complex debugging"
 ```
 
 **Real developer feedback:**
-- *"MARIA saved me 6 hours on my last research project"* 
-- *"Local LLM support means my proprietary code stays secure"*
-- *"The cognitive modes help me think through complex algorithms"*
-- *"Best AI coding assistant for serious development work"*
+
+- _"MARIA saved me 6 hours on my last research project"_
+- _"Local LLM support means my proprietary code stays secure"_
+- _"The cognitive modes help me think through complex algorithms"_
+- _"Best AI coding assistant for serious development work"_
 
 ## Quick Start
 
@@ -207,33 +216,31 @@ vLLM         [●●●●●●●●●●●●●●●●●●●] 0% ⚙�
 > _
 ```
 
-**💻 Core Development Commands (Essential for Engineers):**
+**💻 Core Coding Commands (Essential for Engineers):**
 
 ```bash
-/code <prompt>    # AI-powered code generation with memory learning
-/test <prompt>    # Generate comprehensive test suites
-/bug              # Intelligent bug detection & auto-fix
-/review           # Professional code review & optimization
-/paper <query>    # Transform research papers into working code
+/code     # AI-powered code generation & assistance
+/review   # Professional code review & optimization
+/bug      # Intelligent bug detection & auto-fix
+/lint     # Code quality analysis & auto-correction
+/test     # Generate comprehensive test suites
 ```
 
-**🏠 Local AI Integration (Privacy-First Development):**
+**🏠 Local LLM Integration (Privacy-First Development):**
 
 ```bash
-/model            # Interactive model selector (↑/↓ arrows)
-/status           # Check all AI service availability
-maria setup-ollama    # Auto-configure Ollama (CLI command)
-maria setup-vllm      # Auto-configure vLLM (CLI command)
+/model    # Switch between cloud & local models
+/setup    # Auto-configure Ollama, vLLM, LM Studio
+/status   # Check local AI service availability
 ```
 
 **🧠 Advanced Intelligence Features (For Researchers):**
 
 ```bash
-/mode             # Access 50+ cognitive modes (✽ Thinking, ✽ Analyzing...)
-/memory           # Dual-layer memory system status & management
-/agents           # Deploy specialized AI research assistants
-/mcp              # Model Context Protocol integration
-/chain <commands> # Command chaining for complex workflows
+/mode     # Access 50+ cognitive modes (✽ Thinking, ✽ Analyzing...)
+/memory   # Intelligent context preservation across sessions
+/agents   # Deploy specialized AI research assistants
+/paper    # Transform research papers into working code
 ```
 
 **🌍 Natural Language Support (5 Languages):**
@@ -246,14 +253,13 @@ Korean:   "코드를 작성해"     # → /code
 Vietnamese: "viết code"      # → /code
 ```
 
-**🎨 Creative & Productivity Tools:**
+**🎨 Creative Tools (Bonus Features):**
 
 ```bash
-/image <prompt>   # AI image generation for presentations
-/video <prompt>   # Create demo videos & documentation
-/avatar           # Interactive ASCII avatar companion
-/template         # Code template management
-/alias            # Custom command aliases
+/image    # AI image generation for presentations
+/video    # Create demo videos & documentation
+/avatar   # Interactive ASCII avatar companion
+/voice    # Voice-based coding conversations
 ```
 
 ### Alternative Installation Methods
@@ -271,22 +277,16 @@ pnpm add -g @bonginkan/maria
 ### Basic Interactive Mode
 
 ```bash
-# Start MARIA interactive CLI (default command)
+# Start MARIA interactive CLI
 maria
 
-# One-shot commands (non-interactive)
-maria ask "How do I implement OAuth?"
-maria code "React component for login"
-maria vision image.png "Describe this diagram"
-
-# Available slash commands in interactive mode:
-> /help                          # Show all 40+ commands
-> /code "hello world function"   # AI code generation with memory
-> /model                         # Interactive model selector
-> /memory                        # Dual-layer memory system
-> /status                        # System & AI service status
-> /agents                        # Multi-agent orchestration
-> /exit                          # Exit interactive mode
+# Available commands in interactive mode:
+> /help                          # Show all commands
+> /agent execute "create API"    # Autonomous coding agent
+> /agent demo                   # Demo autonomous capabilities
+> /code "hello world function"  # AI code generation
+> /status                       # System status
+> /exit                         # Exit
 ```
 
 ### Algorithm Education Commands
@@ -301,20 +301,20 @@ maria
 > /code "merge sort implementation" # AI-generated algorithms
 ```
 
-### 40+ Interactive Slash Commands
+### 36+ Interactive Slash Commands
 
 ```bash
 # All commands are slash commands within interactive mode
 maria
-> /help                          # Show all 40+ commands
-> /model                         # Interactive AI model selection
-> /code "function"               # AI code generation with memory
-> /test "unit tests"             # Generate comprehensive tests
-> /memory                        # Dual-layer memory system
-> /agents                        # Multi-agent orchestration
-> /paper "ML optimization"       # Research paper to code
-> /status                        # System & AI service status
-> /exit                          # Exit MARIA
+> /help                          # Show all 36+ commands
+> /model                         # AI model selection
+> /sort quicksort               # Algorithm education
+> /code "function"              # AI code generation
+> /bug analyze                  # Bug detection
+> /lint check                   # Code quality
+> /status                       # System status
+> /mode internal                # 50 cognitive AI modes
+> /exit                         # Exit MARIA
 ```
 
 ## 🎨 Key Features
@@ -347,7 +347,7 @@ maria
 
 - **Node.js**: 18.0.0 - 22.x
 - **Primary OS Support**: macOS, Linux (optimized)
-- **Secondary OS Support**: Windows 
+- **Secondary OS Support**: Windows
 - **Terminals**: All major terminal applications
 - **Shells**: bash, zsh (recommended), fish, PowerShell
 
@@ -409,13 +409,7 @@ npm run build
 
 ## 📄 License
 
-**Dual-License Model**: Personal Use (Free) / Enterprise (Paid)
-
-- **Personal Use**: Free for individuals, students, and startups (<10 employees, <$1M ARR)
-- **Enterprise**: Commercial license required for larger organizations
-- **Contact**: enterprise@bonginkan.ai for enterprise licensing
-
-See [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE) for complete terms.
+MIT License - see [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE) for details.
 
 ## 🔗 Links
 
