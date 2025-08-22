@@ -5,17 +5,20 @@ Welcome to MARIA Platform v1.6.4 "Algorithm Education Revolution"! This guide wi
 ## 🚀 Quick Start (2 Minutes)
 
 ### Step 1: Install MARIA
+
 ```bash
 npm install -g @bonginkan/maria
 ```
 
 ### Step 2: Verify Installation
+
 ```bash
 maria --version
 # Should output: MARIA Platform v1.6.4 "Algorithm Education Revolution"
 ```
 
 ### Step 3: Start Interactive Mode
+
 ```bash
 maria
 ```
@@ -23,6 +26,7 @@ maria
 You should see the welcome screen with MARIA's beautiful ASCII logo and interactive prompt.
 
 ### Step 4: Try Your First Commands
+
 ```bash
 # Within MARIA interactive mode:
 > /help                          # See all available commands
@@ -51,6 +55,7 @@ maria
 ```
 
 **Daily Practice** (15 minutes):
+
 1. Start with one algorithm: `/sort [algorithm_name]`
 2. Study the implementation details
 3. Try performance analysis: `/benchmark [algorithm_name]`
@@ -70,6 +75,7 @@ maria
 ```
 
 **Development Workflow**:
+
 1. Start MARIA: `maria`
 2. Set preferred AI model: `/model`
 3. Use for coding tasks: `/code`, `/bug`, `/lint`
@@ -90,6 +96,7 @@ maria
 ```
 
 **Classroom Integration**:
+
 1. Install MARIA on classroom computers
 2. Create lesson plans using algorithm commands
 3. Use visualization features for demonstrations
@@ -99,47 +106,54 @@ maria
 ## 🔧 Essential Commands Reference
 
 ### Algorithm Education
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/sort [algorithm]` | Interactive algorithm tutorial | `/sort quicksort` |
-| `/learn algorithms` | Complete CS curriculum | `/learn algorithms` |
-| `/benchmark [type]` | Performance analysis | `/benchmark sorting` |
-| `/algorithm complexity` | Big O notation guide | `/algorithm complexity` |
+
+| Command                 | Description                    | Example                 |
+| ----------------------- | ------------------------------ | ----------------------- |
+| `/sort [algorithm]`     | Interactive algorithm tutorial | `/sort quicksort`       |
+| `/learn algorithms`     | Complete CS curriculum         | `/learn algorithms`     |
+| `/benchmark [type]`     | Performance analysis           | `/benchmark sorting`    |
+| `/algorithm complexity` | Big O notation guide           | `/algorithm complexity` |
 
 ### AI Development
-| Command | Description | Example |
-|---------|-------------|---------|
+
+| Command               | Description        | Example            |
+| --------------------- | ------------------ | ------------------ |
 | `/code "description"` | AI code generation | `/code "REST API"` |
-| `/bug analyze` | Bug detection | `/bug analyze` |
-| `/lint check` | Code quality | `/lint check` |
-| `/model` | AI model selection | `/model` |
+| `/bug analyze`        | Bug detection      | `/bug analyze`     |
+| `/lint check`         | Code quality       | `/lint check`      |
+| `/model`              | AI model selection | `/model`           |
 
 ### System & Help
-| Command | Description | Example |
-|---------|-------------|---------|
-| `/help` | Show all commands | `/help` |
-| `/status` | System status | `/status` |
+
+| Command          | Description        | Example          |
+| ---------------- | ------------------ | ---------------- |
+| `/help`          | Show all commands  | `/help`          |
+| `/status`        | System status      | `/status`        |
 | `/mode internal` | Cognitive AI modes | `/mode internal` |
-| `/exit` | Exit MARIA | `/exit` |
+| `/exit`          | Exit MARIA         | `/exit`          |
 
 ## 🎯 First Week Challenge
 
 ### Day 1-2: Setup & Exploration
+
 - Install MARIA
 - Try all basic commands with `/help`
 - Explore algorithm education with `/sort quicksort`
 
 ### Day 3-4: Algorithm Learning
+
 - Learn 3 sorting algorithms: quicksort, mergesort, heapsort
 - Compare their performance with `/benchmark`
 - Understand complexity with `/algorithm complexity`
 
 ### Day 5-6: AI Development
+
 - Configure AI model with `/model`
 - Generate code with `/code` commands
 - Try bug analysis and code quality tools
 
 ### Day 7: Advanced Features
+
 - Explore 50 cognitive AI modes with `/mode internal`
 - Try complex code generation tasks
 - Share your experience with the community
@@ -174,7 +188,7 @@ After mastering the basics:
 You're now part of the Algorithm Education Revolution! MARIA Platform combines:
 
 - ✅ Interactive algorithm learning
-- ✅ AI-powered development assistance  
+- ✅ AI-powered development assistance
 - ✅ 50 cognitive AI modes
 - ✅ 36+ interactive commands
 - ✅ Real-time performance analysis

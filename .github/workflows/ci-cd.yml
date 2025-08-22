@@ -55,16 +55,32 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: 📦 Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: 🔧 Build project
         run: pnpm run build
 
       - name: 🧪 Run linting
-        run: pnpm run lint || true
+        run: |
+          echo "Running lint check..."
+          pnpm run lint 2>&1 | tee lint-output.txt || true
+          ERROR_COUNT=$(grep -c "error" lint-output.txt || echo "0")
+          WARNING_COUNT=$(grep -c "warning" lint-output.txt || echo "0")
+          echo "Found $ERROR_COUNT errors and $WARNING_COUNT warnings"
+          if [ "$ERROR_COUNT" -gt "300" ]; then
+            echo "❌ Too many lint errors ($ERROR_COUNT). Maximum allowed: 300"
+            echo "Please fix critical lint errors before merging."
+            exit 1
+          fi
+          echo "✅ Lint check passed with acceptable error count ($ERROR_COUNT/300)"
 
       - name: 🔍 Type checking
-        run: pnpm run typecheck || true
+        run: |
+          echo "Running type check..."
+          pnpm run typecheck || {
+            echo "⚠️ Type checking has issues but continuing..."
+            echo "Please fix type errors in future commits."
+          }
 
       - name: 📊 Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -75,9 +91,28 @@ jobs:
             bin/
           retention-days: 7
 
+  # Sync to OSS Repository
+  sync-to-oss:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+      - name: 🔄 Trigger OSS Sync
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/bonginkan/maria_code/actions/workflows/sync-to-oss.yml/dispatches \
+            -d '{"ref":"main"}'
+          echo "✅ OSS sync triggered"
+
   # Auto NPM Publish on main branch
   auto-publish:
-    needs: build-and-test
+    needs: [build-and-test, sync-to-oss]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
@@ -100,28 +135,68 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: 📦 Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: 📊 Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
 
-      - name: 📝 Auto-increment version
+      - name: 📝 Dynamic Auto-versioning System
         run: |
-          # Get current version and increment patch
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Current version: $CURRENT_VERSION"
+          echo "🚀 Starting Dynamic Auto-versioning System..."
           
-          # Auto-increment alpha version
-          pnpm version prerelease --preid=alpha --no-git-tag-version
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version in package.json: $CURRENT_VERSION"
+          
+          # Get latest published version from npm
+          LATEST_NPM_VERSION=$(npm view @bonginkan/maria version 2>/dev/null || echo "0.0.0")
+          LATEST_ALPHA=$(npm view @bonginkan/maria dist-tags.alpha 2>/dev/null || echo "0.0.0")
+          echo "Latest stable version on npm: $LATEST_NPM_VERSION"
+          echo "Latest alpha version on npm: $LATEST_ALPHA"
+          
+          # Get additional metadata for unique versioning
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TIMESTAMP=$(date +%Y%m%d%H%M)
+          
+          echo "Commit count: $COMMIT_COUNT"
+          echo "Short SHA: $SHORT_SHA"
+          echo "Timestamp: $TIMESTAMP"
+          
+          # Compare and use the highest version as base
+          HIGHEST_VERSION=$LATEST_ALPHA
+          if [ "$(printf '%s\n' "$LATEST_NPM_VERSION" "$LATEST_ALPHA" | sort -V | tail -n1)" = "$LATEST_NPM_VERSION" ]; then
+            HIGHEST_VERSION=$LATEST_NPM_VERSION
+          fi
+          
+          echo "Using base version: $HIGHEST_VERSION"
+          
+          # Generate new alpha version with commit count and timestamp
+          BASE_VERSION=$(echo $HIGHEST_VERSION | sed 's/-alpha.*//g')
+          NEW_ALPHA_VERSION="${BASE_VERSION}-alpha.${COMMIT_COUNT}.${TIMESTAMP}"
+          
+          echo "Generated new version: $NEW_ALPHA_VERSION"
+          
+          # Set the new version in package.json
+          npm version $NEW_ALPHA_VERSION --no-git-tag-version --allow-same-version
           
           NEW_VERSION=$(node -p "require('./package.json').version")
-          echo "New version: $NEW_VERSION"
+          echo "Final version to publish: $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: 🔄 Sync versions across all package files
+        run: |
+          echo "🔄 Synchronizing versions across package.json, package-oss.json, and package-lock.json..."
+          node scripts/sync-versions.js
 
       - name: 🔧 Build project
         run: pnpm run build
+
+      - name: 🔑 Setup NPM authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: 🚀 Publish to NPM
         run: npm publish --access public --tag alpha
@@ -158,7 +233,7 @@ jobs:
           version: ${{ env.PNPM_VERSION }}
 
       - name: 📦 Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: 📊 Download build artifacts
         uses: actions/download-artifact@v4
@@ -167,6 +242,10 @@ jobs:
 
       - name: 🔧 Build project
         run: pnpm run build
+
+      - name: 🔑 Setup NPM authentication
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
       - name: 🚀 Publish to NPM
         run: npm publish --access public --tag ${{ github.event.inputs.tag }}

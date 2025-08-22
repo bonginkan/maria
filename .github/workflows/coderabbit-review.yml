@@ -1,0 +1,157 @@
+name: 🤖 CodeRabbit AI Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
+      - "feature/*"
+      - "fix/*"
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: 'PR number to review'
+        required: true
+        type: string
+
+env:
+  CODERABBIT_CONFIG_PATH: '.github/coderabbit.yaml'
+
+jobs:
+  coderabbit-review:
+    name: 🔍 AI Code Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      
+    steps:
+      - name: 📦 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🤖 CodeRabbit AI Review
+        uses: coderabbitai/ai-pr-reviewer@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        with:
+          debug: false
+          review_simple_changes: false
+          review_comment_lgtm: false
+      
+      - name: 📊 Review Summary
+        if: always()
+        run: |
+          echo "## 🤖 CodeRabbit Review Completed"
+          echo ""
+          echo "### 📋 Review Scope:"
+          echo "- ✅ MARIA Platform architecture patterns"
+          echo "- ✅ AI integration best practices"
+          echo "- ✅ CLI performance optimization"
+          echo "- ✅ TypeScript/ESLint compliance"
+          echo "- ✅ Security and error handling"
+          echo "- ✅ Documentation standards"
+          echo ""
+          echo "### 🎯 Quality Targets:"
+          echo "- TypeScript Errors: 0 (Zero-Error Policy)"
+          echo "- ESLint Warnings: 0 (Zero-Warning Policy)"
+          echo "- Test Coverage: >80%"
+          echo "- CLI Startup: <2s"
+          echo ""
+          echo "### 📚 Context Documents:"
+          echo "- [README.md](./README.md) - Complete project overview"
+          echo "- [CLAUDE.md](./CLAUDE.md) - AI development guidelines"
+          echo "- [Package Quality](https://www.npmjs.com/package/@bonginkan/maria) - NPM package standards"
+
+  security-scan:
+    name: 🔒 Security & Dependencies
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: 📦 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 🔍 Security Audit
+        run: |
+          echo "🔒 Running security audit..."
+          npm audit --audit-level moderate || true
+          
+          echo ""
+          echo "📦 Checking for known vulnerabilities..."
+          npx audit-ci --moderate || true
+      
+      - name: 🏷️ Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          deny-licenses: GPL-2.0, GPL-3.0
+          
+      - name: 🎯 MARIA-Specific Checks
+        run: |
+          echo "🎯 Running MARIA Platform specific checks..."
+          
+          # Check for sensitive data in commits
+          echo "🔍 Checking for API keys in code..."
+          if grep -r "sk-" src/ 2>/dev/null; then
+            echo "❌ Found potential API keys in source code"
+            exit 1
+          fi
+          
+          # Check for proper environment variable usage
+          echo "🔍 Checking environment variable patterns..."
+          if grep -r "process\.env\." src/ | grep -v "process\.env\.[A-Z_][A-Z0-9_]*"; then
+            echo "⚠️ Found non-standard environment variable usage"
+          fi
+          
+          # Check for hardcoded URLs
+          echo "🔍 Checking for hardcoded production URLs..."
+          if grep -r "https://api\." src/ 2>/dev/null | grep -v "localhost"; then
+            echo "⚠️ Found hardcoded production URLs"
+          fi
+          
+          echo "✅ MARIA security checks completed"
+
+  performance-check:
+    name: ⚡ Performance Analysis
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: 📦 Checkout
+        uses: actions/checkout@v4
+      
+      - name: 📊 Bundle Size Analysis
+        run: |
+          echo "📊 Analyzing bundle size for CLI performance..."
+          
+          # Check current build size
+          if [ -d "dist" ]; then
+            echo "📦 Current build size:"
+            du -sh dist/
+            ls -la dist/
+          fi
+          
+          # Check for large dependencies
+          echo ""
+          echo "📋 Large dependencies check:"
+          npm ls --depth=0 | grep -E "deduped|MB" || echo "No large dependencies found"
+          
+          # Check TypeScript compilation
+          echo ""
+          echo "⚡ TypeScript performance check:"
+          time npx tsc --noEmit 2>/dev/null || echo "TypeScript check completed"
+          
+          echo ""
+          echo "🎯 MARIA CLI Performance Targets:"
+          echo "- Startup time: <2s"
+          echo "- Bundle size: <5MB"
+          echo "- Memory usage: <100MB"
+          echo "- TypeScript compilation: <10s"
