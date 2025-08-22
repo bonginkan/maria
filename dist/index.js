@@ -17915,10 +17915,11 @@ var System1MemoryManager = class {
     __name(this, "System1MemoryManager");
   }
   knowledgeNodes = /* @__PURE__ */ new Map();
+  userPreferences;
+  // Private implementation details
   conceptGraph;
   interactionHistory;
   patternLibrary;
-  userPreferences;
   config;
   cache = /* @__PURE__ */ new Map();
   lastAccessTimes = /* @__PURE__ */ new Map();
@@ -18177,11 +18178,14 @@ var System1MemoryManager = class {
       return aScore - bScore;
     });
     const removeCount = Math.floor(this.config.maxKnowledgeNodes * 0.1);
-    for (let i = 0; i < removeCount; i++) {
-      const [nodeId] = sortedByUsage[i];
-      this.knowledgeNodes.delete(nodeId);
-      this.conceptGraph.nodes.delete(nodeId);
-      this.invalidateCache(`node:${nodeId}`);
+    for (let i = 0; i < removeCount && i < sortedByUsage.length; i++) {
+      const entry = sortedByUsage[i];
+      if (entry) {
+        const [nodeId] = entry;
+        this.knowledgeNodes.delete(nodeId);
+        this.conceptGraph.nodes.delete(nodeId);
+        this.invalidateCache(`node:${nodeId}`);
+      }
     }
   }
   async compressMemory() {
@@ -18204,10 +18208,12 @@ var System1MemoryManager = class {
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-    for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+    for (let i = 0; i < a.length && i < b.length; i++) {
+      const aVal = a[i] ?? 0;
+      const bVal = b[i] ?? 0;
+      dotProduct += aVal * bVal;
+      normA += aVal * aVal;
+      normB += bVal * bVal;
     }
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
@@ -19448,7 +19454,7 @@ var DualMemoryEngine = class {
           query.limit
         );
         break;
-      case "pattern":
+      case "pattern": {
         const { language, framework, useCase } = query.context || {};
         result = await this.system1.findCodePatterns(
           language,
@@ -19457,8 +19463,9 @@ var DualMemoryEngine = class {
           query.limit
         );
         break;
+      }
       case "preference":
-        result = await this.system1.getUserPreference("learningPatterns");
+        result = await this.system1.getUserPreference("learningStyle");
         break;
       default:
         throw new Error(`System 1 cannot handle query type: ${query.type}`);
@@ -19475,7 +19482,7 @@ var DualMemoryEngine = class {
     const startTime = Date.now();
     let result;
     switch (query.type) {
-      case "reasoning":
+      case "reasoning": {
         const { domain, complexity, minQuality } = query.context || {};
         result = await this.system2.searchReasoningTraces(
           {
@@ -19486,6 +19493,7 @@ var DualMemoryEngine = class {
           query.limit
         );
         break;
+      }
       case "quality":
         result = this.system2.qualityEvaluation;
         break;
@@ -19783,7 +19791,7 @@ var MemoryCoordinator = class {
   }
   async optimizePerformance() {
     try {
-      const performanceAnalysis = await this.analyzePerformance();
+      await this.analyzePerformance();
       const recommendations = await this.generateOptimizationRecommendations();
       const appliedOptimizations = await this.applyAutomatedOptimizations(recommendations);
       this.metrics.optimizationRuns++;
@@ -19878,20 +19886,18 @@ var MemoryCoordinator = class {
   }
   // ========== Performance Analysis & Optimization ==========
   async analyzePerformance() {
-    const dualEngineMetrics = this.dualEngine.getMetrics();
     return {
       system1Performance: {
-        averageLatency: dualEngineMetrics.averageLatency * 0.3,
-        // Estimated S1 portion
-        cacheHitRate: 0.85,
+        timeComplexity: "O(1)",
+        // Estimated S1 complexity
+        spaceComplexity: "O(n)"
         // Estimated from System 1
-        memoryUsage: this.estimateSystem1Memory()
       },
       system2Performance: {
-        averageLatency: dualEngineMetrics.averageLatency * 0.7,
-        // Estimated S2 portion
-        qualityScore: this.system2.qualityEvaluation.reasoningQuality.accuracy,
-        memoryUsage: this.estimateSystem2Memory()
+        timeComplexity: "O(n log n)",
+        // Estimated S2 complexity
+        spaceComplexity: "O(n)"
+        // Estimated from System 2
       },
       bottlenecks: await this.identifyBottlenecks(),
       opportunities: await this.identifyOptimizationOpportunities()
@@ -19996,17 +20002,21 @@ var MemoryCoordinator = class {
     const s2Quality = this.system2.qualityEvaluation;
     if (s1Preferences.approach === "prototype-first" && s2Quality.codeQuality.maintainability < 50) {
       conflicts.push({
+        id: `conflict-${Date.now()}`,
         type: "preference_mismatch",
         description: "User prefers prototyping but code quality is low",
-        severity: "medium"
+        severity: 5
+        // medium severity
       });
     }
     const dualEngineMetrics = this.dualEngine.getMetrics();
     if (dualEngineMetrics.averageLatency > 200 && s2Quality.reasoningQuality.accuracy > 0.9) {
       conflicts.push({
+        id: `conflict-${Date.now()}-perf`,
         type: "performance_tradeoff",
         description: "High accuracy but poor performance",
-        severity: "high"
+        severity: 8
+        // high severity
       });
     }
     return conflicts;
@@ -20019,7 +20029,7 @@ var MemoryCoordinator = class {
       description: conflict.description,
       resolution: "",
       confidence: 0.8,
-      impact: conflict.severity
+      impact: conflict.severity >= 7 ? "high" : conflict.severity >= 4 ? "medium" : "low"
     };
     try {
       switch (conflict.type) {
@@ -20054,7 +20064,7 @@ var MemoryCoordinator = class {
       adaptation: this.determineAdaptation(eventType, context)
     };
   }
-  determineAdaptation(eventType, context) {
+  determineAdaptation(eventType, _context) {
     switch (eventType) {
       case "code_generation":
         return "Increase code pattern relevance weighting";
@@ -20067,7 +20077,7 @@ var MemoryCoordinator = class {
     }
   }
   async performCrossLayerAdaptation(behaviorPattern) {
-    const { pattern, adaptation } = behaviorPattern;
+    const { pattern, adaptation: _adaptation } = behaviorPattern;
     try {
       if (pattern.includes("code_generation")) {
         await this.adaptSystem1ForCodeGeneration();
@@ -20176,12 +20186,6 @@ var MemoryCoordinator = class {
       `Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`
     );
   }
-  estimateSystem1Memory() {
-    return 50;
-  }
-  estimateSystem2Memory() {
-    return 75;
-  }
   async identifyBottlenecks() {
     const bottlenecks = [];
     if (this.dualEngine.getQueueSize() > 50) {
@@ -20224,7 +20228,7 @@ var MemoryCoordinator = class {
   async adaptSystem2ForQuality() {
     console.log("Adapting System 2 for quality focus");
   }
-  async updateAdaptiveLearning(behaviorPattern) {
+  async updateAdaptiveLearning(_behaviorPattern) {
     console.log("Updating adaptive learning based on behavior pattern");
   }
   // ========== Public API ==========
