@@ -10,7 +10,6 @@ import type {
   KnowledgeNode,
   ConceptGraph,
   ConceptEdge,
-  ConceptCluster,
   InteractionHistory,
   SessionRecord,
   CommandHistory,
@@ -18,8 +17,6 @@ import type {
   PatternLibrary,
   CodePattern,
   AntiPattern,
-  BestPractice,
-  CodeTemplate,
   UserPreferenceSet,
   System1Config,
   MemoryEvent,
@@ -28,10 +25,12 @@ import type {
 
 export class System1MemoryManager implements System1Memory {
   private knowledgeNodes: Map<string, KnowledgeNode> = new Map();
+  public userPreferences: UserPreferenceSet;
+  
+  // Private implementation details
   private conceptGraph: ConceptGraph;
   private interactionHistory: InteractionHistory;
   private patternLibrary: PatternLibrary;
-  private userPreferences: UserPreferenceSet;
   private config: System1Config;
   private cache: Map<string, unknown> = new Map();
   private lastAccessTimes: Map<string, Date> = new Map();
@@ -397,11 +396,14 @@ export class System1MemoryManager implements System1Memory {
 
     // Remove least used 10%
     const removeCount = Math.floor(this.config.maxKnowledgeNodes * 0.1);
-    for (let i = 0; i < removeCount; i++) {
-      const [nodeId] = sortedByUsage[i];
-      this.knowledgeNodes.delete(nodeId);
-      this.conceptGraph.nodes.delete(nodeId);
-      this.invalidateCache(`node:${nodeId}`);
+    for (let i = 0; i < removeCount && i < sortedByUsage.length; i++) {
+      const entry = sortedByUsage[i];
+      if (entry) {
+        const [nodeId] = entry;
+        this.knowledgeNodes.delete(nodeId);
+        this.conceptGraph.nodes.delete(nodeId);
+        this.invalidateCache(`node:${nodeId}`);
+      }
     }
   }
 
@@ -435,10 +437,12 @@ export class System1MemoryManager implements System1Memory {
     let normA = 0;
     let normB = 0;
 
-    for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+    for (let i = 0; i < a.length && i < b.length; i++) {
+      const aVal = a[i] ?? 0;
+      const bVal = b[i] ?? 0;
+      dotProduct += aVal * bVal;
+      normA += aVal * aVal;
+      normB += bVal * bVal;
     }
 
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
@@ -530,8 +534,8 @@ export class System1MemoryManager implements System1Memory {
       const pattern = this.patternLibrary.codePatterns.find((p) => p.id === data.patternId);
       if (pattern && data.success !== undefined) {
         // Adjust pattern effectiveness based on usage success
-        const adjustment = data.success ? 0.1 : -0.05;
-        // Update pattern performance metrics
+        const _adjustment = data.success ? 0.1 : -0.05;
+        // Update pattern performance metrics (adjustment would be used here)
       }
     }
   }
