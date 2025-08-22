@@ -1,0 +1,28 @@
+// Services barrel export
+export * from './ai-chat-service';
+export * from './ai-router';
+export * from './chat-context.service';
+export * from './model-manager';
+// export * from './interactive-router'; // Commenting out due to CommandSuggestion conflict
+export * from './intent-analyzer';
+// export * from './intelligent-router'; // Commenting out due to ProgressUpdate conflict
+export * from './template-manager';
+export * from './command-mapper';
+export * from './batch-execution';
+// export * from './auto-mode-controller'; // Commenting out due to ProgressUpdate conflict
+export * from './task-executor';
+export * from './priority-system';
+export * from './suggestion-service';
+export * from './progress-tracker';
+export * from './health-monitor';
+export * from './hotkey-manager';
+export * from './slash-command-handler';
+export * from './local-auth.service';
+export * from './local-storage.service';
+export * from './local-graph.service';
+export * from './neo4j.service';
+export * from './zero-config-setup';
+export * from './image-generation';
+export * from './video-generation';
+export * from './comfyui-service';
+export * from './sow-generator';

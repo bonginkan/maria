@@ -1,4 +1,4 @@
-# 🤖 MARIA Platform v1.6.4 "Algorithm Education Revolution"
+# 🤖 MARIA Platform v1.7.8 "Algorithm Education Revolution"
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0%2B-blue)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green)](https://nodejs.org/)
@@ -8,38 +8,47 @@
 [![Quality](https://img.shields.io/badge/Code%20Quality-100%25-brightgreen)](https://github.com/bonginkan/maria)
 [![Cognitive Modes](https://img.shields.io/badge/Cognitive%20Modes-50-purple)](https://github.com/bonginkan/maria)
 
-> 🎉 **MARIA Platform v1.6.4 "Algorithm Education Revolution"** - Interactive AI Development CLI with Complete CS Curriculum, 36+ Slash Commands, 50 Cognitive AI Modes, and Educational Development Platform featuring the world's first **Internal Mode System**!
+> 🎉 **MARIA Platform v1.7.8** - Enterprise AI Development CLI with **Complete Local LLM Integration** (Ollama, vLLM, LM Studio), **Automatic Setup**, 36+ Interactive Commands, and **Privacy-First Development** Environment!
 
-## 🌟 What's New in v1.6.4 "Algorithm Education Revolution"
+## 🖥️ **Beautiful CLI Interface**
 
-### 🚀 Autonomous Coding Agent
+![MARIA CLI Startup](./images/CLI_visual.png)
 
-- **World's First Fully Autonomous Professional Engineering AI**
-- Complete software solutions from high-level requirements
-- Visual progress tracking with real-time feedback
-- Self-evolution learning engine
-- 120+ professional engineering modes
+_MARIA's beautiful startup interface with automatic AI service initialization and local LLM detection_
 
-### 📚 Algorithm Education Platform
+## 🌟 Key Features - Local AI & Privacy-First Development
 
-- Interactive QuickSort implementation with visualization
-- Performance analysis and benchmarking tools
-- Memory profiling and optimization
-- Computer science curriculum integration
-- Educational sorting algorithms collection
+### 🏠 **Complete Local LLM Integration**
 
-### 🧠 Internal Mode System - Cognitive Adaptation Engine
+- **Automatic Detection & Setup**: Auto-configures Ollama, vLLM, LM Studio
+- **Privacy-First Development**: All processing runs locally on your machine
+- **Zero Cloud Dependencies**: Work offline with full AI capabilities
+- **Multi-Model Support**: Seamlessly switch between 20+ local models
+- **One-Command Setup**: `maria setup-ollama` / `maria setup-vllm` for instant configuration
 
-- **50 Cognitive Modes**: Revolutionary thinking states across 9 categories (Reasoning, Creative, Analytical, etc.)
-- **Real-time Recognition**: <200ms automatic mode switching based on context and intent
-- **Adaptive Learning**: AI learns your patterns and personalizes cognitive approaches
-- **Visual Indicators**: Beautiful ✽ symbols showing current cognitive state
+### 🤖 **Enterprise AI Development**
+
+- **Autonomous Coding Agent**: Complete project development from requirements
+- **Real-time Code Analysis**: Live quality feedback and optimization suggestions
+- **Multi-Provider Support**: OpenAI, Anthropic, Google, Groq + Local LLMs
+- **Interactive Commands**: 36+ slash commands for development workflow
+- **Professional Engineering Modes**: 50+ specialized AI cognitive states
+
+### 🚀 **Instant Setup & Usage**
 
 ```bash
-"Fix this bug" → ✽ 🐛 Debugging…
-"Give me ideas" → ✽ 💡 Brainstorming…
-"Optimize this" → ✽ ⚡ Optimizing…
+npm install -g @bonginkan/maria
+maria setup-ollama          # Auto-install local AI
+maria                        # Start interactive development
 ```
+
+**Core Capabilities:**
+
+- ✅ **Local AI Models**: Complete offline development environment
+- ✅ **Code Generation**: AI-powered development assistance
+- ✅ **Quality Analysis**: Real-time code review and optimization
+- ✅ **Multi-Language**: Support for all major programming languages
+- ✅ **Enterprise Ready**: Professional development workflows
 
 ### 🎯 Key Features
 
@@ -51,10 +60,20 @@
 
 ### 🤖 Intelligent Router - Natural Language Command System
 
-- **5-Language Support**: Native understanding in Japanese, English, Chinese, Korean, Vietnamese
-- **Intent Recognition**: "コードを書いて" → `/code` automatic execution (95%+ accuracy)
+- **🌍 5-Language Support**: Native understanding in **English, Japanese, Chinese, Korean, Vietnamese**
+- **Intent Recognition**: "write code" → `/code` automatic execution (95%+ accuracy)
 - **Contextual Understanding**: Smart parameter extraction from natural conversation
 - **Learning Engine**: Adapts to user patterns for personalized experience
+
+**Multi-Language Examples:**
+
+```bash
+English:    "write code"          → /code
+Japanese:   "コードを書いて"        → /code
+Chinese:    "写代码"              → /code
+Korean:     "코드를 작성해"        → /code
+Vietnamese: "viết code"           → /code
+```
 
 ### 🏗️ Autonomous Development Ecosystem (/vibe, /paper, /agentic)
 
@@ -136,7 +155,7 @@ npm install -g @bonginkan/maria
 
 # Verify installation
 maria --version
-# Output: MARIA Platform v1.6.4 "Algorithm Education Revolution"
+# Output: MARIA Platform v1.7.8 "Algorithm Education Revolution"
 
 # Setup local AI models (optional)
 maria setup-ollama    # Install and configure Ollama
@@ -144,20 +163,58 @@ maria setup-vllm      # Install and configure vLLM
 
 # Start interactive mode with natural language
 maria
+```
 
-# Natural language interaction (no commands needed!)
-You: "コードを書いて"          # → Automatically triggers /code
+### 🖥️ **Live CLI Session Example**
+
+![MARIA CLI Startup](./images/CLI_visual.png)
+
+**Terminal Output:**
+
+```bash
+🚀 Initializing AI Services...
+
+Local AI Services:
+LM Studio    [●●●●●●●●●●●●●●●●●●●] 0% ⚙️ Checking availability...
+Ollama       [●●●●●●●●●●●●●●●●●●●] 0% ⚙️ Checking availability...
+vLLM         [●●●●●●●●●●●●●●●●●●●] 0% ⚙️ Checking availability...
+
+🚀 Initializing AI Services...
+
+> _
+```
+
+**Natural language interaction (no commands needed!):**
+
+```bash
+You: "write code for me"     # → Automatically triggers /code
 You: "create a React app"    # → Intelligent routing to /code
+You: "analyze this bug"      # → Auto-switches to /bug mode
+You: "implement research"    # → Triggers /paper for paper-to-code
+```
 
-# NEW: Code Quality Analysis Commands
+**🌍 Multi-Language Support (5 Languages):**
+
+```bash
+English:  "write code"       # → /code
+Japanese: "コードを書いて"     # → /code
+Chinese:  "写代码"           # → /code
+Korean:   "코드를 작성해"     # → /code
+Vietnamese: "viết code"      # → /code
+```
+
+**Advanced Code Quality Analysis Commands:**
+
+```bash
 > /lint check               # Comprehensive code quality analysis
 > /typecheck analyze         # TypeScript type safety (87% coverage)
 > /security-review scan      # OWASP compliance check (89/100 score)
 > /bug fix "null pointer"    # AI-powered bug fix suggestions
-You: "analyze this bug"      # → Auto-switches to /bug mode
-You: "研究論文を実装して"      # → Triggers /paper for paper-to-code
+```
 
-# Traditional slash commands (34+ available)
+**Traditional slash commands (34+ available):**
+
+```bash
 /code     # AI-powered code generation
 /paper    # Research paper → code transformation
 /vibe     # Autonomous development from requirements
@@ -275,6 +332,7 @@ maria
 - **Performance Analysis**: Built-in benchmarking with `/benchmark` commands
 
 ## 🔧 Configuration
+
 MARIA works out of the box with no configuration required. For advanced features:
 
 ```bash
@@ -351,4 +409,5 @@ MIT License - see [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE
 **Experience the Algorithm Education Revolution with MARIA Platform v1.6.4**
 
 🚀 Start your journey: `npm install -g @bonginkan/maria && maria`
->>>>>>> release/v1.6.0
+
+> > > > > > > release/v1.6.0
