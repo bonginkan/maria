@@ -18193,7 +18193,7 @@ var System1MemoryManager = class {
     this.interactionHistory.sessions = this.interactionHistory.sessions.filter(
       (session) => session.startTime > cutoffDate
     );
-    await this.mergeimilarPatterns();
+    await this.mergeSimilarPatterns();
     this.cache.clear();
   }
   // Private Helper Methods
@@ -18279,7 +18279,8 @@ var System1MemoryManager = class {
     if (data.patternId) {
       const pattern = this.patternLibrary.codePatterns.find((p) => p.id === data.patternId);
       if (pattern && data.success !== void 0) {
-        data.success ? 0.1 : -0.05;
+        const adjustment = data.success ? 0.1 : -0.05;
+        console.log(`Pattern ${pattern.name} adjusted by ${adjustment}`);
       }
     }
   }
@@ -18313,23 +18314,24 @@ var System1MemoryManager = class {
   async adaptUserPreferences(preference, value, confidence) {
     console.log(`Adapting preference ${preference} to ${value} (confidence: ${confidence})`);
   }
-  async mergeimilarPatterns() {
+  async mergeSimilarPatterns() {
     const patterns = this.patternLibrary.codePatterns;
     const merged = [];
     const processed = /* @__PURE__ */ new Set();
     for (let i = 0; i < patterns.length; i++) {
-      if (processed.has(patterns[i].id)) continue;
+      const currentPattern = patterns[i];
+      if (!currentPattern || processed.has(currentPattern.id)) continue;
       const similar = patterns.slice(i + 1).filter(
-        (p) => !processed.has(p.id) && p.language === patterns[i].language && this.calculatePatternSimilarity(patterns[i], p) > 0.8
+        (p) => p && !processed.has(p.id) && p.language === currentPattern.language && this.calculatePatternSimilarity(currentPattern, p) > 0.8
       );
       if (similar.length > 0) {
-        const mergedPattern = this.mergePatterns(patterns[i], similar);
+        const mergedPattern = this.mergePatterns(currentPattern, similar);
         merged.push(mergedPattern);
-        processed.add(patterns[i].id);
-        similar.forEach((p) => processed.add(p.id));
+        processed.add(currentPattern.id);
+        similar.forEach((p) => p && processed.add(p.id));
       } else {
-        merged.push(patterns[i]);
-        processed.add(patterns[i].id);
+        merged.push(currentPattern);
+        processed.add(currentPattern.id);
       }
     }
     this.patternLibrary.codePatterns = merged;

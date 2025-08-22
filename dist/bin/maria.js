@@ -17715,6 +17715,7 @@ var init_package = __esm({
       },
       scripts: {
         build: "tsup",
+        "build:relaxed": "npx tsup src/cli.ts src/index.ts src/bin/maria.ts --format cjs --target node18 --no-dts",
         dev: "tsup --watch",
         clean: "rm -rf dist",
         prebuild: "pnpm run clean",
