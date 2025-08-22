@@ -572,6 +572,12 @@ declare class DualMemoryEngine {
     getReasoning(domain?: string, complexity?: string, minQuality?: number): Promise<MemoryResponse<ReasoningTrace[]>>;
     getQualityInsights(): Promise<MemoryResponse<QualityMetrics>>;
     getUserPreferences(): Promise<MemoryResponse<UserPreferenceSet>>;
+    recall(options: {
+        query: string;
+        type: string;
+        limit?: number;
+    }): Promise<unknown[]>;
+    clearMemory(): Promise<void>;
     private selectMemoryStrategy;
     private getUrgencyScore;
     private assessQueryComplexity;
@@ -600,8 +606,23 @@ declare class DualMemoryEngine {
     resetMetrics(): void;
     getCacheSize(): number;
     getQueueSize(): number;
+    initialize(): Promise<void>;
     updateConfig(newConfig: Partial<DualMemoryEngineConfig>): void;
     getConfig(): DualMemoryEngineConfig;
+    getStatistics(): Promise<{
+        system1: {
+            totalNodes: number;
+            patterns: number;
+            preferences: number;
+            cacheHitRate: number;
+        };
+        system2: {
+            reasoningTraces: number;
+            decisionTrees: number;
+            activeSessions: number;
+            memoryUsage: number;
+        };
+    }>;
 }
 
 /**

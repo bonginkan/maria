@@ -557,10 +557,51 @@ BEGIN TEST GENERATION:
     }
 
     if (request.target) {
-      command += ` ${request.target}`;
+      // Security: Validate target to prevent command injection
+      const sanitizedTarget = this.sanitizeTarget(request.target);
+      if (sanitizedTarget) {
+        command += ` ${sanitizedTarget}`;
+      }
     }
 
     return command;
+  }
+
+  /**
+   * Sanitize target parameter to prevent command injection
+   */
+  private sanitizeTarget(target: string): string | null {
+    // Allow only safe file paths and directory names
+    const safePathPattern = /^[a-zA-Z0-9._/-]+$/;
+
+    // Reject inputs containing shell metacharacters
+    const dangerousChars = /[;&|`$(){}[\]<>'"\\]/;
+
+    if (!target || target.trim() === '') {
+      return null;
+    }
+
+    const trimmedTarget = target.trim();
+
+    // Check for dangerous characters
+    if (dangerousChars.test(trimmedTarget)) {
+      logger.warn('Test target contains dangerous characters, ignoring:', trimmedTarget);
+      return null;
+    }
+
+    // Check if it matches safe path pattern
+    if (!safePathPattern.test(trimmedTarget)) {
+      logger.warn('Test target contains invalid characters, ignoring:', trimmedTarget);
+      return null;
+    }
+
+    // Additional check: prevent directory traversal
+    if (trimmedTarget.includes('..')) {
+      logger.warn('Test target contains directory traversal, ignoring:', trimmedTarget);
+      return null;
+    }
+
+    return trimmedTarget;
   }
 
   /**

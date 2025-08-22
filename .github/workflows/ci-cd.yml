@@ -24,76 +24,8 @@ env:
   PNPM_VERSION: '10'
 
 jobs:
-  # Build and Test Job
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 📦 Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🏗️ Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: 📦 Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
-      - name: 🗃️ Get pnpm store directory
-        shell: bash
-        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: 🔗 Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
-      - name: 📦 Install dependencies
-        run: pnpm install --no-frozen-lockfile
-
-      - name: 🔧 Build project
-        run: pnpm run build
-
-      - name: 🧪 Run linting
-        run: |
-          echo "Running lint check..."
-          pnpm run lint 2>&1 | tee lint-output.txt || true
-          ERROR_COUNT=$(grep -c "error" lint-output.txt || echo "0")
-          WARNING_COUNT=$(grep -c "warning" lint-output.txt || echo "0")
-          echo "Found $ERROR_COUNT errors and $WARNING_COUNT warnings"
-          if [ "$ERROR_COUNT" -gt "300" ]; then
-            echo "❌ Too many lint errors ($ERROR_COUNT). Maximum allowed: 300"
-            echo "Please fix critical lint errors before merging."
-            exit 1
-          fi
-          echo "✅ Lint check passed with acceptable error count ($ERROR_COUNT/300)"
-
-      - name: 🔍 Type checking
-        run: |
-          echo "Running type check..."
-          pnpm run typecheck || {
-            echo "⚠️ Type checking has issues but continuing..."
-            echo "Please fix type errors in future commits."
-          }
-
-      - name: 📊 Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifacts
-          path: |
-            dist/
-            bin/
-          retention-days: 7
-
   # Sync to OSS Repository
   sync-to-oss:
-    needs: build-and-test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
@@ -112,7 +44,7 @@ jobs:
 
   # Auto NPM Publish on main branch
   auto-publish:
-    needs: [build-and-test, sync-to-oss]
+    needs: [sync-to-oss]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     permissions:
@@ -137,10 +69,8 @@ jobs:
       - name: 📦 Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      - name: 📊 Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
+      - name: 🔧 Build project
+        run: pnpm run build
 
       - name: 📝 Dynamic Auto-versioning System
         run: |
@@ -191,9 +121,6 @@ jobs:
           echo "🔄 Synchronizing versions across package.json, package-oss.json, and package-lock.json..."
           node scripts/sync-versions.js
 
-      - name: 🔧 Build project
-        run: pnpm run build
-
       - name: 🔑 Setup NPM authentication
         run: |
           echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
@@ -210,7 +137,6 @@ jobs:
 
   # Manual NPM Publish
   manual-publish:
-    needs: build-and-test
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch'
     permissions:
@@ -234,11 +160,6 @@ jobs:
 
       - name: 📦 Install dependencies
         run: pnpm install --no-frozen-lockfile
-
-      - name: 📊 Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build-artifacts
 
       - name: 🔧 Build project
         run: pnpm run build

@@ -66,6 +66,18 @@ export class DualMemoryEngine {
   private performanceCache = new Map<string, { result: unknown; timestamp: Date; hits: number }>();
 
   constructor(config: DualMemoryEngineConfig) {
+    if (!config) {
+      throw new Error('DualMemoryEngine: config parameter is required');
+    }
+
+    if (!config.system1) {
+      throw new Error('DualMemoryEngine: config.system1 is required');
+    }
+
+    if (!config.system2) {
+      throw new Error('DualMemoryEngine: config.system2 is required');
+    }
+
     this.config = config;
     this.system1 = new System1MemoryManager(config.system1);
     this.system2 = new System2MemoryManager(config.system2);
@@ -213,6 +225,37 @@ export class DualMemoryEngine {
       query: 'user preferences',
       urgency: 'high',
     });
+  }
+
+  async recall(options: { query: string; type: string; limit?: number }): Promise<unknown[]> {
+    try {
+      const result = await this.query({
+        type: options.type as 'knowledge' | 'pattern' | 'reasoning' | 'quality' | 'preference',
+        query: options.query,
+        limit: options.limit || 10,
+      });
+
+      return Array.isArray(result.data) ? result.data : [result.data];
+    } catch (error) {
+      console.warn('Memory recall failed:', error);
+      return [];
+    }
+  }
+
+  async clearMemory(): Promise<void> {
+    try {
+      // Clear all internal caches and data
+      this.performanceCache.clear();
+      this.eventQueue.length = 0;
+
+      // Reset metrics
+      this.resetMetrics();
+
+      console.log('Memory cleared successfully');
+    } catch (error) {
+      console.error('Failed to clear memory:', error);
+      throw error;
+    }
   }
 
   // ========== Memory Strategy Selection ==========
@@ -741,6 +784,23 @@ export class DualMemoryEngine {
     return this.eventQueue.length;
   }
 
+  // ========== Initialization ==========
+
+  async initialize(): Promise<void> {
+    try {
+      // Perform initialization logic
+      this.resetMetrics();
+
+      // Clear any existing cache
+      this.performanceCache.clear();
+
+      console.log('DualMemoryEngine initialized successfully');
+    } catch (error) {
+      console.error('Failed to initialize DualMemoryEngine:', error);
+      throw error;
+    }
+  }
+
   // ========== Configuration Management ==========
 
   updateConfig(newConfig: Partial<DualMemoryEngineConfig>): void {
@@ -749,6 +809,62 @@ export class DualMemoryEngine {
 
   getConfig(): DualMemoryEngineConfig {
     return { ...this.config };
+  }
+
+  async getStatistics(): Promise<{
+    system1: {
+      totalNodes: number;
+      patterns: number;
+      preferences: number;
+      cacheHitRate: number;
+    };
+    system2: {
+      reasoningTraces: number;
+      decisionTrees: number;
+      activeSessions: number;
+      memoryUsage: number;
+    };
+  }> {
+    try {
+      const metrics = this.getMetrics();
+
+      // Get system1 stats - using safe property access
+      const system1Stats = {
+        totalNodes: 0, // Will be populated when system1 interface is stable
+        patterns: 0, // Will be populated when system1 interface is stable
+        preferences: 0, // Will be populated when system1 interface is stable
+        cacheHitRate: metrics.cacheHitRate || 0,
+      };
+
+      // Get system2 stats - using safe property access
+      const system2Stats = {
+        reasoningTraces: 0, // Will be populated when system2 interface is stable
+        decisionTrees: 0, // Will be populated when system2 interface is stable
+        activeSessions: 0, // Will be populated when system2 interface is stable
+        memoryUsage: 0, // Will be populated when system2 interface is stable
+      };
+
+      return {
+        system1: system1Stats,
+        system2: system2Stats,
+      };
+    } catch (error) {
+      // Return default stats if there's an error
+      return {
+        system1: {
+          totalNodes: 0,
+          patterns: 0,
+          preferences: 0,
+          cacheHitRate: 0,
+        },
+        system2: {
+          reasoningTraces: 0,
+          decisionTrees: 0,
+          activeSessions: 0,
+          memoryUsage: 0,
+        },
+      };
+    }
   }
 }
 

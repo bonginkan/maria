@@ -59,7 +59,10 @@ export class CodeGenerationService {
   private contextAnalyzer = new ContextAnalyzer();
 
   private constructor() {
-    this.initializeProviders();
+    // Initialize providers asynchronously without blocking constructor
+    this.initializeProviders().catch((error) => {
+      logger.error('Failed to initialize code generation providers:', error);
+    });
   }
 
   public static getInstance(): CodeGenerationService {
@@ -67,6 +70,15 @@ export class CodeGenerationService {
       CodeGenerationService.instance = new CodeGenerationService();
     }
     return CodeGenerationService.instance;
+  }
+
+  /**
+   * Ensure providers are initialized before using the service
+   */
+  private async ensureInitialized(): Promise<void> {
+    if (this.providers.length === 0) {
+      await this.initializeProviders();
+    }
   }
 
   private async initializeProviders(): Promise<void> {
@@ -99,6 +111,9 @@ export class CodeGenerationService {
     const startTime = Date.now();
 
     try {
+      // Ensure providers are initialized before proceeding
+      await this.ensureInitialized();
+
       // 1. Analyze context and detect language/framework
       const context = await this.analyzeContext(request);
 

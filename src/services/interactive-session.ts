@@ -21,6 +21,7 @@ import { printSuccess, printError, printWarning } from '../utils/ui.js';
 import { ApprovalEngine } from './approval-engine/ApprovalEngine';
 import { QuickApprovalInterface } from './quick-approval/QuickApprovalInterface';
 import { ApprovalRepositoryManager } from './approval-git/ApprovalRepository';
+import { SlashCommandHandler } from './slash-command-handler';
 // Dynamic imports for React/Ink to avoid top-level await issues
 // import React from 'react';
 // import { render } from 'ink';
@@ -37,6 +38,7 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
   let rl: readline.Interface | null = null;
   let memoryEngine: DualMemoryEngine | null = null;
   let memoryCoordinator: MemoryCoordinator | null = null;
+  let waitingForCodeInput = false;
 
   return {
     async start(): Promise<void> {
@@ -45,19 +47,69 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
       // Initialize Memory System (lazy loading for performance)
       try {
         console.log(chalk.cyan('🧠 Initializing Memory System...'));
-        memoryEngine = new DualMemoryEngine();
+
+        // Default memory configuration for interactive session
+        const memoryConfig = {
+          system1: {
+            maxKnowledgeNodes: 1000,
+            embeddingDimension: 1536,
+            cacheSize: 100,
+            compressionThreshold: 0.75,
+            accessDecayRate: 0.03,
+          },
+          system2: {
+            maxReasoningTraces: 100,
+            qualityThreshold: 0.75,
+            reflectionFrequency: 12,
+            enhancementEvaluationInterval: 6,
+          },
+          coordinator: {
+            syncInterval: 5000,
+            conflictResolutionStrategy: 'balanced' as const,
+            learningRate: 0.15,
+            adaptationThreshold: 0.7,
+          },
+          performance: {
+            targetLatency: 50,
+            maxMemoryUsage: 256,
+            cacheStrategy: 'lru' as const,
+            preloadPriority: 'medium' as const,
+            backgroundOptimization: true,
+            batchSize: 10,
+          },
+        };
+
+        // Validate memory configuration
+        if (!memoryConfig || !memoryConfig.system1 || !memoryConfig.system2) {
+          throw new Error('Invalid memory configuration: missing required sections');
+        }
+
+        memoryEngine = new DualMemoryEngine(memoryConfig);
         memoryCoordinator = new MemoryCoordinator(memoryEngine);
 
         // Set memory system in MariaAI for command integration
-        maria.setMemorySystem(memoryEngine, memoryCoordinator);
+        if (maria && typeof maria.setMemorySystem === 'function') {
+          maria.setMemorySystem(memoryEngine, memoryCoordinator);
+        }
 
         // Lazy initialization - don't block startup
         Promise.resolve().then(async () => {
-          await memoryEngine?.initialize();
-          console.log(chalk.green('✅ Memory System initialized'));
+          try {
+            if (memoryEngine && typeof memoryEngine.initialize === 'function') {
+              await memoryEngine.initialize();
+              console.log(chalk.green('✅ Memory System initialized'));
+            } else {
+              console.log(chalk.green('✅ Memory System created (no initialization required)'));
+            }
+          } catch (initError) {
+            console.warn(chalk.yellow('⚠️ Memory System initialization failed:'), initError);
+          }
         });
       } catch (error) {
-        console.warn(chalk.yellow('⚠️ Memory System initialization deferred:', error));
+        console.warn(chalk.yellow('⚠️ Memory System initialization deferred:'), error);
+        // Set fallback null values to prevent further errors
+        memoryEngine = null;
+        memoryCoordinator = null;
       }
 
       // Start background check for local AI services (non-blocking)
@@ -88,22 +140,59 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
           if (!message || !running) break;
 
           // Handle special commands
-          if (message.startsWith('/')) {
+          if (message.startsWith('/') && !waitingForCodeInput) {
             const handled = await handleCommand(message.trim(), maria);
             if (handled === 'exit') {
               break;
             }
+            if (handled === 'code_mode') {
+              waitingForCodeInput = true;
+              continue;
+            }
             if (handled) continue;
           }
 
-          // Send to AI with optimized display
+          // Handle waiting for code input after /code command
+          if (waitingForCodeInput) {
+            try {
+              const slashHandler = new SlashCommandHandler();
+              const context = {
+                userId: 'interactive-user',
+                sessionId: Date.now().toString(),
+                metadata: {},
+                history: [],
+              };
+
+              const result = await slashHandler.handleCommand('/code', [message], context);
+              console.log(result.message);
+              waitingForCodeInput = false;
+              continue;
+            } catch (error) {
+              console.log(
+                chalk.red(
+                  `❌ Code generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+                ),
+              );
+              waitingForCodeInput = false;
+              continue;
+            }
+          }
+
+          // Show immediate AI status while processing
           process.stdout.write(TEXT_HIERARCHY.SUBTITLE('\nMARIA: '));
+          process.stdout.write(chalk.gray('Thinking...'));
 
           try {
             // let fullResponse = '';
             const stream = maria.chatStream(message);
+            let isFirstChunk = true;
 
             for await (const chunk of stream) {
+              if (isFirstChunk) {
+                // Clear the "thinking" message only when first chunk arrives
+                process.stdout.write('\r' + TEXT_HIERARCHY.SUBTITLE('MARIA: '));
+                isFirstChunk = false;
+              }
               process.stdout.write(chunk);
               // fullResponse += chunk;
             }
@@ -213,9 +302,34 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
 
     // Development/Code Commands
     case '/code':
-      console.log(chalk.blue('\n💻 Code Generation Mode\n'));
-      console.log(chalk.gray('Entering interactive coding mode...'));
-      console.log(chalk.yellow('What would you like me to code for you?'));
+      try {
+        const slashHandler = new SlashCommandHandler();
+        const context = {
+          userId: 'interactive-user',
+          sessionId: Date.now().toString(),
+          metadata: {},
+          history: [],
+        };
+
+        if (args.length > 0) {
+          // Handle code generation with arguments immediately
+          const result = await slashHandler.handleCommand('/code', args, context);
+          console.log(result.message);
+        } else {
+          // Show help and wait for next input to be processed as code generation
+          console.log(chalk.blue('\n💻 Code Generation Mode\n'));
+          console.log(chalk.yellow('What would you like me to code for you?'));
+          console.log(chalk.gray('Next input will be processed as a code generation request...'));
+          // Return a special flag to indicate next input should be processed as /code
+          return 'code_mode';
+        }
+      } catch (error) {
+        console.log(
+          chalk.red(
+            `❌ Code generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          ),
+        );
+      }
       return true;
 
     case '/test':
@@ -692,31 +806,118 @@ async function showModelSelector(maria: MariaAI, args: string[]): Promise<void> 
         console.log(chalk.red(`❌ Model not found: ${modelName}`));
         console.log(chalk.gray('Available models listed below:'));
       }
+      return;
     }
 
-    // Show available models
-    console.log(chalk.yellow('📋 Available AI Models:\n'));
-
-    available.forEach((model, _index) => {
-      const status = model.available ? '✅' : '⚠️';
-      const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : '';
-
-      console.log(
-        `  ${status} ${chalk.bold(model.name)} ${chalk.gray(`[${model.provider}]`)}${pricing}`,
-      );
-      console.log(`     ${chalk.gray(model.description)}`);
-      if (model.capabilities && model.capabilities.length > 0) {
-        console.log(`     ${chalk.cyan('Capabilities:')} ${model.capabilities.join(', ')}`);
-      }
-      console.log('');
-    });
-
-    console.log(chalk.gray('Usage: /model <model_name_or_provider> - Find and display model info'));
-    console.log(chalk.gray('Example: /model gpt-4 or /model anthropic'));
-    console.log('');
+    // Interactive model selection
+    await showInteractiveModelSelector(available);
   } catch (error: unknown) {
     console.error(chalk.red('❌ Failed to access model selector:'), error);
   }
+}
+
+async function showInteractiveModelSelector(models: any[]): Promise<void> {
+  if (models.length === 0) {
+    console.log(chalk.yellow('No models available'));
+    return;
+  }
+
+  let selectedIndex = 0;
+  let isSelecting = true;
+
+  // Set up readline for capturing keystrokes
+  const stdin = process.stdin;
+  stdin.setRawMode(true);
+  stdin.resume();
+  stdin.setEncoding('utf8');
+
+  const renderModels = () => {
+    // Clear screen and move cursor to top
+    process.stdout.write('\x1B[2J\x1B[0;0f');
+    console.log(chalk.blue('🤖 AI Model Selector\n'));
+    console.log(chalk.gray('Use ↑/↓ to navigate, Enter to select, Esc to cancel\n'));
+    console.log(chalk.yellow('📋 Available AI Models:\n'));
+
+    models.forEach((model, index) => {
+      const status = model.available ? '✅' : '⚠️';
+      const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : '';
+      const isSelected = index === selectedIndex;
+
+      if (isSelected) {
+        console.log(
+          chalk.bgBlue.white(`  ▶ ${status} ${model.name} [${model.provider}]${pricing}`),
+        );
+        console.log(chalk.bgBlue.white(`     ${model.description}`));
+        if (model.capabilities && model.capabilities.length > 0) {
+          console.log(chalk.bgBlue.white(`     Capabilities: ${model.capabilities.join(', ')}`));
+        }
+      } else {
+        console.log(
+          `  ${status} ${chalk.bold(model.name)} ${chalk.gray(`[${model.provider}]`)}${pricing}`,
+        );
+        console.log(`     ${chalk.gray(model.description)}`);
+        if (model.capabilities && model.capabilities.length > 0) {
+          console.log(`     ${chalk.cyan('Capabilities:')} ${model.capabilities.join(', ')}`);
+        }
+      }
+      console.log('');
+    });
+  };
+
+  const cleanup = () => {
+    stdin.setRawMode(false);
+    stdin.pause();
+    stdin.removeAllListeners('data');
+  };
+
+  return new Promise((resolve) => {
+    const handleKeypress = (chunk: string) => {
+      const key = chunk.toString();
+
+      switch (key) {
+        case '\u001b[A': // Up arrow
+          selectedIndex = Math.max(0, selectedIndex - 1);
+          renderModels();
+          break;
+        case '\u001b[B': // Down arrow
+          selectedIndex = Math.min(models.length - 1, selectedIndex + 1);
+          renderModels();
+          break;
+        case '\r': // Enter
+          isSelecting = false;
+          cleanup();
+          const selectedModel = models[selectedIndex];
+          console.log(
+            chalk.green(`\n✅ Selected: ${selectedModel.name} (${selectedModel.provider})`),
+          );
+          console.log(
+            chalk.yellow('Note: Model switching will be implemented in a future version'),
+          );
+          console.log(
+            chalk.gray(
+              'Currently, you can switch models using environment variables or CLI options\n',
+            ),
+          );
+          resolve();
+          break;
+        case '\u001b': // Esc key
+          isSelecting = false;
+          cleanup();
+          console.log(chalk.gray('\n📋 Model selection cancelled\n'));
+          resolve();
+          break;
+        case '\u0003': // Ctrl+C
+          isSelecting = false;
+          cleanup();
+          console.log(chalk.gray('\n📋 Model selection cancelled\n'));
+          resolve();
+          break;
+      }
+    };
+
+    stdin.on('data', handleKeypress);
+    renderModels();
+  });
 }
 
 async function showAvatar(): Promise<void> {
