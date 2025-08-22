@@ -13,13 +13,9 @@ import type {
   AlternativeReasoning,
   QualityMetrics,
   CodeQualityMetrics,
-  ReasoningQualityMetrics,
-  SatisfactionMetrics,
   DecisionTree,
   DecisionNode,
   Enhancement,
-  ImpactAssessment,
-  ImplementationPlan,
   ReflectionEntry,
   ActionItem,
   System2Config,
@@ -215,7 +211,7 @@ export class System2MemoryManager implements System2Memory {
     }
 
     if (query.minQuality !== undefined) {
-      traces = traces.filter((trace) => trace.metadata.qualityScore >= query.minQuality);
+      traces = traces.filter((trace) => trace.metadata.qualityScore >= (query.minQuality ?? 0));
     }
 
     if (query.timeframe) {
@@ -339,6 +335,11 @@ export class System2MemoryManager implements System2Memory {
     const enhancement = this.enhancements.get(enhancementId);
     if (!enhancement) {
       return false;
+    }
+    
+    // Use feedback if provided
+    if (feedback) {
+      enhancement.description = `${enhancement.description} (Feedback: ${feedback})`;
     }
 
     enhancement.status = status;

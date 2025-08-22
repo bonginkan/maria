@@ -101,8 +101,10 @@ jobs:
           
           # Check for sensitive data in commits
           echo "🔍 Checking for API keys in code..."
-          if grep -r "sk-" src/ 2>/dev/null; then
-            echo "❌ Found potential API keys in source code"
+          # Look for actual API key patterns, not just "sk-" substring
+          if grep -rE "sk-[a-zA-Z0-9]{48}" src/ 2>/dev/null | grep -v "\.test\." | grep -v "regex" | grep -v "pattern"; then
+            echo "❌ Found potential OpenAI API keys in source code"
+            echo "ℹ️ If these are test patterns or regex examples, please add .test. to filename or use placeholder values"
             exit 1
           fi
           

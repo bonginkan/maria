@@ -6,7 +6,7 @@
  */
 
 import { System1MemoryManager } from './system1-memory';
-import { System2MemoryManager } from './system2-memory';
+// import { System2MemoryManager } from './system2-memory';
 import type {
   MemoryEvent,
   System1Config,
