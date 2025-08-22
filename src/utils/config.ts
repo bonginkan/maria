@@ -148,13 +148,13 @@ export function loadConfig(): MariaConfig {
     }
   }
 
-  // Return default config with Gemini 2.5 Pro as default model
+  // Return default config with GPT-5 Mini as default model
   return {
-    defaultModel: 'gemini-2.5-pro',
+    defaultModel: 'gpt-5-mini-2025-08-07',
     defaultMode: 'chat',
     ai: {
-      defaultModel: 'gemini-2.5-pro',
-      preferredModel: 'gemini-2.5-pro',
+      defaultModel: 'gpt-5-mini-2025-08-07',
+      preferredModel: 'gpt-5-mini-2025-08-07',
     },
     cli: {
       defaultMode: 'chat',
@@ -441,7 +441,7 @@ export function initConfig(): void {
       database: 'neo4j',
     },
     ai: {
-      preferredModel: 'gemini-2.5-pro',
+      preferredModel: 'gpt-5-mini-2025-08-07',
     },
   };
 
