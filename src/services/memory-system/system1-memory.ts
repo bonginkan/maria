@@ -26,7 +26,7 @@ import type {
 export class System1MemoryManager implements System1Memory {
   private knowledgeNodes: Map<string, KnowledgeNode> = new Map();
   public userPreferences: UserPreferenceSet;
-  
+
   // Private implementation details
   private conceptGraph: ConceptGraph;
   private interactionHistory: InteractionHistory;
