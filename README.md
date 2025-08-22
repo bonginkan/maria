@@ -150,12 +150,15 @@ Vietnamese: "viết code"           → /code
 ### Installation
 
 ```bash
-# Install globally via npm
-npm install -g @bonginkan/maria
+# Install latest version globally via npm
+npm install -g @bonginkan/maria@latest
+
+# Alternative: Install specific version (recommended for production)
+npm install -g @bonginkan/maria@1.8.2
 
 # Verify installation
 maria --version
-# Output: MARIA Platform v1.7.8 "Algorithm Education Revolution"
+# Output: MARIA Platform v1.8.2
 
 # Setup local AI models (optional)
 maria setup-ollama    # Install and configure Ollama
@@ -163,6 +166,26 @@ maria setup-vllm      # Install and configure vLLM
 
 # Start interactive mode with natural language
 maria
+```
+
+#### Package Information
+
+- **NPM Package**: [@bonginkan/maria](https://www.npmjs.com/package/@bonginkan/maria)
+- **Latest Version**: 1.8.2 (Updated: August 22, 2025)
+- **Total Downloads**: 500+ (and growing!)
+- **Organization**: [bonginkan](https://www.npmjs.com/org/bonginkan)
+
+#### Alternative Installation Methods
+
+```bash
+# Using yarn
+yarn global add @bonginkan/maria@latest
+
+# Using pnpm  
+pnpm add -g @bonginkan/maria@latest
+
+# Check all available versions
+npm view @bonginkan/maria versions --json
 ```
 
 ### 🖥️ **Live CLI Session Example**
@@ -408,6 +431,8 @@ MIT License - see [LICENSE](https://github.com/bonginkan/maria/blob/main/LICENSE
 
 **Experience the Algorithm Education Revolution with MARIA Platform v1.6.4**
 
-🚀 Start your journey: `npm install -g @bonginkan/maria && maria`
+🚀 Start your journey: `npm install -g @bonginkan/maria@latest && maria`
+
+📦 **Package**: [npmjs.com/package/@bonginkan/maria](https://www.npmjs.com/package/@bonginkan/maria) | 🏢 **Organization**: [npmjs.com/org/bonginkan](https://www.npmjs.com/org/bonginkan)
 
 > > > > > > > release/v1.6.0
