@@ -115,16 +115,15 @@ export class MemoryCoordinator {
   private optimizationTimer?: NodeJS.Timeout;
   private syncTimer?: NodeJS.Timeout;
 
-  constructor(
-    system1: System1MemoryManager,
-    system2: System2MemoryManager,
-    dualEngine: DualMemoryEngine,
-    config: CoordinatorConfig,
-  ) {
-    this.system1 = system1;
-    this.system2 = system2;
+  constructor(dualEngine: DualMemoryEngine, config?: CoordinatorConfig) {
+    if (!dualEngine) {
+      throw new Error('MemoryCoordinator: dualEngine parameter is required');
+    }
+
     this.dualEngine = dualEngine;
-    this.config = config;
+    this.system1 = (dualEngine as any).system1;
+    this.system2 = (dualEngine as any).system2;
+    this.config = config || this.getDefaultConfig();
     this.metrics = this.initializeMetrics();
 
     this.startCoordination();
@@ -607,7 +606,21 @@ export class MemoryCoordinator {
     }
   }
 
+  private getDefaultConfig(): CoordinatorConfig {
+    return {
+      syncInterval: 5000,
+      conflictResolutionStrategy: 'balanced',
+      learningRate: 0.15,
+      adaptationThreshold: 0.7,
+    };
+  }
+
   private startCoordination(): void {
+    if (!this.config || !this.config.syncInterval) {
+      console.warn('MemoryCoordinator: Invalid config, using defaults');
+      this.config = this.getDefaultConfig();
+    }
+
     // Start synchronization timer
     this.syncTimer = setInterval(() => {
       this.synchronizeSystems().catch(console.error);
