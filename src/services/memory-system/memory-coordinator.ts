@@ -19,7 +19,7 @@ import type {
 
 export interface SystemConflict {
   id: string;
-  type: "data_inconsistency" | "preference_mismatch" | "quality_threshold" | "performance_tradeoff";
+  type: 'data_inconsistency' | 'preference_mismatch' | 'quality_threshold' | 'performance_tradeoff';
   description: string;
   severity: number;
 }
@@ -312,12 +312,12 @@ export class MemoryCoordinator {
   }> {
     return {
       system1Performance: {
-        timeComplexity: "O(1)", // Estimated S1 complexity
-        spaceComplexity: "O(n)", // Estimated from System 1
+        timeComplexity: 'O(1)', // Estimated S1 complexity
+        spaceComplexity: 'O(n)', // Estimated from System 1
       },
       system2Performance: {
-        timeComplexity: "O(n log n)", // Estimated S2 complexity
-        spaceComplexity: "O(n)", // Estimated from System 2
+        timeComplexity: 'O(n log n)', // Estimated S2 complexity
+        spaceComplexity: 'O(n)', // Estimated from System 2
       },
       bottlenecks: await this.identifyBottlenecks(),
       opportunities: await this.identifyOptimizationOpportunities(),
@@ -683,7 +683,6 @@ export class MemoryCoordinator {
       `Integrating learning from ${patterns.length} patterns and ${reasonings.length} reasonings`,
     );
   }
-
 
   private async identifyBottlenecks(): Promise<string[]> {
     const bottlenecks = [];

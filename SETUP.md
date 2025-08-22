@@ -5,7 +5,6 @@ Complete setup instructions for MARIA Platform v1.6.4 "Algorithm Education Revol
 ## 📋 System Requirements
 
 ### Minimum Requirements
-
 - **Node.js**: 18.0.0 or higher (up to 22.x)
 - **npm**: 8.0.0 or higher
 - **Operating System**: macOS, Linux, Windows
@@ -14,7 +13,6 @@ Complete setup instructions for MARIA Platform v1.6.4 "Algorithm Education Revol
 - **Storage**: 100MB disk space
 
 ### Recommended Setup
-
 - **Node.js**: 20.x LTS
 - **Terminal**: iTerm2 (macOS), Windows Terminal, or VS Code integrated terminal
 - **Shell**: bash, zsh, fish, or PowerShell
@@ -70,7 +68,6 @@ npx maria
 ## ⚡ Quick Start Guide
 
 ### 1. First Launch
-
 ```bash
 # Start MARIA interactive mode
 maria
@@ -81,7 +78,6 @@ maria
 ```
 
 ### 2. Basic Commands
-
 ```bash
 # Within interactive mode, try these commands:
 > /help                          # Show all 36+ commands
@@ -93,7 +89,6 @@ maria
 ```
 
 ### 3. Algorithm Education
-
 ```bash
 # Start learning algorithms
 > /sort quicksort               # Interactive quicksort tutorial
@@ -115,7 +110,7 @@ maria
 
 # Available options:
 # - OpenAI GPT models (API key required)
-# - Anthropic Claude (API key required)
+# - Anthropic Claude (API key required) 
 # - Google Gemini (API key required)
 # - Local LLMs (LM Studio, Ollama)
 # - Groq models (API key required)
@@ -140,7 +135,6 @@ OLLAMA_API_URL=http://localhost:11434
 ## 🎓 Learning Path
 
 ### For Students & Beginners
-
 1. Start with basic installation: `npm install -g @bonginkan/maria`
 2. Launch interactive mode: `maria`
 3. Try algorithm education: `/sort quicksort --visualize`
@@ -148,7 +142,6 @@ OLLAMA_API_URL=http://localhost:11434
 5. Learn coding basics: `/code "simple function"`
 
 ### For Developers
-
 1. Install MARIA: `npm install -g @bonginkan/maria`
 2. Configure preferred AI model: `/model`
 3. Try development commands: `/code`, `/bug`, `/lint`
@@ -156,7 +149,6 @@ OLLAMA_API_URL=http://localhost:11434
 5. Integrate with workflow: Use MARIA for coding assistance
 
 ### For Educators
-
 1. Install for classroom use: `npm install -g @bonginkan/maria`
 2. Explore algorithm curriculum: `/learn algorithms`
 3. Use visualization tools: `/sort --visualize`
@@ -168,7 +160,6 @@ OLLAMA_API_URL=http://localhost:11434
 ### Common Issues
 
 #### Permission Errors
-
 ```bash
 # If you get permission errors on macOS/Linux:
 sudo npm install -g @bonginkan/maria
@@ -180,7 +171,6 @@ npm install -g @bonginkan/maria
 ```
 
 #### Node.js Version Issues
-
 ```bash
 # Check Node.js version
 node --version
@@ -190,7 +180,6 @@ node --version
 ```
 
 #### Command Not Found
-
 ```bash
 # Check if MARIA is in PATH
 which maria
@@ -204,7 +193,6 @@ npm install -g @bonginkan/maria
 ```
 
 #### Interactive Mode Issues
-
 ```bash
 # If interactive mode doesn't start:
 maria --help

@@ -1,1 +1,0 @@
-{"version":3,"file":"MariaDiagnosticProvider.d.ts","sourceRoot":"","sources":["../../src/diagnostics/MariaDiagnosticProvider.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,MAAM,QAAQ,CAAC;AAEjC,qBAAa,uBAAwB,YAAW,MAAM,CAAC,UAAU;IAC/D,OAAO,CAAC,oBAAoB,CAA8B;;IAMnD,iBAAiB,CAAC,QAAQ,EAAE,MAAM,CAAC,YAAY,GAAG,IAAI;IAqCtD,gBAAgB,IAAI,IAAI;IAIxB,OAAO,IAAI,IAAI;CAGvB"}

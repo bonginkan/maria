@@ -1,44 +1,61 @@
-# MARIA Platform v1.2.0 - User Manual
+# MARIA Platform v1.8.1 - User Manual
 
 ## 🎯 Welcome to MARIA
 
-**MARIA Platform v1.2.0 "Cognitive Revolution"** is the world's most advanced AI-powered development platform, featuring the revolutionary **Internal Mode System** with 50 cognitive modes that adapt to your context in real-time. This user manual will guide you through every feature, from basic setup to advanced cognitive AI interactions.
+**MARIA Platform v1.8.1** is an enterprise-grade AI development platform designed specifically for engineers and researchers. With complete local LLM integration, advanced coding assistance, and intelligent research tools, MARIA revolutionizes how you develop, analyze, and maintain code while keeping your work private and secure.
+
+## 🔗 Official Links
+
+- **NPM Package**: https://www.npmjs.com/package/@bonginkan/maria
+- **GitHub Repository**: https://github.com/bonginkan/maria
+- **Homepage**: https://bonginkan.ai/
 
 ## 📋 Table of Contents
 
 1. [Getting Started](#getting-started)
 2. [Installation Guide](#installation-guide)
-3. [Basic Usage](#basic-usage)
-4. [🧠 Internal Mode System (NEW)](#internal-mode-system)
-5. [Natural Language Interface](#natural-language-interface)
-6. [Code Quality Analysis](#code-quality-analysis)
-7. [AI Development Commands](#ai-development-commands)
+3. [Core Coding Commands](#core-coding-commands)
+4. [Local LLM Integration](#local-llm-integration)
+5. [Advanced Intelligence Features](#advanced-intelligence-features)
+6. [Creative Tools & Documentation](#creative-tools--documentation)
+7. [Natural Language Interface](#natural-language-interface)
 8. [Project Management](#project-management)
-9. [Advanced Features](#advanced-features)
-10. [Customization & Settings](#customization--settings)
-11. [Troubleshooting](#troubleshooting)
-12. [Tips & Best Practices](#tips--best-practices)
+9. [Customization & Settings](#customization--settings)
+10. [Troubleshooting](#troubleshooting)
+11. [Tips & Best Practices for Engineers & Researchers](#tips--best-practices-for-engineers--researchers)
 
 ## 🚀 Getting Started
 
 ### What is MARIA?
 
-MARIA (Multi-Agent Research & Intelligence Assistant) is an enterprise-grade AI development platform that combines:
+MARIA (Multi-Agent Research & Intelligence Assistant) is an enterprise-grade AI development platform designed specifically for engineers and researchers who need:
 
-- **🧠 Internal Mode System**: Revolutionary 50 cognitive modes that adapt to your context in real-time
-- **Natural Language Understanding**: Talk to AI in 5 languages (English, Japanese, Chinese, Korean, Vietnamese)
-- **Code Quality Analysis**: Professional-grade bug detection, linting, type checking, and security review
-- **Multi-Model AI Integration**: Access to 22+ AI models (OpenAI, Anthropic, Google, local models)
-- **Intelligent Development**: Automated coding, testing, and documentation generation
+**💻 Professional Coding Assistance:**
+- AI-powered code generation, review, and debugging
+- Intelligent bug detection with 40+ pattern recognition
+- Automated code quality analysis and fixes
+- Comprehensive test generation
 
-### Key Benefits
+**🏠 Complete Local LLM Integration:**
+- Privacy-first development with local AI models (Ollama, vLLM, LM Studio)
+- Your code never leaves your machine
+- Works 100% offline with local models
+- No API keys required for local development
 
-✅ **🧠 Cognitive Adaptation**: AI automatically adjusts thinking style to your needs  
-✅ **Boost Productivity**: Write code 3x faster with context-aware AI assistance  
-✅ **Improve Quality**: Catch bugs and security issues before they reach production  
-✅ **Reduce Errors**: Zero-error policy with automated quality enforcement  
-✅ **Learn Continuously**: AI adapts to your coding patterns and preferences  
-✅ **Work Naturally**: Use plain language instead of complex commands  
+**🧠 Advanced Intelligence for Research:**
+- 50+ cognitive modes for different thinking patterns
+- Cross-session learning and knowledge retention
+- Multi-agent orchestration for complex tasks
+- Paper-to-code transformation for research implementation
+
+### Key Benefits for Engineers & Researchers
+
+✅ **Privacy & Security**: Keep proprietary code secure with local LLM processing  
+✅ **Professional Quality**: Enterprise-grade code analysis and improvement suggestions  
+✅ **Research Support**: Transform research papers into working implementations  
+✅ **Multi-Language**: Natural language understanding in 5 languages  
+✅ **Continuous Learning**: AI remembers your patterns and improves over time  
+✅ **Offline Capability**: Full functionality without internet dependency  
 
 ## 💻 Installation Guide
 
@@ -59,7 +76,7 @@ npm install -g @bonginkan/maria
 
 # Verify installation
 maria --version
-# Should display: 1.1.0
+# Should display: 1.8.1
 ```
 
 #### Option 2: Using npx (No Installation Required)
@@ -92,6 +109,94 @@ maria setup
 # Configure AI providers (optional)
 export OPENAI_API_KEY="your-openai-key"
 export ANTHROPIC_API_KEY="your-anthropic-key"
+```
+
+## 🏠 Local LLM Setup (Privacy-First Development)
+
+**⚠️ Important**: To use local LLM features (`/model`, `/setup`, privacy-first development), you need to install and configure local AI models.
+
+### Option 1: Ollama Setup
+
+```bash
+# Install Ollama (macOS/Linux)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# Install Ollama (Windows) - Download from https://ollama.ai/download
+
+# Auto-configure with MARIA
+maria setup-ollama
+
+# Or manually install models
+ollama pull llama2
+ollama pull codellama
+```
+
+### Option 2: LM Studio Setup
+
+```bash
+# Download LM Studio from https://lmstudio.ai/
+# Install and start LM Studio
+# Download models through LM Studio interface
+
+# MARIA will auto-detect LM Studio
+maria status
+```
+
+### Option 3: vLLM Setup
+
+```bash
+# Install vLLM (requires Python 3.8+)
+pip install vllm
+
+# Auto-configure with MARIA
+maria setup-vllm
+
+# Or set up manually
+export VLLM_API_URL="http://localhost:8000"
+```
+
+## 🎨 Creative Tools Setup (Optional Features)
+
+**⚠️ Important**: Creative tools require additional setup for full functionality.
+
+### Image Generation (`/image`)
+
+```bash
+# For local image generation, install ComfyUI or Stable Diffusion WebUI
+# Or use cloud providers (requires API keys):
+export OPENAI_API_KEY="your-key"  # For DALL-E
+export REPLICATE_API_TOKEN="your-token"  # For Stable Diffusion
+```
+
+### Video Generation (`/video`)
+
+```bash
+# For video generation, you need:
+# 1. Cloud provider API keys
+export RUNPOD_API_KEY="your-key"
+# 2. Or local video generation tools
+# 3. FFmpeg for video processing
+brew install ffmpeg  # macOS
+sudo apt install ffmpeg  # Linux
+```
+
+### Voice Chat (`/voice`)
+
+```bash
+# Voice features require:
+# 1. Microphone access (automatic)
+# 2. Speech-to-text API (optional for cloud providers)
+export OPENAI_API_KEY="your-key"  # For OpenAI Whisper
+# 3. Or use local Whisper models (automatic download)
+```
+
+### Avatar Interface (`/avatar`)
+
+```bash
+# ASCII avatar works out of the box
+# No additional setup required
+maria
+> /avatar
 ```
 
 ## 🎮 Basic Usage
@@ -212,239 +317,6 @@ MARIA: What would you like me to analyze?
 
 You: "security issues"
 MARIA: → Automatically switches to /security-review scan
-```
-
-## 🧠 Internal Mode System
-
-### Revolutionary Cognitive Adaptation
-
-**NEW in v1.2.0**: MARIA introduces the world's first **Internal Mode System** - a breakthrough cognitive framework that automatically adapts the AI's thinking style to your specific context and needs.
-
-#### What Are Internal Modes?
-
-Internal modes are specialized cognitive states that change how MARIA processes and responds to your requests. Instead of using static AI responses, MARIA now dynamically switches between 50 different thinking modes for optimal results.
-
-#### How It Works
-
-```bash
-# MARIA starts in default thinking mode
-You: "I need to fix this bug"
-MARIA: ✽ 🐛 Debugging…
-        [Automatically switches to debugging mode for error analysis]
-
-You: "Give me some creative ideas"  
-MARIA: ✽ 💡 Brainstorming…
-        [Switches to brainstorming mode for creative thinking]
-
-You: "Optimize this algorithm"
-MARIA: ✽ ⚡ Optimizing…
-        [Switches to optimization mode for performance focus]
-```
-
-### The 50 Cognitive Modes
-
-MARIA's cognitive modes are organized into 9 categories:
-
-#### 🧠 Reasoning Modes (5)
-- **✽ Thinking…** - Standard reasoning and problem-solving
-- **✽ Ultra Thinking…** - Deep, multi-perspective analysis  
-- **✽ Optimizing…** - Performance improvement and efficiency
-- **✽ Researching…** - Information gathering and verification
-- **✽ TODO…** - Task planning and action item creation
-
-#### 💡 Creative Modes (5+)
-- **✽ Brainstorming…** - Unrestricted idea generation
-- **✽ Drafting…** - Initial concept and content creation
-- **✽ Inventing…** - Novel solution development
-- **✽ Remixing…** - Combining and adapting existing ideas
-- **✽ Dreaming…** - Abstract and visionary thinking
-
-#### 📊 Analytical Modes (5+)
-- **✽ Summarizing…** - Condensing complex information
-- **✽ Distilling…** - Extracting core insights
-- **✽ Highlighting…** - Identifying key points
-- **✽ Categorizing…** - Organizing and classifying
-- **✽ Mapping…** - Creating conceptual relationships
-
-#### 📐 Structural Modes (5+)
-- **✽ Visualizing…** - Creating diagrams and charts
-- **✽ Outlining…** - Hierarchical organization
-- **✽ Wireframing…** - Interface and layout design
-- **✽ Diagramming…** - Technical architecture planning
-- **✽ Storyboarding…** - Process and flow design
-
-#### 🔍 Validation Modes (5+)
-- **✽ Debugging…** - Error detection and fixing
-- **✽ Validating…** - Accuracy and consistency checking
-- **✽ Reviewing…** - Quality assessment and feedback
-- **✽ Refactoring…** - Code structure improvement
-- **✽ Finalizing…** - Polish and completion
-
-#### 🤔 Contemplative Modes (5+)
-- **✽ Stewing…** - Patient consideration of complex issues
-- **✽ Mulling…** - Thoughtful reflection and reconsideration  
-- **✽ Marinating…** - Deep immersion in context
-- **✽ Gestating…** - Gradual idea development
-- **✽ Brewing…** - Slow evolution of concepts
-
-#### 💪 Intensive Modes (5+)
-- **✽ Schlepping…** - Methodical, repetitive work
-- **✽ Grinding…** - Persistent, detailed processing
-- **✽ Tinkering…** - Incremental adjustments and tuning
-- **✽ Puzzling…** - Complex problem solving
-- **✽ Wrangling…** - Data manipulation and organization
-
-#### 📚 Learning Modes (5+)
-- **✽ Learning…** - Knowledge acquisition and integration
-- **✽ Exploring…** - Discovery and investigation
-- **✽ Connecting…** - Relationship identification
-- **✽ Simulating…** - Hypothetical scenario testing
-- **✽ Strategizing…** - Long-term planning
-
-#### 🤝 Collaborative Modes (5+)
-- **✽ Echoing…** - Reflecting and confirming understanding
-- **✽ Mirroring…** - Matching communication style
-- **✽ Debating…** - Multi-perspective discussion
-- **✽ Coaching…** - Guidance and skill development
-- **✽ Pairing…** - Collaborative problem-solving
-
-### Using the /mode Command
-
-Control internal modes manually with the comprehensive `/mode` command:
-
-#### View Current Mode Status
-```bash
-/mode
-# Shows:
-# 📋 Mode Status:
-# Operation Mode: chat (default)
-# Internal Mode: ✽ Thinking… - Standard reasoning and problem solving
-# Category: reasoning
-```
-
-#### List All Available Modes
-```bash
-/mode internal list
-# Displays all 50 cognitive modes organized by category
-```
-
-#### Switch to Specific Mode
-```bash
-/mode internal debugging    # Switch to debugging mode
-/mode internal brainstorming # Switch to brainstorming mode
-/mode internal optimizing   # Switch to optimization mode
-```
-
-#### View Mode History
-```bash
-/mode internal history
-# Shows recent mode switches and usage patterns
-```
-
-#### View Usage Statistics  
-```bash
-/mode internal stats
-# Displays mode usage analytics and effectiveness metrics
-```
-
-#### Control Auto-Switching
-```bash
-/mode internal auto     # Enable automatic mode switching (default)
-/mode internal manual   # Disable auto-switching for manual control
-```
-
-### Automatic Mode Recognition
-
-MARIA automatically recognizes context and switches modes based on:
-
-#### Intent Recognition
-- **"Fix this bug"** → ✽ 🐛 Debugging…
-- **"Make this faster"** → ✽ ⚡ Optimizing…
-- **"Give me ideas"** → ✽ 💡 Brainstorming…
-- **"Explain this code"** → ✽ 📊 Analyzing…
-
-#### Context Analysis
-- **Error messages detected** → Debugging mode
-- **Performance issues mentioned** → Optimization mode
-- **Creative requests** → Brainstorming mode
-- **Documentation needs** → Drafting mode
-
-#### Learning Adaptation
-- MARIA learns your patterns and preferences
-- Mode selection improves over time
-- Personalized to your workflow style
-- Cross-session pattern memory
-
-### Advanced Mode Features
-
-#### Multi-Language Support
-Internal modes work in all 5 supported languages:
-- **English**: "Debug this error" → ✽ 🐛 Debugging…
-- **Japanese**: "このバグを直して" → ✽ 🐛 Debugging…
-- **Chinese**: "优化这个代码" → ✽ ⚡ Optimizing…
-- **Korean**: "아이디어를 주세요" → ✽ 💡 Brainstorming…
-- **Vietnamese**: "Kiểm tra lỗi này" → ✽ 🐛 Debugging…
-
-#### Real-Time Performance
-- **Mode switching**: <200ms response time
-- **Recognition accuracy**: 95%+ intent detection
-- **Memory efficient**: <10MB additional overhead
-- **Background processing**: Non-blocking operations
-
-#### Configuration & Customization
-```bash
-# Adjust recognition sensitivity
-/mode internal auto         # Standard auto-switching
-/mode internal manual       # Full manual control
-
-# View detailed mode information
-/mode internal stats        # Usage analytics
-/mode internal history      # Pattern tracking
-```
-
-### Benefits of Internal Modes
-
-#### Enhanced Productivity
-- **Context-Appropriate Responses**: AI thinking matches your needs
-- **Faster Problem Resolution**: Optimized cognitive approach per task
-- **Reduced Iteration**: Better first-response accuracy
-- **Workflow Acceleration**: Seamless mode transitions
-
-#### Improved Quality
-- **Specialized Processing**: Each mode optimized for specific tasks
-- **Consistency**: Reproducible thinking patterns
-- **Comprehensive Coverage**: 50 modes for diverse scenarios
-- **Adaptive Learning**: Continuous improvement
-
-#### Natural Interaction
-- **Intuitive Usage**: No command memorization required
-- **Multi-Language**: Native support for 5 languages
-- **Visual Feedback**: Clear mode indicators
-- **Seamless Experience**: Transparent mode switching
-
-### Tips for Effective Mode Usage
-
-#### Let Auto-Switching Work
-```bash
-# Good: Natural language triggers automatic modes
-"Debug this error" → ✽ 🐛 Debugging…
-"Brainstorm solutions" → ✽ 💡 Brainstorming…
-"Optimize performance" → ✽ ⚡ Optimizing…
-```
-
-#### Use Manual Override When Needed
-```bash
-# Switch manually for specific approaches
-/mode internal contemplative   # For deep thinking
-/mode internal collaborative   # For pair programming
-/mode internal intensive       # For detailed work
-```
-
-#### Monitor Your Patterns
-```bash
-# Check what modes work best for you
-/mode internal stats
-/mode internal history
 ```
 
 ## 🔍 Code Quality Analysis

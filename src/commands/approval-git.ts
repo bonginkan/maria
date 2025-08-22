@@ -224,7 +224,10 @@ async function handleApprovalLog(options: ApprovalLogOptions): Promise<void> {
 /**
  * Handle approval branch command
  */
-async function handleApprovalBranch(branchName: string, options: ApprovalBranchOptions): Promise<void> {
+async function handleApprovalBranch(
+  branchName: string,
+  options: ApprovalBranchOptions,
+): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   // Delete branch
@@ -297,7 +300,10 @@ async function handleApprovalBranch(branchName: string, options: ApprovalBranchO
 /**
  * Handle approval merge command
  */
-async function handleApprovalMerge(sourceBranch: string, options: ApprovalMergeOptions): Promise<void> {
+async function handleApprovalMerge(
+  sourceBranch: string,
+  options: ApprovalMergeOptions,
+): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
   const targetBranch = options.target || 'main';
 
@@ -320,7 +326,10 @@ async function handleApprovalMerge(sourceBranch: string, options: ApprovalMergeO
 /**
  * Handle approval revert command
  */
-async function handleApprovalRevert(commitId: string, options: ApprovalRevertOptions): Promise<void> {
+async function handleApprovalRevert(
+  commitId: string,
+  options: ApprovalRevertOptions,
+): Promise<void> {
   const repo = ApprovalRepositoryManager.getInstance();
 
   try {

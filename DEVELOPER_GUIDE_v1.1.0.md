@@ -1,16 +1,23 @@
-# MARIA Platform v1.2.0 - Developer Guide
+# MARIA Platform v1.8.1 - Developer Guide
 
 ## 🎯 Developer Overview
 
-This comprehensive guide provides enterprise developers with detailed technical implementation knowledge for MARIA Platform v1.2.0 "Cognitive Revolution". It covers the revolutionary Internal Mode System architecture, API integration, customization strategies, and advanced deployment scenarios for production environments.
+This comprehensive guide provides enterprise developers and researchers with detailed technical implementation knowledge for MARIA Platform v1.8.1. It covers local LLM integration, advanced coding assistance, research workflow optimization, and enterprise deployment strategies for privacy-first development environments.
+
+## 🔗 Official Resources
+
+- **NPM Package**: https://www.npmjs.com/package/@bonginkan/maria
+- **GitHub Repository**: https://github.com/bonginkan/maria
+- **Homepage**: https://bonginkan.ai/
+- **Documentation**: This guide and accompanying user manual
 
 ## 📋 Table of Contents
 
 1. [Development Environment Setup](#development-environment-setup)
-2. [🧠 Internal Mode System Architecture](#internal-mode-system-architecture)
-3. [Architecture Deep Dive](#architecture-deep-dive)
-4. [Code Quality Analysis Integration](#code-quality-analysis-integration)
-5. [Custom Command Development](#custom-command-development)
+2. [Local LLM Integration Architecture](#local-llm-integration-architecture)
+3. [Creative Tools Integration](#creative-tools-integration)
+4. [Core Coding Commands Development](#core-coding-commands-development)
+5. [Advanced Intelligence Features](#advanced-intelligence-features)
 6. [AI Provider Integration](#ai-provider-integration)
 7. [Enterprise Deployment](#enterprise-deployment)
 8. [API Reference](#api-reference)
@@ -50,146 +57,8 @@ pnpm test
 
 # Link for global CLI testing
 npm link
-maria --version  # Should display 1.2.0
+maria --version  # Should display 1.8.1
 ```
-
-## 🧠 Internal Mode System Architecture
-
-### Overview
-
-MARIA v1.2.0 introduces the revolutionary **Internal Mode System** - a cognitive adaptation framework with 50 specialized AI thinking modes. This section provides developers with technical implementation details.
-
-### Core Components
-
-#### Service Architecture
-
-```typescript
-// Main service entry point
-import { getInternalModeService } from './internal-mode/InternalModeService';
-
-// Initialize the service
-const modeService = getInternalModeService();
-await modeService.initialize();
-
-// Basic mode operations
-const currentMode = modeService.getCurrentMode();
-const allModes = modeService.getAllModes();
-await modeService.setMode('debugging', 'manual');
-```
-
-#### Component Structure
-
-```
-src/services/internal-mode/
-├── InternalModeService.ts          # Main orchestrator service
-├── ModeRecognitionEngine.ts        # Real-time intent recognition
-├── ModeDefinitionRegistry.ts       # 50 mode definitions
-├── ModeDisplayManager.ts           # Visual indicators
-├── ModeHistoryTracker.ts           # Learning and analytics
-├── SituationAnalyzer.ts           # Context analysis
-├── ModeTransitionHandler.ts        # State management
-├── types.ts                        # TypeScript definitions
-└── index.ts                        # Public API exports
-```
-
-#### Key Interfaces
-
-```typescript
-// Mode definition structure
-interface ModeDefinition {
-  id: string;
-  displayName: string;
-  description: string;
-  category: string;
-  triggers: string[];
-  symbol?: string;
-  color?: string;
-}
-
-// Recognition result
-interface ModeRecognitionResult {
-  mode: ModeDefinition;
-  confidence: number;
-  reasoning: string;
-  triggers: string[];
-}
-
-// Service configuration
-interface ModeConfig {
-  confidenceThreshold: number; // 0.85 default
-  autoSwitchEnabled: boolean; // true default
-  showTransitions: boolean; // true default
-  learningEnabled: boolean; // true default
-}
-```
-
-### Integration Points
-
-#### Interactive Session Integration
-
-```typescript
-// Add to interactive-session.ts
-import { getInternalModeService } from './internal-mode/InternalModeService';
-
-// Handle /mode commands
-case '/mode':
-  await handleModeCommand(args);
-  return true;
-
-// Mode command implementation
-async function handleModeCommand(args: string[]): Promise<void> {
-  const modeService = getInternalModeService();
-  await modeService.initialize();
-
-  if (args[0] === 'internal') {
-    await handleInternalModeCommands(args.slice(1), modeService);
-  }
-  // ... implementation details
-}
-```
-
-#### Natural Language Recognition
-
-```typescript
-// Automatic mode recognition
-const recognition = await modeService.recognizeMode(userInput, {
-  currentMode: modeService.getCurrentMode(),
-  language: 'en',
-  errorState: false,
-});
-
-if (recognition && recognition.confidence >= 0.85) {
-  await modeService.setMode(recognition.mode, 'intent');
-}
-```
-
-### Development Best Practices
-
-#### Adding New Modes
-
-```typescript
-// 1. Define mode in ModeDefinitionRegistry.ts
-const newMode: ModeDefinition = {
-  id: 'custom-mode',
-  displayName: 'Custom Mode',
-  description: 'Custom cognitive processing',
-  category: 'custom',
-  triggers: ['custom task', 'special processing'],
-  symbol: '✽',
-  color: 'blue',
-};
-
-// 2. Add recognition patterns in ModeRecognitionEngine.ts
-// 3. Update display logic in ModeDisplayManager.ts
-// 4. Add tests for new mode functionality
-```
-
-#### Performance Considerations
-
-- Mode switching targets: <200ms response time
-- Memory overhead: <10MB additional usage
-- Pattern storage: Efficient caching strategies
-- Background processing: Non-blocking operations
 
 ### Development Scripts
 
@@ -214,7 +83,6 @@ pnpm deps:audit    # Security audit
 ### IDE Configuration
 
 #### VS Code Setup
-
 ```json
 // .vscode/settings.json
 {
@@ -228,12 +96,160 @@ pnpm deps:audit    # Security audit
 ```
 
 #### Recommended Extensions
-
 - TypeScript Importer
 - ESLint
 - Prettier
 - GitLens
 - Thunder Client (API testing)
+
+## 🏠 Local LLM Integration Architecture
+
+**Technical Implementation Guide for Privacy-First Development**
+
+### Supported Local LLM Providers
+
+```typescript
+// Provider interface implementation
+interface LocalLLMProvider {
+  name: 'ollama' | 'lmstudio' | 'vllm';
+  endpoint: string;
+  apiFormat: 'ollama' | 'openai-compatible' | 'vllm';
+  healthCheck(): Promise<boolean>;
+  listModels(): Promise<Model[]>;
+}
+```
+
+### Ollama Integration
+
+```typescript
+// Ollama provider configuration
+const ollamaProvider = {
+  endpoint: 'http://localhost:11434',
+  apiFormat: 'ollama',
+  models: ['llama2', 'codellama', 'mistral'],
+  setup: async () => {
+    // Auto-detection and model installation
+    await exec('ollama pull llama2');
+    await exec('ollama pull codellama');
+  }
+};
+```
+
+### LM Studio Integration
+
+```typescript
+// LM Studio provider configuration  
+const lmStudioProvider = {
+  endpoint: 'http://localhost:1234',
+  apiFormat: 'openai-compatible',
+  autoDetect: true,
+  healthCheck: async () => {
+    const response = await fetch('http://localhost:1234/v1/models');
+    return response.ok;
+  }
+};
+```
+
+### vLLM Integration
+
+```typescript
+// vLLM provider configuration
+const vllmProvider = {
+  endpoint: 'http://localhost:8000',
+  apiFormat: 'openai-compatible',
+  deployment: 'server',
+  setup: {
+    requirements: ['python>=3.8', 'cuda>=11.8'],
+    installation: 'pip install vllm'
+  }
+};
+```
+
+## 🎨 Creative Tools Integration
+
+**Technical Setup Requirements for Advanced Features**
+
+### Image Generation Architecture
+
+```typescript
+interface ImageGenerationProvider {
+  type: 'local' | 'cloud';
+  backend: 'comfyui' | 'sdwebui' | 'openai' | 'replicate';
+  endpoint?: string;
+  apiKey?: string;
+}
+
+// Local image generation setup
+const localImageGen = {
+  comfyui: {
+    endpoint: 'http://localhost:8188',
+    setup: 'git clone https://github.com/comfyanonymous/ComfyUI.git'
+  },
+  sdwebui: {
+    endpoint: 'http://localhost:7860',  
+    setup: 'git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git'
+  }
+};
+```
+
+### Video Generation Architecture
+
+```typescript
+interface VideoGenerationConfig {
+  provider: 'runpod' | 'local' | 'cloud';
+  requirements: {
+    ffmpeg: boolean;
+    gpu: boolean;
+    storage: string; // '10GB+'
+  };
+}
+
+// Video processing pipeline
+const videoProcessing = {
+  dependencies: ['ffmpeg', 'python', 'torch'],
+  localSetup: {
+    ffmpeg: 'brew install ffmpeg',
+    models: ['stable-video-diffusion', 'animatediff']
+  }
+};
+```
+
+### Voice Integration Architecture
+
+```typescript
+interface VoiceConfig {
+  stt: 'whisper-local' | 'whisper-api' | 'browser-api';
+  tts: 'local' | 'openai' | 'elevenlabs';
+  realtime: boolean;
+}
+
+// Voice processing setup
+const voiceSetup = {
+  whisperLocal: {
+    model: 'whisper-base',
+    installation: 'automatic download on first use'
+  },
+  browserSTT: {
+    api: 'webkitSpeechRecognition',
+    fallback: 'SpeechRecognition'
+  }
+};
+```
+
+### Development Integration Points
+
+```bash
+# Environment configuration for development
+export MARIA_LOCAL_LLM_PROVIDER="ollama"
+export MARIA_IMAGE_PROVIDER="comfyui"  
+export MARIA_VIDEO_PROVIDER="local"
+export MARIA_VOICE_PROVIDER="whisper-local"
+
+# Development testing
+pnpm test:local-llm
+pnpm test:creative-tools
+pnpm test:integration
+```
 
 ## 🏗️ Architecture Deep Dive
 
@@ -242,12 +258,12 @@ pnpm deps:audit    # Security audit
 ```typescript
 // Core system architecture
 interface MARIAArchitecture {
-  cli: CLILayer; // Commander.js-based CLI
-  session: InteractiveSession; // Session management
-  router: IntelligentRouter; // Natural language routing
-  analysis: CodeQualityPlatform; // Phase 6 analysis engine
-  ai: MultiProviderIntegration; // AI model management
-  storage: PersistentStorage; // Configuration & state
+  cli: CLILayer;                    // Commander.js-based CLI
+  session: InteractiveSession;      // Session management
+  router: IntelligentRouter;        // Natural language routing
+  analysis: CodeQualityPlatform;    // Phase 6 analysis engine
+  ai: MultiProviderIntegration;     // AI model management
+  storage: PersistentStorage;       // Configuration & state
 }
 ```
 
@@ -333,12 +349,12 @@ class BugAnalysisEngine {
     const patterns = await this.detectPatterns(description);
     const severity = this.calculateSeverity(patterns);
     const suggestions = await this.generateFixSuggestions(patterns);
-
+    
     return {
       patterns,
       severity,
       autoFixSuggestions: suggestions,
-      confidence: this.calculateConfidence(patterns),
+      confidence: this.calculateConfidence(patterns)
     };
   }
 
@@ -369,7 +385,7 @@ class LintAnalysisEngine {
     const eslint = new ESLint({
       baseConfig: this.getBaseConfiguration(),
       useEslintrc: false,
-      fix: this.config.autoFixEnabled,
+      fix: this.config.autoFixEnabled
     });
 
     const results = await eslint.lintFiles(files);
@@ -386,9 +402,9 @@ class LintAnalysisEngine {
         'no-console': 'warn',
         'no-unused-vars': 'error',
         'no-undef': 'error',
-        semi: 'error',
-        quotes: ['error', 'single'],
-      },
+        'semi': 'error',
+        'quotes': ['error', 'single']
+      }
     };
   }
 }
@@ -409,12 +425,12 @@ class TypeSafetyEngine {
   async analyzeTypeSafety(project: string): Promise<TypeSafetyAnalysis> {
     const program = this.createTypeScriptProgram(project);
     const diagnostics = ts.getPreEmitDiagnostics(program);
-
+    
     return {
       typeErrors: this.processDiagnostics(diagnostics),
       coverage: await this.calculateTypeCoverage(program),
       strictModeCompliance: this.checkStrictMode(program),
-      recommendations: this.generateRecommendations(program),
+      recommendations: this.generateRecommendations(program)
     };
   }
 
@@ -436,7 +452,7 @@ class TypeSafetyEngine {
       typedSymbols,
       percentage: (typedSymbols / totalSymbols) * 100,
       anyUsage: this.countAnyUsage(sourceFiles),
-      unknownUsage: this.countUnknownUsage(sourceFiles),
+      unknownUsage: this.countUnknownUsage(sourceFiles)
     };
   }
 }
@@ -457,12 +473,12 @@ class SecurityAnalysisEngine {
   async performSecurityScan(codebase: string[]): Promise<SecurityAnalysisResult> {
     const vulnerabilities = await this.scanVulnerabilities(codebase);
     const owaspResults = await this.checkOWASPCompliance(codebase);
-
+    
     return {
       vulnerabilities,
       owaspCompliance: owaspResults,
       riskScore: this.calculateRiskScore(vulnerabilities),
-      recommendations: this.generateSecurityRecommendations(vulnerabilities),
+      recommendations: this.generateSecurityRecommendations(vulnerabilities)
     };
   }
 
@@ -478,10 +494,12 @@ class SecurityAnalysisEngine {
       this.checkIdentificationAuthFailures,
       this.checkSoftwareIntegrityFailures,
       this.checkSecurityLoggingFailures,
-      this.checkServerSideRequestForgery,
+      this.checkServerSideRequestForgery
     ];
 
-    const results = await Promise.all(checks.map((check) => check(files)));
+    const results = await Promise.all(
+      checks.map(check => check(files))
+    );
 
     return this.consolidateOWASPResults(results);
   }
@@ -515,16 +533,16 @@ export default function registerCustomCommand(program: Command) {
 async function handleCustomCommand(options: CustomCommandOptions) {
   // Implementation logic
   console.log('Executing custom command...');
-
+  
   if (options.verbose) {
     console.log('Verbose mode enabled');
   }
-
+  
   // Return structured result
   return {
     success: true,
     data: processedData,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date().toISOString()
   };
 }
 ```
@@ -542,11 +560,11 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
 
   switch (cmd) {
     // ... existing commands
-
+    
     case '/custom':
       await handleCustomSlashCommand(args);
       return true;
-
+      
     default:
       console.log(chalk.red(`Unknown command: ${cmd}. Type /help for available commands.`));
       return true;
@@ -555,7 +573,7 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
 
 async function handleCustomSlashCommand(args: string[]): Promise<void> {
   console.log(chalk.blue('\n🔧 Custom Command\n'));
-
+  
   if (args.length === 0) {
     console.log(chalk.yellow('Custom Command Options:'));
     console.log(chalk.cyan('• /custom action') + ' - Perform custom action');
@@ -566,18 +584,18 @@ async function handleCustomSlashCommand(args: string[]): Promise<void> {
   }
 
   const action = args[0].toLowerCase();
-
+  
   switch (action) {
     case 'action':
       console.log(chalk.green('🔄 Executing custom action...'));
       // Implementation
       break;
-
+      
     case 'status':
       console.log(chalk.green('📊 Checking status...'));
       // Implementation
       break;
-
+      
     default:
       console.log(chalk.red(`Unknown action: ${action}`));
   }
@@ -592,7 +610,7 @@ function showHelp(): void {
   console.log(chalk.blue('\n📖 MARIA Commands:\n'));
 
   // ... existing sections
-
+  
   console.log(chalk.yellow('🔧 Custom Commands:'));
   console.log(chalk.cyan('/custom') + '        - Custom functionality');
   console.log('');
@@ -618,14 +636,14 @@ export class CustomAIProvider implements AIProvider {
     const response = await fetch(`${this.baseUrl}/chat`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         message,
         model: options?.model || 'default',
-        temperature: options?.temperature || 0.7,
-      }),
+        temperature: options?.temperature || 0.7
+      })
     });
 
     if (!response.ok) {
@@ -640,14 +658,14 @@ export class CustomAIProvider implements AIProvider {
     const response = await fetch(`${this.baseUrl}/chat/stream`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this.apiKey}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         message,
         model: options?.model || 'default',
-        stream: true,
-      }),
+        stream: true
+      })
     });
 
     if (!response.ok) {
@@ -682,8 +700,8 @@ export class CustomAIProvider implements AIProvider {
   async getModels(): Promise<AIModel[]> {
     const response = await fetch(`${this.baseUrl}/models`, {
       headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-      },
+        'Authorization': `Bearer ${this.apiKey}`
+      }
     });
 
     if (!response.ok) {
@@ -696,26 +714,26 @@ export class CustomAIProvider implements AIProvider {
       provider: 'custom',
       capabilities: model.capabilities || ['chat'],
       available: true,
-      description: model.description || '',
+      description: model.description || ''
     }));
   }
 
   async getHealth(): Promise<ProviderHealth> {
     try {
       const response = await fetch(`${this.baseUrl}/health`, {
-        headers: { Authorization: `Bearer ${this.apiKey}` },
+        headers: { 'Authorization': `Bearer ${this.apiKey}` }
       });
 
       return {
         status: response.ok ? 'healthy' : 'unhealthy',
         latency: response.headers.get('x-response-time') || '0ms',
-        lastCheck: new Date(),
+        lastCheck: new Date()
       };
     } catch (error) {
       return {
         status: 'unhealthy',
         error: error.message,
-        lastCheck: new Date(),
+        lastCheck: new Date()
       };
     }
   }
@@ -737,7 +755,7 @@ export class MariaAI {
     // Standard providers
     this.providers.set('openai', new OpenAIProvider(config.openai));
     this.providers.set('anthropic', new AnthropicProvider(config.anthropic));
-
+    
     // Custom provider
     if (config.custom) {
       this.providers.set('custom', new CustomAIProvider(config.custom));
@@ -812,7 +830,7 @@ services:
   maria:
     build: .
     ports:
-      - '3000:3000'
+      - "3000:3000"
     environment:
       - NODE_ENV=development
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -827,7 +845,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
   postgres:
     image: postgres:15-alpine
@@ -836,7 +854,7 @@ services:
       POSTGRES_USER: maria
       POSTGRES_PASSWORD: maria_password
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -865,37 +883,37 @@ spec:
         app: maria-platform
     spec:
       containers:
-        - name: maria
-          image: bonginkan/maria:1.1.0
-          ports:
-            - containerPort: 3000
-          env:
-            - name: NODE_ENV
-              value: 'production'
-            - name: OPENAI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: maria-secrets
-                  key: openai-api-key
-          resources:
-            requests:
-              memory: '256Mi'
-              cpu: '250m'
-            limits:
-              memory: '512Mi'
-              cpu: '500m'
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 5
+      - name: maria
+        image: bonginkan/maria:1.1.0
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: maria-secrets
+              key: openai-api-key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
 
 ---
 apiVersion: v1
@@ -906,9 +924,9 @@ spec:
   selector:
     app: maria-platform
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3000
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
   type: LoadBalancer
 ```
 
@@ -971,8 +989,8 @@ interface BugAnalysisOptions {
 }
 
 export async function analyzeBug(
-  description: string,
-  options?: BugAnalysisOptions,
+  description: string, 
+  options?: BugAnalysisOptions
 ): Promise<BugAnalysisResult>;
 
 // Lint analysis
@@ -983,8 +1001,8 @@ interface LintOptions {
 }
 
 export async function performLintAnalysis(
-  files: string[],
-  options?: LintOptions,
+  files: string[], 
+  options?: LintOptions
 ): Promise<LintResult>;
 
 // Type checking
@@ -995,8 +1013,8 @@ interface TypeCheckOptions {
 }
 
 export async function analyzeTypeSafety(
-  project: string,
-  options?: TypeCheckOptions,
+  project: string, 
+  options?: TypeCheckOptions
 ): Promise<TypeSafetyAnalysis>;
 
 // Security review
@@ -1007,8 +1025,8 @@ interface SecurityOptions {
 }
 
 export async function performSecurityReview(
-  codebase: string[],
-  options?: SecurityOptions,
+  codebase: string[], 
+  options?: SecurityOptions
 ): Promise<SecurityAnalysisResult>;
 ```
 
@@ -1063,7 +1081,7 @@ describe('Bug Analysis Command', () => {
   it('should detect null pointer exceptions', async () => {
     const description = 'TypeError: Cannot read property of undefined';
     const result = await analyzeBug(description);
-
+    
     expect(result.patterns).toHaveLength(1);
     expect(result.patterns[0].type).toBe('null-pointer');
     expect(result.severity).toBe('high');
@@ -1073,7 +1091,7 @@ describe('Bug Analysis Command', () => {
   it('should provide confidence scoring', async () => {
     const description = 'Application crashes on startup';
     const result = await analyzeBug(description);
-
+    
     expect(result.confidence).toBeGreaterThan(0);
     expect(result.confidence).toBeLessThanOrEqual(1);
   });
@@ -1090,7 +1108,7 @@ import { describe, it, expect } from 'vitest';
 describe('Interactive Session Integration', () => {
   it('should handle lint command correctly', async () => {
     const maria = spawn('node', ['bin/maria.js'], {
-      stdio: ['pipe', 'pipe', 'pipe'],
+      stdio: ['pipe', 'pipe', 'pipe']
     });
 
     maria.stdin.write('/lint check\n');
@@ -1123,15 +1141,15 @@ describe('Command Performance', () => {
     const start = performance.now();
     await performLintAnalysis(['src/test-file.ts']);
     const end = performance.now();
-
+    
     const duration = end - start;
     expect(duration).toBeLessThan(300);
   });
 
   it('should handle 100 concurrent requests', async () => {
-    const requests = Array(100)
-      .fill(null)
-      .map(() => analyzeBug('Sample bug description'));
+    const requests = Array(100).fill(null).map(() =>
+      analyzeBug('Sample bug description')
+    );
 
     const start = performance.now();
     await Promise.all(requests);
@@ -1168,7 +1186,7 @@ class OptimizedAnalysisEngine {
       const firstKey = this.cache.keys().next().value;
       this.cache.delete(firstKey);
     }
-
+    
     this.cache.set(cacheKey, result);
     return result;
   }
@@ -1229,7 +1247,7 @@ class AnalysisWorkerPool {
   async process(task: AnalysisTask): Promise<AnalysisResult> {
     return new Promise((resolve, reject) => {
       const worker = this.getAvailableWorker();
-
+      
       worker.postMessage(task);
       worker.once('message', resolve);
       worker.once('error', reject);
@@ -1302,7 +1320,7 @@ pnpm build
 // Debugging AI provider connectivity
 export async function debugProviders(): Promise<void> {
   const providers = ['openai', 'anthropic', 'google', 'groq'];
-
+  
   for (const provider of providers) {
     try {
       const health = await getProviderHealth(provider);
@@ -1316,7 +1334,7 @@ export async function debugProviders(): Promise<void> {
 // Health check implementation
 async function getProviderHealth(provider: string): Promise<ProviderHealth> {
   const apiKey = process.env[`${provider.toUpperCase()}_API_KEY`];
-
+  
   if (!apiKey) {
     throw new Error(`API key not configured for ${provider}`);
   }
@@ -1343,10 +1361,10 @@ export function runPerformanceDiagnostics(): void {
   console.log(`Architecture: ${process.arch}`);
   console.log(`Memory Usage: ${JSON.stringify(process.memoryUsage(), null, 2)}`);
   console.log(`CPU Count: ${require('os').cpus().length}`);
-
+  
   // Measure command execution time
   const commands = ['/lint check', '/typecheck analyze', '/security-review scan'];
-
+  
   for (const command of commands) {
     console.time(command);
     // Execute command
@@ -1362,7 +1380,7 @@ export function runPerformanceDiagnostics(): void {
 export function enableDebugMode(): void {
   process.env.DEBUG = 'maria:*';
   process.env.NODE_ENV = 'development';
-
+  
   // Enhanced logging
   const originalLog = console.log;
   console.log = (...args) => {
@@ -1375,8 +1393,7 @@ export function enableDebugMode(): void {
 export function startMemoryMonitoring(): void {
   setInterval(() => {
     const usage = process.memoryUsage();
-    if (usage.heapUsed > 100 * 1024 * 1024) {
-      // 100MB threshold
+    if (usage.heapUsed > 100 * 1024 * 1024) { // 100MB threshold
       console.warn('High memory usage detected:', usage);
     }
   }, 30000); // Check every 30 seconds
@@ -1430,4 +1447,4 @@ tail -f ~/.maria/logs/maria.log | grep PERFORMANCE
 
 This developer guide provides comprehensive technical knowledge for implementing, customizing, and deploying MARIA Platform v1.1.0 in enterprise environments. For additional support, contact: **developer-support@bonginkan.ai**
 
-_Copyright © 2025 Bonginkan Inc. All rights reserved._
+*Copyright © 2025 Bonginkan Inc. All rights reserved.*

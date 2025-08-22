@@ -367,7 +367,7 @@ export class DualMemoryEngine {
         )) as T;
         break;
 
-      case 'pattern':
+      case 'pattern': {
         const { language, framework, useCase } = query.context || {};
         result = (await this.system1.findCodePatterns(
           language as string,
@@ -376,9 +376,10 @@ export class DualMemoryEngine {
           query.limit,
         )) as T;
         break;
+      }
 
       case 'preference':
-        result = await this.system1.getUserPreference('learningStyle') as T;
+        result = (await this.system1.getUserPreference('learningStyle')) as T;
         break;
 
       default:
@@ -399,7 +400,7 @@ export class DualMemoryEngine {
     let result: T;
 
     switch (query.type) {
-      case 'reasoning':
+      case 'reasoning': {
         const { domain, complexity, minQuality } = query.context || {};
         result = (await this.system2.searchReasoningTraces(
           {
@@ -410,6 +411,7 @@ export class DualMemoryEngine {
           query.limit,
         )) as T;
         break;
+      }
 
       case 'quality':
         result = this.system2.qualityEvaluation as T;

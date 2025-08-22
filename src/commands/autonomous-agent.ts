@@ -50,7 +50,10 @@ export default function registerAutonomousAgentCommand(program: Command): void {
 
           console.log(chalk.green('\n✅ Autonomous execution completed successfully!'));
         } catch (error: unknown) {
-          console.error(chalk.red('\n❌ Autonomous agent execution failed:'), error instanceof Error ? error.message : String(error));
+          console.error(
+            chalk.red('\n❌ Autonomous agent execution failed:'),
+            error instanceof Error ? error.message : String(error),
+          );
           process.exit(1);
         }
       },
@@ -88,7 +91,10 @@ export default function registerAutonomousAgentCommand(program: Command): void {
           chalk.cyan('\n💡 Try your own request with: maria agent execute "<your request>"'),
         );
       } catch (error: unknown) {
-        console.error(chalk.red('\n❌ Demo execution failed:'), error instanceof Error ? error.message : String(error));
+        console.error(
+          chalk.red('\n❌ Demo execution failed:'),
+          error instanceof Error ? error.message : String(error),
+        );
         process.exit(1);
       }
     });
@@ -131,7 +137,10 @@ export default function registerAutonomousAgentCommand(program: Command): void {
         console.log(chalk.white('  • Multi-Language Code Generation'));
         console.log(chalk.white('  • Complete Software Development Lifecycle\n'));
       } catch (error: unknown) {
-        console.error(chalk.red('❌ Status check failed:'), error instanceof Error ? error.message : String(error));
+        console.error(
+          chalk.red('❌ Status check failed:'),
+          error instanceof Error ? error.message : String(error),
+        );
         process.exit(1);
       }
     });
