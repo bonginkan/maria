@@ -1,57 +1,11 @@
 /**
- * MARIA - Intelligent CLI Assistant
- * Entry point for the library
+ * MARIA - AI-Powered Development Platform
+ * OSS Distribution Entry Point
+ * @version 1.0.7
  */
 
 // CLI entry point
 export { createCLI } from './cli';
 
-// Slash Commands System Exports
-export {
-  commandRegistry,
-  initializeSlashCommands,
-  getCommandSuggestions,
-  getCommandsByCategory,
-} from './slash-commands';
-export type {
-  ISlashCommand,
-  CommandArgs,
-  CommandContext,
-  CommandResult,
-  IMiddleware,
-} from './slash-commands/types';
-export { BaseCommand } from './slash-commands/base-command';
-
-// Memory System Exports
-export { DualMemoryEngine } from './services/memory-system/dual-memory-engine';
-export { MemoryCoordinator } from './services/memory-system/memory-coordinator';
-export { System1MemoryManager as System1Memory } from './services/memory-system/system1-memory';
-export { System2MemoryManager as System2Memory } from './services/memory-system/system2-memory';
-
-// Internal Mode System Exports
-export {
-  InternalModeService,
-  getInternalModeService,
-} from './services/internal-mode/InternalModeService';
-// Temporarily disabled due to type errors - will fix in integration phase
-// export { MemoryAwareModeService } from './services/internal-mode/MemoryAwareModeService';
-
-// Memory System Types
-export type {
-  MemoryEvent,
-  UserPreferenceSet,
-  ReasoningTrace,
-  QualityMetrics,
-} from './services/memory-system/types/memory-interfaces';
-
-export type { MemoryResponse } from './services/memory-system/dual-memory-engine';
-
-export type {
-  ModeDefinition,
-  ModeContext,
-  ModeRecognitionResult,
-  ModeConfig,
-} from './services/internal-mode/types';
-
 // Version
-export const VERSION = '1.1.0';
+export const VERSION = '1.0.7';
