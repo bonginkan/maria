@@ -1,6 +1,6 @@
 /**
  * Team Memory Manager
- * 
+ *
  * Manages shared memory across team members with real-time synchronization
  * and access control. Enables collaborative development with shared knowledge.
  */
@@ -100,7 +100,7 @@ export class TeamMemoryManager extends EventEmitter {
       maxMembersPerWorkspace: 50,
       defaultSyncInterval: 5000,
       conflictResolution: 'merge',
-    }
+    },
   ) {
     super();
     this.startSyncProcess();
@@ -113,7 +113,7 @@ export class TeamMemoryManager extends EventEmitter {
     name: string,
     description: string,
     owner: TeamMember,
-    settings?: Partial<WorkspaceSettings>
+    settings?: Partial<WorkspaceSettings>,
   ): Promise<TeamWorkspace> {
     if (this.workspaces.size >= this.config.maxWorkspaces) {
       throw new Error('Maximum workspace limit reached');
@@ -160,22 +160,19 @@ export class TeamMemoryManager extends EventEmitter {
     };
 
     this.workspaces.set(workspace.id, workspace);
-    
+
     // Initialize owner's memory engine
     await this.initializeMemberEngine(owner.id, workspace.id);
-    
+
     this.emit('workspace:created', { workspace, owner });
-    
+
     return workspace;
   }
 
   /**
    * Join an existing workspace
    */
-  async joinWorkspace(
-    workspaceId: string,
-    member: TeamMember
-  ): Promise<void> {
+  async joinWorkspace(workspaceId: string, member: TeamMember): Promise<void> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) {
       throw new Error('Workspace not found');
@@ -185,19 +182,19 @@ export class TeamMemoryManager extends EventEmitter {
       throw new Error('Workspace member limit reached');
     }
 
-    if (workspace.members.some(m => m.id === member.id)) {
+    if (workspace.members.some((m) => m.id === member.id)) {
       throw new Error('Member already in workspace');
     }
 
     workspace.members.push(member);
     workspace.memoryPool.statistics.contributionsByMember.set(member.id, 0);
-    
+
     // Initialize member's memory engine
     await this.initializeMemberEngine(member.id, workspaceId);
-    
+
     // Sync existing memory to new member
     await this.syncToMember(member.id, workspaceId);
-    
+
     this.emit('member:joined', { workspace, member });
   }
 
@@ -211,14 +208,14 @@ export class TeamMemoryManager extends EventEmitter {
       type: 'knowledge' | 'pattern' | 'reasoning' | 'preference';
       data: any;
       metadata?: any;
-    }
+    },
   ): Promise<void> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) {
       throw new Error('Workspace not found');
     }
 
-    const member = workspace.members.find(m => m.id === memberId);
+    const member = workspace.members.find((m) => m.id === memberId);
     if (!member) {
       throw new Error('Member not in workspace');
     }
@@ -250,7 +247,7 @@ export class TeamMemoryManager extends EventEmitter {
     workspace.memoryPool.statistics.sharedCount++;
     workspace.memoryPool.statistics.contributionsByMember.set(
       memberId,
-      (workspace.memoryPool.statistics.contributionsByMember.get(memberId) || 0) + 1
+      (workspace.memoryPool.statistics.contributionsByMember.get(memberId) || 0) + 1,
     );
 
     // Queue for sync
@@ -275,14 +272,14 @@ export class TeamMemoryManager extends EventEmitter {
       type: 'knowledge' | 'pattern' | 'reasoning' | 'preference';
       filter?: string;
       limit?: number;
-    }
+    },
   ): Promise<any[]> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) {
       throw new Error('Workspace not found');
     }
 
-    const member = workspace.members.find(m => m.id === memberId);
+    const member = workspace.members.find((m) => m.id === memberId);
     if (!member) {
       throw new Error('Member not in workspace');
     }
@@ -296,7 +293,7 @@ export class TeamMemoryManager extends EventEmitter {
 
     // Query from pool
     let results: any[] = [];
-    
+
     switch (query.type) {
       case 'knowledge':
         results = this.queryPool(workspace.memoryPool.knowledge, query.filter, query.limit);
@@ -313,7 +310,7 @@ export class TeamMemoryManager extends EventEmitter {
     }
 
     this.emit('memory:queried', { workspace, member, query, resultCount: results.length });
-    
+
     return results;
   }
 
@@ -336,8 +333,8 @@ export class TeamMemoryManager extends EventEmitter {
         if (!workspace) continue;
 
         // Sync to all members except the originator
-        const otherMembers = workspace.members.filter(m => m.id !== event.memberId);
-        
+        const otherMembers = workspace.members.filter((m) => m.id !== event.memberId);
+
         for (const member of otherMembers) {
           const engine = this.memberEngines.get(`${member.id}_${event.workspace}`);
           if (engine) {
@@ -385,10 +382,7 @@ export class TeamMemoryManager extends EventEmitter {
   /**
    * Handle merge conflicts
    */
-  private async handleMergeConflict(
-    engine: DualMemoryEngine,
-    event: SyncEvent
-  ): Promise<void> {
+  private async handleMergeConflict(engine: DualMemoryEngine, event: SyncEvent): Promise<void> {
     switch (this.config.conflictResolution) {
       case 'latest':
         // Use the latest change
@@ -408,12 +402,9 @@ export class TeamMemoryManager extends EventEmitter {
   /**
    * Initialize member's memory engine
    */
-  private async initializeMemberEngine(
-    memberId: string,
-    workspaceId: string
-  ): Promise<void> {
+  private async initializeMemberEngine(memberId: string, workspaceId: string): Promise<void> {
     const key = `${memberId}_${workspaceId}`;
-    
+
     if (!this.memberEngines.has(key)) {
       const engine = new DualMemoryEngine({
         system1: {
@@ -451,10 +442,7 @@ export class TeamMemoryManager extends EventEmitter {
   /**
    * Sync existing memory to new member
    */
-  private async syncToMember(
-    memberId: string,
-    workspaceId: string
-  ): Promise<void> {
+  private async syncToMember(memberId: string, workspaceId: string): Promise<void> {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) return;
 
@@ -464,13 +452,12 @@ export class TeamMemoryManager extends EventEmitter {
     // Sync all shared memory to new member
     for (const [contributorId, nodes] of workspace.memoryPool.knowledge) {
       for (const node of nodes) {
-        await engine.getSystem1().addKnowledgeNode(
-          node.type,
-          node.id,
-          node.content,
-          node.embedding,
-          { ...node.metadata, sharedBy: contributorId }
-        );
+        await engine
+          .getSystem1()
+          .addKnowledgeNode(node.type, node.id, node.content, node.embedding, {
+            ...node.metadata,
+            sharedBy: contributorId,
+          });
       }
     }
 
@@ -487,11 +474,9 @@ export class TeamMemoryManager extends EventEmitter {
       for (const trace of traces) {
         // Start and complete trace to preserve history
         const newTrace = await engine.getSystem2().startReasoningTrace(trace.context);
-        await engine.getSystem2().completeReasoningTrace(
-          newTrace.id,
-          trace.outcome || '',
-          trace.metadata.qualityScore
-        );
+        await engine
+          .getSystem2()
+          .completeReasoningTrace(newTrace.id, trace.outcome || '', trace.metadata.qualityScore);
       }
     }
   }
@@ -499,11 +484,7 @@ export class TeamMemoryManager extends EventEmitter {
   /**
    * Helper: Add to pool
    */
-  private addToPool<T>(
-    pool: Map<string, T[]>,
-    memberId: string,
-    data: T
-  ): void {
+  private addToPool<T>(pool: Map<string, T[]>, memberId: string, data: T): void {
     const existing = pool.get(memberId) || [];
     existing.push(data);
     pool.set(memberId, existing);
@@ -512,13 +493,9 @@ export class TeamMemoryManager extends EventEmitter {
   /**
    * Helper: Query pool
    */
-  private queryPool<T>(
-    pool: Map<string, T[]>,
-    filter?: string,
-    limit?: number
-  ): T[] {
+  private queryPool<T>(pool: Map<string, T[]>, filter?: string, limit?: number): T[] {
     const allItems: T[] = [];
-    
+
     for (const items of pool.values()) {
       allItems.push(...items);
     }
@@ -526,8 +503,8 @@ export class TeamMemoryManager extends EventEmitter {
     // Apply filter if provided
     let filtered = allItems;
     if (filter) {
-      filtered = allItems.filter(item => 
-        JSON.stringify(item).toLowerCase().includes(filter.toLowerCase())
+      filtered = allItems.filter((item) =>
+        JSON.stringify(item).toLowerCase().includes(filter.toLowerCase()),
       );
     }
 
@@ -544,12 +521,12 @@ export class TeamMemoryManager extends EventEmitter {
    */
   private hasReadPermission(member: TeamMember, workspace: TeamWorkspace): boolean {
     const permission = workspace.settings.accessControl.readPermission;
-    
+
     switch (permission) {
       case 'all':
         return true;
       case 'team':
-        return workspace.members.some(m => m.id === member.id);
+        return workspace.members.some((m) => m.id === member.id);
       case 'role-based':
         return member.role !== 'viewer';
       default:
@@ -559,7 +536,7 @@ export class TeamMemoryManager extends EventEmitter {
 
   private hasWritePermission(member: TeamMember, workspace: TeamWorkspace): boolean {
     const permission = workspace.settings.accessControl.writePermission;
-    
+
     switch (permission) {
       case 'all':
         return true;
@@ -588,7 +565,7 @@ export class TeamMemoryManager extends EventEmitter {
     }
 
     this.syncInterval = setInterval(() => {
-      this.synchronizeMemory().catch(error => {
+      this.synchronizeMemory().catch((error) => {
         console.error('Sync error:', error);
       });
     }, this.config.defaultSyncInterval);
@@ -618,7 +595,7 @@ export class TeamMemoryManager extends EventEmitter {
   getMemberContribution(memberId: string, workspaceId: string): number {
     const workspace = this.workspaces.get(workspaceId);
     if (!workspace) return 0;
-    
+
     return workspace.memoryPool.statistics.contributionsByMember.get(memberId) || 0;
   }
 

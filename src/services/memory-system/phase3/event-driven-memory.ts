@@ -1,16 +1,16 @@
 /**
  * MARIA Memory System - Phase 3: Event-Driven Memory Updates
- * 
+ *
  * Real-time event processing and memory synchronization
  * with automatic pattern detection and learning triggers
  */
 
 import { EventEmitter } from 'events';
-import { 
-  MemoryEvent, 
-  MemoryEventType, 
+import {
+  MemoryEvent,
+  MemoryEventType,
   EventMetadata,
-  ReasoningTrace 
+  ReasoningTrace,
 } from '../types/memory-interfaces';
 import { KnowledgeGraphEngine } from './knowledge-graph-engine';
 import { DualMemoryEngine } from '../dual-memory-engine';
@@ -88,7 +88,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
   constructor(
     memoryEngine: DualMemoryEngine,
     graphEngine: KnowledgeGraphEngine,
-    config?: Partial<EventProcessingConfig>
+    config?: Partial<EventProcessingConfig>,
   ) {
     super();
     this.memoryEngine = memoryEngine;
@@ -96,7 +96,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
     this.eventQueue = new PriorityQueue();
     this.processors = new Map();
     this.eventBuffer = new Map();
-    
+
     this.config = {
       batchSize: config?.batchSize || 10,
       processingInterval: config?.processingInterval || 1000,
@@ -104,19 +104,19 @@ export class EventDrivenMemorySystem extends EventEmitter {
       priorityThresholds: config?.priorityThresholds || {
         critical: 0.9,
         high: 0.7,
-        medium: 0.5
-      }
+        medium: 0.5,
+      },
     };
-    
+
     this.statistics = {
       totalEvents: 0,
       eventsByType: new Map(),
       averageProcessingTime: 0,
       successRate: 1.0,
       queueSize: 0,
-      lastProcessedTime: new Date()
+      lastProcessedTime: new Date(),
     };
-    
+
     this.initializeProcessors();
     this.startProcessing();
   }
@@ -127,24 +127,24 @@ export class EventDrivenMemorySystem extends EventEmitter {
   async submitEvent(event: MemoryEvent): Promise<void> {
     // Validate event
     this.validateEvent(event);
-    
+
     // Calculate priority
     const priority = this.calculatePriority(event);
-    
+
     // Add to queue
     this.eventQueue.enqueue(event, priority);
-    
+
     // Update statistics
     this.statistics.totalEvents++;
     this.statistics.eventsByType.set(
       event.type,
-      (this.statistics.eventsByType.get(event.type) || 0) + 1
+      (this.statistics.eventsByType.get(event.type) || 0) + 1,
     );
     this.statistics.queueSize = this.eventQueue.size();
-    
+
     // Emit event received
     this.emit('eventReceived', event);
-    
+
     // Trigger immediate processing for critical events
     if (priority >= this.config.priorityThresholds.critical) {
       await this.processImmediate(event);
@@ -178,49 +178,45 @@ export class EventDrivenMemorySystem extends EventEmitter {
    */
   private async processBatch(): Promise<void> {
     if (this.processing || this.eventQueue.isEmpty()) return;
-    
+
     this.processing = true;
     const batch: MemoryEvent[] = [];
     const startTime = Date.now();
-    
+
     // Dequeue batch
     for (let i = 0; i < this.config.batchSize && !this.eventQueue.isEmpty(); i++) {
       batch.push(this.eventQueue.dequeue()!);
     }
-    
+
     // Process events in parallel
-    const results = await Promise.allSettled(
-      batch.map(event => this.processEvent(event))
-    );
-    
+    const results = await Promise.allSettled(batch.map((event) => this.processEvent(event)));
+
     // Handle results
     let successCount = 0;
     for (let i = 0; i < results.length; i++) {
       const result = results[i];
       const event = batch[i];
-      
+
       if (result.status === 'fulfilled' && result.value.success) {
         successCount++;
         await this.applyMemoryUpdates(result.value);
         this.emit('eventProcessed', event, result.value);
       } else {
-        const error = result.status === 'rejected' 
-          ? result.reason 
-          : (result as any).value?.error;
-        
+        const error = result.status === 'rejected' ? result.reason : (result as any).value?.error;
+
         this.emit('eventError', event, error);
-        
+
         // Retry if needed
         if (this.shouldRetry(event)) {
           await this.submitEvent(event);
         }
       }
     }
-    
+
     // Update statistics
     const processingTime = Date.now() - startTime;
     this.updateStatistics(batch.length, successCount, processingTime);
-    
+
     this.processing = false;
     this.statistics.queueSize = this.eventQueue.size();
   }
@@ -230,18 +226,18 @@ export class EventDrivenMemorySystem extends EventEmitter {
    */
   private async processEvent(event: MemoryEvent): Promise<ProcessingResult> {
     const processor = this.processors.get(event.type);
-    
+
     if (!processor) {
       return this.defaultProcessor(event);
     }
-    
+
     try {
       return await processor.process(event);
     } catch (error) {
       return {
         success: false,
         memoryUpdates: [],
-        error: error as Error
+        error: error as Error,
       };
     }
   }
@@ -253,30 +249,30 @@ export class EventDrivenMemorySystem extends EventEmitter {
     const memoryUpdates: MemoryUpdate[] = [];
     const graphUpdates: GraphUpdate[] = [];
     const learningTriggers: LearningTrigger[] = [];
-    
+
     // Extract entities from event data if it's text
     if (typeof event.data === 'string') {
       const extraction = await this.graphEngine.extractEntities(event.data);
-      
+
       if (extraction.entities.length > 0) {
         await this.graphEngine.addToGraph(extraction);
-        
+
         graphUpdates.push({
           operation: 'add_node',
-          data: extraction
+          data: extraction,
         });
       }
     }
-    
+
     // Store event in System 1 memory for fast access
     memoryUpdates.push({
       type: 'system1',
       operation: 'add',
       target: 'pastInteractions',
       data: event,
-      metadata: { timestamp: event.timestamp }
+      metadata: { timestamp: event.timestamp },
     });
-    
+
     // If there's reasoning, store in System 2
     if (event.reasoning) {
       memoryUpdates.push({
@@ -284,24 +280,24 @@ export class EventDrivenMemorySystem extends EventEmitter {
         operation: 'add',
         target: 'reasoningTraces',
         data: event.reasoning,
-        metadata: { eventId: event.id }
+        metadata: { eventId: event.id },
       });
     }
-    
+
     // Check for learning triggers
     if (this.detectPattern(event)) {
       learningTriggers.push({
         type: 'pattern_detected',
         data: event,
-        action: 'adapt'
+        action: 'adapt',
       });
     }
-    
+
     return {
       success: true,
       memoryUpdates,
       graphUpdates,
-      learningTriggers
+      learningTriggers,
     };
   }
 
@@ -316,11 +312,11 @@ export class EventDrivenMemorySystem extends EventEmitter {
       process: async (event) => {
         const code = event.data as string;
         const extraction = await this.graphEngine.extractEntities(code, {
-          type: 'code_generation'
+          type: 'code_generation',
         });
-        
+
         await this.graphEngine.addToGraph(extraction);
-        
+
         return {
           success: true,
           memoryUpdates: [
@@ -328,26 +324,26 @@ export class EventDrivenMemorySystem extends EventEmitter {
               type: 'system1',
               operation: 'add',
               target: 'codePatterns',
-              data: { code, entities: extraction.entities }
-            }
+              data: { code, entities: extraction.entities },
+            },
           ],
           graphUpdates: [
             {
               operation: 'add_node',
-              data: extraction
-            }
-          ]
+              data: extraction,
+            },
+          ],
         };
-      }
+      },
     });
-    
+
     // Bug fix processor
     this.registerProcessor({
       type: 'bug_fix',
       priority: 0.9,
       process: async (event) => {
         const bugData = event.data as any;
-        
+
         return {
           success: true,
           memoryUpdates: [
@@ -355,20 +351,20 @@ export class EventDrivenMemorySystem extends EventEmitter {
               type: 'both',
               operation: 'add',
               target: 'bugPatterns',
-              data: bugData
-            }
+              data: bugData,
+            },
           ],
           learningTriggers: [
             {
               type: 'pattern_detected',
               data: bugData,
-              action: 'train'
-            }
-          ]
+              action: 'train',
+            },
+          ],
         };
-      }
+      },
     });
-    
+
     // Team interaction processor
     this.registerProcessor({
       type: 'team_interaction',
@@ -381,20 +377,20 @@ export class EventDrivenMemorySystem extends EventEmitter {
               type: 'system1',
               operation: 'add',
               target: 'teamPatterns',
-              data: event.data
-            }
-          ]
+              data: event.data,
+            },
+          ],
         };
-      }
+      },
     });
-    
+
     // Mode change processor
     this.registerProcessor({
       type: 'mode_change',
       priority: 0.7,
       process: async (event) => {
         const modeData = event.data as any;
-        
+
         return {
           success: true,
           memoryUpdates: [
@@ -402,18 +398,18 @@ export class EventDrivenMemorySystem extends EventEmitter {
               type: 'system2',
               operation: 'update',
               target: 'currentMode',
-              data: modeData
-            }
+              data: modeData,
+            },
           ],
           learningTriggers: [
             {
               type: 'threshold_reached',
               data: modeData,
-              action: 'adapt'
-            }
-          ]
+              action: 'adapt',
+            },
+          ],
         };
-      }
+      },
     });
   }
 
@@ -439,7 +435,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
         this.emit('updateError', update, error);
       }
     }
-    
+
     // Process learning triggers
     if (result.learningTriggers) {
       for (const trigger of result.learningTriggers) {
@@ -453,7 +449,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
    */
   private async processImmediate(event: MemoryEvent): Promise<void> {
     const result = await this.processEvent(event);
-    
+
     if (result.success) {
       await this.applyMemoryUpdates(result);
       this.emit('criticalEventProcessed', event, result);
@@ -467,7 +463,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
    */
   private calculatePriority(event: MemoryEvent): number {
     let priority = 0.5; // Base priority
-    
+
     // Adjust based on metadata priority
     switch (event.metadata.priority) {
       case 'critical':
@@ -483,18 +479,18 @@ export class EventDrivenMemorySystem extends EventEmitter {
         priority = 0.25;
         break;
     }
-    
+
     // Adjust based on event type
     const processor = this.processors.get(event.type);
     if (processor) {
       priority = Math.max(priority, processor.priority);
     }
-    
+
     // Boost priority for events with high confidence
     if (event.metadata.confidence > 0.8) {
       priority = Math.min(1.0, priority * 1.2);
     }
-    
+
     return priority;
   }
 
@@ -505,7 +501,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
     if (!event.id || !event.type || !event.timestamp) {
       throw new Error('Invalid event structure: missing required fields');
     }
-    
+
     if (!event.metadata || typeof event.metadata !== 'object') {
       throw new Error('Invalid event metadata');
     }
@@ -517,24 +513,23 @@ export class EventDrivenMemorySystem extends EventEmitter {
   private detectPattern(event: MemoryEvent): boolean {
     // Check event buffer for similar events
     const sessionEvents = this.eventBuffer.get(event.sessionId) || [];
-    
+
     // Simple pattern detection: repeated event types
     const recentSimilar = sessionEvents.filter(
-      e => e.type === event.type && 
-      (event.timestamp.getTime() - e.timestamp.getTime()) < 60000 // Within 1 minute
+      (e) => e.type === event.type && event.timestamp.getTime() - e.timestamp.getTime() < 60000, // Within 1 minute
     );
-    
+
     if (recentSimilar.length >= 3) {
       return true;
     }
-    
+
     // Add event to buffer
     sessionEvents.push(event);
     if (sessionEvents.length > 100) {
       sessionEvents.shift(); // Keep buffer size limited
     }
     this.eventBuffer.set(event.sessionId, sessionEvents);
-    
+
     return false;
   }
 
@@ -549,18 +544,13 @@ export class EventDrivenMemorySystem extends EventEmitter {
   /**
    * Update processing statistics
    */
-  private updateStatistics(
-    batchSize: number,
-    successCount: number,
-    processingTime: number
-  ): void {
+  private updateStatistics(batchSize: number, successCount: number, processingTime: number): void {
     const successRate = successCount / batchSize;
-    this.statistics.successRate = 
-      (this.statistics.successRate * 0.9) + (successRate * 0.1); // Weighted average
-    
-    this.statistics.averageProcessingTime = 
-      (this.statistics.averageProcessingTime * 0.9) + (processingTime * 0.1);
-    
+    this.statistics.successRate = this.statistics.successRate * 0.9 + successRate * 0.1; // Weighted average
+
+    this.statistics.averageProcessingTime =
+      this.statistics.averageProcessingTime * 0.9 + processingTime * 0.1;
+
     this.statistics.lastProcessedTime = new Date();
   }
 
@@ -568,10 +558,7 @@ export class EventDrivenMemorySystem extends EventEmitter {
    * Start processing timer
    */
   private startProcessing(): void {
-    this.processingTimer = setInterval(
-      () => this.processBatch(),
-      this.config.processingInterval
-    );
+    this.processingTimer = setInterval(() => this.processBatch(), this.config.processingInterval);
   }
 
   /**
@@ -594,7 +581,7 @@ class PriorityQueue<T> {
   enqueue(item: T, priority: number): void {
     const newItem = { item, priority };
     let added = false;
-    
+
     for (let i = 0; i < this.items.length; i++) {
       if (this.items[i].priority < priority) {
         this.items.splice(i, 0, newItem);
@@ -602,7 +589,7 @@ class PriorityQueue<T> {
         break;
       }
     }
-    
+
     if (!added) {
       this.items.push(newItem);
     }
@@ -633,7 +620,7 @@ class EventStream extends EventEmitter {
     super();
     this.parent = parent;
     this.options = options || {};
-    
+
     // Subscribe to parent events
     this.parent.on('eventReceived', (event) => this.handleEvent(event));
   }
@@ -643,17 +630,17 @@ class EventStream extends EventEmitter {
     if (this.options.filter && !this.options.filter(event)) {
       return;
     }
-    
+
     // Apply transformation
     let processedEvent = event;
     if (this.options.transform) {
       processedEvent = this.options.transform(event);
     }
-    
+
     // Buffer if needed
     if (this.options.bufferSize) {
       this.buffer.push(processedEvent);
-      
+
       if (this.buffer.length >= this.options.bufferSize) {
         this.emit('batch', [...this.buffer]);
         this.buffer = [];

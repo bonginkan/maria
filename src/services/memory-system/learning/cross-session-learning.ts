@@ -1,6 +1,6 @@
 /**
  * Cross-Session Learning Engine
- * 
+ *
  * Enables continuous learning across multiple sessions, preserving and building
  * upon knowledge gained from previous interactions.
  */
@@ -121,23 +121,23 @@ export class CrossSessionLearningEngine extends EventEmitter {
       maxSessionHistory?: number;
       learningThreshold?: number;
       adaptationRate?: number;
-    } = {}
+    } = {},
   ) {
     super();
     this.memoryEngine = memoryEngine;
     this.persistencePath = config.persistencePath || '.maria/learning';
-    
+
     this.initialize();
   }
 
   private async initialize(): Promise<void> {
     // Load persisted data
     await this.loadPersistedData();
-    
+
     // Start autosave
     if (this.config.autosaveInterval) {
       this.autosaveInterval = setInterval(() => {
-        this.persistData().catch(error => {
+        this.persistData().catch((error) => {
           console.error('Autosave failed:', error);
         });
       }, this.config.autosaveInterval);
@@ -159,12 +159,12 @@ export class CrossSessionLearningEngine extends EventEmitter {
     };
 
     this.sessions.set(session.id, session);
-    
+
     // Load user's profile
     await this.loadUserProfile(userId);
-    
+
     this.emit('session:started', session);
-    
+
     return session;
   }
 
@@ -182,39 +182,36 @@ export class CrossSessionLearningEngine extends EventEmitter {
 
     // Extract learnings from session
     await this.extractLearnings(session);
-    
+
     // Update user profile
     await this.updateUserProfile(session);
-    
+
     // Persist to memory engine
     await this.persistToMemory(session);
-    
+
     // Clean up old sessions
     await this.cleanupOldSessions(session.userId);
-    
+
     this.emit('session:ended', session);
   }
 
   /**
    * Record an interaction
    */
-  async recordInteraction(
-    sessionId: string,
-    interaction: Interaction
-  ): Promise<void> {
+  async recordInteraction(sessionId: string, interaction: Interaction): Promise<void> {
     const session = this.sessions.get(sessionId);
     if (!session) {
       throw new Error('Session not found');
     }
 
     session.interactions.push(interaction);
-    
+
     // Real-time learning from interaction
     await this.learnFromInteraction(session, interaction);
-    
+
     // Update patterns
     await this.updatePatterns(session.userId, interaction);
-    
+
     this.emit('interaction:recorded', { session, interaction });
   }
 
@@ -223,24 +220,24 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private async learnFromInteraction(
     session: SessionData,
-    interaction: Interaction
+    interaction: Interaction,
   ): Promise<void> {
     // Analyze interaction for patterns
     const patterns = this.analyzeInteraction(interaction);
-    
+
     for (const pattern of patterns) {
       // Check if pattern exists
       const existingLearning = this.findLearning(session.userId, pattern);
-      
+
       if (existingLearning) {
         // Update existing learning
         existingLearning.frequency++;
         existingLearning.lastApplied = new Date();
         existingLearning.confidence = Math.min(
           1,
-          existingLearning.confidence + this.config.adaptationRate || 0.1
+          existingLearning.confidence + this.config.adaptationRate || 0.1,
         );
-        
+
         // Record outcome
         existingLearning.outcomes.push({
           timestamp: new Date(),
@@ -256,12 +253,14 @@ export class CrossSessionLearningEngine extends EventEmitter {
           confidence: 0.5,
           frequency: 1,
           lastApplied: new Date(),
-          outcomes: [{
-            timestamp: new Date(),
-            success: interaction.success,
-          }],
+          outcomes: [
+            {
+              timestamp: new Date(),
+              success: interaction.success,
+            },
+          ],
         };
-        
+
         session.learnings.push(learning);
         this.addLearning(session.userId, learning);
       }
@@ -273,7 +272,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private analyzeInteraction(interaction: Interaction): any[] {
     const patterns: any[] = [];
-    
+
     // Command patterns
     if (interaction.type === 'command') {
       patterns.push({
@@ -285,7 +284,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         },
       });
     }
-    
+
     // Correction patterns
     if (interaction.type === 'correction') {
       patterns.push({
@@ -297,7 +296,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         },
       });
     }
-    
+
     // Preference patterns
     if (interaction.metadata?.preference) {
       patterns.push({
@@ -305,7 +304,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         content: interaction.metadata.preference,
       });
     }
-    
+
     return patterns;
   }
 
@@ -315,24 +314,19 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private async updatePatterns(userId: string, interaction: Interaction): Promise<void> {
     const profile = this.profiles.get(userId);
     if (!profile) return;
-    
+
     // Extract behavior pattern
     const behaviorPattern = this.extractBehaviorPattern(interaction);
     if (!behaviorPattern) return;
-    
+
     // Find or create pattern
-    const existingPattern = profile.patterns.find(p => 
-      p.pattern === behaviorPattern.pattern
-    );
-    
+    const existingPattern = profile.patterns.find((p) => p.pattern === behaviorPattern.pattern);
+
     if (existingPattern) {
       existingPattern.frequency++;
-      existingPattern.confidence = Math.min(
-        1,
-        existingPattern.confidence + 0.05
-      );
+      existingPattern.confidence = Math.min(1, existingPattern.confidence + 0.05);
       existingPattern.examples.push(interaction.input);
-      
+
       // Keep only recent examples
       if (existingPattern.examples.length > 10) {
         existingPattern.examples = existingPattern.examples.slice(-10);
@@ -355,7 +349,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private extractBehaviorPattern(interaction: Interaction): any {
     // Simple pattern extraction - in production, use NLP
     const input = interaction.input.toLowerCase();
-    
+
     // Command patterns
     if (input.startsWith('/')) {
       const command = input.split(' ')[0];
@@ -364,7 +358,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         type: 'command',
       };
     }
-    
+
     // Question patterns
     if (input.includes('?')) {
       return {
@@ -372,7 +366,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         type: 'query',
       };
     }
-    
+
     // Code request patterns
     if (input.includes('generate') || input.includes('create') || input.includes('write')) {
       return {
@@ -380,7 +374,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         type: 'generation',
       };
     }
-    
+
     return null;
   }
 
@@ -390,7 +384,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private async extractLearnings(session: SessionData): Promise<void> {
     // Analyze session interactions for learnings
     const learningCandidates = this.analyzeSessionForLearnings(session);
-    
+
     for (const candidate of learningCandidates) {
       if (candidate.confidence >= (this.config.learningThreshold || 0.7)) {
         // Store as learning
@@ -403,9 +397,9 @@ export class CrossSessionLearningEngine extends EventEmitter {
           lastApplied: new Date(),
           outcomes: [],
         };
-        
+
         this.addLearning(session.userId, learning);
-        
+
         // Store in memory engine
         await this.storeInMemoryEngine(learning, session.userId);
       }
@@ -417,11 +411,11 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private analyzeSessionForLearnings(session: SessionData): any[] {
     const candidates: any[] = [];
-    
+
     // Analyze success patterns
-    const successfulInteractions = session.interactions.filter(i => i.success);
+    const successfulInteractions = session.interactions.filter((i) => i.success);
     const successRate = successfulInteractions.length / session.interactions.length;
-    
+
     if (successRate > 0.8) {
       candidates.push({
         type: 'optimization',
@@ -434,14 +428,14 @@ export class CrossSessionLearningEngine extends EventEmitter {
         frequency: successfulInteractions.length,
       });
     }
-    
+
     // Analyze repeated actions
     const actionFrequency = new Map<string, number>();
-    session.interactions.forEach(i => {
+    session.interactions.forEach((i) => {
       const key = `${i.type}:${i.input.substring(0, 50)}`;
       actionFrequency.set(key, (actionFrequency.get(key) || 0) + 1);
     });
-    
+
     for (const [action, frequency] of actionFrequency.entries()) {
       if (frequency >= 3) {
         candidates.push({
@@ -452,7 +446,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
         });
       }
     }
-    
+
     return candidates;
   }
 
@@ -463,23 +457,23 @@ export class CrossSessionLearningEngine extends EventEmitter {
     // Group by type and analyze
     const patterns: any[] = [];
     const typeGroups = new Map<string, Interaction[]>();
-    
-    interactions.forEach(i => {
+
+    interactions.forEach((i) => {
       const group = typeGroups.get(i.type) || [];
       group.push(i);
       typeGroups.set(i.type, group);
     });
-    
+
     for (const [type, group] of typeGroups.entries()) {
       if (group.length >= 2) {
         patterns.push({
           type,
           count: group.length,
-          examples: group.slice(0, 3).map(i => i.input),
+          examples: group.slice(0, 3).map((i) => i.input),
         });
       }
     }
-    
+
     return patterns;
   }
 
@@ -488,7 +482,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private async updateUserProfile(session: SessionData): Promise<void> {
     let profile = this.profiles.get(session.userId);
-    
+
     if (!profile) {
       profile = {
         userId: session.userId,
@@ -504,27 +498,21 @@ export class CrossSessionLearningEngine extends EventEmitter {
       };
       this.profiles.set(session.userId, profile);
     }
-    
+
     // Update preferences
     profile.preferences = { ...profile.preferences, ...session.preferences };
-    
+
     // Update expertise based on session context
     if (session.context.language) {
       const current = profile.expertise.languages.get(session.context.language) || 0;
-      profile.expertise.languages.set(
-        session.context.language,
-        Math.min(1, current + 0.05)
-      );
+      profile.expertise.languages.set(session.context.language, Math.min(1, current + 0.05));
     }
-    
+
     if (session.context.framework) {
       const current = profile.expertise.frameworks.get(session.context.framework) || 0;
-      profile.expertise.frameworks.set(
-        session.context.framework,
-        Math.min(1, current + 0.05)
-      );
+      profile.expertise.frameworks.set(session.context.framework, Math.min(1, current + 0.05));
     }
-    
+
     // Generate optimization rules
     const optimizations = this.generateOptimizationRules(session);
     profile.optimizations.push(...optimizations);
@@ -535,19 +523,19 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private generateOptimizationRules(session: SessionData): OptimizationRule[] {
     const rules: OptimizationRule[] = [];
-    
+
     // Analyze successful patterns
     const successfulPatterns = session.interactions
-      .filter(i => i.success)
-      .map(i => this.extractBehaviorPattern(i))
-      .filter(p => p !== null);
-    
+      .filter((i) => i.success)
+      .map((i) => this.extractBehaviorPattern(i))
+      .filter((p) => p !== null);
+
     // Create rules for frequent successful patterns
     const patternFrequency = new Map<string, number>();
-    successfulPatterns.forEach(p => {
+    successfulPatterns.forEach((p) => {
       patternFrequency.set(p.pattern, (patternFrequency.get(p.pattern) || 0) + 1);
     });
-    
+
     for (const [pattern, frequency] of patternFrequency.entries()) {
       if (frequency >= 2) {
         rules.push({
@@ -560,31 +548,24 @@ export class CrossSessionLearningEngine extends EventEmitter {
         });
       }
     }
-    
+
     return rules;
   }
 
   /**
    * Store learning in memory engine
    */
-  private async storeInMemoryEngine(
-    learning: Learning,
-    userId: string
-  ): Promise<void> {
+  private async storeInMemoryEngine(learning: Learning, userId: string): Promise<void> {
     const embedding = await this.generateEmbedding(JSON.stringify(learning.content));
-    
-    await this.memoryEngine.getSystem1().addKnowledgeNode(
-      'learning',
-      learning.id,
-      JSON.stringify(learning),
-      embedding,
-      {
+
+    await this.memoryEngine
+      .getSystem1()
+      .addKnowledgeNode('learning', learning.id, JSON.stringify(learning), embedding, {
         userId,
         type: learning.type,
         confidence: learning.confidence,
         timestamp: new Date().toISOString(),
-      }
-    );
+      });
   }
 
   /**
@@ -597,64 +578,57 @@ export class CrossSessionLearningEngine extends EventEmitter {
       userId: session.userId,
       duration: session.duration,
       interactionCount: session.interactions.length,
-      successRate: session.interactions.filter(i => i.success).length / session.interactions.length,
+      successRate:
+        session.interactions.filter((i) => i.success).length / session.interactions.length,
       learnings: session.learnings.length,
       context: session.context,
     };
-    
+
     const embedding = await this.generateEmbedding(JSON.stringify(summary));
-    
-    await this.memoryEngine.getSystem1().addKnowledgeNode(
-      'session',
-      session.id,
-      JSON.stringify(summary),
-      embedding,
-      {
+
+    await this.memoryEngine
+      .getSystem1()
+      .addKnowledgeNode('session', session.id, JSON.stringify(summary), embedding, {
         userId: session.userId,
         timestamp: session.endTime?.toISOString(),
-      }
-    );
+      });
   }
 
   /**
    * Get personalized suggestions
    */
-  async getPersonalizedSuggestions(
-    userId: string,
-    context: any
-  ): Promise<string[]> {
+  async getPersonalizedSuggestions(userId: string, context: any): Promise<string[]> {
     const profile = this.profiles.get(userId);
     if (!profile) return [];
-    
+
     const suggestions: string[] = [];
-    
+
     // Based on patterns
     const relevantPatterns = profile.patterns
-      .filter(p => p.confidence > 0.7)
+      .filter((p) => p.confidence > 0.7)
       .sort((a, b) => b.frequency - a.frequency)
       .slice(0, 5);
-    
+
     for (const pattern of relevantPatterns) {
       suggestions.push(`Based on your pattern: ${pattern.pattern}`);
     }
-    
+
     // Based on expertise
-    const topLanguage = Array.from(profile.expertise.languages.entries())
-      .sort((a, b) => b[1] - a[1])[0];
-    
+    const topLanguage = Array.from(profile.expertise.languages.entries()).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
+
     if (topLanguage) {
       suggestions.push(`Optimized for ${topLanguage[0]}`);
     }
-    
+
     // Based on optimizations
-    const applicableRules = profile.optimizations
-      .filter(r => r.successRate > 0.8)
-      .slice(0, 3);
-    
+    const applicableRules = profile.optimizations.filter((r) => r.successRate > 0.8).slice(0, 3);
+
     for (const rule of applicableRules) {
       suggestions.push(`Optimization available: ${rule.action}`);
     }
-    
+
     return suggestions;
   }
 
@@ -662,22 +636,18 @@ export class CrossSessionLearningEngine extends EventEmitter {
    * Get learning metrics
    */
   getLearningMetrics(userId: string): LearningMetrics {
-    const userSessions = Array.from(this.sessions.values())
-      .filter(s => s.userId === userId);
-    
+    const userSessions = Array.from(this.sessions.values()).filter((s) => s.userId === userId);
+
     const userLearnings = this.learnings.get(userId) || [];
     const profile = this.profiles.get(userId);
-    
-    const totalInteractions = userSessions.reduce(
-      (sum, s) => sum + s.interactions.length,
-      0
-    );
-    
+
+    const totalInteractions = userSessions.reduce((sum, s) => sum + s.interactions.length, 0);
+
     const successfulInteractions = userSessions.reduce(
-      (sum, s) => sum + s.interactions.filter(i => i.success).length,
-      0
+      (sum, s) => sum + s.interactions.filter((i) => i.success).length,
+      0,
     );
-    
+
     return {
       totalSessions: userSessions.length,
       totalInteractions,
@@ -693,14 +663,14 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private calculateImprovementRate(learnings: Learning[]): number {
     if (learnings.length === 0) return 0;
-    
+
     const improvements = learnings
-      .flatMap(l => l.outcomes)
-      .map(o => o.improvement || 0)
-      .filter(i => i > 0);
-    
+      .flatMap((l) => l.outcomes)
+      .map((o) => o.improvement || 0)
+      .filter((i) => i > 0);
+
     if (improvements.length === 0) return 0;
-    
+
     return improvements.reduce((a, b) => a + b, 0) / improvements.length;
   }
 
@@ -710,10 +680,11 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private calculateImprovement(learning: Learning): number {
     const recentOutcomes = learning.outcomes.slice(-5);
     if (recentOutcomes.length < 2) return 0;
-    
-    const recentSuccess = recentOutcomes.filter(o => o.success).length / recentOutcomes.length;
-    const overallSuccess = learning.outcomes.filter(o => o.success).length / learning.outcomes.length;
-    
+
+    const recentSuccess = recentOutcomes.filter((o) => o.success).length / recentOutcomes.length;
+    const overallSuccess =
+      learning.outcomes.filter((o) => o.success).length / learning.outcomes.length;
+
     return recentSuccess - overallSuccess;
   }
 
@@ -722,44 +693,43 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private calculatePreferenceStability(userId: string): number {
     const userSessions = Array.from(this.sessions.values())
-      .filter(s => s.userId === userId)
+      .filter((s) => s.userId === userId)
       .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
-    
+
     if (userSessions.length < 2) return 1;
-    
+
     // Compare preferences across sessions
     let stability = 0;
     for (let i = 1; i < userSessions.length; i++) {
       const prev = userSessions[i - 1].preferences;
       const curr = userSessions[i].preferences;
-      
+
       // Simple comparison - in production, use more sophisticated metrics
       const similarity = this.comparePreferences(prev, curr);
       stability += similarity;
     }
-    
+
     return stability / (userSessions.length - 1);
   }
 
   /**
    * Compare preferences
    */
-  private comparePreferences(
-    prev: UserPreferenceSet,
-    curr: UserPreferenceSet
-  ): number {
+  private comparePreferences(prev: UserPreferenceSet, curr: UserPreferenceSet): number {
     let matches = 0;
     let total = 0;
-    
+
     // Compare each preference field
     for (const key in prev) {
       total++;
-      if (JSON.stringify(prev[key as keyof UserPreferenceSet]) === 
-          JSON.stringify(curr[key as keyof UserPreferenceSet])) {
+      if (
+        JSON.stringify(prev[key as keyof UserPreferenceSet]) ===
+        JSON.stringify(curr[key as keyof UserPreferenceSet])
+      ) {
         matches++;
       }
     }
-    
+
     return total > 0 ? matches / total : 0;
   }
 
@@ -768,11 +738,13 @@ export class CrossSessionLearningEngine extends EventEmitter {
    */
   private async getUserPreferences(userId: string): Promise<UserPreferenceSet> {
     const profile = this.profiles.get(userId);
-    return profile?.preferences || {
-      codeStyle: 'functional',
-      outputFormat: 'detailed',
-      learningEnabled: true,
-    };
+    return (
+      profile?.preferences || {
+        codeStyle: 'functional',
+        outputFormat: 'detailed',
+        learningEnabled: true,
+      }
+    );
   }
 
   private async loadUserProfile(userId: string): Promise<void> {
@@ -781,13 +753,13 @@ export class CrossSessionLearningEngine extends EventEmitter {
       const profilePath = path.join(this.persistencePath, `${userId}.json`);
       const data = await fs.readFile(profilePath, 'utf-8');
       const profile = JSON.parse(data);
-      
+
       // Restore Maps
       profile.expertise.languages = new Map(profile.expertise.languages);
       profile.expertise.frameworks = new Map(profile.expertise.frameworks);
       profile.expertise.domains = new Map(profile.expertise.domains);
       profile.expertise.skills = new Map(profile.expertise.skills);
-      
+
       this.profiles.set(userId, profile);
     } catch (error) {
       // Profile doesn't exist yet
@@ -796,9 +768,9 @@ export class CrossSessionLearningEngine extends EventEmitter {
 
   private findLearning(userId: string, pattern: any): Learning | undefined {
     const userLearnings = this.learnings.get(userId) || [];
-    return userLearnings.find(l => 
-      l.type === pattern.type && 
-      JSON.stringify(l.content) === JSON.stringify(pattern.content)
+    return userLearnings.find(
+      (l) =>
+        l.type === pattern.type && JSON.stringify(l.content) === JSON.stringify(pattern.content),
     );
   }
 
@@ -811,9 +783,9 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private async cleanupOldSessions(userId: string): Promise<void> {
     const maxSessions = this.config.maxSessionHistory || 100;
     const userSessions = Array.from(this.sessions.values())
-      .filter(s => s.userId === userId)
+      .filter((s) => s.userId === userId)
       .sort((a, b) => b.startTime.getTime() - a.startTime.getTime());
-    
+
     if (userSessions.length > maxSessions) {
       const toRemove = userSessions.slice(maxSessions);
       for (const session of toRemove) {
@@ -825,13 +797,15 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private async generateEmbedding(text: string): Promise<number[]> {
     // Simplified embedding - in production, use proper embedding model
     const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return Array(100).fill(0).map((_, i) => Math.sin(hash + i) * 0.5 + 0.5);
+    return Array(100)
+      .fill(0)
+      .map((_, i) => Math.sin(hash + i) * 0.5 + 0.5);
   }
 
   private async loadPersistedData(): Promise<void> {
     try {
       await fs.mkdir(this.persistencePath, { recursive: true });
-      
+
       // Load profiles
       const files = await fs.readdir(this.persistencePath);
       for (const file of files) {
@@ -848,11 +822,11 @@ export class CrossSessionLearningEngine extends EventEmitter {
   private async persistData(): Promise<void> {
     try {
       await fs.mkdir(this.persistencePath, { recursive: true });
-      
+
       // Save profiles
       for (const [userId, profile] of this.profiles.entries()) {
         const profilePath = path.join(this.persistencePath, `${userId}.json`);
-        
+
         // Convert Maps to arrays for JSON serialization
         const serializable = {
           ...profile,
@@ -863,7 +837,7 @@ export class CrossSessionLearningEngine extends EventEmitter {
             skills: Array.from(profile.expertise.skills.entries()),
           },
         };
-        
+
         await fs.writeFile(profilePath, JSON.stringify(serializable, null, 2));
       }
     } catch (error) {

@@ -121,7 +121,7 @@ async function initializeMemory() {
 
 async function analyzeFile(filePath: string): Promise<Bug[]> {
   const bugs: Bug[] = [];
-  
+
   // Initialize memory system
   const { memoryEngine } = await initializeMemory();
 
@@ -130,16 +130,16 @@ async function analyzeFile(filePath: string): Promise<Bug[]> {
     const content = await fs.readFile(absolutePath, 'utf8');
     const ext = path.extname(filePath);
     const lines = content.split('\n');
-    
+
     // Check memory for previous bug patterns in similar files
     if (memoryEngine) {
       try {
         const previousBugs = await memoryEngine.recall({
           query: `bug patterns for ${ext} files`,
           type: 'bug_analysis',
-          limit: 5
+          limit: 5,
         });
-        
+
         if (previousBugs.length > 0) {
           logger.debug(`Found ${previousBugs.length} previous bug patterns in memory`);
         }
@@ -314,7 +314,7 @@ function analyzeError(errorMessage: string): Bug[] {
         autoFixAvailable: false,
       };
       bugs.push(bug);
-      
+
       // Store bug pattern in memory for future reference
       const { memoryEngine } = await initializeMemory();
       if (memoryEngine) {
@@ -328,8 +328,8 @@ function analyzeError(errorMessage: string): Bug[] {
             timestamp: new Date(),
             context: {
               errorMessage,
-              detectedBy: 'error_analysis'
-            }
+              detectedBy: 'error_analysis',
+            },
           });
         } catch (error) {
           logger.debug('Failed to store bug in memory:', error);

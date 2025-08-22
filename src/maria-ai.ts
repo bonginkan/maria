@@ -107,37 +107,40 @@ export class MariaAI {
   async generateCode(prompt: string, language?: string): Promise<AIResponse> {
     // Enhance prompt with memory context if available
     let enhancedPrompt = prompt;
-    
+
     if (this.memoryEngine && this.memoryCoordinator) {
       try {
         // Get relevant code patterns and user preferences from memory
         const context = await this.memoryEngine.getContext({
           query: prompt,
           type: 'code_generation',
-          language: language
+          language: language,
         });
-        
+
         if (context.codePatterns?.length > 0) {
           enhancedPrompt = `${prompt}\n\nContext from memory:\n`;
-          enhancedPrompt += `Previous patterns: ${context.codePatterns.slice(0, 3).map(p => p.pattern).join(', ')}\n`;
+          enhancedPrompt += `Previous patterns: ${context.codePatterns
+            .slice(0, 3)
+            .map((p) => p.pattern)
+            .join(', ')}\n`;
         }
-        
+
         if (context.userPreferences) {
           enhancedPrompt += `User preferences: ${JSON.stringify(context.userPreferences)}\n`;
         }
-        
+
         // Store the interaction in memory for future reference
         await this.memoryEngine.storeInteraction({
           type: 'code_generation',
           input: prompt,
           language: language,
-          timestamp: new Date()
+          timestamp: new Date(),
         });
       } catch (error) {
         console.warn('Memory context enhancement failed:', error);
       }
     }
-    
+
     return this.router.routeCode(enhancedPrompt, language);
   }
 

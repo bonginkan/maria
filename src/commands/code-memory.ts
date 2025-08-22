@@ -1,6 +1,6 @@
 /**
  * Memory-Enhanced Code Generation Command
- * 
+ *
  * Integrates the dual-memory system for intelligent code generation with:
  * - Pattern recognition from previous generations (System 1)
  * - Reasoning traces for complex problems (System 2)
@@ -14,12 +14,12 @@ import ora from 'ora';
 import { DualMemoryEngine } from '../services/memory-system/dual-memory-engine';
 import { AIRouterService } from '../services/ai-router';
 import { logger } from '../utils/logger';
-import type { 
+import type {
   MemoryQuery,
   MemoryResponse,
   CodePattern,
   ReasoningTrace,
-  UserPreferenceSet 
+  UserPreferenceSet,
 } from '../services/memory-system/types/memory-interfaces';
 
 interface CodeGenerationContext {
@@ -47,7 +47,7 @@ export default function registerCodeMemoryCommand(program: Command) {
     .option('--no-memory', 'Disable memory system')
     .action(async (prompt: string, options) => {
       const spinner = ora('Initializing memory-enhanced code generation...').start();
-      
+
       try {
         // Initialize memory system
         let memoryEngine: DualMemoryEngine | null = null;
@@ -69,13 +69,15 @@ export default function registerCodeMemoryCommand(program: Command) {
         if (memoryEngine) {
           spinner.text = 'Searching memory for relevant patterns...';
           memoryContext = await queryMemoryForContext(memoryEngine, prompt, context);
-          
+
           if (memoryContext.patterns.length > 0) {
             spinner.succeed(`Found ${memoryContext.patterns.length} relevant code patterns`);
           }
-          
+
           if (memoryContext.reasoning.length > 0) {
-            console.log(chalk.blue(`📚 Found ${memoryContext.reasoning.length} related reasoning traces`));
+            console.log(
+              chalk.blue(`📚 Found ${memoryContext.reasoning.length} related reasoning traces`),
+            );
           }
         }
 
@@ -93,7 +95,7 @@ export default function registerCodeMemoryCommand(program: Command) {
           prompt,
           context,
           memoryContext,
-          options.model
+          options.model,
         );
 
         // Complete reasoning trace with result
@@ -128,9 +130,12 @@ export default function registerCodeMemoryCommand(program: Command) {
         // Show memory statistics
         if (memoryEngine) {
           const metrics = memoryEngine.getMetrics();
-          console.log(chalk.gray(`\n📊 Memory: ${metrics.system1Operations} patterns, ${metrics.system2Operations} reasoning traces`));
+          console.log(
+            chalk.gray(
+              `\n📊 Memory: ${metrics.system1Operations} patterns, ${metrics.system2Operations} reasoning traces`,
+            ),
+          );
         }
-
       } catch (error) {
         spinner.fail('Code generation failed');
         logger.error('Code generation error:', error);
@@ -167,14 +172,14 @@ async function initializeMemorySystem(): Promise<DualMemoryEngine> {
       cacheStrategy: 'lru',
       preloadPriority: 'high',
       backgroundOptimization: true,
-    }
+    },
   });
 }
 
 async function queryMemoryForContext(
   engine: DualMemoryEngine,
   prompt: string,
-  context: CodeGenerationContext
+  context: CodeGenerationContext,
 ): Promise<any> {
   // Query for relevant code patterns
   const patternQuery: MemoryQuery = {
@@ -184,7 +189,7 @@ async function queryMemoryForContext(
     urgency: 'medium',
     limit: 5,
   };
-  
+
   const patterns = await engine.query(patternQuery);
 
   // Query for relevant reasoning traces
@@ -195,7 +200,7 @@ async function queryMemoryForContext(
     urgency: 'medium',
     limit: 3,
   };
-  
+
   const reasoning = await engine.query(reasoningQuery);
 
   // Query for user preferences
@@ -206,7 +211,7 @@ async function queryMemoryForContext(
     urgency: 'low',
     limit: 1,
   };
-  
+
   const preferences = await engine.query(preferenceQuery);
 
   return {
@@ -219,7 +224,7 @@ async function queryMemoryForContext(
 async function startReasoningTrace(
   engine: DualMemoryEngine,
   prompt: string,
-  context: CodeGenerationContext
+  context: CodeGenerationContext,
 ): Promise<string> {
   const trace = await engine.getSystem2().startReasoningTrace({
     problem: prompt,
@@ -228,43 +233,35 @@ async function startReasoningTrace(
     assumptions: [`Using ${context.framework || 'standard library'}`],
     availableResources: ['Memory patterns', 'Previous solutions'],
   });
-  
+
   return trace.id;
 }
 
 async function completeReasoningTrace(
   engine: DualMemoryEngine,
   traceId: string,
-  generatedCode: string
+  generatedCode: string,
 ): Promise<void> {
   const quality = await evaluateCodeQuality(generatedCode);
-  await engine.getSystem2().completeReasoningTrace(
-    traceId,
-    generatedCode,
-    quality
-  );
+  await engine.getSystem2().completeReasoningTrace(traceId, generatedCode, quality);
 }
 
 async function learnFromGeneration(
   engine: DualMemoryEngine,
   prompt: string,
   code: string,
-  context: CodeGenerationContext
+  context: CodeGenerationContext,
 ): Promise<void> {
   // Store as a code pattern in System 1
   const embedding = await generateEmbedding(prompt);
-  
-  await engine.getSystem1().addKnowledgeNode(
-    'code_pattern',
-    `pattern_${Date.now()}`,
-    code,
-    embedding,
-    {
+
+  await engine
+    .getSystem1()
+    .addKnowledgeNode('code_pattern', `pattern_${Date.now()}`, code, embedding, {
       prompt,
       ...context,
       timestamp: new Date().toISOString(),
-    }
-  );
+    });
 
   // Record as a successful pattern
   await engine.getSystem1().recordPattern({
@@ -276,14 +273,11 @@ async function learnFromGeneration(
       language: context.language || 'unknown',
       framework: context.framework || 'none',
       success: true,
-    }
+    },
   } as CodePattern);
 }
 
-async function updateUserPreferences(
-  engine: DualMemoryEngine,
-  options: any
-): Promise<void> {
+async function updateUserPreferences(engine: DualMemoryEngine, options: any): Promise<void> {
   const preferences: Partial<UserPreferenceSet> = {
     preferredModels: options.model ? [options.model] : undefined,
     codeStyle: options.style,
@@ -299,7 +293,7 @@ async function updateUserPreferences(
     metadata: {
       command: 'code',
       timestamp: new Date().toISOString(),
-    }
+    },
   });
 }
 
@@ -307,13 +301,13 @@ async function generateCodeWithMemory(
   prompt: string,
   context: CodeGenerationContext,
   memoryContext: any,
-  model?: string
+  model?: string,
 ): Promise<string> {
   const aiRouter = new AIRouterService();
-  
+
   // Build enhanced prompt with memory context
   let enhancedPrompt = prompt;
-  
+
   if (memoryContext && memoryContext.patterns.length > 0) {
     enhancedPrompt += '\n\n## Similar patterns from memory:\n';
     memoryContext.patterns.slice(0, 2).forEach((pattern: any) => {
@@ -353,19 +347,21 @@ async function generateCodeWithMemory(
 async function generateEmbedding(text: string): Promise<number[]> {
   // Simplified embedding generation - in production, use proper embedding model
   const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return Array(100).fill(0).map((_, i) => Math.sin(hash + i) * 0.5 + 0.5);
+  return Array(100)
+    .fill(0)
+    .map((_, i) => Math.sin(hash + i) * 0.5 + 0.5);
 }
 
 async function evaluateCodeQuality(code: string): Promise<number> {
   // Simple quality evaluation - in production, use proper code analysis
   let quality = 0.5;
-  
+
   // Check for common quality indicators
   if (code.includes('function') || code.includes('class')) quality += 0.1;
   if (code.includes('try') || code.includes('catch')) quality += 0.1;
   if (code.includes('async') || code.includes('await')) quality += 0.1;
   if (code.includes('/**') || code.includes('//')) quality += 0.1;
   if (code.length > 100) quality += 0.1;
-  
+
   return Math.min(quality, 1.0);
 }

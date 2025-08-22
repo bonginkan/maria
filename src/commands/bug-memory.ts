@@ -1,6 +1,6 @@
 /**
  * Memory-Enhanced Bug Detection and Analysis Command
- * 
+ *
  * Leverages dual-memory system for intelligent bug detection:
  * - System 1: Fast pattern matching for known bug patterns
  * - System 2: Deep reasoning for complex bug analysis
@@ -55,7 +55,7 @@ export default function registerBugMemoryCommand(program: Command) {
     .option('--no-memory', 'Disable memory system')
     .action(async (options) => {
       const spinner = ora('Initializing memory-enhanced bug detection...').start();
-      
+
       try {
         // Initialize memory system
         let memoryEngine: DualMemoryEngine | null = null;
@@ -72,7 +72,7 @@ export default function registerBugMemoryCommand(program: Command) {
         if (memoryEngine) {
           spinner.text = 'Searching memory for similar bugs...';
           memoryInsights = await queryBugMemory(memoryEngine, context);
-          
+
           if (memoryInsights.similarBugs.length > 0) {
             spinner.succeed(`Found ${memoryInsights.similarBugs.length} similar bug patterns`);
             displaySimilarBugs(memoryInsights.similarBugs);
@@ -90,7 +90,7 @@ export default function registerBugMemoryCommand(program: Command) {
         // Analyze the bug
         spinner.text = 'Analyzing bug patterns...';
         const analysis = await analyzeBugWithMemory(context, memoryInsights);
-        
+
         // Complete reasoning with findings
         if (reasoningTraceId && memoryEngine) {
           await completeBugReasoning(memoryEngine, reasoningTraceId, analysis);
@@ -128,9 +128,12 @@ export default function registerBugMemoryCommand(program: Command) {
         // Show memory statistics
         if (memoryEngine) {
           const metrics = memoryEngine.getMetrics();
-          console.log(chalk.gray(`\n📊 Memory stats: ${metrics.system1Operations} pattern matches, ${metrics.system2Operations} reasoning traces`));
+          console.log(
+            chalk.gray(
+              `\n📊 Memory stats: ${metrics.system1Operations} pattern matches, ${metrics.system2Operations} reasoning traces`,
+            ),
+          );
         }
-
       } catch (error) {
         spinner.fail('Bug analysis failed');
         logger.error('Bug analysis error:', error);
@@ -167,7 +170,7 @@ async function initializeMemorySystem(): Promise<DualMemoryEngine> {
       cacheStrategy: 'lru',
       preloadPriority: 'high',
       backgroundOptimization: true,
-    }
+    },
   });
 }
 
@@ -197,10 +200,7 @@ async function buildBugContext(options: any): Promise<BugContext> {
   return context;
 }
 
-async function queryBugMemory(
-  engine: DualMemoryEngine,
-  context: BugContext
-): Promise<any> {
+async function queryBugMemory(engine: DualMemoryEngine, context: BugContext): Promise<any> {
   // Query for similar bug patterns
   const bugQuery: MemoryQuery = {
     type: 'pattern',
@@ -209,7 +209,7 @@ async function queryBugMemory(
     urgency: context.severity === 'critical' ? 'critical' : 'high',
     limit: 10,
   };
-  
+
   const bugPatterns = await engine.query(bugQuery);
 
   // Query for previous fixes
@@ -220,7 +220,7 @@ async function queryBugMemory(
     urgency: 'high',
     limit: 5,
   };
-  
+
   const previousFixes = await engine.query(fixQuery);
 
   // Query reasoning traces for complex bugs
@@ -231,7 +231,7 @@ async function queryBugMemory(
     urgency: 'medium',
     limit: 3,
   };
-  
+
   const reasoningTraces = await engine.query(reasoningQuery);
 
   return {
@@ -241,50 +241,33 @@ async function queryBugMemory(
   };
 }
 
-async function startBugReasoning(
-  engine: DualMemoryEngine,
-  context: BugContext
-): Promise<string> {
+async function startBugReasoning(engine: DualMemoryEngine, context: BugContext): Promise<string> {
   const trace = await engine.getSystem2().startReasoningTrace({
     problem: `Analyze bug: ${context.error || 'Unknown error'}`,
-    goals: [
-      'Identify root cause',
-      'Find optimal fix',
-      'Prevent recurrence',
-    ],
+    goals: ['Identify root cause', 'Find optimal fix', 'Prevent recurrence'],
     constraints: [
       `File: ${context.file || 'unknown'}`,
       `Language: ${context.language || 'unknown'}`,
     ],
-    assumptions: [
-      'Code is syntactically valid',
-      'Bug is reproducible',
-    ],
-    availableResources: [
-      'Stack trace',
-      'Code snippet',
-      'Memory patterns',
-    ],
+    assumptions: ['Code is syntactically valid', 'Bug is reproducible'],
+    availableResources: ['Stack trace', 'Code snippet', 'Memory patterns'],
   });
-  
+
   return trace.id;
 }
 
 async function completeBugReasoning(
   engine: DualMemoryEngine,
   traceId: string,
-  analysis: any
+  analysis: any,
 ): Promise<void> {
   const quality = analysis.confidence || 0.7;
   const outcome = `Root cause: ${analysis.rootCause}\nFix: ${analysis.fixes[0]?.description || 'No fix available'}`;
-  
+
   await engine.getSystem2().completeReasoningTrace(traceId, outcome, quality);
 }
 
-async function analyzeBugWithMemory(
-  context: BugContext,
-  memoryInsights: any
-): Promise<any> {
+async function analyzeBugWithMemory(context: BugContext, memoryInsights: any): Promise<any> {
   const analysis: any = {
     severity: context.severity || 'medium',
     rootCause: '',
@@ -310,7 +293,7 @@ async function analyzeBugWithMemory(
   if (memoryInsights) {
     // Add similar bugs
     analysis.relatedBugs = memoryInsights.similarBugs.slice(0, 3);
-    
+
     // Add previous fixes
     if (memoryInsights.previousFixes.length > 0) {
       analysis.fixes = memoryInsights.previousFixes.map((fix: any) => ({
@@ -343,28 +326,25 @@ async function analyzeBugWithMemory(
   return analysis;
 }
 
-async function predictBugs(
-  engine: DualMemoryEngine,
-  context: BugContext
-): Promise<any[]> {
+async function predictBugs(engine: DualMemoryEngine, context: BugContext): Promise<any[]> {
   // Query for patterns that often lead to bugs
   const patternQuery: MemoryQuery = {
     type: 'pattern',
     query: 'bug-prone patterns',
-    context: { 
+    context: {
       file: context.file,
       language: context.language,
     } as Record<string, unknown>,
     urgency: 'low',
     limit: 5,
   };
-  
+
   const response = await engine.query(patternQuery);
   const patterns = response.data || [];
 
   // Analyze code for these patterns
   const predictions: any[] = [];
-  
+
   if (context.codeSnippet) {
     patterns.forEach((pattern: any) => {
       if (context.codeSnippet?.includes(pattern.pattern)) {
@@ -384,7 +364,7 @@ async function predictBugs(
 async function applyMemoryAssistedFix(
   fix: any,
   context: BugContext,
-  engine: DualMemoryEngine | null
+  engine: DualMemoryEngine | null,
 ): Promise<any> {
   const result = {
     success: false,
@@ -395,7 +375,7 @@ async function applyMemoryAssistedFix(
   // Simulate fix application (in production, would modify actual file)
   if (context.file && fix.confidence > 0.6) {
     result.success = true;
-    
+
     // Record successful fix in memory
     if (engine) {
       await engine.processEvent({
@@ -421,11 +401,11 @@ async function applyMemoryAssistedFix(
 async function learnFromBug(
   engine: DualMemoryEngine,
   context: BugContext,
-  analysis: any
+  analysis: any,
 ): Promise<void> {
   // Store bug pattern in System 1
   const embedding = await generateEmbedding(context.error || context.stackTrace || '');
-  
+
   await engine.getSystem1().addKnowledgeNode(
     'bug_pattern',
     `bug_${Date.now()}`,
@@ -441,7 +421,7 @@ async function learnFromBug(
       language: context.language,
       severity: context.severity,
       timestamp: new Date().toISOString(),
-    }
+    },
   );
 
   // Record pattern for future detection
@@ -505,8 +485,8 @@ function analyzeErrorMessage(error: string): string {
 
 function analyzeStackTrace(stackTrace: string): any {
   const lines = stackTrace.split('\n');
-  const firstError = lines.find(line => line.includes('Error')) || '';
-  
+  const firstError = lines.find((line) => line.includes('Error')) || '';
+
   return {
     cause: firstError.trim(),
     location: lines[1]?.trim() || 'unknown',
@@ -521,14 +501,16 @@ function generateFix(context: BugContext, rootCause: string): string {
     'Syntax error': 'Check for missing brackets, semicolons, or quotes',
     'Module import error': 'Verify module is installed and path is correct',
   };
-  
+
   return fixes[rootCause] || 'Review code for logical errors';
 }
 
 async function generateEmbedding(text: string): Promise<number[]> {
   // Simplified embedding - in production, use proper embedding model
   const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return Array(100).fill(0).map((_, i) => Math.sin(hash + i) * 0.5 + 0.5);
+  return Array(100)
+    .fill(0)
+    .map((_, i) => Math.sin(hash + i) * 0.5 + 0.5);
 }
 
 // Display functions
@@ -554,15 +536,19 @@ function displayBugAnalysis(analysis: any): void {
   console.log(chalk.white(`  Severity: ${analysis.severity}`));
   console.log(chalk.white(`  Root Cause: ${analysis.rootCause}`));
   console.log(chalk.white(`  Confidence: ${(analysis.confidence * 100).toFixed(0)}%`));
-  
+
   if (analysis.fixes.length > 0) {
     console.log(chalk.green('\n✅ Suggested Fixes:'));
     analysis.fixes.forEach((fix: any, i: number) => {
       console.log(chalk.green(`  ${i + 1}. ${fix.description}`));
-      console.log(chalk.gray(`     Confidence: ${(fix.confidence * 100).toFixed(0)}% | Source: ${fix.source}`));
+      console.log(
+        chalk.gray(
+          `     Confidence: ${(fix.confidence * 100).toFixed(0)}% | Source: ${fix.source}`,
+        ),
+      );
     });
   }
-  
+
   if (analysis.relatedBugs.length > 0) {
     console.log(chalk.cyan('\n🔗 Related Bugs:'));
     analysis.relatedBugs.forEach((bug: any, i: number) => {

@@ -341,7 +341,7 @@ export class System2MemoryManager implements System2Memory {
     if (feedback) {
       console.log(`Enhancement feedback: ${feedback}`);
     }
-    
+
     enhancement.status = status;
 
     if (status === 'completed') {
@@ -926,7 +926,7 @@ export class System2MemoryManager implements System2Memory {
       // Remove lowest quality traces (keep 80% of limit)
       const removeCount = Math.min(
         Math.floor(this.config.maxReasoningTraces * 0.2),
-        sortedByQuality.length
+        sortedByQuality.length,
       );
       for (let i = 0; i < removeCount; i++) {
         const traceEntry = sortedByQuality[i];
@@ -955,7 +955,8 @@ export class System2MemoryManager implements System2Memory {
   private async calculateReadability(code: string, _language: string): Promise<number> {
     // Basic readability metrics
     const lines = code.split('\n');
-    const avgLineLength = lines.length > 0 ? lines.reduce((sum, line) => sum + line.length, 0) / lines.length : 0;
+    const avgLineLength =
+      lines.length > 0 ? lines.reduce((sum, line) => sum + line.length, 0) / lines.length : 0;
     const readabilityScore = Math.max(0, 100 - (avgLineLength - 50) * 2); // Optimal ~50 chars per line
 
     return Math.max(0, Math.min(100, readabilityScore));

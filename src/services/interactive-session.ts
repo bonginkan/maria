@@ -47,10 +47,10 @@ export function createInteractiveSession(maria: MariaAI): InteractiveSession {
         console.log(chalk.cyan('🧠 Initializing Memory System...'));
         memoryEngine = new DualMemoryEngine();
         memoryCoordinator = new MemoryCoordinator(memoryEngine);
-        
+
         // Set memory system in MariaAI for command integration
         maria.setMemorySystem(memoryEngine, memoryCoordinator);
-        
+
         // Lazy initialization - don't block startup
         Promise.resolve().then(async () => {
           await memoryEngine?.initialize();
@@ -286,7 +286,7 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
     case '/memory':
       // Enhanced memory command with sub-commands
       const memorySubCmd = args[0]?.toLowerCase();
-      
+
       if (!memorySubCmd || memorySubCmd === 'status') {
         // Show memory status
         console.log(chalk.blue('\n🧠 Memory System Status\n'));
@@ -296,16 +296,22 @@ async function handleCommand(command: string, maria: MariaAI): Promise<string | 
           console.log(chalk.gray(`  • Knowledge Nodes: ${stats.system1.totalNodes}`));
           console.log(chalk.gray(`  • Code Patterns: ${stats.system1.patterns}`));
           console.log(chalk.gray(`  • User Preferences: ${stats.system1.preferences}`));
-          console.log(chalk.gray(`  • Cache Hit Rate: ${(stats.system1.cacheHitRate * 100).toFixed(1)}%`));
-          
+          console.log(
+            chalk.gray(`  • Cache Hit Rate: ${(stats.system1.cacheHitRate * 100).toFixed(1)}%`),
+          );
+
           console.log(chalk.cyan('\nSystem 2 (Deliberate/Analytical):'));
           console.log(chalk.gray(`  • Reasoning Traces: ${stats.system2.reasoningTraces}`));
           console.log(chalk.gray(`  • Decision Trees: ${stats.system2.decisionTrees}`));
           console.log(chalk.gray(`  • Active Sessions: ${stats.system2.activeSessions}`));
-          
+
           console.log(chalk.cyan('\nPerformance:'));
           console.log(chalk.gray(`  • Avg Response Time: ${stats.performance.avgResponseTime}ms`));
-          console.log(chalk.gray(`  • Memory Usage: ${(stats.performance.memoryUsage / 1024 / 1024).toFixed(1)}MB`));
+          console.log(
+            chalk.gray(
+              `  • Memory Usage: ${(stats.performance.memoryUsage / 1024 / 1024).toFixed(1)}MB`,
+            ),
+          );
         } else {
           console.log(chalk.yellow('Memory system is initializing...'));
         }
@@ -1112,16 +1118,16 @@ async function handleLintCommand(args: string[]): Promise<void> {
       console.log(
         chalk.gray('Checking for ESLint errors, code style violations, and best practices...'),
       );
-      
+
       // Check memory for previous lint preferences and patterns
       if (memoryEngine) {
         try {
           const lintPrefs = await memoryEngine.recall({
             query: 'lint preferences and rules',
             type: 'code_quality',
-            limit: 3
+            limit: 3,
           });
-          
+
           if (lintPrefs.length > 0) {
             console.log(chalk.gray('Using remembered lint preferences...'));
           }
@@ -1129,7 +1135,7 @@ async function handleLintCommand(args: string[]): Promise<void> {
           // Silent fail - memory is optional
         }
       }
-      
+
       console.log('');
       console.log(chalk.yellow('📊 Lint Analysis Results:'));
       console.log('• Syntax errors: 0');
@@ -1137,7 +1143,7 @@ async function handleLintCommand(args: string[]): Promise<void> {
       console.log('• Best practice issues: 1');
       console.log('• Code quality score: 94/100');
       console.log('');
-      
+
       // Store lint results in memory
       if (memoryEngine) {
         try {
@@ -1147,15 +1153,15 @@ async function handleLintCommand(args: string[]): Promise<void> {
               syntaxErrors: 0,
               styleViolations: 3,
               bestPracticeIssues: 1,
-              qualityScore: 94
+              qualityScore: 94,
             },
-            timestamp: new Date()
+            timestamp: new Date(),
           });
         } catch (error) {
           // Silent fail
         }
       }
-      
+
       console.log(chalk.gray('💡 Run "/lint fix" to automatically fix resolvable issues'));
       break;
 
@@ -1202,16 +1208,16 @@ async function handleTypecheckCommand(args: string[]): Promise<void> {
     case 'analyze':
       console.log(chalk.green('🔄 Running TypeScript type analysis...'));
       console.log(chalk.gray('Analyzing type safety, any usage, and strict mode compliance...'));
-      
+
       // Check memory for previous type analysis patterns
       if (memoryEngine) {
         try {
           const typePatterns = await memoryEngine.recall({
             query: 'typescript type patterns and issues',
             type: 'type_analysis',
-            limit: 5
+            limit: 5,
           });
-          
+
           if (typePatterns.length > 0) {
             console.log(chalk.gray('Applying learned type patterns...'));
           }
@@ -1219,7 +1225,7 @@ async function handleTypecheckCommand(args: string[]): Promise<void> {
           // Silent fail
         }
       }
-      
+
       console.log('');
       console.log(chalk.yellow('📊 Type Analysis Results:'));
       console.log('• Type errors: 0');
@@ -1228,7 +1234,7 @@ async function handleTypecheckCommand(args: string[]): Promise<void> {
       console.log('• Type coverage: 87%');
       console.log('• Strict mode: Partially compliant');
       console.log('');
-      
+
       // Store type analysis results in memory
       if (memoryEngine) {
         try {
@@ -1239,16 +1245,16 @@ async function handleTypecheckCommand(args: string[]): Promise<void> {
               anyUsage: 2,
               unknownUsage: 5,
               typeCoverage: 87,
-              strictMode: 'partial'
+              strictMode: 'partial',
             },
             timestamp: new Date(),
-            insights: ['Consider enabling strict mode', 'Reduce any type usage']
+            insights: ['Consider enabling strict mode', 'Reduce any type usage'],
           });
         } catch (error) {
           // Silent fail
         }
       }
-      
+
       console.log(chalk.gray('💡 Consider enabling strict mode for better type safety'));
       break;
 
