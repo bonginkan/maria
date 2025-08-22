@@ -534,8 +534,9 @@ export class System1MemoryManager implements System1Memory {
       const pattern = this.patternLibrary.codePatterns.find((p) => p.id === data.patternId);
       if (pattern && data.success !== undefined) {
         // Adjust pattern effectiveness based on usage success
-        const _adjustment = data.success ? 0.1 : -0.05;
-        // Update pattern performance metrics (adjustment would be used here)
+        const adjustment = data.success ? 0.1 : -0.05;
+        // Update pattern performance metrics
+        console.log(`Pattern ${data.patternId} adjustment: ${adjustment}`);
       }
     }
   }
@@ -598,27 +599,28 @@ export class System1MemoryManager implements System1Memory {
     const processed = new Set<string>();
 
     for (let i = 0; i < patterns.length; i++) {
-      if (processed.has(patterns[i].id)) continue;
+      const currentPattern = patterns[i];
+      if (!currentPattern || processed.has(currentPattern.id)) continue;
 
       const similar = patterns
         .slice(i + 1)
         .filter(
           (p) =>
-            !processed.has(p.id) &&
-            p.language === patterns[i].language &&
-            this.calculatePatternSimilarity(patterns[i], p) > 0.8,
+            p && !processed.has(p.id) &&
+            p.language === currentPattern.language &&
+            this.calculatePatternSimilarity(currentPattern, p) > 0.8,
         );
 
       if (similar.length > 0) {
         // Merge similar patterns
-        const mergedPattern = this.mergePatterns(patterns[i], similar);
+        const mergedPattern = this.mergePatterns(currentPattern, similar);
         merged.push(mergedPattern);
 
-        processed.add(patterns[i].id);
+        processed.add(currentPattern.id);
         similar.forEach((p) => processed.add(p.id));
       } else {
-        merged.push(patterns[i]);
-        processed.add(patterns[i].id);
+        merged.push(currentPattern);
+        processed.add(currentPattern.id);
       }
     }
 
