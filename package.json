@@ -1,6 +1,6 @@
 {
   "name": "@bonginkan/maria",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "🧠 MARIA Platform v2.0.0 Memory Intelligence Edition - Revolutionary Dual-Layer Memory System with Complete Local AI Integration (Ollama + vLLM + LM Studio), Context-Aware Learning, 50+ Cognitive Modes, and Enterprise-Grade Development Intelligence",
   "keywords": [
     "ai",
@@ -54,7 +54,7 @@
     "semantic-analysis"
   ],
   "author": "Bonginkan Inc.",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "homepage": "https://github.com/bonginkan/maria",
   "repository": {
     "type": "git",
