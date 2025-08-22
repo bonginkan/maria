@@ -117,9 +117,9 @@ export default function analyzeCommand(command: Command): void {
         patterns.forEach(
           (
             pattern: { name: string; count: number; pattern: string; example?: unknown },
-            index: number,
+            _index: number,
           ) => {
-            console.log(chalk.yellow(`\n${index + 1}. ${pattern.name}`));
+            console.log(chalk.yellow(`\n${_index + 1}. ${pattern.name}`));
             console.log(`   Occurrences: ${pattern.count}`);
             console.log(`   Pattern: ${pattern.pattern}`);
             if (pattern.example) {
@@ -164,10 +164,10 @@ export default function analyzeCommand(command: Command): void {
           ],
         });
 
-        (metrics as unknown[]).forEach((item, index: number) => {
+        (metrics as unknown[]).forEach((item, _index: number) => {
           if (isMetric(item)) {
             table.addRow({
-              rank: index + 1,
+              rank: _index + 1,
               node: item.name,
               score: item.value.toFixed(4),
               details: '-',
@@ -180,7 +180,7 @@ export default function analyzeCommand(command: Command): void {
           ) {
             const metric = item as { node: string; score: number; details?: string };
             table.addRow({
-              rank: index + 1,
+              rank: _index + 1,
               node: metric.node,
               score: metric.score.toFixed(4),
               details: metric.details || '-',
@@ -210,9 +210,9 @@ export default function analyzeCommand(command: Command): void {
         spinner.succeed('Community detection complete');
 
         console.log(chalk.bold.cyan('\n👥 Communities:'));
-        communities.forEach((item, index: number) => {
+        communities.forEach((item, _index: number) => {
           if (isCommunity(item)) {
-            console.log(chalk.yellow(`\nCommunity ${index + 1}:`));
+            console.log(chalk.yellow(`\nCommunity ${_index + 1}:`));
             console.log(`  Size: ${item.size} nodes`);
             console.log(
               `  Key Members: ${item.nodes.slice(0, 5).join(', ')}${item.nodes.length > 5 ? '...' : ''}`,
@@ -224,7 +224,7 @@ export default function analyzeCommand(command: Command): void {
               density: number;
               centralNode?: string;
             };
-            console.log(chalk.yellow(`\nCommunity ${index + 1}:`));
+            console.log(chalk.yellow(`\nCommunity ${_index + 1}:`));
             console.log(`  Size: ${community.size} nodes`);
             console.log(
               `  Key Members: ${community.keyMembers.slice(0, 5).join(', ')}${community.keyMembers.length > 5 ? '...' : ''}`,
@@ -310,9 +310,9 @@ export default function analyzeCommand(command: Command): void {
             `\n💡 ${options.type.charAt(0).toUpperCase() + options.type.slice(1)} Recommendations:`,
           ),
         );
-        recommendations.forEach((item, index: number) => {
+        recommendations.forEach((item, _index: number) => {
           if (isRecommendation(item)) {
-            console.log(chalk.yellow(`\n${index + 1}. ${item.title}`));
+            console.log(chalk.yellow(`\n${_index + 1}. ${item.title}`));
             console.log(`   Description: ${item.description}`);
             console.log(`   Priority: ${item.priority}`);
             if (item.impact) {
@@ -325,7 +325,7 @@ export default function analyzeCommand(command: Command): void {
               reason: string;
               connections?: string[];
             };
-            console.log(chalk.yellow(`\n${index + 1}. ${rec.node}`));
+            console.log(chalk.yellow(`\n${_index + 1}. ${rec.node}`));
             console.log(`   Score: ${rec.score.toFixed(3)}`);
             console.log(`   Reason: ${rec.reason}`);
             if (rec.connections) {
@@ -362,9 +362,9 @@ export default function analyzeCommand(command: Command): void {
         if (paths.length === 0) {
           console.log(chalk.yellow('No paths found'));
         } else {
-          paths.forEach((item, index: number) => {
+          paths.forEach((item, _index: number) => {
             if (isPathResult(item)) {
-              console.log(chalk.yellow(`\nPath ${index + 1} (length: ${item.nodes.length}):`));
+              console.log(chalk.yellow(`\nPath ${_index + 1} (length: ${item.nodes.length}):`));
               console.log(`  ${item.nodes.join(' → ')}`);
               if (item.cost !== undefined) {
                 console.log(`  Cost: ${item.cost}`);
@@ -375,7 +375,7 @@ export default function analyzeCommand(command: Command): void {
                 length: number;
                 cost?: number;
               };
-              console.log(chalk.yellow(`\nPath ${index + 1} (length: ${path.length}):`));
+              console.log(chalk.yellow(`\nPath ${_index + 1} (length: ${path.length}):`));
               console.log(`  ${path.nodes.join(' → ')}`);
               if (path.cost !== undefined) {
                 console.log(`  Cost: ${path.cost}`);

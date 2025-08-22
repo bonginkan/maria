@@ -82,6 +82,7 @@ export interface LearningTrajectoryPoint {
   level: number;
   learningEvent: LearningEvent;
   momentum: number;
+  contextId?: string;
 }
 
 export interface LearningEvent {

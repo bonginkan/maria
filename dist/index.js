@@ -17707,10 +17707,14 @@ async function handleApprovalShow(commitId, options) {
 }
 __name(handleApprovalShow, "handleApprovalShow");
 
+// package.json
+var package_default = {
+  version: "1.7.0"};
+
 // src/cli.ts
 function createCLI() {
   const program = new commander.Command();
-  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version("1.2.0");
+  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version(package_default.version);
   program.command("chat", { isDefault: true }).description("Start interactive chat session").option(
     "--priority <mode>",
     "Set priority mode (privacy-first|performance|cost-effective|auto)"
@@ -19271,8 +19275,8 @@ var DualMemoryEngine = class {
       id: `learn:${Date.now()}`,
       type: "learning_update",
       timestamp: /* @__PURE__ */ new Date(),
-      userId: context.userId || "anonymous",
-      sessionId: context.sessionId || "default",
+      userId: context["userId"] || "anonymous",
+      sessionId: context["sessionId"] || "default",
       data: { input, output, context, success },
       metadata: {
         confidence: success ? 0.9 : 0.3,
@@ -19454,7 +19458,7 @@ var DualMemoryEngine = class {
         );
         break;
       case "preference":
-        result = this.system1.userPreferences;
+        result = await this.system1.getUserPreference("learningPatterns");
         break;
       default:
         throw new Error(`System 1 cannot handle query type: ${query.type}`);
@@ -19536,7 +19540,7 @@ var DualMemoryEngine = class {
     }
     throw new Error("No memory systems could provide results");
   }
-  generateCombinedSuggestions(s1Data, s2Data) {
+  generateCombinedSuggestions(_s1Data, _s2Data) {
     return [
       {
         id: `suggestion:${Date.now()}`,

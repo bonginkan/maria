@@ -9,7 +9,6 @@ import { System1MemoryManager } from './system1-memory';
 import { System2MemoryManager } from './system2-memory';
 import type {
   MemoryEvent,
-  MemorySystemConfig,
   System1Config,
   System2Config,
   CoordinatorConfig,
@@ -99,7 +98,7 @@ export class DualMemoryEngine {
     try {
       // Determine optimal memory system(s) to use
       const strategy = await this.selectMemoryStrategy(memoryQuery);
-      const result = await this.executeMemoryOperation(memoryQuery, strategy);
+      const result = await this.executeMemoryOperation<T>(memoryQuery, strategy);
 
       // Cache successful results
       if (result.confidence > 0.7) {
@@ -142,8 +141,8 @@ export class DualMemoryEngine {
       id: `learn:${Date.now()}`,
       type: 'learning_update',
       timestamp: new Date(),
-      userId: (context.userId as string) || 'anonymous',
-      sessionId: (context.sessionId as string) || 'default',
+      userId: (context['userId'] as string) || 'anonymous',
+      sessionId: (context['sessionId'] as string) || 'default',
       data: { input, output, context, success },
       metadata: {
         confidence: success ? 0.9 : 0.3,
@@ -379,7 +378,7 @@ export class DualMemoryEngine {
         break;
 
       case 'preference':
-        result = this.system1.userPreferences as T;
+        result = await this.system1.getUserPreference('learningStyle') as T;
         break;
 
       default:
@@ -489,7 +488,7 @@ export class DualMemoryEngine {
     throw new Error('No memory systems could provide results');
   }
 
-  private generateCombinedSuggestions<T>(s1Data: T, s2Data: T): Enhancement[] {
+  private generateCombinedSuggestions<T>(_s1Data: T, _s2Data: T): Enhancement[] {
     // Generate suggestions based on the combination of results
     return [
       {

@@ -20,6 +20,7 @@ export interface BackgroundTask {
   estimatedEndTime?: number;
   result?: unknown;
   error?: string;
+  sessionId?: string;
 }
 
 export interface UIStateUpdate {

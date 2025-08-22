@@ -12,13 +12,24 @@ import type {
   MemoryEvent,
   CoordinatorConfig,
   KnowledgeNode,
-  ReasoningTrace,
-  CodePattern,
-  UserPreferenceSet,
   QualityMetrics,
-  Enhancement,
-  MemorySystemConfig,
+  PerformanceMetrics,
+  EventMetadata,
 } from './types/memory-interfaces';
+
+export interface SystemConflict {
+  id: string;
+  type: "data_inconsistency" | "preference_mismatch" | "quality_threshold" | "performance_tradeoff";
+  description: string;
+  severity: number;
+}
+
+export interface BehaviorPattern {
+  pattern: string;
+  frequency: number;
+  context: Record<string, unknown>;
+  adaptation: string;
+}
 
 export interface CoordinationMetrics {
   syncOperations: number;
@@ -149,11 +160,9 @@ export class MemoryCoordinator {
   }
 
   async optimizePerformance(): Promise<OptimizationRecommendation[]> {
-    const startTime = Date.now();
-
     try {
       // Analyze current performance
-      const performanceAnalysis = await this.analyzePerformance();
+      await this.analyzePerformance();
 
       // Generate optimization recommendations
       const recommendations = await this.generateOptimizationRecommendations();
@@ -301,18 +310,14 @@ export class MemoryCoordinator {
     bottlenecks: string[];
     opportunities: string[];
   }> {
-    const dualEngineMetrics = this.dualEngine.getMetrics();
-
     return {
       system1Performance: {
-        averageLatency: dualEngineMetrics.averageLatency * 0.3, // Estimated S1 portion
-        cacheHitRate: 0.85, // Estimated from System 1
-        memoryUsage: this.estimateSystem1Memory(),
+        timeComplexity: "O(1)", // Estimated S1 complexity
+        spaceComplexity: "O(n)", // Estimated from System 1
       },
       system2Performance: {
-        averageLatency: dualEngineMetrics.averageLatency * 0.7, // Estimated S2 portion
-        qualityScore: this.system2.qualityEvaluation.reasoningQuality.accuracy,
-        memoryUsage: this.estimateSystem2Memory(),
+        timeComplexity: "O(n log n)", // Estimated S2 complexity
+        spaceComplexity: "O(n)", // Estimated from System 2
       },
       bottlenecks: await this.identifyBottlenecks(),
       opportunities: await this.identifyOptimizationOpportunities(),
@@ -427,8 +432,8 @@ export class MemoryCoordinator {
 
   // ========== Conflict Detection & Resolution ==========
 
-  private async detectConflicts(): Promise<unknown[]> {
-    const conflicts = [];
+  private async detectConflicts(): Promise<SystemConflict[]> {
+    const conflicts: SystemConflict[] = [];
 
     // Data inconsistency detection
     const s1Preferences = await this.system1.getUserPreference('developmentStyle');
@@ -439,9 +444,10 @@ export class MemoryCoordinator {
       s2Quality.codeQuality.maintainability < 50
     ) {
       conflicts.push({
+        id: `conflict-${Date.now()}`,
         type: 'preference_mismatch',
         description: 'User prefers prototyping but code quality is low',
-        severity: 'medium',
+        severity: 5, // medium severity
       });
     }
 
@@ -449,9 +455,10 @@ export class MemoryCoordinator {
     const dualEngineMetrics = this.dualEngine.getMetrics();
     if (dualEngineMetrics.averageLatency > 200 && s2Quality.reasoningQuality.accuracy > 0.9) {
       conflicts.push({
+        id: `conflict-${Date.now()}-perf`,
         type: 'performance_tradeoff',
         description: 'High accuracy but poor performance',
-        severity: 'high',
+        severity: 8, // high severity
       });
     }
 
@@ -466,7 +473,7 @@ export class MemoryCoordinator {
       description: conflict.description,
       resolution: '',
       confidence: 0.8,
-      impact: conflict.severity,
+      impact: conflict.severity >= 7 ? 'high' : conflict.severity >= 4 ? 'medium' : 'low',
     };
 
     try {
@@ -514,7 +521,7 @@ export class MemoryCoordinator {
     };
   }
 
-  private determineAdaptation(eventType: string, context: EventMetadata): string {
+  private determineAdaptation(eventType: string, _context: EventMetadata): string {
     switch (eventType) {
       case 'code_generation':
         return 'Increase code pattern relevance weighting';
@@ -528,7 +535,7 @@ export class MemoryCoordinator {
   }
 
   private async performCrossLayerAdaptation(behaviorPattern: BehaviorPattern): Promise<void> {
-    const { pattern, adaptation } = behaviorPattern;
+    const { pattern, adaptation: _adaptation } = behaviorPattern;
 
     try {
       // Adapt System 1 based on behavior
@@ -677,13 +684,6 @@ export class MemoryCoordinator {
     );
   }
 
-  private estimateSystem1Memory(): number {
-    return 50; // MB estimate
-  }
-
-  private estimateSystem2Memory(): number {
-    return 75; // MB estimate
-  }
 
   private async identifyBottlenecks(): Promise<string[]> {
     const bottlenecks = [];
@@ -744,7 +744,7 @@ export class MemoryCoordinator {
     console.log('Adapting System 2 for quality focus');
   }
 
-  private async updateAdaptiveLearning(behaviorPattern: BehaviorPattern): Promise<void> {
+  private async updateAdaptiveLearning(_behaviorPattern: BehaviorPattern): Promise<void> {
     console.log('Updating adaptive learning based on behavior pattern');
   }
 

@@ -414,8 +414,8 @@ export class AccessControlManager extends EventEmitter {
   private roles: Map<string, Role>;
   private cache: AccessCache;
   private auditLog: AuditEntry[];
-  private policyEngine: PolicyEngine;
-  private encryptionKey: Buffer;
+  private _policyEngine: PolicyEngine;
+  private _encryptionKey: Buffer;
   private gdprCompliance?: GDPRCompliance;
   private hipaaCompliance?: HIPAACompliance;
 
@@ -427,8 +427,8 @@ export class AccessControlManager extends EventEmitter {
     this.roles = new Map();
     this.auditLog = [];
     this.cache = this.initializeCache();
-    this.policyEngine = new PolicyEngine(config);
-    this.encryptionKey = this.generateEncryptionKey();
+    this._policyEngine = new PolicyEngine(config);
+    this._encryptionKey = this.generateEncryptionKey();
 
     this.initializeDefaultRoles();
   }

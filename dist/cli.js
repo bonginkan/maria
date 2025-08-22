@@ -17704,10 +17704,14 @@ async function handleApprovalShow(commitId, options) {
 }
 __name(handleApprovalShow, "handleApprovalShow");
 
+// package.json
+var package_default = {
+  version: "1.7.0"};
+
 // src/cli.ts
 function createCLI() {
   const program = new commander.Command();
-  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version("1.2.0");
+  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version(package_default.version);
   program.command("chat", { isDefault: true }).description("Start interactive chat session").option(
     "--priority <mode>",
     "Set priority mode (privacy-first|performance|cost-effective|auto)"

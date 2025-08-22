@@ -17637,6 +17637,193 @@ var init_approval_git = __esm({
   }
 });
 
+// package.json
+var package_default;
+var init_package = __esm({
+  "package.json"() {
+    package_default = {
+      name: "@bonginkan/maria",
+      version: "1.7.0",
+      description: "Enterprise-Grade AI Development Platform - Intelligent CLI with Complete Local AI Integration (Ollama + vLLM + LM Studio), 50 Cognitive Modes, Vector-based Code Search, and Comprehensive Quality Analysis",
+      keywords: [
+        "ai",
+        "cli",
+        "assistant",
+        "gpt",
+        "claude",
+        "gemini",
+        "local-llm",
+        "lm-studio",
+        "ollama",
+        "vllm",
+        "local-ai",
+        "privacy-first",
+        "offline-development",
+        "developer-tools",
+        "code-assistant",
+        "ai-cli",
+        "command-line",
+        "typescript",
+        "code-quality",
+        "bug-detection",
+        "lint-analysis",
+        "security-review",
+        "type-safety",
+        "owasp-compliance",
+        "eslint-integration",
+        "dependency-management",
+        "project-analysis",
+        "automated-refactoring",
+        "enterprise-ai",
+        "intelligent-development",
+        "context-preservation",
+        "multimodal-intelligence",
+        "prediction-engine",
+        "vector-search",
+        "coderag",
+        "document-processing",
+        "arxiv-integration",
+        "multi-agent-system",
+        "mcp-protocol",
+        "semantic-analysis"
+      ],
+      author: "Bonginkan Inc.",
+      license: "MIT",
+      homepage: "https://github.com/bonginkan/maria",
+      repository: {
+        type: "git",
+        url: "git+https://github.com/bonginkan/maria.git"
+      },
+      bugs: {
+        url: "https://github.com/bonginkan/maria/issues"
+      },
+      main: "./dist/index.js",
+      types: "./dist/index.d.ts",
+      bin: {
+        maria: "./bin/maria",
+        mc: "./bin/maria"
+      },
+      files: [
+        "dist",
+        "bin",
+        "README.md",
+        "LICENSE"
+      ],
+      type: "commonjs",
+      engines: {
+        node: ">=18.0.0"
+      },
+      scripts: {
+        build: "tsup",
+        dev: "tsup --watch",
+        clean: "rm -rf dist",
+        prebuild: "pnpm run clean",
+        postbuild: "chmod +x bin/maria",
+        test: "vitest",
+        "test:coverage": "vitest --coverage",
+        lint: "eslint src --ext .ts,.tsx",
+        "lint:fix": "eslint src --ext .ts,.tsx --fix",
+        "type-check": "tsc --noEmit",
+        prepublishOnly: "pnpm run build",
+        release: "pnpm version patch && pnpm publish",
+        "pre-commit": "lint-staged",
+        "release:latest": `pnpm publish && npm dist-tag add @bonginkan/maria@$(npm pkg get version | tr -d '"') latest`,
+        "release:alpha": "pnpm publish --tag alpha",
+        "release:beta": "pnpm publish --tag beta",
+        "version:sync": "node scripts/sync-versions.js",
+        "version:auto": "npm version prerelease --preid=alpha --no-git-tag-version && npm run version:sync",
+        "version:dynamic": "node scripts/dynamic-version.js && npm run version:sync"
+      },
+      dependencies: {
+        "@anthropic-ai/sdk": "^0.20.0",
+        "@google/generative-ai": "^0.1.0",
+        "@langchain/core": "^0.1.0",
+        "@sindresorhus/slugify": "^2.2.1",
+        "@types/glob": "^9.0.0",
+        axios: "^1.11.0",
+        chalk: "^5.3.0",
+        "cli-progress": "^3.12.0",
+        clsx: "^2.1.1",
+        commander: "^12.0.0",
+        "console-table-printer": "^2.14.6",
+        dotenv: "^16.4.1",
+        "express-rate-limit": "^8.0.1",
+        "express-validator": "^7.2.1",
+        figlet: "^1.7.0",
+        "fs-extra": "^11.2.0",
+        "fuse.js": "^7.1.0",
+        glob: "^11.0.3",
+        "gpt-3-encoder": "^1.1.4",
+        "groq-sdk": "^0.3.0",
+        ink: "^4.4.1",
+        "ink-select-input": "^5.0.0",
+        "ink-spinner": "^4.0.3",
+        "ink-text-input": "^5.0.1",
+        inquirer: "^12.0.0",
+        jsonwebtoken: "^9.0.2",
+        natural: "^6.0.0",
+        "node-fetch": "^3.3.2",
+        openai: "^4.28.0",
+        ora: "^8.0.1",
+        "p-limit": "^5.0.0",
+        prompts: "^2.4.2",
+        react: "^18.2.0",
+        "reflect-metadata": "^0.2.2",
+        semver: "^7.7.2",
+        "strip-ansi": "^7.1.0",
+        toml: "^3.0.0",
+        uuid: "^9.0.1",
+        winston: "^3.11.0",
+        ws: "^8.16.0",
+        zod: "^3.22.4"
+      },
+      devDependencies: {
+        "@types/cli-progress": "^3.11.5",
+        "@types/figlet": "^1.5.8",
+        "@types/fs-extra": "^11.0.4",
+        "@types/inquirer": "^9.0.7",
+        "@types/jsonwebtoken": "^9.0.5",
+        "@types/node": "^20.11.0",
+        "@types/prompts": "^2.4.9",
+        "@types/react": "^18.2.48",
+        "@types/semver": "^7.7.0",
+        "@types/uuid": "^9.0.8",
+        "@types/ws": "^8.5.10",
+        "@typescript-eslint/eslint-plugin": "^6.19.0",
+        "@typescript-eslint/parser": "^6.19.0",
+        "@vitest/coverage-v8": "^1.2.0",
+        "cli-highlight": "^2.1.11",
+        eslint: "^8.56.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-prettier": "^5.1.3",
+        execa: "^9.6.0",
+        figures: "^6.1.0",
+        "lint-staged": "^16.1.5",
+        prettier: "^3.2.4",
+        "react-devtools-core": "^6.1.5",
+        tsup: "^8.0.1",
+        typescript: "5.3.3",
+        vitest: "^1.2.0"
+      },
+      publishConfig: {
+        access: "public",
+        registry: "https://registry.npmjs.org/"
+      },
+      "lint-staged": {
+        "*.{ts,tsx}": [
+          "eslint --fix",
+          "prettier --write"
+        ],
+        "*.{json,md}": [
+          "prettier --write"
+        ]
+      },
+      packageManager: "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
+    };
+  }
+});
+
 // src/services/llm-health-checker.ts
 var llm_health_checker_exports = {};
 __export(llm_health_checker_exports, {
@@ -17961,7 +18148,7 @@ var init_llm_startup_manager = __esm({
 });
 function createCLI() {
   const program = new commander.Command();
-  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version("1.2.0");
+  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version(package_default.version);
   program.command("chat", { isDefault: true }).description("Start interactive chat session").option(
     "--priority <mode>",
     "Set priority mode (privacy-first|performance|cost-effective|auto)"
@@ -18154,6 +18341,7 @@ var init_cli = __esm({
     init_coderag();
     init_document();
     init_approval_git();
+    init_package();
     __name(createCLI, "createCLI");
     __name(startInteractiveChat, "startInteractiveChat");
     __name(askSingle, "askSingle");
