@@ -18,29 +18,35 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
 });
 function createCLI() {
   const program = new commander.Command();
-  program.name("maria").description("MARIA - AI-Powered Development Platform").version("1.0.7");
+  program.name("maria").description("MARIA - AI-Powered Development Platform").version("2.1.9");
   program.command("chat").description("Start interactive chat mode").action(() => {
-    console.log(chalk__default.default.blue("\u{1F916} MARIA AI-Powered Development Platform v1.0.7"));
-    console.log(chalk__default.default.gray("Enterprise-Grade CLI with Advanced Intelligence"));
+    console.log(chalk__default.default.blue("\u{1F916} MARIA AI-Powered Development Platform v2.1.9"));
+    console.log(chalk__default.default.gray("Enhanced UX & Advanced Content Analysis Edition"));
     console.log(chalk__default.default.yellow("\n\u{1F4A1} This is the OSS distribution of MARIA."));
     console.log(chalk__default.default.yellow("   Full features available at: https://maria-code.vercel.app"));
     console.log(chalk__default.default.cyan("\n\u2728 Key Features:"));
-    console.log(chalk__default.default.cyan("   \u2022 22+ AI Models (GPT, Claude, Gemini, Local LLMs)"));
-    console.log(chalk__default.default.cyan("   \u2022 Advanced Code Quality Systems"));
-    console.log(chalk__default.default.cyan("   \u2022 Intelligent Dependency Management"));
-    console.log(chalk__default.default.cyan("   \u2022 AI-Driven Project Analysis"));
-    console.log(chalk__default.default.cyan("   \u2022 Automated Refactoring Engine"));
-    console.log(chalk__default.default.cyan("   \u2022 Phase 5: Enterprise-Grade Infrastructure"));
+    console.log(chalk__default.default.cyan("   \u2022 Cloud Vision AI (Gemini 2.0 Flash, GPT-4o-mini)"));
+    console.log(chalk__default.default.cyan("   \u2022 Enhanced UX with Real-time Feedback"));
+    console.log(chalk__default.default.cyan("   \u2022 58+ Cognitive Modes with Advanced Indicators"));
+    console.log(chalk__default.default.cyan("   \u2022 Professional Progress Reporting"));
+    console.log(chalk__default.default.cyan("   \u2022 Advanced Content Analysis & OCR"));
+    console.log(chalk__default.default.cyan("   \u2022 Complete Local LLM Integration"));
+    console.log(chalk__default.default.cyan("   \u2022 CLI Native Development System"));
   });
   program.command("version").description("Show version information").action(() => {
-    console.log(chalk__default.default.bold("MARIA CLI v1.0.7"));
-    console.log(chalk__default.default.gray("AI-Powered Development Platform"));
+    console.log(chalk__default.default.bold("MARIA CLI v2.1.9"));
+    console.log(chalk__default.default.gray("Enhanced UX & Advanced Content Analysis Edition"));
     console.log(chalk__default.default.gray("\xA9 2025 Bonginkan Inc."));
   });
   program.command("status").description("Show system status").action(() => {
-    console.log(chalk__default.default.green("\u2705 MARIA OSS Distribution"));
-    console.log(chalk__default.default.blue("\u{1F4E6} Version: 1.0.7"));
+    console.log(chalk__default.default.green("\u2705 MARIA OSS Distribution v2.1.9"));
+    console.log(chalk__default.default.blue("\u{1F4E6} Enhanced UX & Advanced Content Analysis Edition"));
     console.log(chalk__default.default.yellow("\u{1F517} Full Platform: https://maria-code.vercel.app"));
+    console.log(chalk__default.default.cyan("\u2728 New Features:"));
+    console.log(chalk__default.default.cyan("   \u2022 Cloud Vision AI Integration"));
+    console.log(chalk__default.default.cyan("   \u2022 Real-time Feedback Management"));
+    console.log(chalk__default.default.cyan("   \u2022 Enhanced Progress Reporting"));
+    console.log(chalk__default.default.cyan("   \u2022 Advanced Mode Indicators"));
   });
   return program;
 }
