@@ -1,11 +1,18 @@
 /**
+<<<<<<< HEAD
  * MARIA - Intelligent CLI Assistant
  * Entry point for the library
+=======
+ * MARIA - AI-Powered Development Platform
+ * OSS Distribution Entry Point
+ * @version 1.0.7
+>>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
  */
 
 // CLI entry point
 export { createCLI } from './cli';
 
+<<<<<<< HEAD
 // Memory System Exports
 export { DualMemoryEngine } from './services/memory-system/dual-memory-engine';
 export { MemoryCoordinator } from './services/memory-system/memory-coordinator';
@@ -38,3 +45,7 @@ export type {
 
 // Version
 export const VERSION = '1.1.0';
+=======
+// Version
+export const VERSION = '1.0.7';
+>>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
