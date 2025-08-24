@@ -7,7 +7,6 @@ var generativeAi = require('@google/generative-ai');
 var Groq = require('groq-sdk');
 var fetch3 = require('node-fetch');
 var events = require('events');
-<<<<<<< HEAD
 var fs15 = require('fs');
 var path10 = require('path');
 var os4 = require('os');
@@ -29,21 +28,6 @@ require('file-type');
 var commander = require('commander');
 var semver = require('semver');
 
-=======
-var fs = require('fs');
-var path2 = require('path');
-var os2 = require('os');
-var chalk8 = require('chalk');
-var uuid = require('uuid');
-var crypto = require('crypto');
-var readline = require('readline');
-var fs2 = require('fs/promises');
-var child_process = require('child_process');
-var commander = require('commander');
-var semver = require('semver');
-
-var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
 function _interopNamespace(e) {
@@ -68,7 +52,6 @@ var OpenAI__default = /*#__PURE__*/_interopDefault(OpenAI);
 var Anthropic__default = /*#__PURE__*/_interopDefault(Anthropic);
 var Groq__default = /*#__PURE__*/_interopDefault(Groq);
 var fetch3__default = /*#__PURE__*/_interopDefault(fetch3);
-<<<<<<< HEAD
 var fs15__namespace = /*#__PURE__*/_interopNamespace(fs15);
 var path10__namespace = /*#__PURE__*/_interopNamespace(path10);
 var os4__namespace = /*#__PURE__*/_interopNamespace(os4);
@@ -81,36 +64,6 @@ var fs11__namespace = /*#__PURE__*/_interopNamespace(fs11);
 var v8__namespace = /*#__PURE__*/_interopNamespace(v8);
 var semver__default = /*#__PURE__*/_interopDefault(semver);
 
-=======
-var path2__default = /*#__PURE__*/_interopDefault(path2);
-var os2__default = /*#__PURE__*/_interopDefault(os2);
-var chalk8__default = /*#__PURE__*/_interopDefault(chalk8);
-var crypto__default = /*#__PURE__*/_interopDefault(crypto);
-var readline__namespace = /*#__PURE__*/_interopNamespace(readline);
-var fs2__namespace = /*#__PURE__*/_interopNamespace(fs2);
-var semver__default = /*#__PURE__*/_interopDefault(semver);
-
-// ESM/CJS Compatibility Fix
-const { createRequire } = require('module');
-const __require = createRequire((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('maria.js', document.baseURI).href)) || __filename);
-global.__require = __require;
-
-// Dynamic import wrapper for CJS compatibility
-if (typeof globalThis.importDynamic === 'undefined') {
-  globalThis.importDynamic = async (specifier) => {
-    try {
-      return await import(specifier);
-    } catch (e) {
-      // Fallback to require for CJS modules
-      try {
-        return __require(specifier);
-      } catch (e2) {
-        throw e; // Throw original import error
-      }
-    }
-  };
-}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 var __defProp = Object.defineProperty;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
@@ -143,15 +96,9 @@ var init_ai_provider = __esm({
       apiKey = "";
       config = {};
       initialized = false;
-<<<<<<< HEAD
       async initialize(apiKey, config2) {
         this.apiKey = apiKey;
         this.config = config2 || {};
-=======
-      async initialize(apiKey, config) {
-        this.apiKey = apiKey;
-        this.config = config || {};
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.initialized = true;
       }
       isInitialized() {
@@ -196,13 +143,8 @@ var init_openai_provider = __esm({
       }
       name = "OpenAI";
       models = [
-<<<<<<< HEAD
         "gpt-5",
         "gpt-5-mini",
-=======
-        "gpt-5-2025-08-07",
-        "gpt-5-mini-2025-08-07",
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         "gpt-4o",
         "gpt-4o-mini",
         "gpt-4-turbo",
@@ -212,7 +154,6 @@ var init_openai_provider = __esm({
         "o1-mini"
       ];
       client;
-<<<<<<< HEAD
       async initialize(apiKey, config2) {
         await super.initialize(apiKey, config2);
         this.client = new OpenAI__default.default({
@@ -220,15 +161,6 @@ var init_openai_provider = __esm({
           baseURL: config2?.["baseURL"],
           organization: config2?.["organization"],
           maxRetries: config2?.["maxRetries"] || 3
-=======
-      async initialize(apiKey, config) {
-        await super.initialize(apiKey, config);
-        this.client = new OpenAI__default.default({
-          apiKey: this.apiKey,
-          baseURL: config?.["baseURL"],
-          organization: config?.["organization"],
-          maxRetries: config?.["maxRetries"] || 3
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         });
       }
       async chat(messages, model, options) {
@@ -340,11 +272,7 @@ var init_anthropic_provider = __esm({
       }
       name = "Anthropic";
       models = [
-<<<<<<< HEAD
         "claude-4.1",
-=======
-        "claude-opus-4.1",
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         "claude-3-5-sonnet-20241022",
         "claude-3-5-haiku-20241022",
         "claude-3-opus-20240229",
@@ -352,21 +280,12 @@ var init_anthropic_provider = __esm({
         "claude-3-haiku-20240307"
       ];
       client;
-<<<<<<< HEAD
       async initialize(apiKey, config2) {
         await super.initialize(apiKey, config2);
         this.client = new Anthropic__default.default({
           apiKey: this.apiKey,
           baseURL: config2?.["baseURL"],
           maxRetries: config2?.["maxRetries"] || 3
-=======
-      async initialize(apiKey, config) {
-        await super.initialize(apiKey, config);
-        this.client = new Anthropic__default.default({
-          apiKey: this.apiKey,
-          baseURL: config?.["baseURL"],
-          maxRetries: config?.["maxRetries"] || 3
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         });
       }
       convertMessages(messages) {
@@ -498,13 +417,8 @@ var init_google_ai_provider = __esm({
         "gemini-1.0-pro"
       ];
       client;
-<<<<<<< HEAD
       async initialize(apiKey, config2) {
         await super.initialize(apiKey, config2);
-=======
-      async initialize(apiKey, config) {
-        await super.initialize(apiKey, config);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.client = new generativeAi.GoogleGenerativeAI(apiKey);
       }
       convertMessages(messages) {
@@ -656,13 +570,9 @@ var init_grok_provider = __esm({
       }
       name = "Grok";
       models = [
-<<<<<<< HEAD
         "grok-4",
         "grok-beta",
         "grok-2",
-=======
-        "grok-4-0709",
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         "llama-3.3-70b-versatile",
         "llama-3.1-70b-versatile",
         "llama-3.1-8b-instant",
@@ -672,19 +582,11 @@ var init_grok_provider = __esm({
       ];
       client;
       // Using Groq SDK for Grok AI
-<<<<<<< HEAD
       async initialize(apiKey, config2) {
         await super.initialize(apiKey, config2);
         this.client = new Groq__default.default({
           apiKey: this.apiKey,
           baseURL: config2?.["baseURL"]
-=======
-      async initialize(apiKey, config) {
-        await super.initialize(apiKey, config);
-        this.client = new Groq__default.default({
-          apiKey: this.apiKey,
-          baseURL: config?.["baseURL"]
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         });
       }
       async chat(messages, model, options) {
@@ -805,15 +707,9 @@ var init_lmstudio_provider = __esm({
       retryDelay = 1e3;
       isHealthy = false;
       availableModels = [];
-<<<<<<< HEAD
       async initialize(apiKey = "lm-studio", config2) {
         await super.initialize(apiKey, config2);
         const lmConfig = config2;
-=======
-      async initialize(apiKey = "lm-studio", config) {
-        await super.initialize(apiKey, config);
-        const lmConfig = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.apiBase = lmConfig?.apiBase || process.env["LMSTUDIO_API_BASE"] || "http://localhost:1234/v1";
         this.timeout = lmConfig?.timeout || parseInt(process.env["LMSTUDIO_TIMEOUT"] || "300000");
         this.retryAttempts = lmConfig?.retryAttempts || parseInt(process.env["LMSTUDIO_RETRY_ATTEMPTS"] || "3");
@@ -863,15 +759,10 @@ var init_lmstudio_provider = __esm({
           try {
             return await fn();
           } catch (error) {
-<<<<<<< HEAD
             if (i === attempts - 1) {
               throw error;
             }
             await new Promise((resolve2) => setTimeout(resolve2, this.retryDelay * Math.pow(2, i)));
-=======
-            if (i === attempts - 1) throw error;
-            await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         }
         throw new Error("Max retry attempts reached");
@@ -945,38 +836,26 @@ var init_lmstudio_provider = __esm({
         const response = await this.retryWithBackoff(makeRequest);
         const nodeResponse = response;
         const reader = nodeResponse.body?.getReader();
-<<<<<<< HEAD
         if (!reader) {
           throw new Error("No response body");
         }
-=======
-        if (!reader) throw new Error("No response body");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const decoder = new TextDecoder();
         let buffer = "";
         try {
           while (true) {
             const { done, value } = await reader.read();
-<<<<<<< HEAD
             if (done) {
               break;
             }
-=======
-            if (done) break;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split("\n");
             buffer = lines.pop() || "";
             for (const line of lines) {
               if (line.startsWith("data: ")) {
                 const data = line.slice(6);
-<<<<<<< HEAD
                 if (data === "[DONE]") {
                   return;
                 }
-=======
-                if (data === "[DONE]") return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
                 try {
                   const parsed = JSON.parse(data);
                   const choices = parsed["choices"];
@@ -1098,15 +977,9 @@ var init_ollama_provider = __esm({
       retryDelay = 1e3;
       isHealthy = false;
       availableModels = [];
-<<<<<<< HEAD
       async initialize(apiKey = "ollama", config2) {
         await super.initialize(apiKey, config2);
         const ollamaConfig = config2;
-=======
-      async initialize(apiKey = "ollama", config) {
-        await super.initialize(apiKey, config);
-        const ollamaConfig = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.apiBase = ollamaConfig?.apiBase || process.env["OLLAMA_API_BASE"] || "http://localhost:11434";
         this.timeout = ollamaConfig?.timeout || parseInt(process.env["OLLAMA_TIMEOUT"] || "300000");
         this.retryAttempts = ollamaConfig?.retryAttempts || parseInt(process.env["OLLAMA_RETRY_ATTEMPTS"] || "3");
@@ -1150,15 +1023,10 @@ var init_ollama_provider = __esm({
           try {
             return await fn();
           } catch (error) {
-<<<<<<< HEAD
             if (i === attempts - 1) {
               throw error;
             }
             await new Promise((resolve2) => setTimeout(resolve2, this.retryDelay * Math.pow(2, i)));
-=======
-            if (i === attempts - 1) throw error;
-            await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         }
         throw new Error("Max retry attempts reached");
@@ -1230,7 +1098,6 @@ var init_ollama_provider = __esm({
         const response = await this.retryWithBackoff(makeRequest);
         const nodeResponse = response;
         const reader = nodeResponse.body?.getReader();
-<<<<<<< HEAD
         if (!reader) {
           throw new Error("No response body");
         }
@@ -1243,16 +1110,6 @@ var init_ollama_provider = __esm({
             if (done) {
               break;
             }
-=======
-        if (!reader) throw new Error("No response body");
-        const decoder = new TextDecoder();
-        let buffer = "";
-        try {
-          const running = true;
-          while (running) {
-            const { done, value } = await reader.read();
-            if (done) break;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split("\n");
             buffer = lines.pop() || "";
@@ -1267,13 +1124,9 @@ var init_ollama_provider = __esm({
                       options.streamOptions.onToken(content);
                     }
                   }
-<<<<<<< HEAD
                   if (parsed["done"]) {
                     return;
                   }
-=======
-                  if (parsed["done"]) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
                 } catch {
                 }
               }
@@ -1381,7 +1234,6 @@ var init_ollama_provider = __esm({
         }
         const nodeResponse = response;
         const reader = nodeResponse.body?.getReader();
-<<<<<<< HEAD
         if (!reader) {
           return;
         }
@@ -1394,16 +1246,6 @@ var init_ollama_provider = __esm({
             if (done) {
               break;
             }
-=======
-        if (!reader) return;
-        const decoder = new TextDecoder();
-        let buffer = "";
-        try {
-          const running = true;
-          while (running) {
-            const { done, value } = await reader.read();
-            if (done) break;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split("\n");
             buffer = lines.pop() || "";
@@ -1411,13 +1253,9 @@ var init_ollama_provider = __esm({
               if (line.trim()) {
                 try {
                   const parsed = JSON.parse(line);
-<<<<<<< HEAD
                   if (parsed["status"] === "success") {
                     return;
                   }
-=======
-                  if (parsed["status"] === "success") return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
                   if (parsed["error"]) {
                     throw new Error(`Model pull failed: ${parsed["error"]}`);
                   }
@@ -1474,15 +1312,9 @@ var init_vllm_provider = __esm({
       isHealthy = false;
       availableModels = [];
       vllmConfig = {};
-<<<<<<< HEAD
       async initialize(apiKey = "vllm-local", config2) {
         await super.initialize(apiKey, config2);
         this.vllmConfig = config2 || {};
-=======
-      async initialize(apiKey = "vllm-local", config) {
-        await super.initialize(apiKey, config);
-        this.vllmConfig = config || {};
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.apiBase = this.vllmConfig.apiBase || process.env["VLLM_API_BASE"] || "http://localhost:8000/v1";
         this.timeout = this.vllmConfig.timeout || parseInt(process.env["VLLM_TIMEOUT"] || "120000");
         await this.checkHealth();
@@ -1530,15 +1362,10 @@ var init_vllm_provider = __esm({
           try {
             return await fn();
           } catch (error) {
-<<<<<<< HEAD
             if (i === attempts - 1) {
               throw error;
             }
             await new Promise((resolve2) => setTimeout(resolve2, this.retryDelay * Math.pow(2, i)));
-=======
-            if (i === attempts - 1) throw error;
-            await new Promise((resolve) => setTimeout(resolve, this.retryDelay * Math.pow(2, i)));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         }
         throw new Error("Max retry attempts reached");
@@ -1618,38 +1445,26 @@ var init_vllm_provider = __esm({
         const response = await this.retryWithBackoff(makeRequest);
         const nodeResponse = response;
         const reader = nodeResponse.body?.getReader();
-<<<<<<< HEAD
         if (!reader) {
           throw new Error("No response body");
         }
-=======
-        if (!reader) throw new Error("No response body");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const decoder = new TextDecoder();
         let buffer = "";
         try {
           while (true) {
             const { done, value } = await reader.read();
-<<<<<<< HEAD
             if (done) {
               break;
             }
-=======
-            if (done) break;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             buffer += decoder.decode(value, { stream: true });
             const lines = buffer.split("\n");
             buffer = lines.pop() || "";
             for (const line of lines) {
               if (line.startsWith("data: ")) {
                 const data = line.slice(6);
-<<<<<<< HEAD
                 if (data === "[DONE]") {
                   return;
                 }
-=======
-                if (data === "[DONE]") return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
                 try {
                   const parsed = JSON.parse(data);
                   const content = parsed.choices?.[0]?.delta?.content;
@@ -1786,13 +1601,8 @@ var init_manager = __esm({
       providers = /* @__PURE__ */ new Map();
       availableProviders = /* @__PURE__ */ new Set();
       config;
-<<<<<<< HEAD
       constructor(config2) {
         this.config = config2;
-=======
-      constructor(config) {
-        this.config = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       async initialize() {
         await this.initializeProviders();
@@ -1830,37 +1640,25 @@ var init_manager = __esm({
           this.providers.set("grok", provider);
         }
         if (localProviders && localProviders["lmstudio"] !== false) {
-<<<<<<< HEAD
           if (process.env["DEBUG"]) {
             console.log("\u{1F504} Initializing LM Studio provider...");
           }
-=======
-          if (process.env["DEBUG"]) console.log("\u{1F504} Initializing LM Studio provider...");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const provider = new LMStudioProvider();
           await provider.initialize("lmstudio");
           this.providers.set("lmstudio", provider);
         }
         if (localProviders && localProviders["ollama"] !== false) {
-<<<<<<< HEAD
           if (process.env["DEBUG"]) {
             console.log("\u{1F504} Initializing Ollama provider...");
           }
-=======
-          if (process.env["DEBUG"]) console.log("\u{1F504} Initializing Ollama provider...");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const provider = new OllamaProvider();
           await provider.initialize("ollama");
           this.providers.set("ollama", provider);
         }
         if (localProviders && localProviders["vllm"] !== false) {
-<<<<<<< HEAD
           if (process.env["DEBUG"]) {
             console.log("\u{1F504} Initializing vLLM provider...");
           }
-=======
-          if (process.env["DEBUG"]) console.log("\u{1F504} Initializing vLLM provider...");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const provider = new VLLMProvider();
           await provider.initialize("vllm");
           this.providers.set("vllm", provider);
@@ -1879,7 +1677,6 @@ var init_manager = __esm({
         }
         const checks = Array.from(this.providers.entries()).map(async ([name, provider]) => {
           try {
-<<<<<<< HEAD
             if (process.env["DEBUG"]) {
               console.log(`  \u2022 Checking ${name}...`);
             }
@@ -1898,18 +1695,6 @@ var init_manager = __esm({
             if (process.env["DEBUG"]) {
               console.log(`    \u274C ${name} failed: ${error}`);
             }
-=======
-            if (process.env["DEBUG"]) console.log(`  \u2022 Checking ${name}...`);
-            const isAvailable = await (provider.validateConnection?.() ?? Promise.resolve(true));
-            if (isAvailable) {
-              this.availableProviders.add(name);
-              if (process.env["DEBUG"]) console.log(`    \u2705 ${name} is available`);
-            } else {
-              if (process.env["DEBUG"]) console.log(`    \u274C ${name} is not available`);
-            }
-          } catch (error) {
-            if (process.env["DEBUG"]) console.log(`    \u274C ${name} failed: ${error}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         });
         await Promise.allSettled(checks);
@@ -1950,7 +1735,6 @@ var init_manager = __esm({
             }
           }
         }
-<<<<<<< HEAD
         const cloudProviders = ["openai", "anthropic", "google", "grok"];
         const defaultCloudModels = {
           openai: ["gpt-5", "gpt-5-mini", "gpt-4o", "gpt-4o-mini", "o1-preview", "o1-mini"],
@@ -1975,19 +1759,13 @@ var init_manager = __esm({
             allModels.push(...modelInfos);
           }
         }
-=======
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return allModels;
       }
       selectOptimalProvider(_taskType, priorityMode = "auto") {
         const available = this.getAvailableProviders();
-<<<<<<< HEAD
         if (available.length === 0) {
           return void 0;
         }
-=======
-        if (available.length === 0) return void 0;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const priorityOrder = this.getPriorityOrder(priorityMode);
         if (process.env["DEBUG"]) {
           console.log("Available providers:", available);
@@ -2095,15 +1873,9 @@ var init_intelligent_router = __esm({
       }
       providerManager;
       config;
-<<<<<<< HEAD
       constructor(providerManager, config2) {
         this.providerManager = providerManager;
         this.config = config2;
-=======
-      constructor(providerManager, config) {
-        this.providerManager = providerManager;
-        this.config = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       async route(request) {
         const taskType = request.taskType || this.detectTaskType(request);
@@ -2224,13 +1996,9 @@ var init_intelligent_router = __esm({
       }
       async getModelsForProvider(providerName) {
         const provider = this.providerManager.getProvider(providerName);
-<<<<<<< HEAD
         if (!provider) {
           return [];
         }
-=======
-        if (!provider) return [];
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         try {
           const models = await provider.getModels();
           if (typeof models[0] === "string") {
@@ -2265,11 +2033,7 @@ var init_health_monitor = __esm({
       checkInterval;
       isRunning = false;
       startTime = Date.now();
-<<<<<<< HEAD
       constructor(config2) {
-=======
-      constructor(config) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         super();
         this.config = {
           interval: 6e4,
@@ -2287,11 +2051,7 @@ var init_health_monitor = __esm({
             errorRateCritical: 0.25
             // 25%
           },
-<<<<<<< HEAD
           ...config2
-=======
-          ...config
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         };
       }
       /**
@@ -2320,13 +2080,9 @@ var init_health_monitor = __esm({
        * Start health monitoring
        */
       start() {
-<<<<<<< HEAD
         if (this.isRunning) {
           return;
         }
-=======
-        if (this.isRunning) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.isRunning = true;
         this.startTime = Date.now();
         this.performHealthCheck();
@@ -2339,13 +2095,9 @@ var init_health_monitor = __esm({
        * Stop health monitoring
        */
       stop() {
-<<<<<<< HEAD
         if (!this.isRunning) {
           return;
         }
-=======
-        if (!this.isRunning) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (this.checkInterval) {
           clearInterval(this.checkInterval);
           this.checkInterval = void 0;
@@ -2357,17 +2109,10 @@ var init_health_monitor = __esm({
        * Perform health check on all providers
        */
       async performHealthCheck() {
-<<<<<<< HEAD
         const promises4 = Array.from(this.providers.entries()).map(
           ([name, provider]) => this.checkProviderHealth(name, provider)
         );
         await Promise.allSettled(promises4);
-=======
-        const promises = Array.from(this.providers.entries()).map(
-          ([name, provider]) => this.checkProviderHealth(name, provider)
-        );
-        await Promise.allSettled(promises);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const systemHealth = this.getSystemHealth();
         this.emit("health-updated", systemHealth);
         await this.saveHealthData();
@@ -2380,13 +2125,9 @@ var init_health_monitor = __esm({
         let attempts = 0;
         let lastError;
         const currentHealth = this.healthData.get(name);
-<<<<<<< HEAD
         if (!currentHealth) {
           return;
         }
-=======
-        if (!currentHealth) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         while (attempts < this.config.retryAttempts) {
           try {
             attempts++;
@@ -2430,11 +2171,7 @@ var init_health_monitor = __esm({
               this.updateMetrics(name, Date.now() - startTime, false);
               this.emit("provider-unhealthy", name, currentHealth, lastError);
             } else {
-<<<<<<< HEAD
               await new Promise((resolve2) => setTimeout(resolve2, 1e3 * attempts));
-=======
-              await new Promise((resolve) => setTimeout(resolve, 1e3 * attempts));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             }
           }
         }
@@ -2457,13 +2194,9 @@ var init_health_monitor = __esm({
        */
       updateMetrics(name, responseTime, success) {
         const health = this.healthData.get(name);
-<<<<<<< HEAD
         if (!health) {
           return;
         }
-=======
-        if (!health) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const metadata = health.metadata;
         metadata.totalRequests++;
         metadata.averageResponseTime = (metadata.averageResponseTime * (metadata.totalRequests - 1) + responseTime) / metadata.totalRequests;
@@ -2587,19 +2320,11 @@ var init_health_monitor = __esm({
        */
       async saveHealthData() {
         try {
-<<<<<<< HEAD
           const healthDir = path10.join(os4.homedir(), ".maria", "health");
           await fs15.promises.mkdir(healthDir, { recursive: true });
           const systemHealth = this.getSystemHealth();
           const healthFile = path10.join(healthDir, "system-health.json");
           await fs15.promises.writeFile(
-=======
-          const healthDir = path2.join(os2.homedir(), ".maria", "health");
-          await fs.promises.mkdir(healthDir, { recursive: true });
-          const systemHealth = this.getSystemHealth();
-          const healthFile = path2.join(healthDir, "system-health.json");
-          await fs.promises.writeFile(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             healthFile,
             JSON.stringify(
               {
@@ -2619,13 +2344,8 @@ var init_health_monitor = __esm({
        */
       async loadHealthData() {
         try {
-<<<<<<< HEAD
           const healthFile = path10.join(os4.homedir(), ".maria", "health", "system-health.json");
           const data = await fs15.promises.readFile(healthFile, "utf8");
-=======
-          const healthFile = path2.join(os2.homedir(), ".maria", "health", "system-health.json");
-          const data = await fs.promises.readFile(healthFile, "utf8");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const parsed = JSON.parse(data);
           return {
             overall: parsed["overall"],
@@ -2659,13 +2379,8 @@ var init_health_monitor = __esm({
       /**
        * Update monitoring configuration
        */
-<<<<<<< HEAD
       updateConfig(config2) {
         this.config = { ...this.config, ...config2 };
-=======
-      updateConfig(config) {
-        this.config = { ...this.config, ...config };
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (this.isRunning) {
           this.stop();
           this.start();
@@ -2775,13 +2490,9 @@ var init_config_manager = __esm({
           autoStart: true,
           healthMonitoring: true,
           language: "auto",
-<<<<<<< HEAD
           offlineMode: false,
           model: "gpt-5-mini",
           provider: "openai"
-=======
-          offlineMode: false
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         };
       }
       mergeConfig(newConfig) {
@@ -2816,11 +2527,7 @@ var init_config_manager = __esm({
       }
       // Load configuration from environment variables
       static fromEnvironment() {
-<<<<<<< HEAD
         const config2 = {
-=======
-        const config = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           priority: process.env["MARIA_PRIORITY"] || "privacy-first",
           apiKeys: {
             OPENAI_API_KEY: process.env["OPENAI_API_KEY"] || "",
@@ -2837,16 +2544,11 @@ var init_config_manager = __esm({
           autoStart: process.env["AUTO_START_LLMS"] !== "false",
           healthMonitoring: process.env["HEALTH_MONITORING"] !== "false"
         };
-<<<<<<< HEAD
         return new _ConfigManager(config2);
-=======
-        return new _ConfigManager(config);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       // Save configuration to file (for CLI usage)
       async save(configPath) {
         const { importNodeBuiltin: importNodeBuiltin2, safeDynamicImport: safeDynamicImport2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
-<<<<<<< HEAD
         const fs20 = await safeDynamicImport2("fs-extra").catch(
           () => importNodeBuiltin2("fs")
         );
@@ -2855,21 +2557,10 @@ var init_config_manager = __esm({
         const targetPath = configPath || path17.join(os5.homedir(), ".maria", "config.json");
         await fs20.ensureDir(path17.dirname(targetPath));
         await fs20.writeJson(targetPath, this.config, { spaces: 2 });
-=======
-        const fs5 = await safeDynamicImport2("fs-extra").catch(
-          () => importNodeBuiltin2("fs")
-        );
-        const path3 = await importNodeBuiltin2("path");
-        const os3 = await importNodeBuiltin2("os");
-        const targetPath = configPath || path3.join(os3.homedir(), ".maria", "config.json");
-        await fs5.ensureDir(path3.dirname(targetPath));
-        await fs5.writeJson(targetPath, this.config, { spaces: 2 });
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       // Load configuration from file
       static async load(configPath) {
         const { importNodeBuiltin: importNodeBuiltin2, safeDynamicImport: safeDynamicImport2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
-<<<<<<< HEAD
         const fs20 = await safeDynamicImport2("fs-extra").catch(
           () => importNodeBuiltin2("fs")
         );
@@ -2879,17 +2570,6 @@ var init_config_manager = __esm({
         if (await fs20.pathExists(targetPath)) {
           try {
             const savedConfig = await fs20.readJson(targetPath);
-=======
-        const fs5 = await safeDynamicImport2("fs-extra").catch(
-          () => importNodeBuiltin2("fs")
-        );
-        const path3 = await importNodeBuiltin2("path");
-        const os3 = await importNodeBuiltin2("os");
-        const targetPath = configPath || path3.join(os3.homedir(), ".maria", "config.json");
-        if (await fs5.pathExists(targetPath)) {
-          try {
-            const savedConfig = await fs5.readJson(targetPath);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             return new _ConfigManager(savedConfig);
           } catch (error) {
             console.warn("Failed to load config file, using defaults:", error);
@@ -2918,7 +2598,6 @@ var init_maria_ai = __esm({
       router;
       healthMonitor;
       config;
-<<<<<<< HEAD
       memoryEngine = null;
       memoryCoordinator = null;
       isInitialized = false;
@@ -2936,18 +2615,6 @@ var init_maria_ai = __esm({
         this.memoryEngine = memoryEngine2;
         this.memoryCoordinator = memoryCoordinator;
       }
-=======
-      isInitialized = false;
-      constructor(config = {}) {
-        this.config = new ConfigManager(config);
-        this.providerManager = new AIProviderManager(this.config);
-        this.router = new IntelligentRouter(this.providerManager, this.config);
-        this.healthMonitor = new HealthMonitor();
-        if (config.autoStart !== false) {
-          this.initialize();
-        }
-      }
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       async initialize() {
         if (this.isInitialized) {
           return;
@@ -2991,7 +2658,6 @@ var init_maria_ai = __esm({
         return this.router.routeVision(image, prompt);
       }
       /**
-<<<<<<< HEAD
        * Generate code with memory context
        */
       async generateCode(prompt, language) {
@@ -3026,12 +2692,6 @@ Context from memory:
           }
         }
         return this.router.routeCode(enhancedPrompt, language);
-=======
-       * Generate code
-       */
-      async generateCode(prompt, language) {
-        return this.router.routeCode(prompt, language);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Get available models
@@ -3056,7 +2716,6 @@ Context from memory:
         this.router.updatePriorityMode(mode);
       }
       /**
-<<<<<<< HEAD
        * Switch to a specific model
        */
       async switchModel(modelId) {
@@ -3101,8 +2760,6 @@ Context from memory:
         return null;
       }
       /**
-=======
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
        * Get current configuration
        */
       getConfig() {
@@ -3141,13 +2798,9 @@ var init_ModeDefinitionRegistry = __esm({
         this.initializeModes();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
-=======
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.initializeModes();
         this.buildCategoryIndex();
         this.initialized = true;
@@ -3759,13 +3412,9 @@ var init_NaturalLanguageProcessor = __esm({
         this.initializeContractions();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
-=======
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.initialized = true;
       }
       async process(input, language = "en") {
@@ -3842,13 +3491,9 @@ var init_NaturalLanguageProcessor = __esm({
         ];
         patterns.forEach((pattern) => {
           const matches = text.match(pattern);
-<<<<<<< HEAD
           if (matches) {
             tokens.push(...matches);
           }
-=======
-          if (matches) tokens.push(...matches);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         });
         return tokens;
       }
@@ -3875,13 +3520,9 @@ var init_NaturalLanguageProcessor = __esm({
         ];
         patterns.forEach((pattern) => {
           const matches = text.match(pattern);
-<<<<<<< HEAD
           if (matches) {
             tokens.push(...matches);
           }
-=======
-          if (matches) tokens.push(...matches);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         });
         return tokens;
       }
@@ -3891,7 +3532,6 @@ var init_NaturalLanguageProcessor = __esm({
         }
         return tokens.map((token) => {
           let stem = token;
-<<<<<<< HEAD
           if (stem.endsWith("ing")) {
             stem = stem.slice(0, -3);
           } else if (stem.endsWith("ed")) {
@@ -3903,13 +3543,6 @@ var init_NaturalLanguageProcessor = __esm({
           } else if (stem.endsWith("s") && stem.length > 3) {
             stem = stem.slice(0, -1);
           }
-=======
-          if (stem.endsWith("ing")) stem = stem.slice(0, -3);
-          else if (stem.endsWith("ed")) stem = stem.slice(0, -2);
-          else if (stem.endsWith("ly")) stem = stem.slice(0, -2);
-          else if (stem.endsWith("es")) stem = stem.slice(0, -2);
-          else if (stem.endsWith("s") && stem.length > 3) stem = stem.slice(0, -1);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           return stem;
         });
       }
@@ -3952,12 +3585,8 @@ var init_NaturalLanguageProcessor = __esm({
           "php"
         ];
         languages.forEach((lang) => {
-<<<<<<< HEAD
           const escapedLang = lang.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
           const regex = new RegExp(`\\b${escapedLang}\\b`, "gi");
-=======
-          const regex = new RegExp(`\\b${lang}\\b`, "gi");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const matches = text.match(regex);
           if (matches) {
             matches.forEach((match) => {
@@ -3981,24 +3610,15 @@ var init_NaturalLanguageProcessor = __esm({
           "rails",
           "spring"
         ];
-<<<<<<< HEAD
         frameworks.forEach((framework2) => {
           const regex = new RegExp(`\\b${framework2}\\b`, "gi");
-=======
-        frameworks.forEach((framework) => {
-          const regex = new RegExp(`\\b${framework}\\b`, "gi");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const matches = text.match(regex);
           if (matches) {
             matches.forEach((match) => {
               entities.push({
                 text: match,
                 type: "framework",
-<<<<<<< HEAD
                 value: framework2,
-=======
-                value: framework,
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
                 position: text.indexOf(match)
               });
             });
@@ -4237,11 +3857,7 @@ var init_NaturalLanguageProcessor = __esm({
       }
       async detectIntent(processedInput) {
         const intents = [];
-<<<<<<< HEAD
         const keywords = `${processedInput.keywords.join(" ")} ${processedInput.normalized}`;
-=======
-        const keywords = processedInput.keywords.join(" ") + " " + processedInput.normalized;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (/\b(write|create|generate|implement|build|code|program|develop)\b/i.test(keywords)) {
           intents.push("code_generation");
         }
@@ -4277,25 +3893,16 @@ var init_IntentRecognizer = __esm({
       _contextClues;
       commandHistory = [];
       initialized = false;
-<<<<<<< HEAD
       constructor(config2) {
         this.config = config2;
-=======
-      constructor(config) {
-        this.config = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.intentPatterns = /* @__PURE__ */ new Map();
         this._contextClues = /* @__PURE__ */ new Map();
         this.initializePatterns();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
-=======
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.initialized = true;
       }
       async recognize(input) {
@@ -4699,15 +4306,9 @@ var init_ParameterExtractor = __esm({
         if (progLang) {
           params.language = progLang;
         }
-<<<<<<< HEAD
         const framework2 = this.detectFramework(input);
         if (framework2) {
           params.framework = framework2;
-=======
-        const framework = this.detectFramework(input);
-        if (framework) {
-          params.framework = framework;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
         const filePath = this.extractFilePath(input);
         if (filePath) {
@@ -4924,15 +4525,9 @@ var init_ParameterExtractor = __esm({
           spring: /\b(spring)\b/i,
           laravel: /\b(laravel)\b/i
         };
-<<<<<<< HEAD
         for (const [framework2, pattern] of Object.entries(frameworks)) {
           if (pattern.test(input)) {
             return framework2;
-=======
-        for (const [framework, pattern] of Object.entries(frameworks)) {
-          if (pattern.test(input)) {
-            return framework;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         }
         return null;
@@ -5061,13 +4656,9 @@ var init_MultilingualDictionary = __esm({
         this.dictionary = /* @__PURE__ */ new Map();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
-=======
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.loadTranslations();
         this.initialized = true;
       }
@@ -5595,13 +5186,9 @@ var init_CommandMappings = __esm({
         this.dictionary = new MultilingualDictionary();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
-=======
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         await this.dictionary.initialize();
         this.loadMappings();
         this.initialized = true;
@@ -5910,13 +5497,9 @@ var init_UserPatternAnalyzer = __esm({
       patterns = [];
       initialized = false;
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
-=======
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.loadPatterns();
         this.initialized = true;
       }
@@ -5964,13 +5547,9 @@ var init_UserPatternAnalyzer = __esm({
         const similarPatterns = this.patterns.filter((p) => {
           return p.success && this.calculateSimilarity(p.input, input) > 0.7;
         });
-<<<<<<< HEAD
         if (similarPatterns.length === 0) {
           return null;
         }
-=======
-        if (similarPatterns.length === 0) return null;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const commandCounts = /* @__PURE__ */ new Map();
         similarPatterns.forEach((p) => {
           commandCounts.set(p.command, (commandCounts.get(p.command) ?? 0) + 1);
@@ -5988,13 +5567,9 @@ var init_UserPatternAnalyzer = __esm({
       calculateSimilarity(str1, str2) {
         const longer = str1.length > str2.length ? str1 : str2;
         const shorter = str1.length > str2.length ? str2 : str1;
-<<<<<<< HEAD
         if (longer.length === 0) {
           return 1;
         }
-=======
-        if (longer.length === 0) return 1;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const distance = this.levenshteinDistance(longer, shorter);
         return (longer.length - distance) / longer.length;
       }
@@ -6042,15 +5617,9 @@ var init_UserPatternAnalyzer = __esm({
     };
   }
 });
-<<<<<<< HEAD
 function getIntelligentRouter(config2) {
   if (!routerInstance) {
     routerInstance = new IntelligentRouterService(config2);
-=======
-function getIntelligentRouter(config) {
-  if (!routerInstance) {
-    routerInstance = new IntelligentRouterService(config);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
   return routerInstance;
 }
@@ -6079,7 +5648,6 @@ var init_IntelligentRouterService = __esm({
       config;
       metrics;
       isInitialized = false;
-<<<<<<< HEAD
       constructor(config2 = {}) {
         super();
         this.config = {
@@ -6088,16 +5656,6 @@ var init_IntelligentRouterService = __esm({
           supportedLanguages: config2.supportedLanguages ?? ["en", "ja", "cn", "ko", "vn"],
           enableConfirmation: config2.enableConfirmation ?? true,
           maxAlternatives: config2.maxAlternatives ?? 3
-=======
-      constructor(config = {}) {
-        super();
-        this.config = {
-          confidenceThreshold: config.confidenceThreshold ?? 0.85,
-          enableLearning: config.enableLearning ?? true,
-          supportedLanguages: config.supportedLanguages ?? ["en", "ja", "cn", "ko", "vn"],
-          enableConfirmation: config.enableConfirmation ?? true,
-          maxAlternatives: config.maxAlternatives ?? 3
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         };
         this.metrics = {
           totalRequests: 0,
@@ -6116,17 +5674,11 @@ var init_IntelligentRouterService = __esm({
         this.userPatternAnalyzer = new UserPatternAnalyzer();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.isInitialized) {
           return;
         }
         try {
           console.log(chalk30__default.default.cyan("\u{1F9E0} Initializing Intelligent Router..."));
-=======
-        if (this.isInitialized) return;
-        try {
-          console.log(chalk8__default.default.cyan("\u{1F9E0} Initializing Intelligent Router..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           await Promise.all([
             this.dictionary.initialize(),
             this.commandMappings.initialize(),
@@ -6136,15 +5688,9 @@ var init_IntelligentRouterService = __esm({
           ]);
           this.isInitialized = true;
           this.emit("initialized");
-<<<<<<< HEAD
           console.log(chalk30__default.default.green("\u2705 Intelligent Router initialized successfully"));
         } catch (error) {
           console.error(chalk30__default.default.red("Failed to initialize Intelligent Router:"), error);
-=======
-          console.log(chalk8__default.default.green("\u2705 Intelligent Router initialized successfully"));
-        } catch (error) {
-          console.error(chalk8__default.default.red("Failed to initialize Intelligent Router:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           throw error;
         }
       }
@@ -6157,11 +5703,7 @@ var init_IntelligentRouterService = __esm({
         try {
           const language = await this.languageDetector.detect(input);
           if (!this.config.supportedLanguages.includes(language)) {
-<<<<<<< HEAD
             console.log(chalk30__default.default.yellow(`Language '${language}' not supported, falling back to English`));
-=======
-            console.log(chalk8__default.default.yellow(`Language '${language}' not supported, falling back to English`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
           const processedInput = await this.nlpProcessor.process(input, language);
           const intent = await this.intentRecognizer.recognize(processedInput);
@@ -6189,11 +5731,7 @@ var init_IntelligentRouterService = __esm({
         } catch (error) {
           this.metrics.failedRoutes++;
           this.emit("route:error", { input, error });
-<<<<<<< HEAD
           console.error(chalk30__default.default.red("Routing error:"), error);
-=======
-          console.error(chalk8__default.default.red("Routing error:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           return null;
         }
       }
@@ -6218,13 +5756,9 @@ var init_IntelligentRouterService = __esm({
         return this.dictionary.getExplanation(command, language);
       }
       async needsConfirmation(intent) {
-<<<<<<< HEAD
         if (!this.config.enableConfirmation) {
           return false;
         }
-=======
-        if (!this.config.enableConfirmation) return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const destructiveCommands = ["/delete", "/reset", "/clear", "/exit"];
         const isDestructive = destructiveCommands.includes(intent.command);
         const isLowConfidence = intent.confidence < 0.9;
@@ -6252,13 +5786,9 @@ var init_IntelligentRouterService = __esm({
         this.metrics.commandUsageStats.set(command, currentCount + 1);
       }
       async trainOnFeedback(input, correctCommand, wasCorrect) {
-<<<<<<< HEAD
         if (!this.config.enableLearning) {
           return;
         }
-=======
-        if (!this.config.enableLearning) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         try {
           await this.userPatternAnalyzer.recordFeedback(input, correctCommand, wasCorrect);
           await this.intentRecognizer.updateModel(input, correctCommand, wasCorrect);
@@ -6316,7 +5846,6 @@ var init_ModeRecognitionEngine = __esm({
       recognitionCache = /* @__PURE__ */ new Map();
       cacheTimeout = 3e4;
       // 30 seconds
-<<<<<<< HEAD
       constructor(modeRegistry, config2) {
         super();
         this.modeRegistry = modeRegistry;
@@ -6327,16 +5856,6 @@ var init_ModeRecognitionEngine = __esm({
         if (this.initialized) {
           return;
         }
-=======
-      constructor(modeRegistry, config) {
-        super();
-        this.modeRegistry = modeRegistry;
-        this.config = config;
-        this.nlpProcessor = new NaturalLanguageProcessor();
-      }
-      async initialize() {
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         await this.nlpProcessor.initialize();
         this.initialized = true;
       }
@@ -6404,13 +5923,8 @@ var init_ModeRecognitionEngine = __esm({
       /**
        * Update configuration
        */
-<<<<<<< HEAD
       updateConfig(config2) {
         this.config = config2;
-=======
-      updateConfig(config) {
-        this.config = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       // Private methods
       async scoreAllModes(context, processedInput) {
@@ -6574,13 +6088,9 @@ var init_ModeRecognitionEngine = __esm({
         return 0;
       }
       scoreCurrentModeCondition(condition, context) {
-<<<<<<< HEAD
         if (!context.currentMode) {
           return 0;
         }
-=======
-        if (!context.currentMode) return 0;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return condition.value === context.currentMode.id ? 1 : 0;
       }
       scorePreviousModeCondition(condition, context) {
@@ -6598,13 +6108,9 @@ var init_ModeRecognitionEngine = __esm({
         return condition.value === "true" ? hasError ? 1 : 0 : hasError ? 0 : 1;
       }
       scoreProjectContextCondition(condition, context) {
-<<<<<<< HEAD
         if (!context.projectContext) {
           return 0;
         }
-=======
-        if (!context.projectContext) return 0;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         switch (condition.field) {
           case "type":
             return condition.value === context.projectContext.type ? 0.8 : 0;
@@ -6631,13 +6137,9 @@ var init_ModeRecognitionEngine = __esm({
         }
       }
       findBestMatch(modeScores) {
-<<<<<<< HEAD
         if (modeScores.length === 0) {
           return null;
         }
-=======
-        if (modeScores.length === 0) return null;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const bestScore = modeScores[0];
         if (bestScore.confidence >= this.config.confidenceThreshold) {
           return bestScore;
@@ -6705,7 +6207,6 @@ var init_ModeDisplayManager = __esm({
       config;
       initialized = false;
       currentDisplayTimeout = null;
-<<<<<<< HEAD
       constructor(config2) {
         this.config = config2;
       }
@@ -6713,26 +6214,15 @@ var init_ModeDisplayManager = __esm({
         if (this.initialized) {
           return;
         }
-=======
-      constructor(config) {
-        this.config = config;
-      }
-      async initialize() {
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.initialized = true;
       }
       /**
        * Display a mode with its visual representation
        */
       async showMode(mode) {
-<<<<<<< HEAD
         if (!this.config.showTransitions) {
           return;
         }
-=======
-        if (!this.config.showTransitions) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const display = this.formatModeDisplay(mode);
         if (this.currentDisplayTimeout) {
           clearTimeout(this.currentDisplayTimeout);
@@ -6748,13 +6238,9 @@ var init_ModeDisplayManager = __esm({
        * Show mode transition with before/after indication
        */
       async showModeTransition(newMode, previousMode) {
-<<<<<<< HEAD
         if (!this.config.showTransitions) {
           return;
         }
-=======
-        if (!this.config.showTransitions) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (this.config.animationEnabled && newMode.display.animation) {
           await this.animateTransition(previousMode, newMode);
         } else {
@@ -6773,13 +6259,8 @@ var init_ModeDisplayManager = __esm({
       /**
        * Update configuration
        */
-<<<<<<< HEAD
       updateConfig(config2) {
         this.config = config2;
-=======
-      updateConfig(config) {
-        this.config = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Get formatted mode display string
@@ -6800,7 +6281,6 @@ var init_ModeDisplayManager = __esm({
         }
         switch (mode.display.color) {
           case "red":
-<<<<<<< HEAD
             return chalk30__default.default.red(displayText);
           case "green":
             return chalk30__default.default.green(displayText);
@@ -6819,26 +6299,6 @@ var init_ModeDisplayManager = __esm({
             return chalk30__default.default.gray(displayText);
           default:
             return chalk30__default.default.cyan(displayText);
-=======
-            return chalk8__default.default.red(displayText);
-          case "green":
-            return chalk8__default.default.green(displayText);
-          case "yellow":
-            return chalk8__default.default.yellow(displayText);
-          case "blue":
-            return chalk8__default.default.blue(displayText);
-          case "magenta":
-            return chalk8__default.default.magenta(displayText);
-          case "cyan":
-            return chalk8__default.default.cyan(displayText);
-          case "white":
-            return chalk8__default.default.white(displayText);
-          case "gray":
-          case "grey":
-            return chalk8__default.default.gray(displayText);
-          default:
-            return chalk8__default.default.cyan(displayText);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
       }
       outputModeDisplay(display) {
@@ -6855,28 +6315,16 @@ var init_ModeDisplayManager = __esm({
         const frames = [];
         if (previousMode) {
           frames.push(this.formatModeDisplay(previousMode));
-<<<<<<< HEAD
           frames.push(chalk30__default.default.dim(this.formatModeDisplay(previousMode)));
           frames.push(chalk30__default.default.dim("\u273D \u2026"));
         }
         frames.push(chalk30__default.default.dim("\u273D \u26A1 \u2026"));
         frames.push(chalk30__default.default.dim(this.formatModeDisplay(newMode)));
-=======
-          frames.push(chalk8__default.default.dim(this.formatModeDisplay(previousMode)));
-          frames.push(chalk8__default.default.dim("\u273D \u2026"));
-        }
-        frames.push(chalk8__default.default.dim("\u273D \u26A1 \u2026"));
-        frames.push(chalk8__default.default.dim(this.formatModeDisplay(newMode)));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         frames.push(this.formatModeDisplay(newMode));
         return frames;
       }
       sleep(ms) {
-<<<<<<< HEAD
         return new Promise((resolve2) => setTimeout(resolve2, ms));
-=======
-        return new Promise((resolve) => setTimeout(resolve, ms));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Create a status line display for current mode
@@ -6886,15 +6334,9 @@ var init_ModeDisplayManager = __esm({
         const timestamp = (/* @__PURE__ */ new Date()).toLocaleTimeString();
         let statusLine = `${modeDisplay}`;
         if (additionalInfo) {
-<<<<<<< HEAD
           statusLine += ` ${chalk30__default.default.gray("|")} ${chalk30__default.default.dim(additionalInfo)}`;
         }
         statusLine += ` ${chalk30__default.default.gray("|")} ${chalk30__default.default.dim(timestamp)}`;
-=======
-          statusLine += ` ${chalk8__default.default.gray("|")} ${chalk8__default.default.dim(additionalInfo)}`;
-        }
-        statusLine += ` ${chalk8__default.default.gray("|")} ${chalk8__default.default.dim(timestamp)}`;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return statusLine;
       }
       /**
@@ -6909,7 +6351,6 @@ var init_ModeDisplayManager = __esm({
         const indicator = `[${symbol}]`;
         switch (color) {
           case "red":
-<<<<<<< HEAD
             return chalk30__default.default.red(indicator);
           case "green":
             return chalk30__default.default.green(indicator);
@@ -6923,21 +6364,6 @@ var init_ModeDisplayManager = __esm({
             return chalk30__default.default.cyan(indicator);
           default:
             return chalk30__default.default.cyan(indicator);
-=======
-            return chalk8__default.default.red(indicator);
-          case "green":
-            return chalk8__default.default.green(indicator);
-          case "yellow":
-            return chalk8__default.default.yellow(indicator);
-          case "blue":
-            return chalk8__default.default.blue(indicator);
-          case "magenta":
-            return chalk8__default.default.magenta(indicator);
-          case "cyan":
-            return chalk8__default.default.cyan(indicator);
-          default:
-            return chalk8__default.default.cyan(indicator);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
       }
       /**
@@ -6947,7 +6373,6 @@ var init_ModeDisplayManager = __esm({
         const lang = language || this.config.defaultLanguage;
         const i18n = mode.i18n[lang] || mode.i18n.en;
         const lines = [];
-<<<<<<< HEAD
         lines.push(chalk30__default.default.bold(this.formatModeDisplay(mode, i18n.name)));
         lines.push("");
         lines.push(chalk30__default.default.white("Description:"));
@@ -6967,27 +6392,6 @@ var init_ModeDisplayManager = __esm({
         lines.push(chalk30__default.default.dim(`  Category: ${mode.category}`));
         lines.push(chalk30__default.default.dim(`  Intensity: ${mode.intensity}`));
         lines.push(chalk30__default.default.dim(`  Version: ${mode.metadata.version}`));
-=======
-        lines.push(chalk8__default.default.bold(this.formatModeDisplay(mode, i18n.name)));
-        lines.push("");
-        lines.push(chalk8__default.default.white("Description:"));
-        lines.push(`  ${chalk8__default.default.gray(i18n.description)}`);
-        lines.push("");
-        lines.push(chalk8__default.default.white("Purpose:"));
-        lines.push(`  ${chalk8__default.default.gray(i18n.purpose)}`);
-        lines.push("");
-        if (i18n.useCases.length > 0) {
-          lines.push(chalk8__default.default.white("Use Cases:"));
-          i18n.useCases.forEach((useCase) => {
-            lines.push(`  ${chalk8__default.default.gray("\u2022")} ${chalk8__default.default.gray(useCase)}`);
-          });
-          lines.push("");
-        }
-        lines.push(chalk8__default.default.dim("Metadata:"));
-        lines.push(chalk8__default.default.dim(`  Category: ${mode.category}`));
-        lines.push(chalk8__default.default.dim(`  Intensity: ${mode.intensity}`));
-        lines.push(chalk8__default.default.dim(`  Version: ${mode.metadata.version}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return lines;
       }
       /**
@@ -7004,22 +6408,13 @@ var init_ModeDisplayManager = __esm({
           categorized.get(mode.category).push(mode);
         });
         for (const [category, categoryModes] of categorized.entries()) {
-<<<<<<< HEAD
           lines.push(chalk30__default.default.bold.cyan(`${category.toUpperCase()} (${categoryModes.length})`));
-=======
-          lines.push(chalk8__default.default.bold.cyan(`${category.toUpperCase()} (${categoryModes.length})`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           lines.push("");
           categoryModes.forEach((mode) => {
             const i18n = mode.i18n[lang] || mode.i18n.en;
             const indicator = this.createCompactIndicator(mode);
-<<<<<<< HEAD
             const name = chalk30__default.default.white(i18n.name);
             const description = chalk30__default.default.gray(i18n.description);
-=======
-            const name = chalk8__default.default.white(i18n.name);
-            const description = chalk8__default.default.gray(i18n.description);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             lines.push(`  ${indicator} ${name}`);
             lines.push(`    ${description}`);
             lines.push("");
@@ -7032,16 +6427,11 @@ var init_ModeDisplayManager = __esm({
        */
       createHelpDisplay() {
         const lines = [];
-<<<<<<< HEAD
         lines.push(chalk30__default.default.bold.cyan("Internal Mode System"));
-=======
-        lines.push(chalk8__default.default.bold.cyan("Internal Mode System"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         lines.push("");
         lines.push("The internal mode system automatically adapts MARIA's thinking process");
         lines.push("based on your input and context. Modes are displayed as:");
         lines.push("");
-<<<<<<< HEAD
         lines.push(`  ${chalk30__default.default.cyan("\u273D \u{1F9E0} Thinking\u2026")} - Current internal mode`);
         lines.push("");
         lines.push(chalk30__default.default.white("Commands:"));
@@ -7054,20 +6444,6 @@ var init_ModeDisplayManager = __esm({
         lines.push("");
         lines.push(
           chalk30__default.default.dim("Mode switching is automatic by default based on your input and context.")
-=======
-        lines.push(`  ${chalk8__default.default.cyan("\u273D \u{1F9E0} Thinking\u2026")} - Current internal mode`);
-        lines.push("");
-        lines.push(chalk8__default.default.white("Commands:"));
-        lines.push(`  ${chalk8__default.default.green("/mode")}              - Show current mode`);
-        lines.push(`  ${chalk8__default.default.green("/mode list")}         - List all available modes`);
-        lines.push(`  ${chalk8__default.default.green("/mode <name>")}       - Switch to specific mode`);
-        lines.push(`  ${chalk8__default.default.green("/mode auto")}         - Enable automatic mode switching`);
-        lines.push(`  ${chalk8__default.default.green("/mode history")}      - Show mode usage history`);
-        lines.push(`  ${chalk8__default.default.green("/mode help")}         - Show this help`);
-        lines.push("");
-        lines.push(
-          chalk8__default.default.dim("Mode switching is automatic by default based on your input and context.")
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         );
         return lines;
       }
@@ -7090,7 +6466,6 @@ var init_ModeHistoryTracker = __esm({
       sessionStartTime = /* @__PURE__ */ new Date();
       totalModeChanges = 0;
       recognitionAccuracy = [];
-<<<<<<< HEAD
       constructor(config2) {
         super();
         this.config = config2;
@@ -7099,14 +6474,6 @@ var init_ModeHistoryTracker = __esm({
         if (this.initialized) {
           return;
         }
-=======
-      constructor(config) {
-        super();
-        this.config = config;
-      }
-      async initialize() {
-        if (this.initialized) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         await this.loadPersistedData();
         this.initialized = true;
       }
@@ -7278,13 +6645,8 @@ var init_ModeHistoryTracker = __esm({
       /**
        * Update configuration
        */
-<<<<<<< HEAD
       updateConfig(config2) {
         this.config = config2;
-=======
-      updateConfig(config) {
-        this.config = config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       // Private methods
       async updateUserPatterns() {
@@ -7407,15 +6769,9 @@ var init_ModeHistoryTracker = __esm({
     };
   }
 });
-<<<<<<< HEAD
 function getInternalModeService2(config2) {
   if (!modeServiceInstance) {
     modeServiceInstance = new InternalModeService(config2);
-=======
-function getInternalModeService(config) {
-  if (!modeServiceInstance) {
-    modeServiceInstance = new InternalModeService(config);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
   return modeServiceInstance;
 }
@@ -7439,11 +6795,7 @@ var init_InternalModeService = __esm({
       config;
       initialized = false;
       recognitionInProgress = false;
-<<<<<<< HEAD
       constructor(config2 = {}) {
-=======
-      constructor(config = {}) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         super();
         this.config = {
           confidenceThreshold: 0.85,
@@ -7460,11 +6812,7 @@ var init_InternalModeService = __esm({
           maxHistoryEntries: 1e3,
           maxPatterns: 500,
           recognitionTimeout: 200,
-<<<<<<< HEAD
           ...config2
-=======
-          ...config
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         };
         this.modeRegistry = getModeRegistry();
         this.recognitionEngine = new ModeRecognitionEngine(this.modeRegistry, this.config);
@@ -7473,16 +6821,10 @@ var init_InternalModeService = __esm({
         this.setupEventListeners();
       }
       async initialize() {
-<<<<<<< HEAD
         if (this.initialized) {
           return;
         }
         try {
-=======
-        if (this.initialized) return;
-        try {
-          console.log(chalk8__default.default.cyan("\u{1F9E0} Initializing Internal Mode Service..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           await Promise.all([
             this.modeRegistry.initialize(),
             this.recognitionEngine.initialize(),
@@ -7495,15 +6837,8 @@ var init_InternalModeService = __esm({
           }
           this.initialized = true;
           this.emit("initialized");
-<<<<<<< HEAD
         } catch (error) {
           console.error(chalk30__default.default.red("Failed to initialize Internal Mode Service:"), error);
-=======
-          console.log(chalk8__default.default.green("\u2705 Internal Mode Service initialized successfully"));
-          console.log(chalk8__default.default.gray(`\u{1F4CA} Loaded ${this.modeRegistry.getModeCount()} modes`));
-        } catch (error) {
-          console.error(chalk8__default.default.red("Failed to initialize Internal Mode Service:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           throw error;
         }
       }
@@ -7547,11 +6882,7 @@ var init_InternalModeService = __esm({
           }
           return recognition;
         } catch (error) {
-<<<<<<< HEAD
           console.error(chalk30__default.default.red("Mode recognition error:"), error);
-=======
-          console.error(chalk8__default.default.red("Mode recognition error:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           this.emit("mode:error", error);
           return null;
         } finally {
@@ -7569,11 +6900,7 @@ var init_InternalModeService = __esm({
           }
           return await this.switchToMode(modeDefinition, trigger, isInitial);
         } catch (error) {
-<<<<<<< HEAD
           console.error(chalk30__default.default.red("Failed to set mode:"), error);
-=======
-          console.error(chalk8__default.default.red("Failed to set mode:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           this.emit("mode:error", error);
           return false;
         }
@@ -7627,13 +6954,9 @@ var init_InternalModeService = __esm({
        * Provide feedback on mode accuracy
        */
       async provideFeedback(modeId, wasCorrect, userInput) {
-<<<<<<< HEAD
         if (!this.config.feedbackEnabled) {
           return;
         }
-=======
-        if (!this.config.feedbackEnabled) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         try {
           await this.historyTracker.recordFeedback(modeId, wasCorrect, userInput);
           if (userInput) {
@@ -7641,11 +6964,7 @@ var init_InternalModeService = __esm({
           }
           this.emit("learning:updated", this.historyTracker.getUserPatterns());
         } catch (error) {
-<<<<<<< HEAD
           console.error(chalk30__default.default.red("Failed to record feedback:"), error);
-=======
-          console.error(chalk8__default.default.red("Failed to record feedback:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
       }
       /**
@@ -7731,22 +7050,14 @@ var init_InternalModeService = __esm({
           this.currentMode = mode;
           await this.historyTracker.recordTransition(transition);
           if (this.config.showTransitions && !isInitial) {
-<<<<<<< HEAD
             await this.displayManager.showModeTransition(mode, previousMode || void 0);
-=======
-            await this.displayManager.showModeTransition(mode, previousMode);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           } else if (isInitial) {
             await this.displayManager.showMode(mode);
           }
           this.emit("mode:changed", transition);
           return true;
         } catch (error) {
-<<<<<<< HEAD
           console.error(chalk30__default.default.red("Failed to switch mode:"), error);
-=======
-          console.error(chalk8__default.default.red("Failed to switch mode:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           this.emit("mode:error", error);
           return false;
         }
@@ -7764,7 +7075,6 @@ var init_InternalModeService = __esm({
       }
     };
     modeServiceInstance = null;
-<<<<<<< HEAD
     __name(getInternalModeService2, "getInternalModeService");
   }
 });
@@ -13746,18 +13056,11 @@ var init_InputBox = __esm({
   }
 });
 var BRAND_COLORS, SEMANTIC_COLORS, TEXT_HIERARCHY2, LAYOUT_COLORS;
-=======
-    __name(getInternalModeService, "getInternalModeService");
-  }
-});
-var BRAND_COLORS, SEMANTIC_COLORS, TEXT_HIERARCHY, LAYOUT_COLORS;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 var init_UnifiedColorPalette = __esm({
   "src/ui/design-system/UnifiedColorPalette.ts"() {
     init_cjs_shims();
     BRAND_COLORS = {
       // ブランドプライマリー（マゼンタ - ロゴカラー）
-<<<<<<< HEAD
       BRAND_PRIMARY: chalk30__default.default.magenta,
       BRAND_SECONDARY: chalk30__default.default.magentaBright,
       // ダークテーマベース
@@ -13800,55 +13103,10 @@ var init_UnifiedColorPalette = __esm({
       DISABLED: chalk30__default.default.dim.gray,
       // 無効・非アクティブ
       HIGHLIGHT: chalk30__default.default.bold.white
-=======
-      BRAND_PRIMARY: chalk8__default.default.magenta,
-      BRAND_SECONDARY: chalk8__default.default.magentaBright,
-      // ダークテーマベース
-      BACKGROUND: chalk8__default.default.bgBlack,
-      FOREGROUND: chalk8__default.default.white
-    };
-    SEMANTIC_COLORS = {
-      // プライマリーカラー（メインアクション）
-      PRIMARY: chalk8__default.default.cyan,
-      // クリアで視認性の高いシアン
-      // ステータスカラー（3色）
-      SUCCESS: chalk8__default.default.green,
-      // 成功・完了
-      WARNING: chalk8__default.default.yellow,
-      // 警告・注意
-      ERROR: chalk8__default.default.red,
-      // エラー・失敗
-      // 補助カラー（3色）
-      INFO: chalk8__default.default.blue,
-      // 情報・説明
-      MUTED: chalk8__default.default.gray,
-      // 補助情報・メタデータ
-      ACCENT: chalk8__default.default.magenta
-      // アクセント・ブランド強調
-    };
-    TEXT_HIERARCHY = {
-      // 見出し階層
-      TITLE: chalk8__default.default.bold.cyan,
-      // H1相当 - メインタイトル
-      SUBTITLE: chalk8__default.default.cyan,
-      // H2相当 - セクションタイトル
-      SECTION: chalk8__default.default.bold.white,
-      // H3相当 - サブセクション
-      // 本文階層
-      BODY: chalk8__default.default.white,
-      // 通常テキスト（ユーザー指定の白）
-      CAPTION: chalk8__default.default.gray,
-      // 補助テキスト・メタデータ
-      // 特殊階層
-      DISABLED: chalk8__default.default.dim.gray,
-      // 無効・非アクティブ
-      HIGHLIGHT: chalk8__default.default.bold.white
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       // 強調表示
     };
     ({
       // リンク・コマンド
-<<<<<<< HEAD
       LINK: chalk30__default.default.underline.cyan,
       COMMAND: chalk30__default.default.bold.yellow,
       // 入力・出力
@@ -13872,31 +13130,6 @@ var init_UnifiedColorPalette = __esm({
       // 背景・強調
       BACKGROUND_SUBTLE: chalk30__default.default.bgGray,
       HIGHLIGHT_BG: chalk30__default.default.bgBlue
-=======
-      LINK: chalk8__default.default.underline.cyan,
-      COMMAND: chalk8__default.default.bold.yellow,
-      // 入力・出力
-      INPUT: chalk8__default.default.green,
-      OUTPUT: chalk8__default.default.white,
-      // ステータス
-      ACTIVE: chalk8__default.default.bold.cyan,
-      INACTIVE: chalk8__default.default.dim.gray,
-      // 特殊状態
-      LOADING: chalk8__default.default.blue,
-      PROGRESS: chalk8__default.default.cyan
-    });
-    LAYOUT_COLORS = {
-      // ボーダー・区切り
-      BORDER_PRIMARY: chalk8__default.default.magenta,
-      // ブランドボーダー
-      BORDER_SECONDARY: chalk8__default.default.gray,
-      // 通常ボーダー
-      SEPARATOR: chalk8__default.default.dim.gray,
-      // 区切り線
-      // 背景・強調
-      BACKGROUND_SUBTLE: chalk8__default.default.bgGray,
-      HIGHLIGHT_BG: chalk8__default.default.bgBlue
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     };
     ({
       // よく使用するカラーのショートカット
@@ -13908,17 +13141,10 @@ var init_UnifiedColorPalette = __esm({
       muted: SEMANTIC_COLORS.MUTED,
       accent: SEMANTIC_COLORS.ACCENT,
       // テキスト
-<<<<<<< HEAD
       title: TEXT_HIERARCHY2.TITLE,
       subtitle: TEXT_HIERARCHY2.SUBTITLE,
       body: TEXT_HIERARCHY2.BODY,
       caption: TEXT_HIERARCHY2.CAPTION,
-=======
-      title: TEXT_HIERARCHY.TITLE,
-      subtitle: TEXT_HIERARCHY.SUBTITLE,
-      body: TEXT_HIERARCHY.BODY,
-      caption: TEXT_HIERARCHY.CAPTION,
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       // ブランド
       brand: BRAND_COLORS.BRAND_PRIMARY,
       brandBright: BRAND_COLORS.BRAND_SECONDARY
@@ -13926,200 +13152,6 @@ var init_UnifiedColorPalette = __esm({
   }
 });
 
-<<<<<<< HEAD
-=======
-// src/ui/design-system/MinimalIconRegistry.ts
-var CORE_ICONS, SPINNER_FRAMES, FORBIDDEN_ICONS, IconRegistry;
-var init_MinimalIconRegistry = __esm({
-  "src/ui/design-system/MinimalIconRegistry.ts"() {
-    init_cjs_shims();
-    CORE_ICONS = {
-      // システム状態アイコン
-      SUCCESS: {
-        symbol: "\u2713",
-        width: 1,
-        description: "\u6210\u529F\u30FB\u5B8C\u4E86\u72B6\u614B",
-        usage: ["\u30BF\u30B9\u30AF\u5B8C\u4E86", "\u30D3\u30EB\u30C9\u6210\u529F", "\u30C6\u30B9\u30C8\u5408\u683C"]
-      },
-      ERROR: {
-        symbol: "\u2717",
-        width: 1,
-        description: "\u30A8\u30E9\u30FC\u30FB\u5931\u6557\u72B6\u614B",
-        usage: ["\u30A8\u30E9\u30FC\u767A\u751F", "\u30D3\u30EB\u30C9\u5931\u6557", "\u30C6\u30B9\u30C8\u5931\u6557"]
-      },
-      WARNING: {
-        symbol: "!",
-        width: 1,
-        description: "\u8B66\u544A\u30FB\u6CE8\u610F\u559A\u8D77",
-        usage: ["\u8B66\u544A\u30E1\u30C3\u30BB\u30FC\u30B8", "\u30C7\u30D7\u30EA\u30B1\u30FC\u30B7\u30E7\u30F3", "\u8981\u6CE8\u610F"]
-      },
-      INFO: {
-        symbol: "i",
-        width: 1,
-        description: "\u60C5\u5831\u30FB\u8AAC\u660E",
-        usage: ["\u60C5\u5831\u8868\u793A", "\u30D8\u30EB\u30D7", "\u8AAC\u660E\u6587"]
-      },
-      // プロセス状態アイコン
-      LOADING: {
-        symbol: "\u25EF",
-        width: 1,
-        description: "\u30ED\u30FC\u30C7\u30A3\u30F3\u30B0\u30FB\u51E6\u7406\u4E2D",
-        usage: ["API\u547C\u3073\u51FA\u3057", "\u30D5\u30A1\u30A4\u30EB\u51E6\u7406", "AI\u5FDC\u7B54\u5F85\u3061"]
-      },
-      ARROW: {
-        symbol: "\u2192",
-        width: 1,
-        description: "\u65B9\u5411\u30FB\u9032\u884C",
-        usage: ["\u30D5\u30ED\u30FC\u8868\u793A", "\u30CA\u30D3\u30B2\u30FC\u30B7\u30E7\u30F3", "\u6B21\u306E\u30B9\u30C6\u30C3\u30D7"]
-      }
-    };
-    SPINNER_FRAMES = ["\u280B", "\u2819", "\u2839", "\u2838", "\u283C", "\u2834", "\u2826", "\u2827", "\u2807", "\u280F"];
-    FORBIDDEN_ICONS = [
-      // 絵文字系（レンダリング不安定）
-      "\u{1F680}",
-      "\u{1F389}",
-      "\u{1F3A8}",
-      "\u{1F4CA}",
-      "\u{1F527}",
-      "\u26A1",
-      "\u{1F3AF}",
-      "\u{1F525}",
-      "\u{1F31F}",
-      "\u{1F4AB}",
-      "\u2B50",
-      "\u{1F3AA}",
-      "\u{1F3AD}",
-      "\u{1F52E}",
-      "\u{1F3B2}",
-      "\u{1F3C6}",
-      "\u{1F396}\uFE0F",
-      "\u{1F3C5}",
-      "\u{1F947}",
-      "\u{1F38A}",
-      "\u{1F388}",
-      "\u{1F381}",
-      "\u{1F380}",
-      // 複雑な記号（幅不定）
-      "\u2728",
-      "\u{1F48E}",
-      "\u{1F539}",
-      "\u{1F538}",
-      "\u25C6",
-      "\u25C7",
-      "\u2666",
-      "\u2662",
-      "\u25CF",
-      "\u25CB",
-      "\u25C9",
-      "\u25CE",
-      "\u26AB",
-      "\u26AA",
-      "\u{1F534}",
-      "\u{1F7E1}",
-      // フォント依存記号
-      "\u2605",
-      "\u2606",
-      "\u266A",
-      "\u266B",
-      "\u266C",
-      "\u2669",
-      "\u26BF",
-      "\u26BE"
-    ];
-    IconRegistry = class {
-      static {
-        __name(this, "IconRegistry");
-      }
-      /**
-       * 安全なアイコン取得（フォールバック付き）
-       */
-      static get(iconName) {
-        const icon = CORE_ICONS[iconName];
-        if (!icon) {
-          console.warn(`Unknown icon: ${iconName}, falling back to INFO`);
-          return CORE_ICONS.INFO.symbol;
-        }
-        return icon.symbol;
-      }
-      /**
-       * アイコンの文字幅取得
-       */
-      static getWidth(iconName) {
-        const icon = CORE_ICONS[iconName];
-        return icon?.width || 1;
-      }
-      /**
-       * 文字幅を考慮したアイコン配置
-       */
-      static alignIcon(iconName, totalWidth) {
-        const icon = this.get(iconName);
-        const iconWidth = this.getWidth(iconName);
-        const padding = Math.max(0, totalWidth - iconWidth);
-        return icon.padEnd(totalWidth - padding + iconWidth);
-      }
-      /**
-       * スピナーフレーム取得
-       */
-      static getSpinnerFrame(index) {
-        const frame = SPINNER_FRAMES[index % SPINNER_FRAMES.length];
-        return frame || "\u25EF";
-      }
-      /**
-       * 利用可能なアイコン一覧
-       */
-      static listAvailable() {
-        return Object.entries(CORE_ICONS).map(([name, icon]) => ({
-          name,
-          icon
-        }));
-      }
-      /**
-       * アイコンの使用例表示
-       */
-      static showUsageExample(iconName) {
-        const icon = CORE_ICONS[iconName];
-        if (!icon) return;
-        console.log(`${icon.symbol} ${iconName} - ${icon.description}`);
-        icon.usage.forEach((usage) => {
-          console.log(`  \u4F8B: ${icon.symbol} ${usage}`);
-        });
-      }
-      /**
-       * 禁止アイコンチェック
-       */
-      static isForbidden(symbol) {
-        return FORBIDDEN_ICONS.includes(symbol);
-      }
-      /**
-       * 安全性検証
-       */
-      static validateIcon(symbol) {
-        const warnings = [];
-        if (this.isForbidden(symbol)) {
-          warnings.push("\u7981\u6B62\u3055\u308C\u305F\u30A2\u30A4\u30B3\u30F3\u3067\u3059");
-        }
-        let estimatedWidth = 1;
-        if (symbol.length > 1) {
-          estimatedWidth = symbol.length;
-          warnings.push("\u8907\u6570\u6587\u5B57\u306E\u30A2\u30A4\u30B3\u30F3\u306F\u8868\u793A\u305A\u308C\u306E\u539F\u56E0\u3068\u306A\u308A\u307E\u3059");
-        }
-        if (/[\u{1F300}-\u{1F9FF}]/u.test(symbol)) {
-          warnings.push("\u7D75\u6587\u5B57\u306F\u7AEF\u672B\u306B\u3088\u3063\u3066\u8868\u793A\u304C\u7570\u306A\u308A\u307E\u3059");
-        }
-        return {
-          isValid: warnings.length === 0,
-          width: estimatedWidth,
-          warnings
-        };
-      }
-    };
-    IconRegistry.get;
-    IconRegistry.getWidth;
-    IconRegistry.alignIcon;
-  }
-});
-
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 // src/ui/design-system/LayoutManager.ts
 var LAYOUT_CONSTANTS, LayoutManager;
 var init_LayoutManager = __esm({
@@ -14174,17 +13206,10 @@ var init_LayoutManager = __esm({
       static getOptimalLayout(terminalWidth) {
         const width = terminalWidth || process.stdout.columns || LAYOUT_CONSTANTS.SCREEN_WIDTH;
         let mode;
-<<<<<<< HEAD
         let config2 = {};
         if (width < LAYOUT_CONSTANTS.COMPACT_THRESHOLD) {
           mode = "compact";
           config2 = {
-=======
-        let config = {};
-        if (width < LAYOUT_CONSTANTS.COMPACT_THRESHOLD) {
-          mode = "compact";
-          config = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             width: Math.max(width, LAYOUT_CONSTANTS.MIN_WIDTH),
             contentWidth: Math.max(width - 4, LAYOUT_CONSTANTS.MIN_WIDTH - 4),
             mainContentWidth: Math.max(width - 8, LAYOUT_CONSTANTS.MIN_WIDTH - 8),
@@ -14196,11 +13221,7 @@ var init_LayoutManager = __esm({
         } else if (width > LAYOUT_CONSTANTS.WIDE_THRESHOLD) {
           mode = "wide";
           const scaleFactor = width / LAYOUT_CONSTANTS.SCREEN_WIDTH;
-<<<<<<< HEAD
           config2 = {
-=======
-          config = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             width,
             contentWidth: width - 4,
             mainContentWidth: Math.floor(LAYOUT_CONSTANTS.MAIN_CONTENT * scaleFactor),
@@ -14210,11 +13231,7 @@ var init_LayoutManager = __esm({
           };
         } else {
           mode = "standard";
-<<<<<<< HEAD
           config2 = {
-=======
-          config = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             width: LAYOUT_CONSTANTS.SCREEN_WIDTH,
             contentWidth: LAYOUT_CONSTANTS.CONTENT_WIDTH,
             mainContentWidth: LAYOUT_CONSTANTS.MAIN_CONTENT,
@@ -14223,11 +13240,7 @@ var init_LayoutManager = __esm({
             padding: LAYOUT_CONSTANTS.SECTION_PADDING
           };
         }
-<<<<<<< HEAD
         this.currentConfig = { mode, ...config2 };
-=======
-        this.currentConfig = { mode, ...config };
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return this.currentConfig;
       }
       /**
@@ -14242,11 +13255,7 @@ var init_LayoutManager = __esm({
       static alignText(text, width, alignment = "left") {
         const actualLength = this.getStringWidth(text);
         if (actualLength > width) {
-<<<<<<< HEAD
           return `${this.truncateString(text, width - 3)}...`;
-=======
-          return this.truncateString(text, width - 3) + "...";
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
         const padding = width - actualLength;
         switch (alignment) {
@@ -14264,13 +13273,8 @@ var init_LayoutManager = __esm({
       /**
        * 2カラムレイアウト生成
        */
-<<<<<<< HEAD
       static createTwoColumnLayout(leftContent, rightContent, config2) {
         const layout = config2 ? { ...this.getCurrentConfig(), ...config2 } : this.getCurrentConfig();
-=======
-      static createTwoColumnLayout(leftContent, rightContent, config) {
-        const layout = config ? { ...this.getCurrentConfig(), ...config } : this.getCurrentConfig();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (layout.mode === "compact") {
           return [...leftContent, "", ...rightContent];
         }
@@ -14344,13 +13348,9 @@ var init_LayoutManager = __esm({
         let width = 0;
         for (const char of str) {
           const code = char.codePointAt(0);
-<<<<<<< HEAD
           if (!code) {
             continue;
           }
-=======
-          if (!code) continue;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           if (code > 12288 && code < 40959) {
             width += 2;
           } else if (code > 127744 && code < 129535) {
@@ -14369,13 +13369,9 @@ var init_LayoutManager = __esm({
         let result = "";
         for (const char of str) {
           const charWidth = this.getStringWidth(char);
-<<<<<<< HEAD
           if (width + charWidth > maxWidth) {
             break;
           }
-=======
-          if (width + charWidth > maxWidth) break;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           result += char;
           width += charWidth;
         }
@@ -14385,7 +13381,6 @@ var init_LayoutManager = __esm({
        * レイアウトデバッグ情報
        */
       static debugLayout() {
-<<<<<<< HEAD
         const config2 = this.getCurrentConfig();
         console.log("Layout Debug Information:");
         console.log(`Mode: ${config2.mode}`);
@@ -14395,22 +13390,10 @@ var init_LayoutManager = __esm({
         console.log(`Sidebar: ${config2.sidebarWidth}`);
         console.log(`Column Gap: ${config2.columnGap}`);
         console.log(`Padding: ${config2.padding}`);
-=======
-        const config = this.getCurrentConfig();
-        console.log("Layout Debug Information:");
-        console.log(`Mode: ${config.mode}`);
-        console.log(`Width: ${config.width}`);
-        console.log(`Content Width: ${config.contentWidth}`);
-        console.log(`Main Content: ${config.mainContentWidth}`);
-        console.log(`Sidebar: ${config.sidebarWidth}`);
-        console.log(`Column Gap: ${config.columnGap}`);
-        console.log(`Padding: ${config.padding}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * レイアウト妥当性検証
        */
-<<<<<<< HEAD
       static validateLayout(config2) {
         const errors = [];
         if (config2.width < LAYOUT_CONSTANTS.MIN_WIDTH) {
@@ -14420,17 +13403,6 @@ var init_LayoutManager = __esm({
         if (totalWidth > config2.contentWidth) {
           errors.push(
             `\u30AB\u30E9\u30E0\u5E45\u306E\u5408\u8A08\u304C content width \u3092\u8D85\u3048\u3066\u3044\u307E\u3059: ${totalWidth} > ${config2.contentWidth}`
-=======
-      static validateLayout(config) {
-        const errors = [];
-        if (config.width < LAYOUT_CONSTANTS.MIN_WIDTH) {
-          errors.push(`\u5E45\u304C\u6700\u5C0F\u5024(${LAYOUT_CONSTANTS.MIN_WIDTH})\u3092\u4E0B\u56DE\u3063\u3066\u3044\u307E\u3059: ${config.width}`);
-        }
-        const totalWidth = config.mainContentWidth + config.sidebarWidth + config.columnGap;
-        if (totalWidth > config.contentWidth) {
-          errors.push(
-            `\u30AB\u30E9\u30E0\u5E45\u306E\u5408\u8A08\u304C content width \u3092\u8D85\u3048\u3066\u3044\u307E\u3059: ${totalWidth} > ${config.contentWidth}`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           );
         }
         return {
@@ -14606,11 +13578,7 @@ var init_OptimizedBox = __esm({
       renderShadow(width) {
         const shadowChar = "\u2593";
         const shadowColor = SEMANTIC_COLORS.MUTED;
-<<<<<<< HEAD
         console.log(` ${shadowColor(shadowChar.repeat(width))}`);
-=======
-        console.log(" " + shadowColor(shadowChar.repeat(width)));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log(shadowColor(shadowChar.repeat(width + 1)));
       }
       /**
@@ -14759,7 +13727,6 @@ var init_OptimizedBox = __esm({
   }
 });
 
-<<<<<<< HEAD
 // src/ui/design-system/MinimalIconRegistry.ts
 var CORE_ICONS, SPINNER_FRAMES, FORBIDDEN_ICONS, IconRegistry;
 var init_MinimalIconRegistry = __esm({
@@ -14953,8 +13920,6 @@ var init_MinimalIconRegistry = __esm({
   }
 });
 
-=======
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 // src/ui/design-system/ResponsiveRenderer.ts
 var ResponsiveRenderer;
 var init_ResponsiveRenderer = __esm({
@@ -15015,13 +13980,9 @@ var init_ResponsiveRenderer = __esm({
        * レスポンシブコンテンツ描画
        */
       static render(content) {
-<<<<<<< HEAD
         if (!this.context) {
           this.initialize();
         }
-=======
-        if (!this.context) this.initialize();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const contents = Array.isArray(content) ? content : [content];
         const sortedContents = contents.sort((a, b) => b.priority - a.priority);
         if (this.config.enableProgressiveDisplay) {
@@ -15096,15 +14057,9 @@ var init_ResponsiveRenderer = __esm({
       static renderHeader(data) {
         const width = this.context.layout.contentWidth;
         if (this.context.mode === "compact") {
-<<<<<<< HEAD
           console.log(TEXT_HIERARCHY2.TITLE(data.title));
           if (data.subtitle) {
             console.log(TEXT_HIERARCHY2.CAPTION(data.subtitle));
-=======
-          console.log(TEXT_HIERARCHY.TITLE(data.title));
-          if (data.subtitle) {
-            console.log(TEXT_HIERARCHY.CAPTION(data.subtitle));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         } else {
           OptimizedBox.brand(
@@ -15132,17 +14087,10 @@ var init_ResponsiveRenderer = __esm({
         const color = ColorPalette.status(
           data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error"
         );
-<<<<<<< HEAD
         const statusLine = `${color(icon)} ${TEXT_HIERARCHY2.BODY(data.message)}`;
         if (this.context.mode !== "compact" && data.details) {
           OptimizedBox.simple(
             [statusLine, ...data.details.map((detail) => `  ${TEXT_HIERARCHY2.CAPTION(detail)}`)],
-=======
-        const statusLine = `${color(icon)} ${TEXT_HIERARCHY.BODY(data.message)}`;
-        if (this.context.mode !== "compact" && data.details) {
-          OptimizedBox.simple(
-            [statusLine, ...data.details.map((detail) => `  ${TEXT_HIERARCHY.CAPTION(detail)}`)],
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             {
               theme: data.status === "healthy" ? "success" : data.status === "degraded" ? "warning" : "error",
               padding: "small"
@@ -15157,11 +14105,7 @@ var init_ResponsiveRenderer = __esm({
        */
       static renderNavigation(data) {
         if (this.context.mode === "compact") {
-<<<<<<< HEAD
           const items = data.items.slice(0, 3).map((item) => TEXT_HIERARCHY2.BODY(item.label)).join(TEXT_HIERARCHY2.CAPTION(" \u2022 "));
-=======
-          const items = data.items.slice(0, 3).map((item) => TEXT_HIERARCHY.BODY(item.label)).join(TEXT_HIERARCHY.CAPTION(" \u2022 "));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           console.log(items);
         } else {
           const grid = LayoutManager.createGrid(
@@ -15179,20 +14123,12 @@ var init_ResponsiveRenderer = __esm({
         const maxWidth = this.context.layout.contentWidth;
         const columnCount = data.headers.length;
         const columnWidth = Math.floor((maxWidth - (columnCount - 1) * 2) / columnCount);
-<<<<<<< HEAD
         const headerRow = data.headers.map((header) => TEXT_HIERARCHY2.SUBTITLE(LayoutManager.alignText(header, columnWidth))).join("  ");
-=======
-        const headerRow = data.headers.map((header) => TEXT_HIERARCHY.SUBTITLE(LayoutManager.alignText(header, columnWidth))).join("  ");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log(headerRow);
         console.log(SEMANTIC_COLORS.MUTED("\u2500".repeat(maxWidth)));
         data.rows.forEach((row) => {
           const dataRow = data.headers.map(
-<<<<<<< HEAD
             (header) => TEXT_HIERARCHY2.BODY(LayoutManager.alignText(String(row[header] || ""), columnWidth))
-=======
-            (header) => TEXT_HIERARCHY.BODY(LayoutManager.alignText(String(row[header] || ""), columnWidth))
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           ).join("  ");
           console.log(dataRow);
         });
@@ -15234,21 +14170,13 @@ var init_ResponsiveRenderer = __esm({
        */
       static renderTruncationNotice(remainingCount) {
         const message = `${IconRegistry.get("INFO")} ${remainingCount} more items (use wider terminal)`;
-<<<<<<< HEAD
         console.log(TEXT_HIERARCHY2.CAPTION(message));
-=======
-        console.log(TEXT_HIERARCHY.CAPTION(message));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * レスポンシブ情報表示
        */
       static showResponsiveInfo() {
-<<<<<<< HEAD
         console.log(TEXT_HIERARCHY2.TITLE("Responsive Renderer Info"));
-=======
-        console.log(TEXT_HIERARCHY.TITLE("Responsive Renderer Info"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log(SEMANTIC_COLORS.MUTED("\u2500".repeat(40)));
         console.log(`Mode: ${this.context.mode}`);
         console.log(`Terminal: ${this.context.terminalWidth}x${this.context.terminalHeight}`);
@@ -15288,11 +14216,7 @@ function printStatus(health) {
     const timestamp = health.timestamp || health.lastUpdate;
     const timeStr = timestamp instanceof Date ? timestamp.toLocaleString() : new Date(timestamp).toLocaleString();
     console.log("");
-<<<<<<< HEAD
     console.log(TEXT_HIERARCHY2.CAPTION(`Last updated: ${timeStr}`));
-=======
-    console.log(TEXT_HIERARCHY.CAPTION(`Last updated: ${timeStr}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 function renderOverallStatus(health) {
@@ -15303,11 +14227,7 @@ function renderOverallStatus(health) {
 function renderHealthSections(health) {
   const sections = [""];
   if (health.providers && health.providers.length > 0) {
-<<<<<<< HEAD
     sections.push(TEXT_HIERARCHY2.SUBTITLE("AI Providers:"));
-=======
-    sections.push(TEXT_HIERARCHY.SUBTITLE("AI Providers:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     health.providers.forEach((provider) => {
       const statusIcon = provider.health.status === "healthy" ? IconRegistry.get("SUCCESS") : provider.health.status === "degraded" ? IconRegistry.get("WARNING") : IconRegistry.get("ERROR");
       const statusColor = provider.health.status === "healthy" ? SEMANTIC_COLORS.SUCCESS : provider.health.status === "degraded" ? SEMANTIC_COLORS.WARNING : SEMANTIC_COLORS.ERROR;
@@ -15318,28 +14238,16 @@ function renderHealthSections(health) {
   if (health.uptime) {
     const uptimeHours = Math.floor(health.uptime / 3600);
     const uptimeMinutes = Math.floor(health.uptime % 3600 / 60);
-<<<<<<< HEAD
     sections.push(TEXT_HIERARCHY2.SUBTITLE("System:"));
-=======
-    sections.push(TEXT_HIERARCHY.SUBTITLE("System:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     sections.push(`  Uptime: ${uptimeHours}h ${uptimeMinutes}m`);
     sections.push("");
   }
   if (health.recommendations && health.recommendations.length > 0) {
-<<<<<<< HEAD
     sections.push(TEXT_HIERARCHY2.SUBTITLE("Recommendations:"));
     health.recommendations.forEach((rec) => {
       const icon = rec.type === "error" ? IconRegistry.get("ERROR") : rec.type === "warning" ? IconRegistry.get("WARNING") : IconRegistry.get("INFO");
       const message = rec.message || rec;
       sections.push(`  ${icon} ${TEXT_HIERARCHY2.CAPTION(message)}`);
-=======
-    sections.push(TEXT_HIERARCHY.SUBTITLE("Recommendations:"));
-    health.recommendations.forEach((rec) => {
-      const icon = rec.type === "error" ? IconRegistry.get("ERROR") : rec.type === "warning" ? IconRegistry.get("WARNING") : IconRegistry.get("INFO");
-      const message = rec.message || rec;
-      sections.push(`  ${icon} ${TEXT_HIERARCHY.CAPTION(message)}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     });
   }
   return sections;
@@ -15357,17 +14265,10 @@ function getHealthTheme(overall) {
   }
 }
 function printSuccess(message) {
-<<<<<<< HEAD
   console.log(SEMANTIC_COLORS.SUCCESS(IconRegistry.get("SUCCESS")), TEXT_HIERARCHY2.BODY(message));
 }
 function printError(message) {
   console.log(SEMANTIC_COLORS.ERROR(IconRegistry.get("ERROR")), TEXT_HIERARCHY2.BODY(message));
-=======
-  console.log(SEMANTIC_COLORS.SUCCESS(IconRegistry.get("SUCCESS")), TEXT_HIERARCHY.BODY(message));
-}
-function printError(message) {
-  console.log(SEMANTIC_COLORS.ERROR(IconRegistry.get("ERROR")), TEXT_HIERARCHY.BODY(message));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 }
 var init_ui = __esm({
   "src/utils/ui.ts"() {
@@ -15916,7 +14817,6 @@ var init_ApprovalContextAnalyzer = __esm({
           riskFactors.push("urgency indicator detected");
         }
         let risk;
-<<<<<<< HEAD
         if (riskScore >= 8) {
           risk = "critical";
         } else if (riskScore >= 5) {
@@ -15926,12 +14826,6 @@ var init_ApprovalContextAnalyzer = __esm({
         } else {
           risk = "low";
         }
-=======
-        if (riskScore >= 8) risk = "critical";
-        else if (riskScore >= 5) risk = "high";
-        else if (riskScore >= 3) risk = "medium";
-        else risk = "low";
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return { risk, factors: riskFactors };
       }
       /**
@@ -15948,7 +14842,6 @@ var init_ApprovalContextAnalyzer = __esm({
           return themes.filter((theme) => theme.impact === "critical");
         }
         return themes.filter((theme) => {
-<<<<<<< HEAD
           if (theme.impact === "critical") {
             return true;
           }
@@ -15958,11 +14851,6 @@ var init_ApprovalContextAnalyzer = __esm({
           if (theme.requiresConfirmation && context.userTrustLevel === "learning" /* LEARNING */) {
             return true;
           }
-=======
-          if (theme.impact === "critical") return true;
-          if (theme.impact === "high" && context.userTrustLevel !== "trusted" /* TRUSTED */) return true;
-          if (theme.requiresConfirmation && context.userTrustLevel === "learning" /* LEARNING */) return true;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           return false;
         });
       }
@@ -16349,7 +15237,6 @@ var init_RiskAssessment = __esm({
        * Convert risk score to risk level
        */
       static scoreToRiskLevel(score) {
-<<<<<<< HEAD
         if (score >= this.riskThresholds.critical) {
           return "critical";
         }
@@ -16359,11 +15246,6 @@ var init_RiskAssessment = __esm({
         if (score >= this.riskThresholds.medium) {
           return "medium";
         }
-=======
-        if (score >= this.riskThresholds.critical) return "critical";
-        if (score >= this.riskThresholds.high) return "high";
-        if (score >= this.riskThresholds.medium) return "medium";
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return "low";
       }
       /**
@@ -16400,7 +15282,6 @@ var init_RiskAssessment = __esm({
        * Check if action is eligible for auto-approval
        */
       static checkAutoApprovalEligibility(riskLevel, factors, trustLevel) {
-<<<<<<< HEAD
         if (riskLevel === "critical") {
           return false;
         }
@@ -16410,13 +15291,6 @@ var init_RiskAssessment = __esm({
         if (hasSecurityFactors) {
           return false;
         }
-=======
-        if (riskLevel === "critical") return false;
-        const hasSecurityFactors = factors.some(
-          (factor) => factor.category === "Security Impact" && factor.risk !== "low"
-        );
-        if (hasSecurityFactors) return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         switch (trustLevel) {
           case "novice" /* NOVICE */:
             return false;
@@ -16542,11 +15416,7 @@ var init_ApprovalEngine = __esm({
           }
           if (riskAssessment.autoApprovalEligible && this.canAutoApprove(riskAssessment.overallRisk, context.userTrustLevel)) {
             this.emit("auto-approval-triggered", {
-<<<<<<< HEAD
               requestId: `auto-${uuid.v4()}`,
-=======
-              requestId: "auto-" + uuid.v4(),
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
               reason: "Trust level and risk assessment allow auto-approval"
             });
             return this.createAutoApprovalResponse("Auto-approved based on trust level");
@@ -16561,30 +15431,18 @@ var init_ApprovalEngine = __esm({
           );
           this.pendingRequests.set(request.id, request);
           this.emit("approval-requested", request);
-<<<<<<< HEAD
           return new Promise((resolve2) => {
-=======
-          return new Promise((resolve) => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             if (this.config.autoApprovalTimeout > 0 && riskAssessment.overallRisk === "low") {
               setTimeout(() => {
                 if (this.pendingRequests.has(request.id)) {
                   this.pendingRequests.delete(request.id);
                   this.emit("approval-timeout", { requestId: request.id });
-<<<<<<< HEAD
                   resolve2(this.createAutoApprovalResponse("Timeout auto-approval"));
-=======
-                  resolve(this.createAutoApprovalResponse("Timeout auto-approval"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
                 }
               }, this.config.autoApprovalTimeout);
             }
             this.once(`approval-response-${request.id}`, (response) => {
-<<<<<<< HEAD
               resolve2(response);
-=======
-              resolve(response);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             });
           });
         } catch (error) {
@@ -16695,11 +15553,7 @@ var init_ApprovalEngine = __esm({
        */
       createAutoApprovalResponse(reason) {
         return {
-<<<<<<< HEAD
           requestId: `auto-${uuid.v4()}`,
-=======
-          requestId: "auto-" + uuid.v4(),
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           action: "approve",
           approved: true,
           comments: reason,
@@ -16712,11 +15566,7 @@ var init_ApprovalEngine = __esm({
        */
       createErrorResponse(error) {
         return {
-<<<<<<< HEAD
           requestId: `error-${uuid.v4()}`,
-=======
-          requestId: "error-" + uuid.v4(),
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           action: "reject",
           approved: false,
           comments: `Error: ${error.message}`,
@@ -16728,13 +15578,9 @@ var init_ApprovalEngine = __esm({
        * Check if auto-approval is allowed
        */
       canAutoApprove(risk, trustLevel) {
-<<<<<<< HEAD
         if (risk === "critical") {
           return false;
         }
-=======
-        if (risk === "critical") return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         switch (trustLevel) {
           case "novice" /* NOVICE */:
             return false;
@@ -16999,7 +15845,6 @@ var init_QuickApprovalInterface = __esm({
        */
       displayApprovalRequest(request, options) {
         console.clear();
-<<<<<<< HEAD
         console.log(`
 ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
         console.log(
@@ -17042,54 +15887,10 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
             const display = `${prefix}${chalk30__default.default.white(line)}`;
             console.log(
               `${chalk30__default.default.cyan("\u2502")} ${display}${" ".repeat(77 - display.length)}${chalk30__default.default.cyan("\u2502")}`
-=======
-        console.log("\n" + chalk8__default.default.red("\u250F" + "\u2501".repeat(78) + "\u2513"));
-        console.log(
-          chalk8__default.default.red("\u2503") + chalk8__default.default.bgYellow.black.bold(" ".repeat(24) + "\u{1F91D} APPROVAL REQUEST" + " ".repeat(24)) + chalk8__default.default.red(" \u2503")
-        );
-        console.log(
-          chalk8__default.default.red("\u2503") + chalk8__default.default.bgYellow.black.bold(
-            " ".repeat(20) + "\u91CD\u8981\u306A\u6C7A\u5B9A\u304C\u5FC5\u8981\u3067\u3059 (Important Decision)" + " ".repeat(17)
-          ) + chalk8__default.default.red(" \u2503")
-        );
-        console.log(chalk8__default.default.red("\u2517" + "\u2501".repeat(78) + "\u251B"));
-        console.log("");
-        console.log(chalk8__default.default.cyan("\u250C" + "\u2500".repeat(78) + "\u2510"));
-        console.log(
-          chalk8__default.default.cyan("\u2502") + chalk8__default.default.white(" \u{1F4CB} Request Details:" + " ".repeat(56)) + chalk8__default.default.cyan("\u2502")
-        );
-        console.log(chalk8__default.default.cyan("\u251C" + "\u2500".repeat(78) + "\u2524"));
-        const themeDisplay = `Theme: ${chalk8__default.default.bold.white(request.themeId)}`;
-        console.log(
-          chalk8__default.default.cyan("\u2502") + ` ${themeDisplay}${" ".repeat(77 - themeDisplay.length)}` + chalk8__default.default.cyan("\u2502")
-        );
-        const contextDisplay = `Context: ${chalk8__default.default.white(request.context.description || "No description")}`;
-        const contextTrimmed = contextDisplay.length > 75 ? contextDisplay.substring(0, 72) + "..." : contextDisplay;
-        console.log(
-          chalk8__default.default.cyan("\u2502") + ` ${contextTrimmed}${" ".repeat(77 - contextTrimmed.length)}` + chalk8__default.default.cyan("\u2502")
-        );
-        const riskDisplay = `Risk Level: ${this.formatRiskLevel(request.riskAssessment)}`;
-        console.log(
-          chalk8__default.default.cyan("\u2502") + ` ${riskDisplay}${" ".repeat(77 - riskDisplay.length)}` + chalk8__default.default.cyan("\u2502")
-        );
-        const timeDisplay = `Estimated Time: ${chalk8__default.default.white(request.estimatedTime)}`;
-        console.log(
-          chalk8__default.default.cyan("\u2502") + ` ${timeDisplay}${" ".repeat(77 - timeDisplay.length)}` + chalk8__default.default.cyan("\u2502")
-        );
-        if (request.rationale) {
-          console.log(chalk8__default.default.cyan("\u251C" + "\u2500".repeat(78) + "\u2524"));
-          const rationaleLines = request.rationale.match(/.{1,75}/g) || [request.rationale];
-          rationaleLines.forEach((line, index) => {
-            const prefix = index === 0 ? "Rationale: " : "           ";
-            const display = `${prefix}${chalk8__default.default.white(line)}`;
-            console.log(
-              chalk8__default.default.cyan("\u2502") + ` ${display}${" ".repeat(77 - display.length)}` + chalk8__default.default.cyan("\u2502")
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             );
           });
         }
         if (request.proposedActions && request.proposedActions.length > 0) {
-<<<<<<< HEAD
           console.log(chalk30__default.default.cyan(`\u251C${"\u2500".repeat(78)}\u2524`));
           console.log(
             chalk30__default.default.cyan("\u2502") + chalk30__default.default.white(` \u{1F4DD} Proposed Actions:${" ".repeat(56)}`) + chalk30__default.default.cyan("\u2502")
@@ -17099,22 +15900,10 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
             const trimmed = actionText.length > 76 ? `${actionText.substring(0, 73)}...` : actionText;
             console.log(
               `${chalk30__default.default.cyan("\u2502")} ${chalk30__default.default.gray(trimmed)}${" ".repeat(77 - trimmed.length)}${chalk30__default.default.cyan("\u2502")}`
-=======
-          console.log(chalk8__default.default.cyan("\u251C" + "\u2500".repeat(78) + "\u2524"));
-          console.log(
-            chalk8__default.default.cyan("\u2502") + chalk8__default.default.white(" \u{1F4DD} Proposed Actions:" + " ".repeat(56)) + chalk8__default.default.cyan("\u2502")
-          );
-          request.proposedActions.forEach((action, index) => {
-            const actionText = `  ${index + 1}. ${action.description || action.type}`;
-            const trimmed = actionText.length > 76 ? actionText.substring(0, 73) + "..." : actionText;
-            console.log(
-              chalk8__default.default.cyan("\u2502") + ` ${chalk8__default.default.gray(trimmed)}${" ".repeat(77 - trimmed.length)}` + chalk8__default.default.cyan("\u2502")
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             );
           });
         }
         if (request.dependencies && request.dependencies.length > 0) {
-<<<<<<< HEAD
           console.log(chalk30__default.default.cyan(`\u251C${"\u2500".repeat(78)}\u2524`));
           const depDisplay = `Dependencies: ${chalk30__default.default.white(request.dependencies.join(", "))}`;
           const depTrimmed = depDisplay.length > 75 ? `${depDisplay.substring(0, 72)}...` : depDisplay;
@@ -17158,51 +15947,6 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
         console.log(chalk30__default.default.blue("\u2022 Your choice will be processed immediately"));
         console.log("");
         console.log(chalk30__default.default.yellow.bold(">>> Waiting for your input... <<<"));
-=======
-          console.log(chalk8__default.default.cyan("\u251C" + "\u2500".repeat(78) + "\u2524"));
-          const depDisplay = `Dependencies: ${chalk8__default.default.white(request.dependencies.join(", "))}`;
-          const depTrimmed = depDisplay.length > 75 ? depDisplay.substring(0, 72) + "..." : depDisplay;
-          console.log(
-            chalk8__default.default.cyan("\u2502") + ` ${depTrimmed}${" ".repeat(77 - depTrimmed.length)}` + chalk8__default.default.cyan("\u2502")
-          );
-        }
-        console.log(chalk8__default.default.cyan("\u2514" + "\u2500".repeat(78) + "\u2518"));
-        if (request.securityImpact) {
-          console.log("");
-          console.log(chalk8__default.default.red("\u250C" + "\u2500".repeat(78) + "\u2510"));
-          console.log(
-            chalk8__default.default.red("\u2502") + chalk8__default.default.bgRed.white.bold(
-              " \u26A0\uFE0F  SECURITY IMPACT DETECTED - EXTRA CAUTION REQUIRED \u26A0\uFE0F " + " ".repeat(19)
-            ) + chalk8__default.default.red("\u2502")
-          );
-          console.log(chalk8__default.default.red("\u2514" + "\u2500".repeat(78) + "\u2518"));
-        }
-        console.log("");
-        console.log(chalk8__default.default.magenta("\u250C" + "\u2500".repeat(78) + "\u2510"));
-        console.log(
-          chalk8__default.default.magenta("\u2502") + chalk8__default.default.bgMagenta.white.bold(
-            " \u26A1 Quick Approval Options (\u30AD\u30FC\u30DC\u30FC\u30C9\u30B7\u30E7\u30FC\u30C8\u30AB\u30C3\u30C8):" + " ".repeat(27)
-          ) + chalk8__default.default.magenta("\u2502")
-        );
-        console.log(chalk8__default.default.magenta("\u251C" + "\u2500".repeat(78) + "\u2524"));
-        this.quickChoices.forEach((choice) => {
-          const label = options.showJapanese ? choice.labelJa : choice.label;
-          const keyDisplay = this.formatKeyBinding(choice.key);
-          const trustInfo = choice.trustLevel ? chalk8__default.default.gray(` (${choice.trustLevel})`) : "";
-          const choiceText = `${keyDisplay} ${chalk8__default.default.bold.white(label)}${trustInfo} - ${chalk8__default.default.gray(choice.description)}`;
-          console.log(
-            chalk8__default.default.magenta("\u2502") + ` ${choiceText}${" ".repeat(77 - choiceText.length)}` + chalk8__default.default.magenta("\u2502")
-          );
-        });
-        console.log(chalk8__default.default.magenta("\u2514" + "\u2500".repeat(78) + "\u2518"));
-        console.log("");
-        console.log(chalk8__default.default.bgBlue.white.bold(" \u{1F4CC} Instructions: "));
-        console.log(chalk8__default.default.blue("\u2022 Press any of the above keys to make your choice"));
-        console.log(chalk8__default.default.blue("\u2022 Press ESC to cancel this approval request"));
-        console.log(chalk8__default.default.blue("\u2022 Your choice will be processed immediately"));
-        console.log("");
-        console.log(chalk8__default.default.yellow.bold(">>> Waiting for your input... <<<"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Format key binding for display
@@ -17217,7 +15961,6 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
         };
         const formatted = keyMap[key] || key;
         const colorMap = {
-<<<<<<< HEAD
           "shift+tab": chalk30__default.default.bgGreen.black.bold,
           "ctrl+y": chalk30__default.default.bgBlue.white.bold,
           "ctrl+n": chalk30__default.default.bgRed.white.bold,
@@ -17225,15 +15968,6 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
           "ctrl+r": chalk30__default.default.bgYellow.black.bold
         };
         const colorFunc = colorMap[key] || chalk30__default.default.bgCyan.black.bold;
-=======
-          "shift+tab": chalk8__default.default.bgGreen.black.bold,
-          "ctrl+y": chalk8__default.default.bgBlue.white.bold,
-          "ctrl+n": chalk8__default.default.bgRed.white.bold,
-          "ctrl+t": chalk8__default.default.bgMagenta.white.bold,
-          "ctrl+r": chalk8__default.default.bgYellow.black.bold
-        };
-        const colorFunc = colorMap[key] || chalk8__default.default.bgCyan.black.bold;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return colorFunc(` ${formatted} `);
       }
       /**
@@ -17242,7 +15976,6 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
       formatRiskLevel(risk) {
         switch (risk.toLowerCase()) {
           case "critical":
-<<<<<<< HEAD
             return chalk30__default.default.red.bold("CRITICAL");
           case "high":
             return chalk30__default.default.red("HIGH");
@@ -17252,17 +15985,6 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
             return chalk30__default.default.green("LOW");
           default:
             return chalk30__default.default.white(risk);
-=======
-            return chalk8__default.default.red.bold("CRITICAL");
-          case "high":
-            return chalk8__default.default.red("HIGH");
-          case "medium":
-            return chalk8__default.default.yellow("MEDIUM");
-          case "low":
-            return chalk8__default.default.green("LOW");
-          default:
-            return chalk8__default.default.white(risk);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
       }
       /**
@@ -17289,24 +16011,16 @@ ${chalk30__default.default.red(`\u250F${"\u2501".repeat(78)}\u2513`)}`);
        * Handle key press events
        */
       handleKeyPress(key) {
-<<<<<<< HEAD
         if (!this.isActive || !this.currentRequest) {
           return;
         }
-=======
-        if (!this.isActive || !this.currentRequest) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (key === "\x1B") {
           this.emit("approval-cancelled", this.currentRequest.id);
           return;
         }
         if (key === "") {
-<<<<<<< HEAD
           console.log(`
 ${chalk30__default.default.red("Approval cancelled by user")}`);
-=======
-          console.log("\n" + chalk8__default.default.red("Approval cancelled by user"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           this.emit("approval-cancelled", this.currentRequest.id);
           return;
         }
@@ -17326,7 +16040,6 @@ ${chalk30__default.default.red("Approval cancelled by user")}`);
        * Handle quick choice selection
        */
       async handleQuickChoice(choice) {
-<<<<<<< HEAD
         if (!this.currentRequest) {
           return;
         }
@@ -17344,22 +16057,6 @@ ${chalk30__default.default.bgGreen.black.bold(`\u250C${"\u2500".repeat(78)}\u251
         );
         console.log(chalk30__default.default.bgGreen.black.bold(`\u2514${"\u2500".repeat(78)}\u2518`));
         console.log(chalk30__default.default.yellow("\n\u{1F504} Processing your approval decision..."));
-=======
-        if (!this.currentRequest) return;
-        console.clear();
-        console.log("\n" + chalk8__default.default.bgGreen.black.bold("\u250C" + "\u2500".repeat(78) + "\u2510"));
-        console.log(
-          chalk8__default.default.bgGreen.black.bold("\u2502") + chalk8__default.default.bgGreen.black.bold(" \u2713 CHOICE SELECTED / \u9078\u629E\u5B8C\u4E86:" + " ".repeat(47)) + chalk8__default.default.bgGreen.black.bold("\u2502")
-        );
-        console.log(chalk8__default.default.bgGreen.black.bold("\u251C" + "\u2500".repeat(78) + "\u2524"));
-        const choiceText = `${choice.label} (${choice.labelJa})`;
-        const padding = " ".repeat(Math.max(0, 76 - choiceText.length));
-        console.log(
-          chalk8__default.default.bgGreen.black.bold("\u2502") + chalk8__default.default.bgGreen.black.bold(` ${choiceText}${padding}`) + chalk8__default.default.bgGreen.black.bold("\u2502")
-        );
-        console.log(chalk8__default.default.bgGreen.black.bold("\u2514" + "\u2500".repeat(78) + "\u2518"));
-        console.log(chalk8__default.default.yellow("\n\u{1F504} Processing your approval decision..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         try {
           const response = await this.approvalEngine.processApprovalResponse(
             this.currentRequest.id,
@@ -17368,7 +16065,6 @@ ${chalk30__default.default.bgGreen.black.bold(`\u250C${"\u2500".repeat(78)}\u251
             choice.trustLevel
           );
           response.quickDecision = true;
-<<<<<<< HEAD
           console.log(`
 ${chalk30__default.default.bgGreen.black(`\u250C${"\u2500".repeat(78)}\u2510`)}`);
           console.log(
@@ -17379,22 +16075,10 @@ ${chalk30__default.default.bgGreen.black(`\u250C${"\u2500".repeat(78)}\u2510`)}`
           console.log(chalk30__default.default.bgGreen.black(`\u2514${"\u2500".repeat(78)}\u2518`));
           if (choice.trustLevel) {
             console.log(chalk30__default.default.blue(`
-=======
-          console.log("\n" + chalk8__default.default.bgGreen.black("\u250C" + "\u2500".repeat(78) + "\u2510"));
-          console.log(
-            chalk8__default.default.bgGreen.black("\u2502") + chalk8__default.default.bgGreen.black(
-              " \u{1F389} APPROVAL PROCESSED SUCCESSFULLY / \u627F\u8A8D\u51E6\u7406\u5B8C\u4E86!" + " ".repeat(32)
-            ) + chalk8__default.default.bgGreen.black("\u2502")
-          );
-          console.log(chalk8__default.default.bgGreen.black("\u2514" + "\u2500".repeat(78) + "\u2518"));
-          if (choice.trustLevel) {
-            console.log(chalk8__default.default.blue(`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2728 Trust level updated: ${choice.trustLevel}`));
           }
           this.emit("approval-response", response);
         } catch (error) {
-<<<<<<< HEAD
           console.log(`
 ${chalk30__default.default.bgRed.white.bold(`\u250C${"\u2500".repeat(78)}\u2510`)}`);
           console.log(
@@ -17404,16 +16088,6 @@ ${chalk30__default.default.bgRed.white.bold(`\u250C${"\u2500".repeat(78)}\u2510`
           );
           console.log(chalk30__default.default.bgRed.white.bold(`\u2514${"\u2500".repeat(78)}\u2518`));
           console.error(chalk30__default.default.red("\nError details:"), error);
-=======
-          console.log("\n" + chalk8__default.default.bgRed.white.bold("\u250C" + "\u2500".repeat(78) + "\u2510"));
-          console.log(
-            chalk8__default.default.bgRed.white.bold("\u2502") + chalk8__default.default.bgRed.white.bold(
-              " \u274C ERROR PROCESSING APPROVAL / \u627F\u8A8D\u51E6\u7406\u30A8\u30E9\u30FC" + " ".repeat(35)
-            ) + chalk8__default.default.bgRed.white.bold("\u2502")
-          );
-          console.log(chalk8__default.default.bgRed.white.bold("\u2514" + "\u2500".repeat(78) + "\u2518"));
-          console.error(chalk8__default.default.red("\nError details:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           this.emit("approval-error", error);
         }
       }
@@ -17421,7 +16095,6 @@ ${chalk30__default.default.bgRed.white.bold(`\u250C${"\u2500".repeat(78)}\u2510`
        * Wait for user response with optional timeout
        */
       waitForUserResponse(timeout) {
-<<<<<<< HEAD
         return new Promise((resolve2, reject) => {
           let timeoutId = null;
           if (timeout && timeout > 0) {
@@ -17447,26 +16120,6 @@ ${chalk30__default.default.yellow("\u23F0 Approval request timed out - auto-appr
             if (timeoutId) {
               clearTimeout(timeoutId);
             }
-=======
-        return new Promise((resolve, reject) => {
-          let timeoutId = null;
-          if (timeout && timeout > 0) {
-            timeoutId = setTimeout(() => {
-              console.log("\n" + chalk8__default.default.yellow("\u23F0 Approval request timed out - auto-approving..."));
-              this.handleTimeoutResponse(resolve);
-            }, timeout);
-          }
-          const responseHandler = /* @__PURE__ */ __name((response) => {
-            if (timeoutId) clearTimeout(timeoutId);
-            resolve(response);
-          }, "responseHandler");
-          const errorHandler = /* @__PURE__ */ __name((error) => {
-            if (timeoutId) clearTimeout(timeoutId);
-            reject(error);
-          }, "errorHandler");
-          const cancelHandler = /* @__PURE__ */ __name(() => {
-            if (timeoutId) clearTimeout(timeoutId);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             reject(new Error("Approval cancelled by user"));
           }, "cancelHandler");
           this.once("approval-response", responseHandler);
@@ -17477,15 +16130,10 @@ ${chalk30__default.default.yellow("\u23F0 Approval request timed out - auto-appr
       /**
        * Handle timeout response
        */
-<<<<<<< HEAD
       async handleTimeoutResponse(resolve2) {
         if (!this.currentRequest) {
           return;
         }
-=======
-      async handleTimeoutResponse(resolve) {
-        if (!this.currentRequest) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         try {
           const response = await this.approvalEngine.processApprovalResponse(
             this.currentRequest.id,
@@ -17493,15 +16141,9 @@ ${chalk30__default.default.yellow("\u23F0 Approval request timed out - auto-appr
             "Auto-approved due to timeout"
           );
           response.quickDecision = true;
-<<<<<<< HEAD
           resolve2(response);
         } catch (error) {
           console.error(chalk30__default.default.red("Error processing timeout approval:"), error);
-=======
-          resolve(response);
-        } catch (error) {
-          console.error(chalk8__default.default.red("Error processing timeout approval:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
       }
       /**
@@ -17512,13 +16154,8 @@ ${chalk30__default.default.yellow("\u23F0 Approval request timed out - auto-appr
           this.emit("approval-requested", request);
         });
         this.approvalEngine.on("trust-level-changed", (event) => {
-<<<<<<< HEAD
           console.log(chalk30__default.default.blue(`\u2728 Trust level changed: ${event.oldLevel} \u2192 ${event.newLevel}`));
           console.log(chalk30__default.default.gray(`Reason: ${event.reason}`));
-=======
-          console.log(chalk8__default.default.blue(`\u2728 Trust level changed: ${event.oldLevel} \u2192 ${event.newLevel}`));
-          console.log(chalk8__default.default.gray(`Reason: ${event.reason}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         });
       }
       /**
@@ -17860,13 +16497,9 @@ ${approvalData.comments}`;
         const queue = [...commit.parentCommits];
         while (queue.length > 0) {
           const parentId = queue.shift();
-<<<<<<< HEAD
           if (ancestors.includes(parentId)) {
             continue;
           }
-=======
-          if (ancestors.includes(parentId)) continue;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           ancestors.push(parentId);
           const parent = allCommits.get(parentId);
           if (parent) {
@@ -18220,13 +16853,8 @@ var init_ApprovalRepository = __esm({
       /**
        * Update repository configuration
        */
-<<<<<<< HEAD
       updateConfig(config2) {
         this.repository.config = { ...this.repository.config, ...config2 };
-=======
-      updateConfig(config) {
-        this.repository.config = { ...this.repository.config, ...config };
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Export repository data
@@ -18313,25 +16941,17 @@ var init_ApprovalRepository = __esm({
        * Get commits between two points
        */
       getCommitsBetween(base, head) {
-<<<<<<< HEAD
         if (!base || !head) {
           return [];
         }
-=======
-        if (!base || !head) return [];
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const commits = [];
         const visited = /* @__PURE__ */ new Set();
         const queue = [head];
         while (queue.length > 0) {
           const commitId = queue.shift();
-<<<<<<< HEAD
           if (visited.has(commitId) || commitId === base) {
             continue;
           }
-=======
-          if (visited.has(commitId) || commitId === base) continue;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           visited.add(commitId);
           commits.push(commitId);
           const commit = this.repository.commits.get(commitId);
@@ -18347,13 +16967,9 @@ var init_ApprovalRepository = __esm({
       hasUnmergedChanges(branchName) {
         const branch = this.repository.branches.get(branchName);
         const mainBranch = this.getMainBranch();
-<<<<<<< HEAD
         if (!branch || !mainBranch.head) {
           return false;
         }
-=======
-        if (!branch || !mainBranch.head) return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return branch.head !== mainBranch.head && !this.isCommitInBranch(branch.head, mainBranch.name);
       }
       /**
@@ -18362,13 +16978,9 @@ var init_ApprovalRepository = __esm({
       isBranchMerged(branchName) {
         const branch = this.repository.branches.get(branchName);
         const mainBranch = this.getMainBranch();
-<<<<<<< HEAD
         if (!branch || !mainBranch.head) {
           return false;
         }
-=======
-        if (!branch || !mainBranch.head) return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return this.isCommitInBranch(branch.head, mainBranch.name);
       }
       /**
@@ -18376,19 +16988,14 @@ var init_ApprovalRepository = __esm({
        */
       isCommitInBranch(commitId, branchName) {
         const branch = this.repository.branches.get(branchName);
-<<<<<<< HEAD
         if (!branch) {
           return false;
         }
-=======
-        if (!branch) return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return branch.approvalPath.some((commit) => commit.id === commitId);
       }
     };
   }
 });
-<<<<<<< HEAD
 var LogLevel, Logger, logger, envLogLevel;
 var init_logger = __esm({
   "src/utils/logger.ts"() {
@@ -31665,8 +30272,6 @@ var init_startup_display = __esm({
     __name(displayStartupLogo, "displayStartupLogo");
   }
 });
-=======
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 
 // src/services/background-ai-checker.ts
 var background_ai_checker_exports = {};
@@ -31692,13 +30297,9 @@ var init_background_ai_checker = __esm({
        * This runs asynchronously and doesn't block the main process
        */
       static async startBackgroundCheck() {
-<<<<<<< HEAD
         if (this.checking) {
           return;
         }
-=======
-        if (this.checking) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         this.checking = true;
         Promise.all([this.checkLMStudio(), this.checkOllama(), this.checkVLLM()]).then(() => {
           this.checking = false;
@@ -31745,7 +30346,6 @@ var init_background_ai_checker = __esm({
         const hasLocalAI = this.status.lmstudio || this.status.ollama || this.status.vllm;
         if (hasLocalAI) {
           console.log("");
-<<<<<<< HEAD
           console.log(chalk30__default.default.cyan("\u{1F4E1} Local AI Update:"));
           if (this.status.lmstudio) {
             console.log(chalk30__default.default.green("  \u2705 LM Studio is now available"));
@@ -31757,19 +30357,6 @@ var init_background_ai_checker = __esm({
             console.log(chalk30__default.default.green("  \u2705 vLLM is now available"));
           }
           console.log(chalk30__default.default.gray("  Type /model to switch to local models"));
-=======
-          console.log(chalk8__default.default.cyan("\u{1F4E1} Local AI Update:"));
-          if (this.status.lmstudio) {
-            console.log(chalk8__default.default.green("  \u2705 LM Studio is now available"));
-          }
-          if (this.status.ollama) {
-            console.log(chalk8__default.default.green("  \u2705 Ollama is now available"));
-          }
-          if (this.status.vllm) {
-            console.log(chalk8__default.default.green("  \u2705 vLLM is now available"));
-          }
-          console.log(chalk8__default.default.gray("  Type /model to switch to local models"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           console.log("");
         }
       }
@@ -31784,133 +30371,16 @@ var init_background_ai_checker = __esm({
 });
 
 // src/agents/types.ts
-<<<<<<< HEAD
 var init_types4 = __esm({
-=======
-var init_types3 = __esm({
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   "src/agents/types.ts"() {
     init_cjs_shims();
   }
 });
-<<<<<<< HEAD
-=======
-var LogLevel, Logger, logger, envLogLevel;
-var init_logger = __esm({
-  "src/utils/logger.ts"() {
-    init_cjs_shims();
-    LogLevel = /* @__PURE__ */ ((LogLevel2) => {
-      LogLevel2[LogLevel2["DEBUG"] = 0] = "DEBUG";
-      LogLevel2[LogLevel2["INFO"] = 1] = "INFO";
-      LogLevel2[LogLevel2["WARN"] = 2] = "WARN";
-      LogLevel2[LogLevel2["ERROR"] = 3] = "ERROR";
-      LogLevel2[LogLevel2["NONE"] = 4] = "NONE";
-      return LogLevel2;
-    })(LogLevel || {});
-    Logger = class {
-      static {
-        __name(this, "Logger");
-      }
-      level = 1 /* INFO */;
-      prefix = "[MARIA CODE]";
-      setLevel(level) {
-        this.level = level;
-      }
-      debug(...args) {
-        if (this.level <= 0 /* DEBUG */) {
-          console.log(chalk8__default.default.magenta(`${this.prefix} [DEBUG]`), ...args);
-        }
-      }
-      info(...args) {
-        if (this.level <= 1 /* INFO */) {
-          console.log(chalk8__default.default.bold.magenta(`${this.prefix} [INFO]`), ...args);
-        }
-      }
-      warn(...args) {
-        if (this.level <= 2 /* WARN */) {
-          console.warn(chalk8__default.default.bold.magenta(`${this.prefix} [WARN]`), ...args);
-        }
-      }
-      error(...args) {
-        if (this.level <= 3 /* ERROR */) {
-          console.error(chalk8__default.default.bold.magenta(`${this.prefix} [ERROR]`), ...args);
-        }
-      }
-      success(...args) {
-        if (this.level <= 1 /* INFO */) {
-          console.log(chalk8__default.default.bold.magenta(`${this.prefix} [SUCCESS]`), ...args);
-        }
-      }
-      task(taskName, status, message) {
-        if (this.level > 1 /* INFO */) return;
-        const statusIcons = {
-          start: "\u{1F680}",
-          progress: "\u23F3",
-          complete: "\u2705",
-          error: "\u274C"
-        };
-        const statusColors = {
-          start: chalk8__default.default.bold.magenta,
-          progress: chalk8__default.default.magenta,
-          complete: chalk8__default.default.bold.magenta,
-          error: chalk8__default.default.bold.magenta
-        };
-        const icon = statusIcons[status];
-        const color = statusColors[status];
-        const formattedMessage = message ? `: ${message}` : "";
-        console.log(color(`${this.prefix} ${icon} ${taskName}${formattedMessage}`));
-      }
-      table(data) {
-        if (this.level > 1 /* INFO */) return;
-        console.table(data);
-      }
-      json(obj, pretty = true) {
-        if (this.level > 0 /* DEBUG */) return;
-        console.log(chalk8__default.default.magenta(`${this.prefix} [JSON]`));
-        console.log(pretty ? JSON.stringify(obj, null, 2) : JSON.stringify(obj));
-      }
-      divider() {
-        if (this.level > 1 /* INFO */) return;
-        console.log(chalk8__default.default.magenta("\u2500".repeat(60)));
-      }
-      clear() {
-        console.clear();
-      }
-      /**
-       * プログレスバーを表示
-       */
-      progress(current, total, label) {
-        if (this.level > 1 /* INFO */) return;
-        const percentage = Math.round(current / total * 100);
-        const barLength = 30;
-        const filled = Math.round(percentage / 100 * barLength);
-        const empty = barLength - filled;
-        const bar = "\u2588".repeat(filled) + "\u2591".repeat(empty);
-        const progressText = `${current}/${total}`;
-        const labelText = label ? ` ${label}` : "";
-        process.stdout.write(`\r${chalk8__default.default.bold.magenta(bar)} ${percentage}% ${progressText}${labelText}`);
-        if (current === total) {
-          process.stdout.write("\n");
-        }
-      }
-    };
-    logger = new Logger();
-    envLogLevel = process.env["MARIA_LOG_LEVEL"]?.toUpperCase();
-    if (envLogLevel && LogLevel[envLogLevel] !== void 0) {
-      logger.setLevel(LogLevel[envLogLevel]);
-    }
-  }
-});
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 var DataSynthesisEngine, EnhancedCommunicationBroker;
 var init_enhanced_communication = __esm({
   "src/agents/enhanced-communication.ts"() {
     init_cjs_shims();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     DataSynthesisEngine = class extends events.EventEmitter {
       static {
@@ -32232,7 +30702,6 @@ var init_orchestrator = __esm({
       // MCP Integration
       // private __mcpTools = new Map<string, MCPTool>();
       // private __mcpEnabled = false;
-<<<<<<< HEAD
       constructor(config2) {
         super();
         this.config = {
@@ -32244,19 +30713,6 @@ var init_orchestrator = __esm({
             backoffMultiplier: config2?.retryPolicy?.backoffMultiplier ?? 2
           },
           loadBalancing: config2?.loadBalancing ?? "capability-based"
-=======
-      constructor(config) {
-        super();
-        this.config = {
-          maxConcurrentTasks: config?.maxConcurrentTasks ?? 5,
-          taskTimeout: config?.taskTimeout ?? 3e4,
-          // 30 seconds
-          retryPolicy: {
-            maxRetries: config?.retryPolicy?.maxRetries ?? 3,
-            backoffMultiplier: config?.retryPolicy?.backoffMultiplier ?? 2
-          },
-          loadBalancing: config?.loadBalancing ?? "capability-based"
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         };
         this.communicationBroker = new EnhancedCommunicationBroker();
         this.synthesisEngine = new DataSynthesisEngine();
@@ -32494,20 +30950,12 @@ var init_orchestrator = __esm({
        * Wait for task completion
        */
       async waitForTaskCompletion(taskId) {
-<<<<<<< HEAD
         return new Promise((resolve2) => {
-=======
-        return new Promise((resolve) => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const checkInterval = setInterval(() => {
             const result = this.completedTasks.get(taskId);
             if (result) {
               clearInterval(checkInterval);
-<<<<<<< HEAD
               resolve2(result);
-=======
-              resolve(result);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             }
           }, 100);
         });
@@ -32537,13 +30985,9 @@ var init_orchestrator = __esm({
         const visited = /* @__PURE__ */ new Set();
         const visiting = /* @__PURE__ */ new Set();
         const visit = /* @__PURE__ */ __name((taskId) => {
-<<<<<<< HEAD
           if (visited.has(taskId)) {
             return;
           }
-=======
-          if (visited.has(taskId)) return;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           if (visiting.has(taskId)) {
             throw new Error("Circular dependency detected");
           }
@@ -32954,11 +31398,7 @@ var init_mcp_integration = __esm({
        */
       async connectToServer(server) {
         logger.debug(`Connecting to MCP server: ${server.name} at ${server.url}`);
-<<<<<<< HEAD
         await new Promise((resolve2) => setTimeout(resolve2, 100));
-=======
-        await new Promise((resolve) => setTimeout(resolve, 100));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         server.status = "connected";
         this.emit("serverConnected", server);
       }
@@ -32992,11 +31432,7 @@ var init_mcp_integration = __esm({
        */
       async sendRequest(request) {
         logger.debug(`Sending MCP request: ${request.method} to ${request.server}`);
-<<<<<<< HEAD
         await new Promise((resolve2) => setTimeout(resolve2, 200));
-=======
-        await new Promise((resolve) => setTimeout(resolve, 200));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const response = {
           id: request.id,
           result: this.getMockResponse(request),
@@ -33356,11 +31792,7 @@ var init_coderag_system = __esm({
        */
       async initializeVectorDatabase() {
         logger.debug("Initializing vector database connection");
-<<<<<<< HEAD
         await new Promise((resolve2) => setTimeout(resolve2, 100));
-=======
-        await new Promise((resolve) => setTimeout(resolve, 100));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Set up default embeddings
@@ -33390,13 +31822,9 @@ var init_coderag_system = __esm({
        * Evaluate context match
        */
       evaluateContextMatch(chunk, context) {
-<<<<<<< HEAD
         if (!context) {
           return false;
         }
-=======
-        if (!context) return false;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         if (context.currentFile) {
           const sameFile = chunk.filePath === context.currentFile;
           const relatedFile = chunk.filePath.includes(context.currentFile.split("/").pop() || "");
@@ -33943,22 +32371,14 @@ var init_document_processor = __esm({
        */
       async initializeProcessingCapabilities() {
         logger.debug("Initializing document processing capabilities");
-<<<<<<< HEAD
         await new Promise((resolve2) => setTimeout(resolve2, 100));
-=======
-        await new Promise((resolve) => setTimeout(resolve, 100));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       /**
        * Set up arXiv integration
        */
       async setupArXivIntegration() {
         logger.debug("Setting up arXiv integration");
-<<<<<<< HEAD
         await new Promise((resolve2) => setTimeout(resolve2, 100));
-=======
-        await new Promise((resolve) => setTimeout(resolve, 100));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
     };
     documentProcessor = new DocumentProcessorService();
@@ -33968,11 +32388,7 @@ var BaseAgent;
 var init_base_agent = __esm({
   "src/agents/base-agent.ts"() {
     init_cjs_shims();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     BaseAgent = class extends events.EventEmitter {
       static {
@@ -34167,11 +32583,7 @@ var init_document_parser_agent = __esm({
   "src/agents/specialized/document-parser-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     DocumentParserAgent = class extends BaseAgent {
       static {
@@ -34268,12 +32680,8 @@ var init_document_parser_agent = __esm({
             }
             currentSection = { title: line.trim(), content: "" };
           } else {
-<<<<<<< HEAD
             currentSection.content += `${line}
 `;
-=======
-            currentSection.content += line + "\n";
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
         }
         if (currentSection.content) {
@@ -34295,11 +32703,7 @@ var init_algorithm_extractor_agent = __esm({
   "src/agents/specialized/algorithm-extractor-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     AlgorithmExtractorAgent = class extends BaseAgent {
       static {
@@ -34393,13 +32797,9 @@ var init_algorithm_extractor_agent = __esm({
       }
       extractSteps(content, startMarker) {
         const startIndex = content.indexOf(startMarker);
-<<<<<<< HEAD
         if (startIndex === -1) {
           return [];
         }
-=======
-        if (startIndex === -1) return [];
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const subsequentContent = content.substring(startIndex);
         const lines = subsequentContent.split("\n").slice(0, 20);
         const steps = [];
@@ -34471,13 +32871,9 @@ var init_algorithm_extractor_agent = __esm({
       }
       async analyzePseudocode(block) {
         const lines = block.split("\n").filter((l) => l.trim());
-<<<<<<< HEAD
         if (lines.length < 2) {
           return null;
         }
-=======
-        if (lines.length < 2) return null;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const firstLine = lines[0];
         const nameMatch = firstLine?.match(/(?:algorithm|function|procedure|def)\s+(\w+)/i);
         const name = nameMatch?.[1] || "ExtractedAlgorithm";
@@ -34500,11 +32896,7 @@ var init_code_generator_agent = __esm({
   "src/agents/specialized/code-generator-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     CodeGeneratorAgent = class extends BaseAgent {
       static {
@@ -34526,11 +32918,7 @@ var init_code_generator_agent = __esm({
       async performTask(task) {
         const input = task.input;
         const language = input.targetLanguage || "typescript";
-<<<<<<< HEAD
         const framework2 = input.framework || "none";
-=======
-        const framework = input.framework || "none";
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const options = input.options || { generateTests: true, includeDocumentation: true };
         const files = /* @__PURE__ */ new Map();
         const tests = /* @__PURE__ */ new Map();
@@ -34540,11 +32928,7 @@ var init_code_generator_agent = __esm({
           const { code, test, docs, deps } = await this.generateCodeForAlgorithm(
             algorithm,
             language,
-<<<<<<< HEAD
             framework2
-=======
-            framework
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           );
           files.set(`${algorithm.name}.${this.getFileExtension(language)}`, code);
           if (options.generateTests && test) {
@@ -34559,11 +32943,7 @@ var init_code_generator_agent = __esm({
         files.set(`index.${this.getFileExtension(language)}`, mainFile);
         const setupInstructions = this.generateSetupInstructions(
           language,
-<<<<<<< HEAD
           framework2,
-=======
-          framework,
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           Array.from(new Set(dependencies))
         );
         return {
@@ -34580,7 +32960,6 @@ var init_code_generator_agent = __esm({
       checkCustomCapabilities(task) {
         return task.type === "code-generation" || task.type === "implementation";
       }
-<<<<<<< HEAD
       async generateCodeForAlgorithm(algorithm, language, framework2) {
         const code = this.generateImplementation(algorithm, language, framework2);
         const test = this.generateTests(algorithm, language);
@@ -34602,29 +32981,6 @@ var init_code_generator_agent = __esm({
         }
       }
       generateTypeScriptCode(algorithm, framework2) {
-=======
-      async generateCodeForAlgorithm(algorithm, language, framework) {
-        const code = this.generateImplementation(algorithm, language, framework);
-        const test = this.generateTests(algorithm, language);
-        const docs = this.generateDocumentation(algorithm);
-        const deps = this.identifyDependencies(algorithm, language, framework);
-        return { code, test, docs, deps };
-      }
-      generateImplementation(algorithm, language, framework) {
-        switch (language.toLowerCase()) {
-          case "typescript":
-          case "javascript":
-            return this.generateTypeScriptCode(algorithm, framework);
-          case "python":
-            return this.generatePythonCode(algorithm, framework);
-          case "java":
-            return this.generateJavaCode(algorithm, framework);
-          default:
-            return this.generateTypeScriptCode(algorithm, framework);
-        }
-      }
-      generateTypeScriptCode(algorithm, framework) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const params = algorithm.parameters.map((p) => `${p.name}: ${this.mapTypeToTS(p.type)}`).join(", ");
         const functionSignature = `export function ${algorithm.name}(${params}): unknown`;
         let implementation = `/**
@@ -34643,24 +32999,14 @@ ${functionSignature} {
         implementation += `  // TODO: Complete implementation based on algorithm
   throw new Error('Implementation pending');
 }`;
-<<<<<<< HEAD
         if (framework2 === "react") {
           implementation = this.wrapInReactComponent(algorithm.name, implementation);
         } else if (framework2 === "express") {
-=======
-        if (framework === "react") {
-          implementation = this.wrapInReactComponent(algorithm.name, implementation);
-        } else if (framework === "express") {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           implementation = this.wrapInExpressRoute(algorithm.name, implementation);
         }
         return implementation;
       }
-<<<<<<< HEAD
       generatePythonCode(algorithm, framework2) {
-=======
-      generatePythonCode(algorithm, framework) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const params = algorithm.parameters.map((p) => `${p.name}: ${this.mapTypeToPython(p.type)}`).join(", ");
         let implementation = `"""
 ${algorithm.description}
@@ -34678,15 +33024,9 @@ def ${algorithm.name}(${params}):
         }
         implementation += `    # TODO: Complete implementation
     raise NotImplementedError("Implementation pending")`;
-<<<<<<< HEAD
         if (framework2 === "django") {
           implementation = this.wrapInDjangoView(algorithm.name, implementation);
         } else if (framework2 === "flask") {
-=======
-        if (framework === "django") {
-          implementation = this.wrapInDjangoView(algorithm.name, implementation);
-        } else if (framework === "flask") {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           implementation = this.wrapInFlaskRoute(algorithm.name, implementation);
         }
         return implementation;
@@ -34818,19 +33158,11 @@ __all__ = [${algorithms.map((a) => `'${a.name}'`).join(", ")}]
         }
         return "";
       }
-<<<<<<< HEAD
       generateSetupInstructions(language, framework2, dependencies) {
         let instructions = `# Setup Instructions
 
 ## Language: ${language}
 ## Framework: ${framework2}
-=======
-      generateSetupInstructions(language, framework, dependencies) {
-        let instructions = `# Setup Instructions
-
-## Language: ${language}
-## Framework: ${framework}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 
 ### Installation
 
@@ -34862,16 +33194,11 @@ pytest
         }
         return instructions;
       }
-<<<<<<< HEAD
       identifyDependencies(_algorithm, language, framework2) {
-=======
-      identifyDependencies(_algorithm, language, framework) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const deps = [];
         if (language === "typescript") {
           deps.push("@types/node");
         }
-<<<<<<< HEAD
         if (framework2 === "react") {
           deps.push("react", "react-dom");
         } else if (framework2 === "express") {
@@ -34879,15 +33206,6 @@ pytest
         } else if (framework2 === "django") {
           deps.push("django");
         } else if (framework2 === "flask") {
-=======
-        if (framework === "react") {
-          deps.push("react", "react-dom");
-        } else if (framework === "express") {
-          deps.push("express", "@types/express");
-        } else if (framework === "django") {
-          deps.push("django");
-        } else if (framework === "flask") {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           deps.push("flask");
         }
         return deps;
@@ -35037,11 +33355,7 @@ var init_literature_reviewer_agent = __esm({
   "src/agents/specialized/literature-reviewer-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     LiteratureReviewerAgent = class extends BaseAgent {
       static {
@@ -35081,11 +33395,7 @@ var init_concept_analyzer_agent = __esm({
   "src/agents/specialized/concept-analyzer-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     ConceptAnalyzerAgent = class extends BaseAgent {
       static {
@@ -35125,11 +33435,7 @@ var init_quality_assurance_agent = __esm({
   "src/agents/specialized/quality-assurance-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     QualityAssuranceAgent = class extends BaseAgent {
       static {
@@ -35171,11 +33477,7 @@ var init_citation_manager_agent = __esm({
   "src/agents/specialized/citation-manager-agent.ts"() {
     init_cjs_shims();
     init_base_agent();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_logger();
     CitationManagerAgent = class extends BaseAgent {
       static {
@@ -35233,11 +33535,7 @@ var init_multi_agent_system = __esm({
   "src/agents/multi-agent-system.ts"() {
     init_cjs_shims();
     init_orchestrator();
-<<<<<<< HEAD
     init_types4();
-=======
-    init_types3();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_coderag_system();
     init_document_processor();
     init_specialized();
@@ -35574,17 +33872,10 @@ var init_multi_agent_system = __esm({
       /**
        * Index current codebase for CodeRAG
        */
-<<<<<<< HEAD
       async indexCurrentCodebase(path17 = ".", options = {}) {
         try {
           logger.info(`Indexing codebase for CodeRAG: ${path17}`);
           const result = await codeRAGService.indexCodebase(path17, {
-=======
-      async indexCurrentCodebase(path3 = ".", options = {}) {
-        try {
-          logger.info(`Indexing codebase for CodeRAG: ${path3}`);
-          const result = await codeRAGService.indexCodebase(path3, {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             fileTypes: options.fileTypes || [".ts", ".tsx", ".js", ".jsx"],
             excludePaths: options.excludePaths || ["node_modules", "dist", ".git"],
             chunkSize: 500,
@@ -35782,11 +34073,7 @@ var init_multi_agent_system = __esm({
               progress: 10 + completedTasks / totalTasks * 80
             };
             const taskId = await this.orchestrator.submitTask(taskNode.task);
-<<<<<<< HEAD
             await new Promise((resolve2) => setTimeout(resolve2, 1e3));
-=======
-            await new Promise((resolve) => setTimeout(resolve, 1e3));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             completedTasks++;
             yield {
               stage: `Completed ${taskNode.task.type}`,
@@ -35808,7 +34095,6 @@ var init_multi_agent_system = __esm({
   }
 });
 function createInteractiveSession(maria) {
-<<<<<<< HEAD
   let running2 = false;
   let rl2 = null;
   let inputBox = null;
@@ -35897,22 +34183,11 @@ function createInteractiveSession(maria) {
         placeholder: "Type your command or question here..."
       });
       rl2 = readline2__namespace.createInterface({
-=======
-  let running = false;
-  let rl = null;
-  return {
-    async start() {
-      running = true;
-      const { BackgroundAIChecker: BackgroundAIChecker2 } = await Promise.resolve().then(() => (init_background_ai_checker(), background_ai_checker_exports));
-      BackgroundAIChecker2.startBackgroundCheck();
-      rl = readline__namespace.createInterface({
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         input: process.stdin,
         output: process.stdout,
         terminal: true,
         historySize: 100
       });
-<<<<<<< HEAD
       rl2.on("SIGINT", () => {
         console.log(
           chalk30__default.default.yellow("\u26A0\uFE0F") + TEXT_HIERARCHY2.BODY("\n\nReceived SIGINT. Use /exit to quit gracefully.")
@@ -36017,36 +34292,6 @@ function createInteractiveSession(maria) {
 Error: ${error}`);
             }
           });
-=======
-      rl.on("SIGINT", () => {
-        console.log(
-          SEMANTIC_COLORS.WARNING(IconRegistry.get("WARNING")) + TEXT_HIERARCHY.BODY("\n\nReceived SIGINT. Use /exit to quit gracefully.")
-        );
-        rl?.prompt();
-      });
-      while (running) {
-        try {
-          const message = await getUserInput(rl);
-          if (!message || !running) break;
-          if (message.startsWith("/")) {
-            const handled = await handleCommand(message.trim(), maria);
-            if (handled === "exit") {
-              break;
-            }
-            if (handled) continue;
-          }
-          process.stdout.write(TEXT_HIERARCHY.SUBTITLE("\nMARIA: "));
-          try {
-            const stream = maria.chatStream(message);
-            for await (const chunk of stream) {
-              process.stdout.write(chunk);
-            }
-            console.log("\n");
-          } catch (error) {
-            printError(`
-Error: ${error}`);
-          }
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         } catch (error) {
           if (error.message?.includes("canceled")) {
             break;
@@ -36054,16 +34299,11 @@ Error: ${error}`);
           printError(`Session error: ${error}`);
         }
       }
-<<<<<<< HEAD
       rl2?.close();
-=======
-      rl?.close();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await maria.close();
       printSuccess("\nSession ended. Goodbye!");
     },
     stop() {
-<<<<<<< HEAD
       running2 = false;
       rl2?.close();
       if (realTimeProcessor) {
@@ -36092,21 +34332,6 @@ async function getUserInputWithBox(inputBox, rl2) {
   }
 }
 async function handleCommand(command, maria, memoryEngine2, memoryCoordinator) {
-=======
-      running = false;
-      rl?.close();
-    }
-  };
-}
-function getUserInput(rl) {
-  return new Promise((resolve) => {
-    rl.question(TEXT_HIERARCHY.SUBTITLE("You: "), (answer) => {
-      resolve(answer.trim());
-    });
-  });
-}
-async function handleCommand(command, maria) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   const parts = command.split(" ");
   const cmd = parts[0].toLowerCase();
   const args = parts.slice(1);
@@ -36124,7 +34349,6 @@ async function handleCommand(command, maria) {
       await showHealth(maria);
       return true;
     case "/config":
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\n\u2699\uFE0F  Configuration Options:\n"));
       console.log(
         chalk30__default.default.gray(
@@ -36136,43 +34360,22 @@ async function handleCommand(command, maria) {
       console.log(chalk30__default.default.cyan("  OPENAI_API_KEY=") + chalk30__default.default.gray("Your OpenAI API key"));
       console.log(chalk30__default.default.cyan("  ANTHROPIC_API_KEY=") + chalk30__default.default.gray("Your Anthropic API key"));
       console.log(chalk30__default.default.cyan("  GOOGLE_AI_API_KEY=") + chalk30__default.default.gray("Your Google AI API key"));
-=======
-      console.log(chalk8__default.default.blue("\n\u2699\uFE0F  Configuration Options:\n"));
-      console.log(
-        chalk8__default.default.gray(
-          "Configuration management is temporarily disabled while React/Ink issues are resolved."
-        )
-      );
-      console.log(chalk8__default.default.gray("Basic configuration can be set via environment variables."));
-      console.log(chalk8__default.default.yellow("Available environment variables:"));
-      console.log(chalk8__default.default.cyan("  OPENAI_API_KEY=") + chalk8__default.default.gray("Your OpenAI API key"));
-      console.log(chalk8__default.default.cyan("  ANTHROPIC_API_KEY=") + chalk8__default.default.gray("Your Anthropic API key"));
-      console.log(chalk8__default.default.cyan("  GOOGLE_AI_API_KEY=") + chalk8__default.default.gray("Your Google AI API key"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("");
       return true;
     case "/priority":
       if (args[0]) {
         const mode = args[0];
         maria.setPriorityMode(mode);
-<<<<<<< HEAD
         console.log(chalk30__default.default.green(`\u2705 Priority mode set to: ${mode}`));
       } else {
         console.log(
           chalk30__default.default.yellow("Usage: /priority <privacy-first|performance|cost-effective|auto>")
-=======
-        console.log(chalk8__default.default.green(`\u2705 Priority mode set to: ${mode}`));
-      } else {
-        console.log(
-          chalk8__default.default.yellow("Usage: /priority <privacy-first|performance|cost-effective|auto>")
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         );
       }
       return true;
     case "/exit":
     case "/quit":
       return "exit";
-<<<<<<< HEAD
     case "/enhanced":
     case "/visual":
       console.log(chalk30__default.default.blue("\u{1F680} Switching to Enhanced Visual CLI Interface..."));
@@ -36200,29 +34403,18 @@ async function handleCommand(command, maria) {
     case "/clear":
       console.clear();
       console.log(chalk30__default.default.blue("\u{1F916} MARIA Interactive Session"));
-=======
-    case "/clear":
-      console.clear();
-      console.log(chalk8__default.default.blue("\u{1F916} MARIA Interactive Session"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("");
       return true;
     case "/avatar":
       await showAvatar();
       return true;
     case "/voice":
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F3A4} Starting Voice Chat with MARIA Avatar..."));
       console.log(chalk30__default.default.yellow("Voice mode will launch the avatar interface."));
-=======
-      console.log(chalk8__default.default.blue("\u{1F3A4} Starting Voice Chat with MARIA Avatar..."));
-      console.log(chalk8__default.default.yellow("Voice mode will launch the avatar interface."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await showAvatar();
       return true;
     // Development/Code Commands
     case "/code":
-<<<<<<< HEAD
       try {
         const slashHandler = new SlashCommandHandler();
         const context = {
@@ -36280,50 +34472,11 @@ async function handleCommand(command, maria) {
       );
       console.log(
         chalk30__default.default.cyan("GOOGLE_AI_API_KEY:"),
-=======
-      console.log(chalk8__default.default.blue("\n\u{1F4BB} Code Generation Mode\n"));
-      console.log(chalk8__default.default.gray("Entering interactive coding mode..."));
-      console.log(chalk8__default.default.yellow("What would you like me to code for you?"));
-      return true;
-    case "/test":
-      console.log(chalk8__default.default.blue("\n\u{1F9EA} Test Generation Mode\n"));
-      console.log(chalk8__default.default.gray("Entering test generation mode..."));
-      console.log(chalk8__default.default.yellow("What code would you like me to write tests for?"));
-      return true;
-    case "/review":
-      console.log(chalk8__default.default.blue("\n\u{1F50D} Code Review Mode\n"));
-      console.log(chalk8__default.default.gray("Entering code review mode..."));
-      console.log(chalk8__default.default.yellow("Please paste the code you'd like me to review:"));
-      return true;
-    case "/setup":
-      console.log(chalk8__default.default.blue("\n\u{1F680} Environment Setup Wizard\n"));
-      console.log(chalk8__default.default.gray("This wizard helps you configure MARIA for first-time use."));
-      console.log(chalk8__default.default.yellow("Set the following environment variables:"));
-      console.log(chalk8__default.default.cyan("  export OPENAI_API_KEY=") + chalk8__default.default.gray("your_openai_key"));
-      console.log(chalk8__default.default.cyan("  export ANTHROPIC_API_KEY=") + chalk8__default.default.gray("your_anthropic_key"));
-      console.log(chalk8__default.default.cyan("  export GOOGLE_AI_API_KEY=") + chalk8__default.default.gray("your_google_key"));
-      console.log("");
-      return true;
-    case "/settings":
-      console.log(chalk8__default.default.blue("\n\u2699\uFE0F  Environment Settings\n"));
-      console.log(chalk8__default.default.gray("Checking current environment configuration..."));
-      console.log(
-        chalk8__default.default.cyan("OPENAI_API_KEY:"),
-        process.env.OPENAI_API_KEY ? "\u2705 Set" : "\u274C Not set"
-      );
-      console.log(
-        chalk8__default.default.cyan("ANTHROPIC_API_KEY:"),
-        process.env.ANTHROPIC_API_KEY ? "\u2705 Set" : "\u274C Not set"
-      );
-      console.log(
-        chalk8__default.default.cyan("GOOGLE_AI_API_KEY:"),
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         process.env.GOOGLE_AI_API_KEY ? "\u2705 Set" : "\u274C Not set"
       );
       console.log("");
       return true;
     case "/image":
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\n\u{1F3A8} Image Generation Mode\n"));
       console.log(chalk30__default.default.gray("Entering image generation mode..."));
       console.log(chalk30__default.default.yellow("Describe the image you'd like me to generate:"));
@@ -36434,61 +34587,6 @@ async function handleCommand(command, maria) {
     case "/doctor":
       console.log(chalk30__default.default.blue("\n\u{1F3E5} System Diagnostics\n"));
       console.log(chalk30__default.default.gray("Running comprehensive system health checks..."));
-=======
-      console.log(chalk8__default.default.blue("\n\u{1F3A8} Image Generation Mode\n"));
-      console.log(chalk8__default.default.gray("Entering image generation mode..."));
-      console.log(chalk8__default.default.yellow("Describe the image you'd like me to generate:"));
-      return true;
-    case "/video":
-      console.log(chalk8__default.default.blue("\n\u{1F3AC} Video Generation Mode\n"));
-      console.log(chalk8__default.default.gray("Entering video generation mode..."));
-      console.log(chalk8__default.default.yellow("Describe the video content you'd like me to create:"));
-      return true;
-    // Project Management Commands (basic implementations)
-    case "/init":
-      console.log(chalk8__default.default.blue("\n\u{1F4C1} Project Initialization\n"));
-      console.log(chalk8__default.default.gray("Initializing new MARIA project..."));
-      console.log(chalk8__default.default.yellow("What type of project would you like to initialize?"));
-      return true;
-    case "/add-dir":
-      console.log(chalk8__default.default.blue("\n\u{1F4C2} Add Directory to Project\n"));
-      console.log(chalk8__default.default.gray("Adding directory to current project context..."));
-      console.log(chalk8__default.default.yellow("Which directory would you like to add?"));
-      return true;
-    case "/memory":
-      console.log(chalk8__default.default.blue("\n\u{1F9E0} Project Memory Management\n"));
-      console.log(chalk8__default.default.gray("Managing project context and memory..."));
-      console.log(chalk8__default.default.yellow("Current project memory status will be displayed here."));
-      return true;
-    case "/export":
-      console.log(chalk8__default.default.blue("\n\u{1F4E4} Export Project Data\n"));
-      console.log(chalk8__default.default.gray("Exporting project configuration and data..."));
-      console.log(chalk8__default.default.yellow("What format would you like to export to?"));
-      return true;
-    case "/agents":
-      console.log(chalk8__default.default.blue("\n\u{1F916} Agent Management\n"));
-      console.log(chalk8__default.default.gray("Managing AI agents and their configurations..."));
-      console.log(chalk8__default.default.yellow("Available agents and their status will be displayed here."));
-      return true;
-    case "/mcp":
-      console.log(chalk8__default.default.blue("\n\u{1F50C} MCP Integration\n"));
-      console.log(chalk8__default.default.gray("Managing Model Context Protocol integrations..."));
-      console.log(chalk8__default.default.yellow("MCP tools and connections will be shown here."));
-      return true;
-    case "/ide":
-      console.log(chalk8__default.default.blue("\n\u{1F4BB} IDE Integration\n"));
-      console.log(chalk8__default.default.gray("Setting up IDE integrations..."));
-      console.log(chalk8__default.default.yellow("Supported IDEs: VS Code, Cursor, JetBrains"));
-      return true;
-    case "/install-github-app":
-      console.log(chalk8__default.default.blue("\n\u{1F419} GitHub App Installation\n"));
-      console.log(chalk8__default.default.gray("Installing MARIA GitHub application..."));
-      console.log(chalk8__default.default.yellow("Visit: https://github.com/apps/maria-ai-assistant"));
-      return true;
-    case "/doctor":
-      console.log(chalk8__default.default.blue("\n\u{1F3E5} System Diagnostics\n"));
-      console.log(chalk8__default.default.gray("Running comprehensive system health checks..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await showHealth(maria);
       return true;
     case "/model":
@@ -36519,16 +34617,11 @@ async function handleCommand(command, maria) {
       await handleApprovalCommand(args);
       return true;
     default:
-<<<<<<< HEAD
       console.log(chalk30__default.default.red(`Unknown command: ${cmd}. Type /help for available commands.`));
-=======
-      console.log(chalk8__default.default.red(`Unknown command: ${cmd}. Type /help for available commands.`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       return true;
   }
 }
 function showHelp() {
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F4D6} MARIA Commands:\n"));
   console.log(chalk30__default.default.yellow("\u{1F3A8} Interface:"));
   console.log(`${chalk30__default.default.cyan("/enhanced")}       - Switch to enhanced visual CLI with file/image support`);
@@ -36597,72 +34690,6 @@ function showHelp() {
 }
 async function showStatus(maria) {
   console.log(chalk30__default.default.blue("\n\u{1F4CA} System Status:\n"));
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F4D6} MARIA Commands:\n"));
-  console.log(chalk8__default.default.yellow("\u{1F680} Development:"));
-  console.log(chalk8__default.default.cyan("/code") + "          - Generate code from description");
-  console.log(chalk8__default.default.cyan("/test") + "          - Generate tests for code");
-  console.log(chalk8__default.default.cyan("/review") + "        - Review and improve code");
-  console.log(chalk8__default.default.cyan("/paper") + "         - Process research papers to code (Multi-Agent)");
-  console.log(chalk8__default.default.cyan("/model") + "         - Show/select AI models");
-  console.log(chalk8__default.default.cyan("/mode") + "          - Show/set operation & internal cognitive modes");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F50D} Code Quality Analysis:"));
-  console.log(chalk8__default.default.cyan("/bug") + "           - Bug analysis and fix suggestions");
-  console.log(chalk8__default.default.cyan("/lint") + "          - ESLint analysis and auto-fix");
-  console.log(chalk8__default.default.cyan("/typecheck") + "     - TypeScript type safety analysis");
-  console.log(chalk8__default.default.cyan("/security-review") + " - Security vulnerability assessment");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F91D} Human-in-the-Loop Approval:"));
-  console.log(
-    chalk8__default.default.cyan("/approve") + "        - Show current approval request or manage approvals"
-  );
-  console.log(chalk8__default.default.gray("  Keyboard Shortcuts:"));
-  console.log(chalk8__default.default.gray("  \u2022 Shift+Tab     - Quick approve (\u3044\u3044\u3088)"));
-  console.log(chalk8__default.default.gray("  \u2022 Ctrl+Y        - Approve (\u306F\u3044\u3001\u627F\u8A8D)"));
-  console.log(chalk8__default.default.gray("  \u2022 Ctrl+N        - Reject (\u3044\u3044\u3048\u3001\u62D2\u5426)"));
-  console.log(chalk8__default.default.gray("  \u2022 Ctrl+Alt+T    - Trust & auto-approve (\u4EFB\u305B\u308B)"));
-  console.log(chalk8__default.default.gray("  \u2022 Ctrl+R        - Request review (\u30EC\u30D3\u30E5\u30FC\u8981\u6C42)"));
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u2699\uFE0F  Configuration:"));
-  console.log(chalk8__default.default.cyan("/setup") + "         - First-time environment setup wizard");
-  console.log(chalk8__default.default.cyan("/settings") + "      - Environment variable setup");
-  console.log(chalk8__default.default.cyan("/config") + "        - Show configuration");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F3A8} Media Generation:"));
-  console.log(chalk8__default.default.cyan("/image") + "         - Generate images");
-  console.log(chalk8__default.default.cyan("/video") + "         - Generate videos");
-  console.log(chalk8__default.default.cyan("/avatar") + "        - Interactive ASCII avatar");
-  console.log(chalk8__default.default.cyan("/voice") + "         - Voice chat mode");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F4C1} Project Management:"));
-  console.log(chalk8__default.default.cyan("/init") + "          - Initialize new project");
-  console.log(chalk8__default.default.cyan("/add-dir") + "       - Add directory to project");
-  console.log(chalk8__default.default.cyan("/memory") + "        - Manage project memory");
-  console.log(chalk8__default.default.cyan("/export") + "        - Export project data");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F916} Agent Management:"));
-  console.log(chalk8__default.default.cyan("/agents") + "        - Manage AI agents");
-  console.log(chalk8__default.default.cyan("/mcp") + "           - MCP integrations");
-  console.log(chalk8__default.default.cyan("/ide") + "           - IDE integration setup");
-  console.log(chalk8__default.default.cyan("/install-github-app") + " - Install GitHub app");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u2699\uFE0F  System:"));
-  console.log(chalk8__default.default.cyan("/status") + "        - Show system status");
-  console.log(chalk8__default.default.cyan("/health") + "        - Check system health");
-  console.log(chalk8__default.default.cyan("/doctor") + "        - System diagnostics");
-  console.log(chalk8__default.default.cyan("/models") + "        - List available models");
-  console.log(chalk8__default.default.cyan("/priority") + "      - Set priority mode");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F4DD} Session:"));
-  console.log(chalk8__default.default.cyan("/clear") + "         - Clear screen");
-  console.log(chalk8__default.default.cyan("/help") + "          - Show this help");
-  console.log(chalk8__default.default.cyan("/exit") + "          - Exit session");
-  console.log("");
-}
-async function showStatus(maria) {
-  console.log(chalk8__default.default.blue("\n\u{1F4CA} System Status:\n"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   try {
     const health = await maria.getHealth();
     const status = health.overall === "healthy" ? "\u2705" : health.overall === "degraded" ? "\u26A0\uFE0F" : "\u274C";
@@ -36688,7 +34715,6 @@ async function showStatus(maria) {
     }
     console.log("");
   } catch (error) {
-<<<<<<< HEAD
     console.error(chalk30__default.default.red("\u274C Failed to get status:"), error);
   }
 }
@@ -36733,64 +34759,25 @@ async function showModels(maria) {
 }
 async function showHealth(maria) {
   console.log(chalk30__default.default.blue("\n\u{1F3E5} Health Status:\n"));
-=======
-    console.error(chalk8__default.default.red("\u274C Failed to get status:"), error);
-  }
-}
-async function showModels(maria) {
-  console.log(chalk8__default.default.blue("\n\u{1F527} Available Models:\n"));
-  try {
-    const models = await maria.getModels();
-    const available = models.filter((m) => m.available);
-    if (available.length === 0) {
-      console.log(chalk8__default.default.yellow("No models available"));
-      return;
-    }
-    for (const model of available) {
-      const provider = chalk8__default.default.gray(`[${model.provider}]`);
-      const capabilities = model.capabilities ? model.capabilities.join(", ") : "No capabilities listed";
-      console.log(`\u2705 ${chalk8__default.default.bold(model.name)} ${provider}`);
-      console.log(`   ${chalk8__default.default.gray(capabilities)}`);
-    }
-    console.log("");
-  } catch (error) {
-    console.error(chalk8__default.default.red("\u274C Failed to get models:"), error);
-  }
-}
-async function showHealth(maria) {
-  console.log(chalk8__default.default.blue("\n\u{1F3E5} Health Status:\n"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   try {
     const health = await maria.getHealth();
     const status = health.overall === "healthy" ? "\u2705" : health.overall === "degraded" ? "\u26A0\uFE0F" : "\u274C";
     console.log(`${status} Overall: ${health.overall}`);
     console.log("");
     if (health.providers && health.providers.length > 0) {
-<<<<<<< HEAD
       console.log(chalk30__default.default.bold("\u{1F916} AI Providers:"));
-=======
-      console.log(chalk8__default.default.bold("\u{1F916} AI Providers:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       health.providers.forEach((provider) => {
         const providerStatus = provider.health.status === "healthy" ? "\u2705" : provider.health.status === "degraded" ? "\u26A0\uFE0F" : "\u274C";
         console.log(`  ${providerStatus} ${provider.name}: ${provider.health.status}`);
         if (provider.metadata?.models?.length > 0) {
           console.log(
-<<<<<<< HEAD
             `    ${chalk30__default.default.gray(`Models: ${provider.metadata.models.slice(0, 3).join(", ")}${provider.metadata.models.length > 3 ? "..." : ""}`)}`
-=======
-            `    ${chalk8__default.default.gray(`Models: ${provider.metadata.models.slice(0, 3).join(", ")}${provider.metadata.models.length > 3 ? "..." : ""}`)}`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           );
         }
       });
     }
     if (health.services && !health.providers) {
-<<<<<<< HEAD
       console.log(chalk30__default.default.bold("Local Services:"));
-=======
-      console.log(chalk8__default.default.bold("Local Services:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       Object.entries(health.services).forEach(([name, status2]) => {
         const icon = status2.status === "running" ? "\u2705" : "\u26A0\uFE0F";
         console.log(`  ${icon} ${name}: ${status2.status}`);
@@ -36798,11 +34785,7 @@ async function showHealth(maria) {
     }
     if (health.cloudAPIs) {
       console.log("");
-<<<<<<< HEAD
       console.log(chalk30__default.default.bold("Cloud APIs:"));
-=======
-      console.log(chalk8__default.default.bold("Cloud APIs:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       Object.entries(health.cloudAPIs).forEach(([name, status2]) => {
         const icon = status2.status === "available" ? "\u2705" : "\u26A0\uFE0F";
         console.log(`  ${icon} ${name}: ${status2.status}`);
@@ -36812,20 +34795,12 @@ async function showHealth(maria) {
       const uptimeHours = Math.floor(health.uptime / 3600);
       const uptimeMinutes = Math.floor(health.uptime % 3600 / 60);
       console.log("");
-<<<<<<< HEAD
       console.log(chalk30__default.default.bold("System Info:"));
-=======
-      console.log(chalk8__default.default.bold("System Info:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`  \u23F1\uFE0F  Uptime: ${uptimeHours}h ${uptimeMinutes}m`);
     }
     if (health.recommendations && health.recommendations.length > 0) {
       console.log("");
-<<<<<<< HEAD
       console.log(chalk30__default.default.bold("\u{1F4A1} Recommendations:"));
-=======
-      console.log(chalk8__default.default.bold("\u{1F4A1} Recommendations:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       health.recommendations.forEach((rec) => {
         const icon = rec.type === "error" ? "\u{1F534}" : rec.type === "warning" ? "\u{1F7E1}" : "\u{1F535}";
         const message = rec.message || rec;
@@ -36834,7 +34809,6 @@ async function showHealth(maria) {
     }
     console.log("");
   } catch (error) {
-<<<<<<< HEAD
     console.error(chalk30__default.default.red("\u274C Failed to get health status:"), error);
   }
 }
@@ -37027,95 +35001,12 @@ async function handleSOWCommand(args) {
     console.log(`${chalk30__default.default.cyan("\u2022 /sow maintenance")} - Generate maintenance & support SOW`);
     console.log("");
     console.log(chalk30__default.default.gray('Example: /sow project "Website Redesign"'));
-=======
-    console.error(chalk8__default.default.red("\u274C Failed to get health status:"), error);
-  }
-}
-async function showModelSelector(maria, args) {
-  console.log(chalk8__default.default.blue("\n\u{1F916} AI Model Selector\n"));
-  try {
-    const models = await maria.getModels();
-    const available = models.filter((m) => m.available);
-    if (args.length > 0) {
-      const modelName = args.join(" ");
-      const targetModel = available.find(
-        (m) => m.name.toLowerCase().includes(modelName.toLowerCase()) || m.provider.toLowerCase().includes(modelName.toLowerCase())
-      );
-      if (targetModel) {
-        console.log(
-          chalk8__default.default.green(`\u2705 Target model found: ${targetModel.name} (${targetModel.provider})`)
-        );
-        console.log(chalk8__default.default.yellow("Note: Model switching will be implemented in a future version"));
-        console.log(
-          chalk8__default.default.gray("Currently, you can switch models using environment variables or CLI options")
-        );
-      } else {
-        console.log(chalk8__default.default.red(`\u274C Model not found: ${modelName}`));
-        console.log(chalk8__default.default.gray("Available models listed below:"));
-      }
-    }
-    console.log(chalk8__default.default.yellow("\u{1F4CB} Available AI Models:\n"));
-    available.forEach((model, _index) => {
-      const status = model.available ? "\u2705" : "\u26A0\uFE0F";
-      const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : "";
-      console.log(
-        `  ${status} ${chalk8__default.default.bold(model.name)} ${chalk8__default.default.gray(`[${model.provider}]`)}${pricing}`
-      );
-      console.log(`     ${chalk8__default.default.gray(model.description)}`);
-      if (model.capabilities && model.capabilities.length > 0) {
-        console.log(`     ${chalk8__default.default.cyan("Capabilities:")} ${model.capabilities.join(", ")}`);
-      }
-      console.log("");
-    });
-    console.log(chalk8__default.default.gray("Usage: /model <model_name_or_provider> - Find and display model info"));
-    console.log(chalk8__default.default.gray("Example: /model gpt-4 or /model anthropic"));
-    console.log("");
-  } catch (error) {
-    console.error(chalk8__default.default.red("\u274C Failed to access model selector:"), error);
-  }
-}
-async function showAvatar() {
-  console.log(chalk8__default.default.blue("\n\u{1F3AD} MARIA Avatar Interface\n"));
-  const avatarPath = "/Users/bongin_max/maria_code/face_only_96x96_ramp.txt";
-  try {
-    const avatarData = await fs2__namespace.readFile(avatarPath, "utf-8");
-    const lines = avatarData.split("\n").slice(0, 30);
-    console.log(chalk8__default.default.white("\u2550".repeat(80)));
-    lines.forEach((line) => {
-      const displayLine = line.length > 80 ? line.substring(0, 80) : line;
-      console.log(chalk8__default.default.white(displayLine));
-    });
-    console.log(chalk8__default.default.white("\u2550".repeat(80)));
-    console.log(chalk8__default.default.yellow("\n\u{1F44B} Hello! I am MARIA, your AI assistant!"));
-    console.log(chalk8__default.default.gray("This is a preview of the avatar interface."));
-    console.log(chalk8__default.default.gray("Full interactive avatar with animations is coming soon!\n"));
-  } catch (error) {
-    console.log(chalk8__default.default.red("\u274C Could not load avatar file"));
-    console.log(chalk8__default.default.gray("Avatar file should be at: " + avatarPath));
-  }
-}
-async function handleSOWCommand(args) {
-  console.log(chalk8__default.default.blue("\n\u{1F4CB} Statement of Work (SOW) Generator\n"));
-  if (args.length === 0) {
-    console.log(chalk8__default.default.yellow("Available SOW Templates:"));
-    console.log(chalk8__default.default.cyan("\u2022 /sow project <name>") + " - Generate project-based SOW");
-    console.log(chalk8__default.default.cyan("\u2022 /sow consulting") + " - Generate consulting services SOW");
-    console.log(chalk8__default.default.cyan("\u2022 /sow development") + " - Generate software development SOW");
-    console.log(chalk8__default.default.cyan("\u2022 /sow maintenance") + " - Generate maintenance & support SOW");
-    console.log("");
-    console.log(chalk8__default.default.gray('Example: /sow project "Website Redesign"'));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   const sowType = args[0].toLowerCase();
   const projectName = args.slice(1).join(" ") || "New Project";
-<<<<<<< HEAD
   console.log(chalk30__default.default.green(`\u{1F504} Generating ${sowType} SOW for: ${projectName}`));
   console.log(chalk30__default.default.gray("This will create a comprehensive Statement of Work document..."));
-=======
-  console.log(chalk8__default.default.green(`\u{1F504} Generating ${sowType} SOW for: ${projectName}`));
-  console.log(chalk8__default.default.gray("This will create a comprehensive Statement of Work document..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("");
   const templates = {
     project: generateProjectSOW(projectName),
@@ -37127,7 +35018,6 @@ async function handleSOWCommand(args) {
   console.log(template);
 }
 async function handleBugCommand(args) {
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F41B} Bug Report & Fix Assistant\n"));
   if (args.length === 0) {
     console.log(chalk30__default.default.yellow("Bug Assistant Options:"));
@@ -37137,30 +35027,14 @@ async function handleBugCommand(args) {
     console.log(`${chalk30__default.default.cyan("\u2022 /bug search <keywords>")} - Search for similar issues`);
     console.log("");
     console.log(chalk30__default.default.gray('Example: /bug fix "TypeError: Cannot read property"'));
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F41B} Bug Report & Fix Assistant\n"));
-  if (args.length === 0) {
-    console.log(chalk8__default.default.yellow("Bug Assistant Options:"));
-    console.log(chalk8__default.default.cyan("\u2022 /bug report") + " - Start interactive bug report");
-    console.log(chalk8__default.default.cyan("\u2022 /bug analyze") + " - Analyze error logs/stack traces");
-    console.log(chalk8__default.default.cyan("\u2022 /bug fix <description>") + " - Get fix suggestions");
-    console.log(chalk8__default.default.cyan("\u2022 /bug search <keywords>") + " - Search for similar issues");
-    console.log("");
-    console.log(chalk8__default.default.gray('Example: /bug fix "TypeError: Cannot read property"'));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   const action = args[0].toLowerCase();
   const details = args.slice(1).join(" ");
   switch (action) {
     case "report":
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F50D} Interactive Bug Report Generator"));
       console.log(chalk30__default.default.yellow("Please provide the following information:"));
-=======
-      console.log(chalk8__default.default.green("\u{1F50D} Interactive Bug Report Generator"));
-      console.log(chalk8__default.default.yellow("Please provide the following information:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("1. What were you trying to do?");
       console.log("2. What actually happened?");
       console.log("3. What did you expect to happen?");
@@ -37168,7 +35042,6 @@ async function handleBugCommand(args) {
       console.log("5. Environment details (OS, browser, version)");
       break;
     case "analyze":
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F52C} Error Analysis Mode"));
       console.log(chalk30__default.default.gray("Paste your error logs or stack trace below:"));
       console.log(chalk30__default.default.yellow("I will analyze the error and suggest solutions..."));
@@ -37181,26 +35054,11 @@ async function handleBugCommand(args) {
       }
       console.log(chalk30__default.default.green(`\u{1F527} Analyzing bug: "${details}"`));
       console.log(chalk30__default.default.gray("Searching knowledge base and generating fix suggestions..."));
-=======
-      console.log(chalk8__default.default.green("\u{1F52C} Error Analysis Mode"));
-      console.log(chalk8__default.default.gray("Paste your error logs or stack trace below:"));
-      console.log(chalk8__default.default.yellow("I will analyze the error and suggest solutions..."));
-      break;
-    case "fix":
-      if (!details) {
-        console.log(chalk8__default.default.red("Please provide a bug description"));
-        console.log(chalk8__default.default.gray('Example: /bug fix "Application crashes on startup"'));
-        return;
-      }
-      console.log(chalk8__default.default.green(`\u{1F527} Analyzing bug: "${details}"`));
-      console.log(chalk8__default.default.gray("Searching knowledge base and generating fix suggestions..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("");
       generateBugFixSuggestions(details);
       break;
     case "search":
       if (!details) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.red("Please provide search keywords"));
         return;
       }
@@ -37210,22 +35068,10 @@ async function handleBugCommand(args) {
     default:
       console.log(chalk30__default.default.red(`Unknown bug action: ${action}`));
       console.log(chalk30__default.default.gray("Use: /bug to see available options"));
-=======
-        console.log(chalk8__default.default.red("Please provide search keywords"));
-        return;
-      }
-      console.log(chalk8__default.default.green(`\u{1F50D} Searching for: "${details}"`));
-      console.log(chalk8__default.default.gray("Looking through known issues and solutions..."));
-      break;
-    default:
-      console.log(chalk8__default.default.red(`Unknown bug action: ${action}`));
-      console.log(chalk8__default.default.gray("Use: /bug to see available options"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 function generateProjectSOW(projectName) {
   return `
-<<<<<<< HEAD
 ${chalk30__default.default.bold.blue("STATEMENT OF WORK")}
 ${chalk30__default.default.gray("\u2550".repeat(50))}
 
@@ -37238,64 +35084,34 @@ ${chalk30__default.default.bold("1. PROJECT OVERVIEW")}
 This Statement of Work outlines the scope, deliverables, and timeline for ${projectName}.
 
 ${chalk30__default.default.bold("2. SCOPE OF WORK")}
-=======
-${chalk8__default.default.bold.blue("STATEMENT OF WORK")}
-${chalk8__default.default.gray("\u2550".repeat(50))}
-
-${chalk8__default.default.yellow("Project:")} ${projectName}
-${chalk8__default.default.yellow("Date:")} ${(/* @__PURE__ */ new Date()).toLocaleDateString()}
-${chalk8__default.default.yellow("Client:")} [CLIENT_NAME]
-${chalk8__default.default.yellow("Vendor:")} MARIA Development Services
-
-${chalk8__default.default.bold("1. PROJECT OVERVIEW")}
-This Statement of Work outlines the scope, deliverables, and timeline for ${projectName}.
-
-${chalk8__default.default.bold("2. SCOPE OF WORK")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Requirements analysis and documentation
 \u2022 System design and architecture
 \u2022 Development and implementation
 \u2022 Testing and quality assurance
 \u2022 Deployment and go-live support
 
-<<<<<<< HEAD
 ${chalk30__default.default.bold("3. DELIVERABLES")}
-=======
-${chalk8__default.default.bold("3. DELIVERABLES")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Project specification document
 \u2022 Design mockups and wireframes
 \u2022 Fully functional application/system
 \u2022 Test results and documentation
 \u2022 Deployment package
 
-<<<<<<< HEAD
 ${chalk30__default.default.bold("4. TIMELINE")}
-=======
-${chalk8__default.default.bold("4. TIMELINE")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Phase 1 - Requirements: 2 weeks
 \u2022 Phase 2 - Design: 3 weeks  
 \u2022 Phase 3 - Development: 6 weeks
 \u2022 Phase 4 - Testing: 2 weeks
 \u2022 Phase 5 - Deployment: 1 week
 
-<<<<<<< HEAD
 ${chalk30__default.default.bold("5. ACCEPTANCE CRITERIA")}
 All deliverables must meet specified requirements and pass acceptance testing.
 
 ${chalk30__default.default.gray("Generated by MARIA CLI - Statement of Work Assistant")}
-=======
-${chalk8__default.default.bold("5. ACCEPTANCE CRITERIA")}
-All deliverables must meet specified requirements and pass acceptance testing.
-
-${chalk8__default.default.gray("Generated by MARIA CLI - Statement of Work Assistant")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 `;
 }
 function generateConsultingSOW(projectName) {
   return `
-<<<<<<< HEAD
 ${chalk30__default.default.bold.blue("CONSULTING SERVICES - STATEMENT OF WORK")}
 ${chalk30__default.default.gray("\u2550".repeat(60))}
 
@@ -37303,40 +35119,22 @@ ${chalk30__default.default.yellow("Engagement:")} ${projectName}
 ${chalk30__default.default.yellow("Type:")} Strategic Consulting Services
 
 ${chalk30__default.default.bold("CONSULTING SCOPE")}
-=======
-${chalk8__default.default.bold.blue("CONSULTING SERVICES - STATEMENT OF WORK")}
-${chalk8__default.default.gray("\u2550".repeat(60))}
-
-${chalk8__default.default.yellow("Engagement:")} ${projectName}
-${chalk8__default.default.yellow("Type:")} Strategic Consulting Services
-
-${chalk8__default.default.bold("CONSULTING SCOPE")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Strategic planning and roadmap development
 \u2022 Technology assessment and recommendations
 \u2022 Process optimization analysis
 \u2022 Implementation guidance and oversight
 
-<<<<<<< HEAD
 ${chalk30__default.default.bold("EXPECTED OUTCOMES")}
-=======
-${chalk8__default.default.bold("EXPECTED OUTCOMES")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Comprehensive strategy document
 \u2022 Technology roadmap
 \u2022 Implementation recommendations
 \u2022 Process improvement plan
 
-<<<<<<< HEAD
 ${chalk30__default.default.gray("Generated by MARIA CLI - SOW Assistant")}
-=======
-${chalk8__default.default.gray("Generated by MARIA CLI - SOW Assistant")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 `;
 }
 function generateDevelopmentSOW(projectName) {
   return `
-<<<<<<< HEAD
 ${chalk30__default.default.bold.blue("SOFTWARE DEVELOPMENT - STATEMENT OF WORK")}
 ${chalk30__default.default.gray("\u2550".repeat(60))}
 
@@ -37344,15 +35142,6 @@ ${chalk30__default.default.yellow("Project:")} ${projectName}
 ${chalk30__default.default.yellow("Type:")} Custom Software Development
 
 ${chalk30__default.default.bold("DEVELOPMENT SCOPE")}
-=======
-${chalk8__default.default.bold.blue("SOFTWARE DEVELOPMENT - STATEMENT OF WORK")}
-${chalk8__default.default.gray("\u2550".repeat(60))}
-
-${chalk8__default.default.yellow("Project:")} ${projectName}
-${chalk8__default.default.yellow("Type:")} Custom Software Development
-
-${chalk8__default.default.bold("DEVELOPMENT SCOPE")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Requirements gathering and analysis
 \u2022 System architecture and design
 \u2022 Frontend and backend development
@@ -37360,27 +35149,18 @@ ${chalk8__default.default.bold("DEVELOPMENT SCOPE")}
 \u2022 Database design and implementation
 \u2022 Testing and quality assurance
 
-<<<<<<< HEAD
 ${chalk30__default.default.bold("TECHNICAL DELIVERABLES")}
-=======
-${chalk8__default.default.bold("TECHNICAL DELIVERABLES")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Source code repository
 \u2022 Technical documentation
 \u2022 API documentation
 \u2022 Deployment scripts
 \u2022 Test suites
 
-<<<<<<< HEAD
 ${chalk30__default.default.gray("Generated by MARIA CLI - SOW Assistant")}
-=======
-${chalk8__default.default.gray("Generated by MARIA CLI - SOW Assistant")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 `;
 }
 function generateMaintenanceSOW(projectName) {
   return `
-<<<<<<< HEAD
 ${chalk30__default.default.bold.blue("MAINTENANCE & SUPPORT - STATEMENT OF WORK")}
 ${chalk30__default.default.gray("\u2550".repeat(60))}
 
@@ -37388,32 +35168,18 @@ ${chalk30__default.default.yellow("Service:")} ${projectName} Maintenance
 ${chalk30__default.default.yellow("Type:")} Ongoing Support Services
 
 ${chalk30__default.default.bold("MAINTENANCE SCOPE")}
-=======
-${chalk8__default.default.bold.blue("MAINTENANCE & SUPPORT - STATEMENT OF WORK")}
-${chalk8__default.default.gray("\u2550".repeat(60))}
-
-${chalk8__default.default.yellow("Service:")} ${projectName} Maintenance
-${chalk8__default.default.yellow("Type:")} Ongoing Support Services
-
-${chalk8__default.default.bold("MAINTENANCE SCOPE")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Bug fixes and issue resolution
 \u2022 Security updates and patches
 \u2022 Performance monitoring and optimization
 \u2022 Feature enhancements
 \u2022 Technical support
 
-<<<<<<< HEAD
 ${chalk30__default.default.bold("SERVICE LEVELS")}
-=======
-${chalk8__default.default.bold("SERVICE LEVELS")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 \u2022 Critical issues: 4-hour response
 \u2022 High priority: 24-hour response
 \u2022 Normal priority: 72-hour response
 \u2022 Enhancement requests: Next release cycle
 
-<<<<<<< HEAD
 ${chalk30__default.default.gray("Generated by MARIA CLI - SOW Assistant")}
 `;
 }
@@ -37423,60 +35189,33 @@ function generateBugFixSuggestions(bugDescription) {
   const lowerBug = bugDescription.toLowerCase();
   if (lowerBug.includes("cannot read property") || lowerBug.includes("undefined")) {
     console.log(chalk30__default.default.green("\u{1F539} Null/Undefined Reference Issue:"));
-=======
-${chalk8__default.default.gray("Generated by MARIA CLI - SOW Assistant")}
-`;
-}
-function generateBugFixSuggestions(bugDescription) {
-  console.log(chalk8__default.default.bold("\u{1F4A1} Fix Suggestions:"));
-  console.log("");
-  const lowerBug = bugDescription.toLowerCase();
-  if (lowerBug.includes("cannot read property") || lowerBug.includes("undefined")) {
-    console.log(chalk8__default.default.green("\u{1F539} Null/Undefined Reference Issue:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("  \u2022 Add null checks: if (obj && obj.property)");
     console.log("  \u2022 Use optional chaining: obj?.property");
     console.log("  \u2022 Initialize variables before use");
     console.log("  \u2022 Check async data loading completion");
   }
   if (lowerBug.includes("cors") || lowerBug.includes("cross-origin")) {
-<<<<<<< HEAD
     console.log(chalk30__default.default.green("\u{1F539} CORS Issue:"));
-=======
-    console.log(chalk8__default.default.green("\u{1F539} CORS Issue:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("  \u2022 Configure server CORS headers");
     console.log("  \u2022 Use proxy in development environment");
     console.log("  \u2022 Check API endpoint configuration");
   }
   if (lowerBug.includes("memory") || lowerBug.includes("heap")) {
-<<<<<<< HEAD
     console.log(chalk30__default.default.green("\u{1F539} Memory Issue:"));
-=======
-    console.log(chalk8__default.default.green("\u{1F539} Memory Issue:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("  \u2022 Check for memory leaks");
     console.log("  \u2022 Remove event listeners properly");
     console.log("  \u2022 Optimize large data processing");
     console.log("  \u2022 Use pagination for large datasets");
   }
   if (lowerBug.includes("timeout") || lowerBug.includes("slow")) {
-<<<<<<< HEAD
     console.log(chalk30__default.default.green("\u{1F539} Performance Issue:"));
-=======
-    console.log(chalk8__default.default.green("\u{1F539} Performance Issue:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("  \u2022 Increase timeout settings");
     console.log("  \u2022 Optimize database queries");
     console.log("  \u2022 Add caching mechanisms");
     console.log("  \u2022 Use async/await properly");
   }
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.gray("\u{1F4A1} General debugging steps:"));
-=======
-  console.log(chalk8__default.default.gray("\u{1F4A1} General debugging steps:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  1. Check browser/server console logs");
   console.log("  2. Review recent code changes");
   console.log("  3. Test in different environments");
@@ -37484,7 +35223,6 @@ function generateBugFixSuggestions(bugDescription) {
   console.log("");
 }
 async function handlePaperCommand(args) {
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F4C4} Paper Processing (Multi-Agent System)\n"));
   const content = args.join(" ");
   if (!content) {
@@ -37499,31 +35237,11 @@ async function handlePaperCommand(args) {
     console.log(chalk30__default.default.gray("  \u2022 Generate production-ready code"));
     console.log(chalk30__default.default.gray("  \u2022 Create comprehensive tests"));
     console.log(chalk30__default.default.gray("  \u2022 Generate documentation"));
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F4C4} Paper Processing (Multi-Agent System)\n"));
-  const content = args.join(" ");
-  if (!content) {
-    console.log(chalk8__default.default.yellow("Usage Examples:"));
-    console.log(chalk8__default.default.cyan('  /paper "Implement QuickSort algorithm from the paper"'));
-    console.log(chalk8__default.default.cyan('  /paper "Dynamic programming solution for optimal substructure"'));
-    console.log(chalk8__default.default.cyan('  /paper "Machine learning algorithm described in research"'));
-    console.log("");
-    console.log(chalk8__default.default.gray("This command uses a multi-agent system to:"));
-    console.log(chalk8__default.default.gray("  \u2022 Parse algorithm descriptions"));
-    console.log(chalk8__default.default.gray("  \u2022 Extract implementation details"));
-    console.log(chalk8__default.default.gray("  \u2022 Generate production-ready code"));
-    console.log(chalk8__default.default.gray("  \u2022 Create comprehensive tests"));
-    console.log(chalk8__default.default.gray("  \u2022 Generate documentation"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("");
     return;
   }
   try {
-<<<<<<< HEAD
     console.log(chalk30__default.default.green("\u{1F504} Initializing multi-agent system..."));
-=======
-    console.log(chalk8__default.default.green("\u{1F504} Initializing multi-agent system..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const { MultiAgentSystem: MultiAgentSystem2 } = await Promise.resolve().then(() => (init_multi_agent_system(), multi_agent_system_exports));
     const multiAgentSystem = MultiAgentSystem2.getInstance();
     const request = {
@@ -37537,17 +35255,12 @@ async function handlePaperCommand(args) {
         framework: "none"
       }
     };
-<<<<<<< HEAD
     console.log(chalk30__default.default.yellow("\u{1F4CB} Processing Configuration:"));
-=======
-    console.log(chalk8__default.default.yellow("\u{1F4CB} Processing Configuration:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log(`  \u2022 Source: ${request.source}`);
     console.log(`  \u2022 Language: ${request.options.targetLanguage}`);
     console.log(`  \u2022 Generate Tests: ${request.options.generateTests ? "\u2705" : "\u274C"}`);
     console.log(`  \u2022 Include Docs: ${request.options.includeDocumentation ? "\u2705" : "\u274C"}`);
     console.log("");
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue("\u{1F680} Starting multi-agent processing..."));
     let lastProgress = 0;
     for await (const update of multiAgentSystem.processPaperWithStreaming(request)) {
@@ -37575,55 +35288,18 @@ async function handlePaperCommand(args) {
   } catch (error) {
     console.log(
       chalk30__default.default.red(
-=======
-    console.log(chalk8__default.default.blue("\u{1F680} Starting multi-agent processing..."));
-    let lastProgress = 0;
-    for await (const update of multiAgentSystem.processPaperWithStreaming(request)) {
-      if (update.error) {
-        console.log(chalk8__default.default.red(`\u274C Error: ${update.error}`));
-        return;
-      }
-      if (update.progress >= lastProgress + 20 || update.progress === 100) {
-        console.log(chalk8__default.default.cyan(`  ${update.progress}% - ${update.stage}`));
-        lastProgress = update.progress;
-      }
-      if (update.result) {
-        console.log(chalk8__default.default.green(`    \u2705 Completed: ${JSON.stringify(update.result)}`));
-      }
-    }
-    console.log("");
-    console.log(chalk8__default.default.green("\u2728 Paper processing complete!"));
-    console.log(chalk8__default.default.gray("The multi-agent system has:"));
-    console.log(chalk8__default.default.gray("  \u2022 Analyzed your algorithm description"));
-    console.log(chalk8__default.default.gray("  \u2022 Extracted implementation patterns"));
-    console.log(chalk8__default.default.gray("  \u2022 Generated TypeScript code"));
-    console.log(chalk8__default.default.gray("  \u2022 Created comprehensive tests"));
-    console.log(chalk8__default.default.gray("  \u2022 Generated documentation"));
-    console.log("");
-  } catch (error) {
-    console.log(
-      chalk8__default.default.red(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         `\u274C Paper processing failed: ${error instanceof Error ? error.message : "Unknown error"}`
       )
     );
     console.log("");
-<<<<<<< HEAD
     console.log(chalk30__default.default.yellow("\u{1F4A1} Troubleshooting:"));
     console.log(chalk30__default.default.gray("  \u2022 Try with a simpler algorithm description"));
     console.log(chalk30__default.default.gray("  \u2022 Check system status with /health"));
     console.log(chalk30__default.default.gray("  \u2022 Ensure AI services are available"));
-=======
-    console.log(chalk8__default.default.yellow("\u{1F4A1} Troubleshooting:"));
-    console.log(chalk8__default.default.gray("  \u2022 Try with a simpler algorithm description"));
-    console.log(chalk8__default.default.gray("  \u2022 Check system status with /health"));
-    console.log(chalk8__default.default.gray("  \u2022 Ensure AI services are available"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("");
   }
 }
 async function handleLintCommand(args) {
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F50D} Lint Analysis & Code Quality Check\n"));
   if (args.length === 0) {
     console.log(chalk30__default.default.yellow("Lint Analysis Options:"));
@@ -37633,23 +35309,11 @@ async function handleLintCommand(args) {
     console.log(`${chalk30__default.default.cyan("\u2022 /lint rules")} - Show active linting rules`);
     console.log("");
     console.log(chalk30__default.default.gray("Example: /lint check"));
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F50D} Lint Analysis & Code Quality Check\n"));
-  if (args.length === 0) {
-    console.log(chalk8__default.default.yellow("Lint Analysis Options:"));
-    console.log(chalk8__default.default.cyan("\u2022 /lint check") + " - Run comprehensive lint analysis");
-    console.log(chalk8__default.default.cyan("\u2022 /lint fix") + " - Auto-fix linting issues");
-    console.log(chalk8__default.default.cyan("\u2022 /lint report") + " - Generate detailed lint report");
-    console.log(chalk8__default.default.cyan("\u2022 /lint rules") + " - Show active linting rules");
-    console.log("");
-    console.log(chalk8__default.default.gray("Example: /lint check"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   const action = args[0].toLowerCase();
   switch (action) {
     case "check":
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F504} Running lint analysis on codebase..."));
       console.log(
         chalk30__default.default.gray("Checking for ESLint errors, code style violations, and best practices...")
@@ -37669,20 +35333,11 @@ async function handleLintCommand(args) {
       }
       console.log("");
       console.log(chalk30__default.default.yellow("\u{1F4CA} Lint Analysis Results:"));
-=======
-      console.log(chalk8__default.default.green("\u{1F504} Running lint analysis on codebase..."));
-      console.log(
-        chalk8__default.default.gray("Checking for ESLint errors, code style violations, and best practices...")
-      );
-      console.log("");
-      console.log(chalk8__default.default.yellow("\u{1F4CA} Lint Analysis Results:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("\u2022 Syntax errors: 0");
       console.log("\u2022 Style violations: 3 (auto-fixable)");
       console.log("\u2022 Best practice issues: 1");
       console.log("\u2022 Code quality score: 94/100");
       console.log("");
-<<<<<<< HEAD
       if (memoryEngine) {
         try {
           await memoryEngine.store({
@@ -37703,18 +35358,10 @@ async function handleLintCommand(args) {
     case "fix":
       console.log(chalk30__default.default.green("\u{1F527} Auto-fixing lint issues..."));
       console.log(chalk30__default.default.gray("Applying automatic fixes for style and formatting issues..."));
-=======
-      console.log(chalk8__default.default.gray('\u{1F4A1} Run "/lint fix" to automatically fix resolvable issues'));
-      break;
-    case "fix":
-      console.log(chalk8__default.default.green("\u{1F527} Auto-fixing lint issues..."));
-      console.log(chalk8__default.default.gray("Applying automatic fixes for style and formatting issues..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("\u2705 Fixed 3 auto-fixable issues");
       console.log("\u26A0\uFE0F 1 issue requires manual attention");
       break;
     case "report":
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F4CB} Generating comprehensive lint report..."));
       generateLintReport();
       break;
@@ -37737,36 +35384,11 @@ async function handleTypecheckCommand(args) {
     console.log(`${chalk30__default.default.cyan("\u2022 /typecheck config")} - Optimize TSConfig settings`);
     console.log("");
     console.log(chalk30__default.default.gray("Example: /typecheck analyze"));
-=======
-      console.log(chalk8__default.default.green("\u{1F4CB} Generating comprehensive lint report..."));
-      generateLintReport();
-      break;
-    case "rules":
-      console.log(chalk8__default.default.green("\u{1F4DC} Active Linting Rules:"));
-      showLintRules();
-      break;
-    default:
-      console.log(chalk8__default.default.red(`Unknown lint action: ${action}`));
-      console.log(chalk8__default.default.gray("Use: /lint to see available options"));
-  }
-}
-async function handleTypecheckCommand(args) {
-  console.log(chalk8__default.default.blue("\n\u{1F6E1}\uFE0F TypeScript Type Safety Analysis\n"));
-  if (args.length === 0) {
-    console.log(chalk8__default.default.yellow("TypeScript Analysis Options:"));
-    console.log(chalk8__default.default.cyan("\u2022 /typecheck analyze") + " - Run comprehensive type analysis");
-    console.log(chalk8__default.default.cyan("\u2022 /typecheck coverage") + " - Calculate type coverage");
-    console.log(chalk8__default.default.cyan("\u2022 /typecheck strict") + " - Check strict mode compliance");
-    console.log(chalk8__default.default.cyan("\u2022 /typecheck config") + " - Optimize TSConfig settings");
-    console.log("");
-    console.log(chalk8__default.default.gray("Example: /typecheck analyze"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   const action = args[0].toLowerCase();
   switch (action) {
     case "analyze":
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F504} Running TypeScript type analysis..."));
       console.log(chalk30__default.default.gray("Analyzing type safety, any usage, and strict mode compliance..."));
       if (memoryEngine) {
@@ -37784,19 +35406,12 @@ async function handleTypecheckCommand(args) {
       }
       console.log("");
       console.log(chalk30__default.default.yellow("\u{1F4CA} Type Analysis Results:"));
-=======
-      console.log(chalk8__default.default.green("\u{1F504} Running TypeScript type analysis..."));
-      console.log(chalk8__default.default.gray("Analyzing type safety, any usage, and strict mode compliance..."));
-      console.log("");
-      console.log(chalk8__default.default.yellow("\u{1F4CA} Type Analysis Results:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("\u2022 Type errors: 0");
       console.log("\u2022 Any type usage: 2 instances");
       console.log("\u2022 Unknown type usage: 5 instances");
       console.log("\u2022 Type coverage: 87%");
       console.log("\u2022 Strict mode: Partially compliant");
       console.log("");
-<<<<<<< HEAD
       if (memoryEngine) {
         try {
           await memoryEngine.store({
@@ -37845,59 +35460,17 @@ async function handleSecurityReviewCommand(args) {
     console.log(`${chalk30__default.default.cyan("\u2022 /security-review report")} - Generate security assessment report`);
     console.log("");
     console.log(chalk30__default.default.gray("Example: /security-review scan"));
-=======
-      console.log(chalk8__default.default.gray("\u{1F4A1} Consider enabling strict mode for better type safety"));
-      break;
-    case "coverage":
-      console.log(chalk8__default.default.green("\u{1F4CA} Calculating type coverage..."));
-      generateTypeCoverageReport();
-      break;
-    case "strict":
-      console.log(chalk8__default.default.green("\u{1F512} Checking strict mode compliance..."));
-      checkStrictModeCompliance();
-      break;
-    case "config":
-      console.log(chalk8__default.default.green("\u2699\uFE0F TSConfig optimization recommendations:"));
-      showTSConfigOptimizations();
-      break;
-    default:
-      console.log(chalk8__default.default.red(`Unknown typecheck action: ${action}`));
-      console.log(chalk8__default.default.gray("Use: /typecheck to see available options"));
-  }
-}
-async function handleSecurityReviewCommand(args) {
-  console.log(chalk8__default.default.blue("\n\u{1F512} Security Vulnerability Assessment\n"));
-  if (args.length === 0) {
-    console.log(chalk8__default.default.yellow("Security Review Options:"));
-    console.log(chalk8__default.default.cyan("\u2022 /security-review scan") + " - Run comprehensive security scan");
-    console.log(
-      chalk8__default.default.cyan("\u2022 /security-review audit") + " - Audit dependencies for vulnerabilities"
-    );
-    console.log(chalk8__default.default.cyan("\u2022 /security-review owasp") + " - OWASP Top 10 compliance check");
-    console.log(chalk8__default.default.cyan("\u2022 /security-review report") + " - Generate security assessment report");
-    console.log("");
-    console.log(chalk8__default.default.gray("Example: /security-review scan"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   const action = args[0].toLowerCase();
   switch (action) {
     case "scan":
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F504} Running comprehensive security scan..."));
       console.log(
         chalk30__default.default.gray("Scanning for vulnerabilities, injection risks, and security best practices...")
       );
       console.log("");
       console.log(chalk30__default.default.yellow("\u{1F6E1}\uFE0F Security Scan Results:"));
-=======
-      console.log(chalk8__default.default.green("\u{1F504} Running comprehensive security scan..."));
-      console.log(
-        chalk8__default.default.gray("Scanning for vulnerabilities, injection risks, and security best practices...")
-      );
-      console.log("");
-      console.log(chalk8__default.default.yellow("\u{1F6E1}\uFE0F Security Scan Results:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log("\u2022 Critical vulnerabilities: 0");
       console.log("\u2022 High risk issues: 1");
       console.log("\u2022 Medium risk issues: 3");
@@ -37905,7 +35478,6 @@ async function handleSecurityReviewCommand(args) {
       console.log("\u2022 OWASP compliance: 8/10");
       console.log("");
       console.log(
-<<<<<<< HEAD
         chalk30__default.default.red("\u26A0\uFE0F High Risk Issue: Potential XSS vulnerability in user input handling")
       );
       break;
@@ -37930,155 +35502,77 @@ function generateLintReport() {
   console.log(chalk30__default.default.bold("\u{1F4CB} Comprehensive Lint Report:"));
   console.log("");
   console.log(chalk30__default.default.yellow("\u{1F50D} Code Quality Analysis:"));
-=======
-        chalk8__default.default.red("\u26A0\uFE0F High Risk Issue: Potential XSS vulnerability in user input handling")
-      );
-      break;
-    case "audit":
-      console.log(chalk8__default.default.green("\u{1F50D} Auditing dependencies for security vulnerabilities..."));
-      generateSecurityAuditReport();
-      break;
-    case "owasp":
-      console.log(chalk8__default.default.green("\u{1F4CB} OWASP Top 10 Compliance Check:"));
-      checkOWASPCompliance();
-      break;
-    case "report":
-      console.log(chalk8__default.default.green("\u{1F4C4} Generating comprehensive security report..."));
-      generateSecurityReport();
-      break;
-    default:
-      console.log(chalk8__default.default.red(`Unknown security action: ${action}`));
-      console.log(chalk8__default.default.gray("Use: /security-review to see available options"));
-  }
-}
-function generateLintReport() {
-  console.log(chalk8__default.default.bold("\u{1F4CB} Comprehensive Lint Report:"));
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F50D} Code Quality Analysis:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2022 Total files analyzed: 45");
   console.log("  \u2022 Lines of code: 12,847");
   console.log("  \u2022 Overall quality score: 94/100");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\u{1F4CA} Issue Breakdown:"));
-=======
-  console.log(chalk8__default.default.yellow("\u{1F4CA} Issue Breakdown:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2022 Errors: 0");
   console.log("  \u2022 Warnings: 3");
   console.log("  \u2022 Suggestions: 7");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.gray("\u{1F4A1} Most common issues: unused variables, missing semicolons"));
 }
 function showLintRules() {
   console.log("");
   console.log(chalk30__default.default.yellow("\u{1F3AF} Core ESLint Rules:"));
-=======
-  console.log(chalk8__default.default.gray("\u{1F4A1} Most common issues: unused variables, missing semicolons"));
-}
-function showLintRules() {
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F3AF} Core ESLint Rules:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2705 no-console: warn");
   console.log("  \u2705 no-unused-vars: error");
   console.log("  \u2705 no-undef: error");
   console.log("  \u2705 semi: error");
   console.log('  \u2705 quotes: ["error", "single"]');
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\u{1F3A8} Style Rules:"));
-=======
-  console.log(chalk8__default.default.yellow("\u{1F3A8} Style Rules:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log('  \u2705 indent: ["error", 2]');
   console.log('  \u2705 max-len: ["warn", 120]');
   console.log("  \u2705 no-trailing-spaces: error");
 }
 function generateTypeCoverageReport() {
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\u{1F4CA} Type Coverage Analysis:"));
-=======
-  console.log(chalk8__default.default.yellow("\u{1F4CA} Type Coverage Analysis:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2022 Total symbols: 1,247");
   console.log("  \u2022 Typed symbols: 1,085");
   console.log("  \u2022 Any types: 2");
   console.log("  \u2022 Unknown types: 5");
   console.log("  \u2022 Coverage: 87.0%");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\u{1F3AF} Areas for improvement:"));
-=======
-  console.log(chalk8__default.default.yellow("\u{1F3AF} Areas for improvement:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2022 src/utils/helpers.ts: 67% coverage");
   console.log("  \u2022 src/services/legacy.ts: 45% coverage");
 }
 function checkStrictModeCompliance() {
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\u{1F512} Strict Mode Compliance:"));
-=======
-  console.log(chalk8__default.default.yellow("\u{1F512} Strict Mode Compliance:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2705 noImplicitAny: enabled");
   console.log("  \u2705 strictNullChecks: enabled");
   console.log("  \u274C strictFunctionTypes: disabled");
   console.log("  \u274C noImplicitReturns: disabled");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.gray("\u{1F4A1} Enable remaining strict flags for maximum type safety"));
 }
 function showTSConfigOptimizations() {
   console.log("");
   console.log(chalk30__default.default.yellow("\u2699\uFE0F Recommended TSConfig optimizations:"));
-=======
-  console.log(chalk8__default.default.gray("\u{1F4A1} Enable remaining strict flags for maximum type safety"));
-}
-function showTSConfigOptimizations() {
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u2699\uFE0F Recommended TSConfig optimizations:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log('  \u2022 Enable "strict": true');
   console.log('  \u2022 Add "noUnusedLocals": true');
   console.log('  \u2022 Add "noUnusedParameters": true');
   console.log('  \u2022 Consider "exactOptionalPropertyTypes": true');
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.gray("These settings improve type safety and catch more potential issues"));
 }
 function generateSecurityAuditReport() {
   console.log("");
   console.log(chalk30__default.default.yellow("\u{1F50D} Dependency Security Audit:"));
-=======
-  console.log(chalk8__default.default.gray("These settings improve type safety and catch more potential issues"));
-}
-function generateSecurityAuditReport() {
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F50D} Dependency Security Audit:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2022 Total dependencies: 127");
   console.log("  \u2022 Vulnerabilities found: 0");
   console.log("  \u2022 Outdated packages: 5");
   console.log("  \u2022 Security advisories: 0");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.green("\u2705 No critical security vulnerabilities found in dependencies"));
 }
 function checkOWASPCompliance() {
   console.log("");
   console.log(chalk30__default.default.yellow("\u{1F4CB} OWASP Top 10 Compliance:"));
-=======
-  console.log(chalk8__default.default.green("\u2705 No critical security vulnerabilities found in dependencies"));
-}
-function checkOWASPCompliance() {
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F4CB} OWASP Top 10 Compliance:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2705 A01 - Broken Access Control: Compliant");
   console.log("  \u2705 A02 - Cryptographic Failures: Compliant");
   console.log("  \u26A0\uFE0F A03 - Injection: Needs review");
@@ -38090,7 +35584,6 @@ function checkOWASPCompliance() {
   console.log("  \u2705 A09 - Security Logging Failures: Compliant");
   console.log("  \u2705 A10 - Server-Side Request Forgery: Compliant");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\u26A0\uFE0F Injection (A03): Review input validation and sanitization"));
 }
 function generateSecurityReport() {
@@ -38098,38 +35591,21 @@ function generateSecurityReport() {
   console.log(chalk30__default.default.bold("\u{1F6E1}\uFE0F Comprehensive Security Assessment:"));
   console.log("");
   console.log(chalk30__default.default.yellow("\u{1F4CA} Security Overview:"));
-=======
-  console.log(chalk8__default.default.yellow("\u26A0\uFE0F Injection (A03): Review input validation and sanitization"));
-}
-function generateSecurityReport() {
-  console.log("");
-  console.log(chalk8__default.default.bold("\u{1F6E1}\uFE0F Comprehensive Security Assessment:"));
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u{1F4CA} Security Overview:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  \u2022 Overall security score: 89/100");
   console.log("  \u2022 Critical issues: 0");
   console.log("  \u2022 High risk issues: 1");
   console.log("  \u2022 Medium risk issues: 3");
   console.log("  \u2022 Low risk issues: 7");
   console.log("");
-<<<<<<< HEAD
   console.log(chalk30__default.default.red("\u{1F6A8} High Priority Issues:"));
   console.log("  1. Potential XSS in user input processing");
   console.log("");
   console.log(chalk30__default.default.yellow("\u26A0\uFE0F Medium Priority Issues:"));
-=======
-  console.log(chalk8__default.default.red("\u{1F6A8} High Priority Issues:"));
-  console.log("  1. Potential XSS in user input processing");
-  console.log("");
-  console.log(chalk8__default.default.yellow("\u26A0\uFE0F Medium Priority Issues:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log("  1. Missing CSRF protection on some endpoints");
   console.log("  2. Insufficient rate limiting");
   console.log("  3. Weak password policy enforcement");
   console.log("");
   console.log(
-<<<<<<< HEAD
     chalk30__default.default.gray("\u{1F4A1} Next steps: Address high priority issues first, then medium priority")
   );
 }
@@ -38139,17 +35615,6 @@ async function handleModeCommand(args) {
     await modeService.initialize();
   } catch (error) {
     console.log(chalk30__default.default.red("\u274C Failed to initialize Internal Mode Service:"), error);
-=======
-    chalk8__default.default.gray("\u{1F4A1} Next steps: Address high priority issues first, then medium priority")
-  );
-}
-async function handleModeCommand(args) {
-  const modeService = getInternalModeService();
-  try {
-    await modeService.initialize();
-  } catch (error) {
-    console.log(chalk8__default.default.red("\u274C Failed to initialize Internal Mode Service:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   if (args[0] === "internal") {
@@ -38158,7 +35623,6 @@ async function handleModeCommand(args) {
   }
   if (args.length === 0) {
     const currentMode = modeService.getCurrentMode();
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue("\n\u{1F4CB} Mode Status:\n"));
     console.log(`${chalk30__default.default.cyan("Operation Mode:")} chat (default)`);
     if (currentMode) {
@@ -38175,52 +35639,24 @@ async function handleModeCommand(args) {
     console.log(chalk30__default.default.gray("  /mode internal <mode>   - Switch to specific mode"));
     console.log(chalk30__default.default.gray("  /mode internal history  - View mode usage history"));
     console.log(chalk30__default.default.gray("  /mode internal stats    - View mode statistics"));
-=======
-    console.log(chalk8__default.default.blue("\n\u{1F4CB} Mode Status:\n"));
-    console.log(chalk8__default.default.cyan("Operation Mode:") + " chat (default)");
-    if (currentMode) {
-      console.log(
-        chalk8__default.default.cyan("Internal Mode:") + ` \u273D ${currentMode.displayName} - ${currentMode.description}`
-      );
-      console.log(chalk8__default.default.cyan("Category:") + ` ${currentMode.category}`);
-    } else {
-      console.log(chalk8__default.default.cyan("Internal Mode:") + " Not initialized");
-    }
-    console.log("");
-    console.log(chalk8__default.default.gray("Available commands:"));
-    console.log(chalk8__default.default.gray("  /mode internal list     - List all 50 cognitive modes"));
-    console.log(chalk8__default.default.gray("  /mode internal <mode>   - Switch to specific mode"));
-    console.log(chalk8__default.default.gray("  /mode internal history  - View mode usage history"));
-    console.log(chalk8__default.default.gray("  /mode internal stats    - View mode statistics"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("");
     return;
   }
   const operationModes = ["chat", "command", "research", "creative"];
   const newMode = args[0]?.toLowerCase();
   if (operationModes.includes(newMode)) {
-<<<<<<< HEAD
     console.log(chalk30__default.default.green(`\u2705 Operation mode set to: ${newMode}`));
     console.log(chalk30__default.default.gray("Note: Internal cognitive modes continue to work automatically"));
   } else {
     console.log(chalk30__default.default.red(`\u274C Unknown operation mode: ${newMode}`));
     console.log(chalk30__default.default.gray(`Available operation modes: ${operationModes.join(", ")}`));
     console.log(chalk30__default.default.gray("For cognitive modes, use: /mode internal <mode>"));
-=======
-    console.log(chalk8__default.default.green(`\u2705 Operation mode set to: ${newMode}`));
-    console.log(chalk8__default.default.gray("Note: Internal cognitive modes continue to work automatically"));
-  } else {
-    console.log(chalk8__default.default.red(`\u274C Unknown operation mode: ${newMode}`));
-    console.log(chalk8__default.default.gray(`Available operation modes: ${operationModes.join(", ")}`));
-    console.log(chalk8__default.default.gray("For cognitive modes, use: /mode internal <mode>"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 async function handleInternalModeCommands(args, modeService) {
   if (args.length === 0 || args[0] === "current") {
     const currentMode = modeService.getCurrentMode();
     if (currentMode) {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\n\u{1F9E0} Current Internal Mode:\n"));
       console.log(`\u273D ${chalk30__default.default.white(currentMode.name)}`);
       console.log(chalk30__default.default.gray(currentMode.description));
@@ -38228,15 +35664,6 @@ async function handleInternalModeCommands(args, modeService) {
       console.log("");
     } else {
       console.log(chalk30__default.default.yellow("\u{1F9E0} No internal mode currently active"));
-=======
-      console.log(chalk8__default.default.blue("\n\u{1F9E0} Current Internal Mode:\n"));
-      console.log(`\u273D ${chalk8__default.default.white(currentMode.displayName)}`);
-      console.log(chalk8__default.default.gray(currentMode.description));
-      console.log(chalk8__default.default.cyan("Category:") + ` ${currentMode.category}`);
-      console.log("");
-    } else {
-      console.log(chalk8__default.default.yellow("\u{1F9E0} No internal mode currently active"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     }
     return;
   }
@@ -38252,7 +35679,6 @@ async function handleInternalModeCommands(args, modeService) {
         categories.get(mode.category).push(mode);
       });
       console.log(
-<<<<<<< HEAD
         chalk30__default.default.blue(`
 \u{1F9E0} ${chalk30__default.default.bold("Internal Cognitive Modes")} (${allModes.length} total)
 `)
@@ -38263,55 +35689,27 @@ async function handleInternalModeCommands(args, modeService) {
           const symbol = mode.symbol || "\u273D";
           console.log(
             `  ${chalk30__default.default.gray(symbol)} ${chalk30__default.default.white(mode.name)} - ${mode.description}`
-=======
-        chalk8__default.default.blue(`
-\u{1F9E0} ${chalk8__default.default.bold("Internal Cognitive Modes")} (${allModes.length} total)
-`)
-      );
-      for (const [category, modes] of categories) {
-        console.log(chalk8__default.default.cyan(`\u{1F4CB} ${category.toUpperCase()}`));
-        modes.forEach((mode) => {
-          const symbol = mode.symbol || "\u273D";
-          console.log(
-            `  ${chalk8__default.default.gray(symbol)} ${chalk8__default.default.white(mode.displayName)} - ${mode.description}`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           );
         });
         console.log("");
       }
-<<<<<<< HEAD
       console.log(chalk30__default.default.gray("Usage: /mode internal <mode_name> to switch manually"));
-=======
-      console.log(chalk8__default.default.gray("Usage: /mode internal <mode_name> to switch manually"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       break;
     }
     case "history": {
       const history = modeService.getModeHistory();
       const recent = history.slice(-10);
       if (recent.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u{1F4CB} No mode history available"));
         return;
       }
       console.log(chalk30__default.default.blue(`
 \u{1F4CB} ${chalk30__default.default.bold("Recent Internal Mode History")}
-=======
-        console.log(chalk8__default.default.yellow("\u{1F4CB} No mode history available"));
-        return;
-      }
-      console.log(chalk8__default.default.blue(`
-\u{1F4CB} ${chalk8__default.default.bold("Recent Internal Mode History")}
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 `));
       recent.reverse().forEach((entry, index) => {
         const timeStr = entry.timestamp.toLocaleTimeString();
         console.log(
-<<<<<<< HEAD
           `${chalk30__default.default.gray(`${index + 1}.`)} ${chalk30__default.default.white(entry.mode.name)} ${chalk30__default.default.gray(`(${timeStr})`)}`
-=======
-          `${chalk8__default.default.gray(`${index + 1}.`)} ${chalk8__default.default.white(entry.mode.displayName)} ${chalk8__default.default.gray(`(${timeStr})`)}`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         );
       });
       console.log("");
@@ -38319,7 +35717,6 @@ async function handleInternalModeCommands(args, modeService) {
     }
     case "stats": {
       const stats = modeService.getStatistics();
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue(`
 \u{1F4CA} ${chalk30__default.default.bold("Internal Mode Statistics")}
 `));
@@ -38332,20 +35729,6 @@ async function handleInternalModeCommands(args, modeService) {
       if (stats.mostUsedModes.length > 0) {
         console.log(`
 ${chalk30__default.default.cyan("Most Used Modes:")}`);
-=======
-      console.log(chalk8__default.default.blue(`
-\u{1F4CA} ${chalk8__default.default.bold("Internal Mode Statistics")}
-`));
-      console.log(`${chalk8__default.default.cyan("Total Modes:")} ${stats.totalModes}`);
-      console.log(`${chalk8__default.default.cyan("Current Mode:")} ${stats.currentMode || "None"}`);
-      console.log(`${chalk8__default.default.cyan("Mode Changes:")} ${stats.modeChanges}`);
-      console.log(
-        `${chalk8__default.default.cyan("Avg Confidence:")} ${(stats.averageConfidence * 100).toFixed(1)}%`
-      );
-      if (stats.mostUsedModes.length > 0) {
-        console.log(`
-${chalk8__default.default.cyan("Most Used Modes:")}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         stats.mostUsedModes.forEach((item, index) => {
           console.log(`  ${index + 1}. ${item.mode} (${item.count} times)`);
         });
@@ -38355,60 +35738,36 @@ ${chalk8__default.default.cyan("Most Used Modes:")}`);
     }
     case "auto": {
       modeService.updateConfig({ autoSwitchEnabled: true });
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u{1F916} Automatic mode switching enabled"));
-=======
-      console.log(chalk8__default.default.green("\u{1F916} Automatic mode switching enabled"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       break;
     }
     case "manual": {
       modeService.updateConfig({ autoSwitchEnabled: false });
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F464} Manual mode switching enabled"));
-=======
-      console.log(chalk8__default.default.blue("\u{1F464} Manual mode switching enabled"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       break;
     }
     default: {
       const modeName = args.join(" ").toLowerCase();
       const targetMode = modeService.getAllModes().find(
-<<<<<<< HEAD
         (mode) => mode.id.toLowerCase() === modeName || mode.name.toLowerCase() === modeName || mode.name.toLowerCase().includes(modeName)
       );
       if (!targetMode) {
         console.log(chalk30__default.default.red(`\u{1F9E0} Internal mode '${modeName}' not found.`));
         console.log(chalk30__default.default.gray("Use '/mode internal list' to see available modes."));
-=======
-        (mode) => mode.id.toLowerCase() === modeName || mode.displayName.toLowerCase() === modeName || mode.displayName.toLowerCase().includes(modeName)
-      );
-      if (!targetMode) {
-        console.log(chalk8__default.default.red(`\u{1F9E0} Internal mode '${modeName}' not found.`));
-        console.log(chalk8__default.default.gray("Use '/mode internal list' to see available modes."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         return;
       }
       const success = await modeService.setMode(targetMode, "manual");
       if (success) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.green(`\u{1F9E0} Switched to internal mode: \u273D ${targetMode.name}`));
         console.log(chalk30__default.default.gray(targetMode.description));
       } else {
         console.log(chalk30__default.default.red(`Failed to switch to internal mode: ${targetMode.name}`));
-=======
-        console.log(chalk8__default.default.green(`\u{1F9E0} Switched to internal mode: \u273D ${targetMode.displayName}`));
-        console.log(chalk8__default.default.gray(targetMode.description));
-      } else {
-        console.log(chalk8__default.default.red(`Failed to switch to internal mode: ${targetMode.displayName}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       break;
     }
   }
 }
 async function handleApprovalCommand(args) {
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F91D} Human-in-the-Loop Approval System\n"));
   if (args.length === 0) {
     console.log(chalk30__default.default.yellow("Approval System Commands:"));
@@ -38421,20 +35780,6 @@ async function handleApprovalCommand(args) {
     console.log("");
     console.log(chalk30__default.default.gray("Actions: approve, reject, trust, review"));
     console.log(chalk30__default.default.gray("Quick shortcuts: Shift+Tab (approve), Ctrl+Y/N/R/T"));
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F91D} Human-in-the-Loop Approval System\n"));
-  if (args.length === 0) {
-    console.log(chalk8__default.default.yellow("Approval System Commands:"));
-    console.log(chalk8__default.default.cyan("\u2022 /approve --show") + "      - Show current approval request");
-    console.log(chalk8__default.default.cyan("\u2022 /approve --queue") + "     - Show approval queue");
-    console.log(chalk8__default.default.cyan("\u2022 /approve --action=<X>") + " - Respond to current request");
-    console.log(chalk8__default.default.cyan("\u2022 /approve --status") + "    - Show approval system status");
-    console.log(chalk8__default.default.cyan("\u2022 /approve --log") + "       - Show approval history");
-    console.log(chalk8__default.default.cyan("\u2022 /approve --trust") + "     - Show trust level and settings");
-    console.log("");
-    console.log(chalk8__default.default.gray("Actions: approve, reject, trust, review"));
-    console.log(chalk8__default.default.gray("Quick shortcuts: Shift+Tab (approve), Ctrl+Y/N/R/T"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     console.log("");
     return;
   }
@@ -38446,7 +35791,6 @@ async function handleApprovalCommand(args) {
     if (flags.show) {
       const pendingRequests = approvalEngine.getAllPendingRequests();
       if (pendingRequests.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.gray("\u{1F4CB} No pending approval requests"));
         return;
       }
@@ -38461,47 +35805,20 @@ async function handleApprovalCommand(args) {
         console.log(`   ${chalk30__default.default.gray("Time:")} ${request.estimatedTime}`);
         if (request.securityImpact) {
           console.log(`   ${chalk30__default.default.red("\u26A0\uFE0F  Security Impact")}`);
-=======
-        console.log(chalk8__default.default.gray("\u{1F4CB} No pending approval requests"));
-        return;
-      }
-      console.log(chalk8__default.default.yellow(`\u{1F4CB} Pending Approval Requests (${pendingRequests.length}):
-`));
-      pendingRequests.forEach((request, index) => {
-        console.log(`${chalk8__default.default.cyan((index + 1).toString())}. ${chalk8__default.default.white(request.themeId)}`);
-        console.log(
-          `   ${chalk8__default.default.gray("Context:")} ${request.context.description || "No description"}`
-        );
-        console.log(`   ${chalk8__default.default.gray("Risk:")} ${formatRiskLevel(request.riskAssessment)}`);
-        console.log(`   ${chalk8__default.default.gray("Time:")} ${request.estimatedTime}`);
-        if (request.securityImpact) {
-          console.log(`   ${chalk8__default.default.red("\u26A0\uFE0F  Security Impact")}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
         console.log("");
       });
       if (pendingRequests.length === 1) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.gray("Use keyboard shortcuts or /approve --action=<action> to respond"));
-=======
-        console.log(chalk8__default.default.gray("Use keyboard shortcuts or /approve --action=<action> to respond"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       return;
     }
     if (flags.queue) {
       const pendingRequests = approvalEngine.getAllPendingRequests();
-<<<<<<< HEAD
       console.log(chalk30__default.default.yellow(`\u{1F4DD} Approval Queue (${pendingRequests.length} pending):
 `));
       if (pendingRequests.length === 0) {
         console.log(chalk30__default.default.gray("No requests in queue"));
-=======
-      console.log(chalk8__default.default.yellow(`\u{1F4DD} Approval Queue (${pendingRequests.length} pending):
-`));
-      if (pendingRequests.length === 0) {
-        console.log(chalk8__default.default.gray("No requests in queue"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         pendingRequests.forEach((request, index) => {
           const age = Math.round((Date.now() - request.timestamp.getTime()) / 1e3);
@@ -38512,7 +35829,6 @@ async function handleApprovalCommand(args) {
       return;
     }
     if (flags.status) {
-<<<<<<< HEAD
       const config2 = approvalEngine.getConfig();
       const trustSettings = approvalEngine.getTrustSettings();
       const stats = approvalEngine.getApprovalStatistics();
@@ -38538,46 +35854,15 @@ ${chalk30__default.default.yellow("\u{1F4C8} Repository Stats:")}`);
       console.log(`${chalk30__default.default.cyan("Total Branches:")} ${repoStats.repository.totalBranches}`);
       console.log(
         `${chalk30__default.default.cyan("Rejection Rate:")} ${(repoStats.risk.rejectionRate * 100).toFixed(1)}%`
-=======
-      const config = approvalEngine.getConfig();
-      const trustSettings = approvalEngine.getTrustSettings();
-      const stats = approvalEngine.getApprovalStatistics();
-      const repoStats = approvalRepo.getStatistics();
-      console.log(chalk8__default.default.yellow("\u{1F527} Approval System Status:\n"));
-      console.log(`${chalk8__default.default.cyan("System Enabled:")} ${config.enabled ? "\u2705 Yes" : "\u274C No"}`);
-      console.log(`${chalk8__default.default.cyan("Trust Level:")} ${formatTrustLevel(trustSettings.currentLevel)}`);
-      console.log(`${chalk8__default.default.cyan("Auto-approval Timeout:")} ${config.autoApprovalTimeout}ms`);
-      console.log(
-        `${chalk8__default.default.cyan("Audit Trail:")} ${config.auditTrailEnabled ? "Enabled" : "Disabled"}`
-      );
-      console.log(`${chalk8__default.default.cyan("Learning:")} ${config.learningEnabled ? "Enabled" : "Disabled"}`);
-      console.log("\n" + chalk8__default.default.yellow("\u{1F4CA} Statistics:"));
-      console.log(`${chalk8__default.default.cyan("Total Requests:")} ${stats.totalRequests}`);
-      console.log(`${chalk8__default.default.cyan("Auto Approvals:")} ${stats.autoApprovals}`);
-      console.log(`${chalk8__default.default.cyan("Manual Approvals:")} ${stats.manualApprovals}`);
-      console.log(`${chalk8__default.default.cyan("Rejections:")} ${stats.rejections}`);
-      console.log(`${chalk8__default.default.cyan("Avg Decision Time:")} ${Math.round(stats.averageDecisionTime)}ms`);
-      console.log("\n" + chalk8__default.default.yellow("\u{1F4C8} Repository Stats:"));
-      console.log(`${chalk8__default.default.cyan("Total Commits:")} ${repoStats.repository.totalCommits}`);
-      console.log(`${chalk8__default.default.cyan("Total Branches:")} ${repoStats.repository.totalBranches}`);
-      console.log(
-        `${chalk8__default.default.cyan("Rejection Rate:")} ${(repoStats.risk.rejectionRate * 100).toFixed(1)}%`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       );
       console.log("");
       return;
     }
     if (flags.log) {
       const logs = approvalRepo.getLog({ limit: 10 });
-<<<<<<< HEAD
       console.log(chalk30__default.default.yellow("\u{1F4CB} Recent Approval History:\n"));
       if (logs.length === 0) {
         console.log(chalk30__default.default.gray("No approval history"));
-=======
-      console.log(chalk8__default.default.yellow("\u{1F4CB} Recent Approval History:\n"));
-      if (logs.length === 0) {
-        console.log(chalk8__default.default.gray("No approval history"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         logs.forEach((commit) => {
           const status = commit.approvalData.approved ? "\u2705" : "\u274C";
@@ -38590,7 +35875,6 @@ ${chalk30__default.default.yellow("\u{1F4C8} Repository Stats:")}`);
     }
     if (flags.trust) {
       const trustSettings = approvalEngine.getTrustSettings();
-<<<<<<< HEAD
       console.log(chalk30__default.default.yellow("\u{1F512} Trust Level & Settings:\n"));
       console.log(
         `${chalk30__default.default.cyan("Current Level:")} ${formatTrustLevel(trustSettings.currentLevel)}`
@@ -38622,37 +35906,6 @@ ${chalk30__default.default.yellow("\u2699\uFE0F  Preferences:")}`);
       );
       console.log(
         `${chalk30__default.default.cyan("Show Risk Details:")} ${trustSettings.preferences.showRiskDetails}`
-=======
-      console.log(chalk8__default.default.yellow("\u{1F512} Trust Level & Settings:\n"));
-      console.log(
-        `${chalk8__default.default.cyan("Current Level:")} ${formatTrustLevel(trustSettings.currentLevel)}`
-      );
-      console.log(
-        `${chalk8__default.default.cyan("Auto-approval Categories:")} ${trustSettings.autoApprovalCategories.join(", ") || "None"}`
-      );
-      console.log(
-        `${chalk8__default.default.cyan("Require Approval For:")} ${trustSettings.requireApprovalFor.join(", ")}`
-      );
-      console.log("\n" + chalk8__default.default.yellow("\u{1F4CA} Learning Metrics:"));
-      console.log(
-        `${chalk8__default.default.cyan("Successful Tasks:")} ${trustSettings.learningMetrics.successfulTasks}`
-      );
-      console.log(
-        `${chalk8__default.default.cyan("Total Approvals:")} ${trustSettings.learningMetrics.totalApprovals}`
-      );
-      console.log(
-        `${chalk8__default.default.cyan("User Satisfaction:")} ${trustSettings.learningMetrics.userSatisfaction}`
-      );
-      console.log("\n" + chalk8__default.default.yellow("\u2699\uFE0F  Preferences:"));
-      console.log(
-        `${chalk8__default.default.cyan("Quick Approval:")} ${trustSettings.preferences.preferQuickApproval}`
-      );
-      console.log(
-        `${chalk8__default.default.cyan("Verbose Explanations:")} ${trustSettings.preferences.verboseExplanations}`
-      );
-      console.log(
-        `${chalk8__default.default.cyan("Show Risk Details:")} ${trustSettings.preferences.showRiskDetails}`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       );
       console.log("");
       return;
@@ -38660,19 +35913,11 @@ ${chalk30__default.default.yellow("\u2699\uFE0F  Preferences:")}`);
     if (flags.action) {
       const pendingRequests = approvalEngine.getAllPendingRequests();
       if (pendingRequests.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.red("\u274C No pending approval requests to respond to"));
         return;
       }
       if (pendingRequests.length > 1) {
         console.log(chalk30__default.default.yellow("\u26A0\uFE0F  Multiple pending requests. Responding to the first one."));
-=======
-        console.log(chalk8__default.default.red("\u274C No pending approval requests to respond to"));
-        return;
-      }
-      if (pendingRequests.length > 1) {
-        console.log(chalk8__default.default.yellow("\u26A0\uFE0F  Multiple pending requests. Responding to the first one."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       const request = pendingRequests[0];
       let newTrustLevel = void 0;
@@ -38684,11 +35929,7 @@ ${chalk30__default.default.yellow("\u2699\uFE0F  Preferences:")}`);
           newTrustLevel = trustLevels[currentIndex + 1];
         }
       }
-<<<<<<< HEAD
       console.log(chalk30__default.default.green(`\u2713 Processing ${flags.action} for request: ${request.themeId}`));
-=======
-      console.log(chalk8__default.default.green(`\u2713 Processing ${flags.action} for request: ${request.themeId}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       const response = await approvalEngine.processApprovalResponse(
         request.id,
         flags.action,
@@ -38696,42 +35937,25 @@ ${chalk30__default.default.yellow("\u2699\uFE0F  Preferences:")}`);
         newTrustLevel
       );
       if (response.approved) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.green("\u2705 Request approved successfully"));
       } else {
         console.log(chalk30__default.default.red("\u274C Request rejected"));
       }
       if (newTrustLevel) {
         console.log(chalk30__default.default.blue(`\u{1F199} Trust level upgraded to: ${newTrustLevel}`));
-=======
-        console.log(chalk8__default.default.green("\u2705 Request approved successfully"));
-      } else {
-        console.log(chalk8__default.default.red("\u274C Request rejected"));
-      }
-      if (newTrustLevel) {
-        console.log(chalk8__default.default.blue(`\u{1F199} Trust level upgraded to: ${newTrustLevel}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       console.log("");
       return;
     }
-<<<<<<< HEAD
     console.log(chalk30__default.default.gray("Use /approve with flags to interact with the approval system"));
     console.log(chalk30__default.default.gray("Example: /approve --show or /approve --action=approve"));
   } catch (error) {
     console.error(chalk30__default.default.red("\u274C Approval system error:"), error);
-=======
-    console.log(chalk8__default.default.gray("Use /approve with flags to interact with the approval system"));
-    console.log(chalk8__default.default.gray("Example: /approve --show or /approve --action=approve"));
-  } catch (error) {
-    console.error(chalk8__default.default.red("\u274C Approval system error:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 function parseApprovalFlags(args) {
   const flags = {};
   args.forEach((arg) => {
-<<<<<<< HEAD
     if (arg === "--show") {
       flags.show = true;
     } else if (arg === "--queue") {
@@ -38745,15 +35969,6 @@ function parseApprovalFlags(args) {
     } else if (arg === "--quick") {
       flags.quick = true;
     } else if (arg.startsWith("--action=")) {
-=======
-    if (arg === "--show") flags.show = true;
-    else if (arg === "--queue") flags.queue = true;
-    else if (arg === "--status") flags.status = true;
-    else if (arg === "--log") flags.log = true;
-    else if (arg === "--trust") flags.trust = true;
-    else if (arg === "--quick") flags.quick = true;
-    else if (arg.startsWith("--action=")) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       flags.action = arg.split("=")[1];
     }
   });
@@ -38762,7 +35977,6 @@ function parseApprovalFlags(args) {
 function formatRiskLevel(risk) {
   switch (risk.toLowerCase()) {
     case "critical":
-<<<<<<< HEAD
       return chalk30__default.default.red.bold("CRITICAL");
     case "high":
       return chalk30__default.default.red("HIGH");
@@ -38772,22 +35986,10 @@ function formatRiskLevel(risk) {
       return chalk30__default.default.green("LOW");
     default:
       return chalk30__default.default.white(risk);
-=======
-      return chalk8__default.default.red.bold("CRITICAL");
-    case "high":
-      return chalk8__default.default.red("HIGH");
-    case "medium":
-      return chalk8__default.default.yellow("MEDIUM");
-    case "low":
-      return chalk8__default.default.green("LOW");
-    default:
-      return chalk8__default.default.white(risk);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 function formatTrustLevel(level) {
   const colors2 = {
-<<<<<<< HEAD
     novice: chalk30__default.default.red,
     learning: chalk30__default.default.yellow,
     collaborative: chalk30__default.default.blue,
@@ -38795,55 +35997,33 @@ function formatTrustLevel(level) {
     autonomous: chalk30__default.default.magenta
   };
   const color = colors2[level.toLowerCase()] || chalk30__default.default.white;
-=======
-    novice: chalk8__default.default.red,
-    learning: chalk8__default.default.yellow,
-    collaborative: chalk8__default.default.blue,
-    trusted: chalk8__default.default.green,
-    autonomous: chalk8__default.default.magenta
-  };
-  const color = colors2[level.toLowerCase()] || chalk8__default.default.white;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   return color(level.toUpperCase());
 }
 var init_interactive_session = __esm({
   "src/services/interactive-session.ts"() {
     init_cjs_shims();
     init_InternalModeService();
-<<<<<<< HEAD
     init_dual_memory_engine();
     init_memory_coordinator();
     init_InputBox();
     init_UnifiedColorPalette();
-=======
-    init_UnifiedColorPalette();
-    init_MinimalIconRegistry();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     init_ui();
     init_ApprovalEngine();
     init_QuickApprovalInterface();
     init_ApprovalRepository();
-<<<<<<< HEAD
     init_slash_command_handler();
     init_real_time_processor();
     init_startup_display();
     __name(createInteractiveSession, "createInteractiveSession");
     __name(getUserInput, "getUserInput");
     __name(getUserInputWithBox, "getUserInputWithBox");
-=======
-    __name(createInteractiveSession, "createInteractiveSession");
-    __name(getUserInput, "getUserInput");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     __name(handleCommand, "handleCommand");
     __name(showHelp, "showHelp");
     __name(showStatus, "showStatus");
     __name(showModels, "showModels");
     __name(showHealth, "showHealth");
     __name(showModelSelector, "showModelSelector");
-<<<<<<< HEAD
     __name(showInteractiveModelSelector, "showInteractiveModelSelector");
-=======
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     __name(showAvatar, "showAvatar");
     __name(handleSOWCommand, "handleSOWCommand");
     __name(handleBugCommand, "handleBugCommand");
@@ -38874,29 +36054,17 @@ var init_interactive_session = __esm({
 });
 
 // src/config/loader.ts
-<<<<<<< HEAD
 async function loadConfig2(options = {}) {
   await loadEnvironmentConfig();
   const configManager = await ConfigManager.load(options.config);
   const baseConfig = configManager.getAll();
   const config2 = {
-=======
-async function loadConfig(options = {}) {
-  await loadEnvironmentConfig();
-  const configManager = await ConfigManager.load(options.config);
-  const baseConfig = configManager.getAll();
-  const config = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     priority: options.priority || baseConfig.priority,
     autoStart: !options.offline,
     // Disable auto-start in offline mode
     healthMonitoring: baseConfig.healthMonitoring
   };
-<<<<<<< HEAD
   config2["apiKeys"] = {
-=======
-  config["apiKeys"] = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     OPENAI_API_KEY: process.env["OPENAI_API_KEY"] || "",
     ANTHROPIC_API_KEY: process.env["ANTHROPIC_API_KEY"] || "",
     GOOGLE_API_KEY: process.env["GOOGLE_AI_API_KEY"] || process.env["GEMINI_API_KEY"] || "",
@@ -38904,43 +36072,27 @@ async function loadConfig(options = {}) {
     GROQ_API_KEY: process.env["GROQ_API_KEY"] || "",
     GROK_API_KEY: process.env["GROK_API_KEY"] || ""
   };
-<<<<<<< HEAD
   config2["localProviders"] = {
-=======
-  config["localProviders"] = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     lmstudio: process.env["LMSTUDIO_ENABLED"] !== "false" && !options.offline,
     ollama: process.env["OLLAMA_ENABLED"] !== "false" && !options.offline,
     vllm: process.env["VLLM_ENABLED"] !== "false" && !options.offline
   };
   if (options.offline) {
-<<<<<<< HEAD
     config2["apiKeys"] = {};
     config2["localProviders"] = {
-=======
-    config["apiKeys"] = {};
-    config["localProviders"] = {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       lmstudio: true,
       ollama: true,
       vllm: true
     };
   }
   if (options.provider) {
-<<<<<<< HEAD
     config2["enabledProviders"] = [options.provider];
   }
   return config2;
-=======
-    config["enabledProviders"] = [options.provider];
-  }
-  return config;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 }
 async function loadEnvironmentConfig() {
   try {
     const { importNodeBuiltin: importNodeBuiltin2, safeDynamicImport: safeDynamicImport2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
-<<<<<<< HEAD
     const fs20 = await safeDynamicImport2("fs-extra").catch(
       () => importNodeBuiltin2("fs")
     );
@@ -38948,15 +36100,6 @@ async function loadEnvironmentConfig() {
     const envPath = path17.join(process.cwd(), ".env.local");
     if (await fs20.pathExists(envPath)) {
       const envContent = await fs20.readFile(envPath, "utf-8");
-=======
-    const fs5 = await safeDynamicImport2("fs-extra").catch(
-      () => importNodeBuiltin2("fs")
-    );
-    const path3 = await importNodeBuiltin2("path");
-    const envPath = path3.join(process.cwd(), ".env.local");
-    if (await fs5.pathExists(envPath)) {
-      const envContent = await fs5.readFile(envPath, "utf-8");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       if (process.env["DEBUG"]) {
         console.log("Loading environment from:", envPath);
       }
@@ -38983,11 +36126,7 @@ var init_loader = __esm({
   "src/config/loader.ts"() {
     init_cjs_shims();
     init_config_manager();
-<<<<<<< HEAD
     __name(loadConfig2, "loadConfig");
-=======
-    __name(loadConfig, "loadConfig");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     __name(loadEnvironmentConfig, "loadEnvironmentConfig");
   }
 });
@@ -38997,7 +36136,6 @@ function registerSetupOllamaCommand(program) {
     "Comma-separated list of models to download",
     "llama3.2:3b,mistral:7b,codellama:13b"
   ).action(async (options) => {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue.bold("\n\u{1F999} MARIA Ollama Setup\n"));
     try {
       const isInstalled = await checkOllamaInstalled();
@@ -39014,30 +36152,11 @@ function registerSetupOllamaCommand(program) {
       console.log(chalk30__default.default.green("\u2705 Ollama service is ready"));
       const models = options.models.split(",").map((m) => m.trim());
       console.log(chalk30__default.default.yellow(`\u{1F4E5} Downloading models: ${models.join(", ")}`));
-=======
-    console.log(chalk8__default.default.blue.bold("\n\u{1F999} MARIA Ollama Setup\n"));
-    try {
-      const isInstalled = await checkOllamaInstalled();
-      if (!isInstalled && !options.skipInstall) {
-        console.log(chalk8__default.default.yellow("\u{1F4E6} Installing Ollama..."));
-        await installOllama();
-        console.log(chalk8__default.default.green("\u2705 Ollama installed successfully"));
-      } else if (isInstalled) {
-        console.log(chalk8__default.default.green("\u2705 Ollama is already installed"));
-      }
-      console.log(chalk8__default.default.yellow("\u{1F680} Starting Ollama service..."));
-      await startOllamaService();
-      await waitForOllamaReady();
-      console.log(chalk8__default.default.green("\u2705 Ollama service is ready"));
-      const models = options.models.split(",").map((m) => m.trim());
-      console.log(chalk8__default.default.yellow(`\u{1F4E5} Downloading models: ${models.join(", ")}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       for (const model of models) {
         await downloadOllamaModel(model);
       }
       await setupEnvironmentVariables();
       await testOllamaSetup();
-<<<<<<< HEAD
       console.log(chalk30__default.default.green.bold("\n\u{1F389} Ollama setup completed successfully!"));
       console.log(chalk30__default.default.cyan("\nUsage:"));
       console.log(chalk30__default.default.white("  maria"));
@@ -39045,21 +36164,11 @@ function registerSetupOllamaCommand(program) {
       console.log(chalk30__default.default.white('  > /code "create a hello world function" --provider ollama'));
     } catch (error) {
       console.error(chalk30__default.default.red("\n\u274C Setup failed:"), error);
-=======
-      console.log(chalk8__default.default.green.bold("\n\u{1F389} Ollama setup completed successfully!"));
-      console.log(chalk8__default.default.cyan("\nUsage:"));
-      console.log(chalk8__default.default.white("  maria"));
-      console.log(chalk8__default.default.white("  > /model"));
-      console.log(chalk8__default.default.white('  > /code "create a hello world function" --provider ollama'));
-    } catch (error) {
-      console.error(chalk8__default.default.red("\n\u274C Setup failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
 }
 async function checkOllamaInstalled() {
-<<<<<<< HEAD
   return new Promise((resolve2) => {
     const child = child_process.spawn("ollama", ["--version"], { stdio: "pipe" });
     child.on("close", (code) => {
@@ -39067,35 +36176,17 @@ async function checkOllamaInstalled() {
     });
     child.on("error", () => {
       resolve2(false);
-=======
-  return new Promise((resolve) => {
-    const child = child_process.spawn("ollama", ["--version"], { stdio: "pipe" });
-    child.on("close", (code) => {
-      resolve(code === 0);
-    });
-    child.on("error", () => {
-      resolve(false);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     });
   });
 }
 async function installOllama() {
-<<<<<<< HEAD
   return new Promise((resolve2, reject) => {
     const platform = os4__namespace.default.platform();
-=======
-  return new Promise((resolve, reject) => {
-    const platform = os2__default.default.platform();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     if (platform === "darwin") {
       const brewChild = child_process.spawn("brew", ["install", "ollama"], { stdio: "inherit" });
       brewChild.on("close", (code) => {
         if (code === 0) {
-<<<<<<< HEAD
           resolve2();
-=======
-          resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         } else {
           const curlChild = child_process.spawn("curl", ["-fsSL", "https://ollama.ai/install.sh"], {
             stdio: ["pipe", "pipe", "inherit"]
@@ -39104,11 +36195,7 @@ async function installOllama() {
           curlChild.stdout.pipe(shChild.stdin);
           shChild.on("close", (code2) => {
             if (code2 === 0) {
-<<<<<<< HEAD
               resolve2();
-=======
-              resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             } else {
               reject(new Error("Failed to install Ollama via curl"));
             }
@@ -39123,11 +36210,7 @@ async function installOllama() {
       curlChild.stdout.pipe(shChild.stdin);
       shChild.on("close", (code) => {
         if (code === 0) {
-<<<<<<< HEAD
           resolve2();
-=======
-          resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         } else {
           reject(new Error("Failed to install Ollama"));
         }
@@ -39136,21 +36219,12 @@ async function installOllama() {
   });
 }
 async function startOllamaService() {
-<<<<<<< HEAD
   return new Promise((resolve2, _reject) => {
     const checkChild = child_process.spawn("pgrep", ["-f", "ollama serve"], { stdio: "pipe" });
     checkChild.on("close", (code) => {
       if (code === 0) {
         console.log(chalk30__default.default.yellow("\u26A0\uFE0F Ollama service is already running"));
         resolve2();
-=======
-  return new Promise((resolve, _reject) => {
-    const checkChild = child_process.spawn("pgrep", ["-f", "ollama serve"], { stdio: "pipe" });
-    checkChild.on("close", (code) => {
-      if (code === 0) {
-        console.log(chalk8__default.default.yellow("\u26A0\uFE0F Ollama service is already running"));
-        resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         const child = child_process.spawn("ollama", ["serve"], {
           stdio: "pipe",
@@ -39158,11 +36232,7 @@ async function startOllamaService() {
         });
         child.unref();
         setTimeout(() => {
-<<<<<<< HEAD
           resolve2();
-=======
-          resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }, 3e3);
       }
     });
@@ -39179,17 +36249,12 @@ async function waitForOllamaReady() {
       }
     } catch (error) {
     }
-<<<<<<< HEAD
     await new Promise((resolve2) => setTimeout(resolve2, 1e3));
-=======
-    await new Promise((resolve) => setTimeout(resolve, 1e3));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     attempts++;
   }
   throw new Error("Ollama service did not become ready within 30 seconds");
 }
 async function downloadOllamaModel(model) {
-<<<<<<< HEAD
   return new Promise((resolve2, reject) => {
     console.log(chalk30__default.default.cyan(`  Downloading ${model}...`));
     const child = child_process.spawn("ollama", ["pull", model], { stdio: "inherit" });
@@ -39197,15 +36262,6 @@ async function downloadOllamaModel(model) {
       if (code === 0) {
         console.log(chalk30__default.default.green(`  \u2705 ${model} downloaded successfully`));
         resolve2();
-=======
-  return new Promise((resolve, reject) => {
-    console.log(chalk8__default.default.cyan(`  Downloading ${model}...`));
-    const child = child_process.spawn("ollama", ["pull", model], { stdio: "inherit" });
-    child.on("close", (code) => {
-      if (code === 0) {
-        console.log(chalk8__default.default.green(`  \u2705 ${model} downloaded successfully`));
-        resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         reject(new Error(`Failed to download model: ${model}`));
       }
@@ -39213,7 +36269,6 @@ async function downloadOllamaModel(model) {
   });
 }
 async function setupEnvironmentVariables() {
-<<<<<<< HEAD
   const homeDir = os4__namespace.default.homedir();
   const shell = process.env["SHELL"] || "/bin/bash";
   let rcFile = "";
@@ -39223,17 +36278,6 @@ async function setupEnvironmentVariables() {
     rcFile = path10__namespace.default.join(homeDir, ".bashrc");
   } else {
     rcFile = path10__namespace.default.join(homeDir, ".profile");
-=======
-  const homeDir = os2__default.default.homedir();
-  const shell = process.env["SHELL"] || "/bin/bash";
-  let rcFile = "";
-  if (shell.includes("zsh")) {
-    rcFile = path2__default.default.join(homeDir, ".zshrc");
-  } else if (shell.includes("bash")) {
-    rcFile = path2__default.default.join(homeDir, ".bashrc");
-  } else {
-    rcFile = path2__default.default.join(homeDir, ".profile");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
   const envVars = `
 # MARIA Ollama Configuration
@@ -39243,7 +36287,6 @@ export OLLAMA_NUM_PARALLEL=2
 export OLLAMA_MAX_LOADED_MODELS=3
 `;
   try {
-<<<<<<< HEAD
     const currentContent = await fs15.promises.readFile(rcFile, "utf8").catch(() => "");
     if (!currentContent.includes("MARIA Ollama Configuration")) {
       await fs15.promises.appendFile(rcFile, envVars);
@@ -39255,47 +36298,22 @@ export OLLAMA_MAX_LOADED_MODELS=3
   } catch (error) {
     console.log(chalk30__default.default.yellow("\u26A0\uFE0F Could not update shell configuration. Please add manually:"));
     console.log(chalk30__default.default.white(envVars));
-=======
-    const currentContent = await fs.promises.readFile(rcFile, "utf8").catch(() => "");
-    if (!currentContent.includes("MARIA Ollama Configuration")) {
-      await fs.promises.appendFile(rcFile, envVars);
-      console.log(chalk8__default.default.green(`\u2705 Environment variables added to ${rcFile}`));
-      console.log(chalk8__default.default.yellow("\u2139\uFE0F Please restart your terminal or run: source " + rcFile));
-    } else {
-      console.log(chalk8__default.default.yellow("\u26A0\uFE0F Environment variables already configured"));
-    }
-  } catch (error) {
-    console.log(chalk8__default.default.yellow("\u26A0\uFE0F Could not update shell configuration. Please add manually:"));
-    console.log(chalk8__default.default.white(envVars));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 async function testOllamaSetup() {
   try {
-<<<<<<< HEAD
     console.log(chalk30__default.default.yellow("\u{1F9EA} Testing Ollama setup..."));
-=======
-    console.log(chalk8__default.default.yellow("\u{1F9EA} Testing Ollama setup..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const response = await fetch("http://localhost:11434/api/tags");
     if (!response.ok) {
       throw new Error("API connection failed");
     }
     const data = await response.json();
     const models = data.models || [];
-<<<<<<< HEAD
     console.log(chalk30__default.default.green(`\u2705 API test passed - ${models.length} models available`));
     if (models.length > 0) {
       console.log(chalk30__default.default.cyan("Available models:"));
       models.forEach((model) => {
         console.log(chalk30__default.default.white(`  - ${model.name}`));
-=======
-    console.log(chalk8__default.default.green(`\u2705 API test passed - ${models.length} models available`));
-    if (models.length > 0) {
-      console.log(chalk8__default.default.cyan("Available models:"));
-      models.forEach((model) => {
-        console.log(chalk8__default.default.white(`  - ${model.name}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       });
     }
   } catch (error) {
@@ -39321,16 +36339,11 @@ function registerSetupVllmCommand(program) {
     "Comma-separated list of Hugging Face models to download",
     "microsoft/DialoGPT-medium"
   ).option("--venv-path <path>", "Custom path for Python virtual environment", "~/vllm-env").option("--model-dir <dir>", "Directory to store downloaded models", "~/vllm-models").action(async (options) => {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue.bold("\n\u{1F680} MARIA vLLM Setup\n"));
-=======
-    console.log(chalk8__default.default.blue.bold("\n\u{1F680} MARIA vLLM Setup\n"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     try {
       if (!options.skipPythonCheck) {
         await checkPythonVersion();
       }
-<<<<<<< HEAD
       const venvPath = options.venvPath.replace("~", os4__namespace.default.homedir());
       const modelDir = options.modelDir.replace("~", os4__namespace.default.homedir());
       console.log(chalk30__default.default.yellow("\u{1F40D} Creating Python virtual environment..."));
@@ -39341,25 +36354,12 @@ function registerSetupVllmCommand(program) {
       await fs15.promises.mkdir(modelDir, { recursive: true });
       const models = options.models.split(",").map((m) => m.trim());
       console.log(chalk30__default.default.yellow(`\u{1F4E5} Downloading models: ${models.join(", ")}`));
-=======
-      const venvPath = options.venvPath.replace("~", os2__default.default.homedir());
-      const modelDir = options.modelDir.replace("~", os2__default.default.homedir());
-      console.log(chalk8__default.default.yellow("\u{1F40D} Creating Python virtual environment..."));
-      await createVirtualEnvironment(venvPath);
-      console.log(chalk8__default.default.yellow("\u{1F4E6} Installing vLLM and dependencies..."));
-      await installVllm(venvPath);
-      console.log(chalk8__default.default.yellow("\u{1F4C1} Creating model directory..."));
-      await fs.promises.mkdir(modelDir, { recursive: true });
-      const models = options.models.split(",").map((m) => m.trim());
-      console.log(chalk8__default.default.yellow(`\u{1F4E5} Downloading models: ${models.join(", ")}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       for (const model of models) {
         await downloadModel(venvPath, model, modelDir);
       }
       await createStartupScript(venvPath, modelDir, models[0]);
       await setupEnvironmentVariables2();
       await testVllmSetup(venvPath, modelDir, models[0]);
-<<<<<<< HEAD
       console.log(chalk30__default.default.green.bold("\n\u{1F389} vLLM setup completed successfully!"));
       console.log(chalk30__default.default.cyan("\nUsage:"));
       console.log(chalk30__default.default.white("  # Start vLLM server:"));
@@ -39371,29 +36371,12 @@ function registerSetupVllmCommand(program) {
       console.log(chalk30__default.default.white('  > /code "create a hello world function" --provider vllm'));
     } catch (error) {
       console.error(chalk30__default.default.red("\n\u274C Setup failed:"), error);
-=======
-      console.log(chalk8__default.default.green.bold("\n\u{1F389} vLLM setup completed successfully!"));
-      console.log(chalk8__default.default.cyan("\nUsage:"));
-      console.log(chalk8__default.default.white("  # Start vLLM server:"));
-      console.log(chalk8__default.default.white("  ./scripts/start-vllm.sh"));
-      console.log(chalk8__default.default.white(""));
-      console.log(chalk8__default.default.white("  # Use in MARIA:"));
-      console.log(chalk8__default.default.white("  maria"));
-      console.log(chalk8__default.default.white("  > /model"));
-      console.log(chalk8__default.default.white('  > /code "create a hello world function" --provider vllm'));
-    } catch (error) {
-      console.error(chalk8__default.default.red("\n\u274C Setup failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
 }
 async function checkPythonVersion() {
-<<<<<<< HEAD
   return new Promise((resolve2, reject) => {
-=======
-  return new Promise((resolve, reject) => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const child = child_process.spawn("python3", ["--version"], { stdio: "pipe" });
     let output = "";
     child.stdout.on("data", (data) => {
@@ -39413,19 +36396,11 @@ async function checkPythonVersion() {
       const majorNum = parseInt(major || "0", 10);
       const minorNum = parseInt(minor || "0", 10);
       if (majorNum < 3 || majorNum === 3 && minorNum < 8) {
-<<<<<<< HEAD
         reject(new Error(`Python 3.8+ is required. Current version: ${output.trim()}`));
         return;
       }
       console.log(chalk30__default.default.green(`\u2705 Python version check passed: ${output.trim()}`));
       resolve2();
-=======
-        reject(new Error("Python 3.8+ is required. Current version: " + output.trim()));
-        return;
-      }
-      console.log(chalk8__default.default.green("\u2705 Python version check passed: " + output.trim()));
-      resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     });
     child.on("error", () => {
       reject(new Error("Python 3 is not installed. Please install Python 3.8+ first."));
@@ -39433,21 +36408,12 @@ async function checkPythonVersion() {
   });
 }
 async function createVirtualEnvironment(venvPath) {
-<<<<<<< HEAD
   return new Promise((resolve2, reject) => {
     const child = child_process.spawn("python3", ["-m", "venv", venvPath], { stdio: "inherit" });
     child.on("close", (code) => {
       if (code === 0) {
         console.log(chalk30__default.default.green(`\u2705 Virtual environment created at: ${venvPath}`));
         resolve2();
-=======
-  return new Promise((resolve, reject) => {
-    const child = child_process.spawn("python3", ["-m", "venv", venvPath], { stdio: "inherit" });
-    child.on("close", (code) => {
-      if (code === 0) {
-        console.log(chalk8__default.default.green("\u2705 Virtual environment created at: " + venvPath));
-        resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         reject(new Error("Failed to create virtual environment"));
       }
@@ -39455,13 +36421,8 @@ async function createVirtualEnvironment(venvPath) {
   });
 }
 async function installVllm(venvPath) {
-<<<<<<< HEAD
   const pipPath = path10__namespace.default.join(venvPath, "bin", "pip");
   return new Promise((resolve2, reject) => {
-=======
-  const pipPath = path2__default.default.join(venvPath, "bin", "pip");
-  return new Promise((resolve, reject) => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const upgradeChild = child_process.spawn(pipPath, ["install", "--upgrade", "pip"], { stdio: "inherit" });
     upgradeChild.on("close", (code) => {
       if (code !== 0) {
@@ -39469,21 +36430,12 @@ async function installVllm(venvPath) {
         return;
       }
       const packages = ["vllm", "torch", "torchvision", "torchaudio", "huggingface_hub"];
-<<<<<<< HEAD
       console.log(chalk30__default.default.cyan(`Installing packages: ${packages.join(", ")}`));
       const installChild = child_process.spawn(pipPath, ["install", ...packages], { stdio: "inherit" });
       installChild.on("close", (code2) => {
         if (code2 === 0) {
           console.log(chalk30__default.default.green("\u2705 vLLM and dependencies installed successfully"));
           resolve2();
-=======
-      console.log(chalk8__default.default.cyan("Installing packages: " + packages.join(", ")));
-      const installChild = child_process.spawn(pipPath, ["install", ...packages], { stdio: "inherit" });
-      installChild.on("close", (code2) => {
-        if (code2 === 0) {
-          console.log(chalk8__default.default.green("\u2705 vLLM and dependencies installed successfully"));
-          resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         } else {
           reject(new Error("Failed to install vLLM packages"));
         }
@@ -39492,17 +36444,10 @@ async function installVllm(venvPath) {
   });
 }
 async function downloadModel(venvPath, modelName, modelDir) {
-<<<<<<< HEAD
   const pythonPath = path10__namespace.default.join(venvPath, "bin", "python");
   const modelPath = path10__namespace.default.join(modelDir, modelName.replace("/", "_"));
   return new Promise((resolve2, reject) => {
     console.log(chalk30__default.default.cyan(`  Downloading ${modelName}...`));
-=======
-  const pythonPath = path2__default.default.join(venvPath, "bin", "python");
-  const modelPath = path2__default.default.join(modelDir, modelName.replace("/", "_"));
-  return new Promise((resolve, reject) => {
-    console.log(chalk8__default.default.cyan(`  Downloading ${modelName}...`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const downloadScript = `
 import os
 from huggingface_hub import snapshot_download
@@ -39521,13 +36466,8 @@ except Exception as e:
     const child = child_process.spawn(pythonPath, ["-c", downloadScript], { stdio: "inherit" });
     child.on("close", (code) => {
       if (code === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.green(`  \u2705 ${modelName} downloaded successfully`));
         resolve2();
-=======
-        console.log(chalk8__default.default.green(`  \u2705 ${modelName} downloaded successfully`));
-        resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         reject(new Error(`Failed to download model: ${modelName}`));
       }
@@ -39535,15 +36475,9 @@ except Exception as e:
   });
 }
 async function createStartupScript(venvPath, modelDir, defaultModel) {
-<<<<<<< HEAD
   const scriptsDir = path10__namespace.default.join(process.cwd(), "scripts");
   const scriptPath = path10__namespace.default.join(scriptsDir, "start-vllm.sh");
   const modelPath = path10__namespace.default.join(modelDir, defaultModel.replace("/", "_"));
-=======
-  const scriptsDir = path2__default.default.join(process.cwd(), "scripts");
-  const scriptPath = path2__default.default.join(scriptsDir, "start-vllm.sh");
-  const modelPath = path2__default.default.join(modelDir, defaultModel.replace("/", "_"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   const scriptContent = `#!/bin/bash
 
 # MARIA vLLM Startup Script
@@ -39594,7 +36528,6 @@ for i in {1..30}; do
 done
 `;
   try {
-<<<<<<< HEAD
     await fs15.promises.mkdir(scriptsDir, { recursive: true });
     await fs15.promises.writeFile(scriptPath, scriptContent);
     await fs15.promises.chmod(scriptPath, 493);
@@ -39613,26 +36546,6 @@ async function setupEnvironmentVariables2() {
     rcFile = path10__namespace.default.join(homeDir, ".bashrc");
   } else {
     rcFile = path10__namespace.default.join(homeDir, ".profile");
-=======
-    await fs.promises.mkdir(scriptsDir, { recursive: true });
-    await fs.promises.writeFile(scriptPath, scriptContent);
-    await fs.promises.chmod(scriptPath, 493);
-    console.log(chalk8__default.default.green("\u2705 Startup script created: " + scriptPath));
-  } catch (error) {
-    console.log(chalk8__default.default.yellow("\u26A0\uFE0F Could not create startup script: " + error));
-  }
-}
-async function setupEnvironmentVariables2() {
-  const homeDir = os2__default.default.homedir();
-  const shell = process.env["SHELL"] || "/bin/bash";
-  let rcFile = "";
-  if (shell.includes("zsh")) {
-    rcFile = path2__default.default.join(homeDir, ".zshrc");
-  } else if (shell.includes("bash")) {
-    rcFile = path2__default.default.join(homeDir, ".bashrc");
-  } else {
-    rcFile = path2__default.default.join(homeDir, ".profile");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
   const envVars = `
 # MARIA vLLM Configuration
@@ -39640,7 +36553,6 @@ export VLLM_API_URL="http://localhost:8000"
 export VLLM_DEFAULT_MODEL="DialoGPT-medium"
 `;
   try {
-<<<<<<< HEAD
     const currentContent = await fs15.promises.readFile(rcFile, "utf8").catch(() => "");
     if (!currentContent.includes("MARIA vLLM Configuration")) {
       await fs15.promises.appendFile(rcFile, envVars);
@@ -39671,38 +36583,6 @@ async function testVllmSetup(venvPath, modelDir, defaultModel) {
     throw new Error("Model directory not found");
   }
   return new Promise((resolve2, reject) => {
-=======
-    const currentContent = await fs.promises.readFile(rcFile, "utf8").catch(() => "");
-    if (!currentContent.includes("MARIA vLLM Configuration")) {
-      await fs.promises.appendFile(rcFile, envVars);
-      console.log(chalk8__default.default.green(`\u2705 Environment variables added to ${rcFile}`));
-      console.log(chalk8__default.default.yellow("\u2139\uFE0F Please restart your terminal or run: source " + rcFile));
-    } else {
-      console.log(chalk8__default.default.yellow("\u26A0\uFE0F Environment variables already configured"));
-    }
-  } catch (error) {
-    console.log(chalk8__default.default.yellow("\u26A0\uFE0F Could not update shell configuration. Please add manually:"));
-    console.log(chalk8__default.default.white(envVars));
-  }
-}
-async function testVllmSetup(venvPath, modelDir, defaultModel) {
-  console.log(chalk8__default.default.yellow("\u{1F9EA} Testing vLLM setup..."));
-  const pythonPath = path2__default.default.join(venvPath, "bin", "python");
-  try {
-    await fs.promises.access(pythonPath);
-    console.log(chalk8__default.default.green("\u2705 Virtual environment test passed"));
-  } catch (error) {
-    throw new Error("Virtual environment not found");
-  }
-  const modelPath = path2__default.default.join(modelDir, defaultModel.replace("/", "_"));
-  try {
-    await fs.promises.access(modelPath);
-    console.log(chalk8__default.default.green("\u2705 Model directory test passed"));
-  } catch (error) {
-    throw new Error("Model directory not found");
-  }
-  return new Promise((resolve, reject) => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const testScript = 'import vllm; print("vLLM version:", vllm.__version__)';
     const child = child_process.spawn(pythonPath, ["-c", testScript], { stdio: "pipe" });
     let output = "";
@@ -39711,13 +36591,8 @@ async function testVllmSetup(venvPath, modelDir, defaultModel) {
     });
     child.on("close", (code) => {
       if (code === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.green(`\u2705 vLLM import test passed: ${output.trim()}`));
         resolve2();
-=======
-        console.log(chalk8__default.default.green("\u2705 vLLM import test passed: " + output.trim()));
-        resolve();
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       } else {
         reject(new Error("vLLM import test failed"));
       }
@@ -39741,7 +36616,6 @@ function registerCodeRAGCommand(program) {
   const coderagCommand = program.command("coderag").alias("rag").description("\u{1F50D} Vector-based code search and semantic analysis").addHelpText(
     "after",
     `
-<<<<<<< HEAD
 ${chalk30__default.default.cyan("Examples:")}
   ${chalk30__default.default.gray("$")} maria coderag index .                     # Index current directory
   ${chalk30__default.default.gray("$")} maria coderag search "async function"     # Search for async functions
@@ -39757,29 +36631,11 @@ ${chalk30__default.default.cyan("Examples:")}
       const excludePaths = options.exclude.split(",").map((p) => p.trim());
       await codeRAGService.initialize();
       const result = await codeRAGService.indexCodebase(path17, {
-=======
-${chalk8__default.default.cyan("Examples:")}
-  ${chalk8__default.default.gray("$")} maria coderag index .                     # Index current directory
-  ${chalk8__default.default.gray("$")} maria coderag search "async function"     # Search for async functions
-  ${chalk8__default.default.gray("$")} maria coderag analyze .                   # Analyze codebase patterns
-  ${chalk8__default.default.gray("$")} maria coderag similar "function calc()"   # Find similar patterns
-    `
-  );
-  coderagCommand.command("index").argument("<path>", "Path to codebase directory").option("--types <types>", "File types to include (comma-separated)", ".ts,.tsx,.js,.jsx").option("--exclude <paths>", "Paths to exclude (comma-separated)", "node_modules,dist,.git").option("--chunk-size <size>", "Chunk size for indexing", "500").description("Index codebase for vector search").action(async (path3, options) => {
-    try {
-      console.log(chalk8__default.default.blue("\u{1F50D} Indexing codebase for CodeRAG..."));
-      console.log(chalk8__default.default.gray(`Path: ${path3}`));
-      const fileTypes = options.types.split(",").map((t) => t.trim());
-      const excludePaths = options.exclude.split(",").map((p) => p.trim());
-      await codeRAGService.initialize();
-      const result = await codeRAGService.indexCodebase(path3, {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         fileTypes,
         excludePaths,
         chunkSize: parseInt(options.chunkSize, 10),
         includeTests: false
       });
-<<<<<<< HEAD
       console.log(chalk30__default.default.green(`\u2705 Indexing completed:`));
       console.log(`  \u{1F4C1} Indexed: ${result.indexed} code chunks`);
       console.log(`  \u23ED\uFE0F  Skipped: ${result.skipped} files`);
@@ -39789,29 +36645,13 @@ ${chalk8__default.default.cyan("Examples:")}
       }
     } catch (error) {
       console.error(chalk30__default.default.red("\u274C Indexing failed:"), error);
-=======
-      console.log(chalk8__default.default.green(`\u2705 Indexing completed:`));
-      console.log(`  \u{1F4C1} Indexed: ${result.indexed} code chunks`);
-      console.log(`  \u23ED\uFE0F  Skipped: ${result.skipped} files`);
-      if (result.errors.length > 0) {
-        console.log(chalk8__default.default.yellow(`\u26A0\uFE0F  Errors: ${result.errors.length}`));
-        result.errors.forEach((error) => console.log(chalk8__default.default.red(`   ${error}`)));
-      }
-    } catch (error) {
-      console.error(chalk8__default.default.red("\u274C Indexing failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   coderagCommand.command("search").argument("<query>", "Search query").option("--language <lang>", "Programming language filter").option("--max-results <num>", "Maximum number of results", "10").option("--threshold <num>", "Similarity threshold (0-1)", "0.7").description("Search codebase using semantic similarity").action(async (query, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F50D} Searching codebase..."));
       console.log(chalk30__default.default.gray(`Query: "${query}"`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F50D} Searching codebase..."));
-      console.log(chalk8__default.default.gray(`Query: "${query}"`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await codeRAGService.initialize();
       const results = await codeRAGService.semanticSearch({
         query,
@@ -39820,7 +36660,6 @@ ${chalk8__default.default.cyan("Examples:")}
         threshold: parseFloat(options.threshold)
       });
       if (results.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u{1F50D} No matching code found"));
         return;
       }
@@ -39839,121 +36678,63 @@ ${chalk8__default.default.cyan("Examples:")}
       });
     } catch (error) {
       console.error(chalk30__default.default.red("\u274C Search failed:"), error);
-=======
-        console.log(chalk8__default.default.yellow("\u{1F50D} No matching code found"));
-        return;
-      }
-      console.log(chalk8__default.default.green(`\u2705 Found ${results.length} matches:`));
-      console.log();
-      results.forEach((result, index) => {
-        console.log(
-          chalk8__default.default.cyan(
-            `[${index + 1}] ${result.chunk.filePath}:${result.chunk.startLine}-${result.chunk.endLine}`
-          )
-        );
-        console.log(chalk8__default.default.gray(`    Similarity: ${(result.similarity * 100).toFixed(1)}%`));
-        console.log(chalk8__default.default.gray(`    Relevance: ${(result.relevanceScore * 100).toFixed(1)}%`));
-        console.log(chalk8__default.default.white(`    ${result.explanation}`));
-        console.log();
-      });
-    } catch (error) {
-      console.error(chalk8__default.default.red("\u274C Search failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   coderagCommand.command("analyze").argument("<paths...>", "Paths to analyze").option("--patterns", "Include pattern analysis", true).option("--complexity", "Include complexity analysis", true).option("--insights", "Include AI insights", true).description("Analyze codebase semantically").action(async (paths, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F50D} Analyzing codebase..."));
       console.log(chalk30__default.default.gray(`Paths: ${paths.join(", ")}`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F50D} Analyzing codebase..."));
-      console.log(chalk8__default.default.gray(`Paths: ${paths.join(", ")}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await codeRAGService.initialize();
       const analysis = await codeRAGService.analyzeCodebase(paths, {
         includePatterns: options.patterns,
         includeComplexity: options.complexity,
         includeInsights: options.insights
       });
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u2705 Analysis completed:"));
       console.log();
       console.log(chalk30__default.default.cyan("\u{1F4CA} Codebase Overview:"));
-=======
-      console.log(chalk8__default.default.green("\u2705 Analysis completed:"));
-      console.log();
-      console.log(chalk8__default.default.cyan("\u{1F4CA} Codebase Overview:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`  Files: ${analysis.codebase.totalFiles}`);
       console.log(`  Code chunks: ${analysis.codebase.totalChunks}`);
       console.log(`  Languages: ${analysis.codebase.languages.join(", ")}`);
       console.log();
       if (analysis.patterns.commonPatterns.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F527} Common Patterns:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F527} Common Patterns:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         analysis.patterns.commonPatterns.slice(0, 5).forEach((pattern) => {
           console.log(`  \u2022 ${pattern.pattern} (${pattern.frequency} times)`);
         });
         console.log();
       }
       if (analysis.patterns.antiPatterns.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u26A0\uFE0F  Anti-patterns Found:"));
         analysis.patterns.antiPatterns.slice(0, 3).forEach((antiPattern) => {
           const color = antiPattern.severity === "high" ? chalk30__default.default.red : antiPattern.severity === "medium" ? chalk30__default.default.yellow : chalk30__default.default.gray;
-=======
-        console.log(chalk8__default.default.yellow("\u26A0\uFE0F  Anti-patterns Found:"));
-        analysis.patterns.antiPatterns.slice(0, 3).forEach((antiPattern) => {
-          const color = antiPattern.severity === "high" ? chalk8__default.default.red : antiPattern.severity === "medium" ? chalk8__default.default.yellow : chalk8__default.default.gray;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           console.log(color(`  \u2022 ${antiPattern.pattern} (${antiPattern.severity})`));
         });
         console.log();
       }
       if (analysis.insights.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F4A1} AI Insights:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F4A1} AI Insights:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         analysis.insights.slice(0, 3).forEach((insight) => {
           console.log(`  \u2022 ${insight}`);
         });
         console.log();
       }
       if (analysis.recommendations.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.green("\u{1F3AF} Recommendations:"));
-=======
-        console.log(chalk8__default.default.green("\u{1F3AF} Recommendations:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         analysis.recommendations.slice(0, 3).forEach((recommendation) => {
           console.log(`  \u2022 ${recommendation}`);
         });
       }
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C Analysis failed:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C Analysis failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   coderagCommand.command("similar").argument("<code>", "Code snippet to find similar patterns for").option("--language <lang>", "Programming language").option("--similarity <num>", "Minimum similarity threshold", "0.6").option("--max-results <num>", "Maximum number of results", "5").description("Find similar code patterns").action(async (code, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F50D} Finding similar patterns..."));
       console.log(chalk30__default.default.gray(`Code: "${code.substring(0, 50)}${code.length > 50 ? "..." : ""}"`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F50D} Finding similar patterns..."));
-      console.log(chalk8__default.default.gray(`Code: "${code.substring(0, 50)}${code.length > 50 ? "..." : ""}"`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await codeRAGService.initialize();
       const results = await codeRAGService.findSimilarPatterns(code, {
         language: options.language,
@@ -39961,7 +36742,6 @@ ${chalk8__default.default.cyan("Examples:")}
         maxResults: parseInt(options.maxResults, 10)
       });
       if (results.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u{1F50D} No similar patterns found"));
         return;
       }
@@ -39981,51 +36761,20 @@ ${chalk8__default.default.cyan("Examples:")}
         });
         if (result.chunk.content.split("\n").length > 3) {
           console.log(chalk30__default.default.gray("    ..."));
-=======
-        console.log(chalk8__default.default.yellow("\u{1F50D} No similar patterns found"));
-        return;
-      }
-      console.log(chalk8__default.default.green(`\u2705 Found ${results.length} similar patterns:`));
-      console.log();
-      results.forEach((result, index) => {
-        console.log(
-          chalk8__default.default.cyan(
-            `[${index + 1}] ${result.chunk.filePath}:${result.chunk.startLine}-${result.chunk.endLine}`
-          )
-        );
-        console.log(chalk8__default.default.gray(`    Similarity: ${(result.similarity * 100).toFixed(1)}%`));
-        console.log(chalk8__default.default.white(`    ${result.explanation}`));
-        const lines = result.chunk.content.split("\n").slice(0, 3);
-        lines.forEach((line) => {
-          console.log(chalk8__default.default.gray(`    ${line.trim()}`));
-        });
-        if (result.chunk.content.split("\n").length > 3) {
-          console.log(chalk8__default.default.gray("    ..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
         console.log();
       });
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C Pattern search failed:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C Pattern search failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   coderagCommand.command("status").description("Show CodeRAG system status").action(async () => {
     try {
       const status = codeRAGService.getStatus();
-<<<<<<< HEAD
       console.log(chalk30__default.default.cyan("\u{1F50D} CodeRAG System Status:"));
       console.log();
       console.log(`Initialized: ${status.initialized ? chalk30__default.default.green("\u2705") : chalk30__default.default.red("\u274C")}`);
-=======
-      console.log(chalk8__default.default.cyan("\u{1F50D} CodeRAG System Status:"));
-      console.log();
-      console.log(`Initialized: ${status.initialized ? chalk8__default.default.green("\u2705") : chalk8__default.default.red("\u274C")}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`Indexed paths: ${status.indexedPaths.length}`);
       console.log(`Total chunks: ${status.totalChunks}`);
       console.log(`Total embeddings: ${status.totalEmbeddings}`);
@@ -40035,7 +36784,6 @@ ${chalk8__default.default.cyan("Examples:")}
       }
       if (status.indexedPaths.length > 0) {
         console.log();
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("Indexed paths:"));
         status.indexedPaths.forEach((path17) => {
           console.log(`  \u2022 ${path17}`);
@@ -40043,31 +36791,15 @@ ${chalk8__default.default.cyan("Examples:")}
       }
     } catch (error) {
       console.error(chalk30__default.default.red("\u274C Status check failed:"), error);
-=======
-        console.log(chalk8__default.default.cyan("Indexed paths:"));
-        status.indexedPaths.forEach((path3) => {
-          console.log(`  \u2022 ${path3}`);
-        });
-      }
-    } catch (error) {
-      console.error(chalk8__default.default.red("\u274C Status check failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   coderagCommand.command("process-paper").argument("<source>", "Paper source (PDF path, arXiv ID, or URL)").option("--type <type>", "Source type (pdf|arxiv|url)", "pdf").option("--language <lang>", "Target programming language", "typescript").option("--framework <framework>", "Target framework", "none").description("Process paper with CodeRAG-enhanced intelligence").action(async (source, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F680} Processing paper with CodeRAG intelligence..."));
       console.log(chalk30__default.default.gray(`Source: ${source}`));
       console.log(chalk30__default.default.gray(`Type: ${options.type}`));
       console.log(chalk30__default.default.gray(`Target: ${options.language}`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F680} Processing paper with CodeRAG intelligence..."));
-      console.log(chalk8__default.default.gray(`Source: ${source}`));
-      console.log(chalk8__default.default.gray(`Type: ${options.type}`));
-      console.log(chalk8__default.default.gray(`Target: ${options.language}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       const multiAgent = MultiAgentSystem.getInstance();
       await multiAgent.initialize();
       const result = await multiAgent.processEnhancedPaperWithRAG({
@@ -40082,7 +36814,6 @@ ${chalk8__default.default.cyan("Examples:")}
         }
       });
       if (result.success && result.synthesizedOutput) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.green("\u2705 Paper processing completed!"));
         console.log();
         const output = result.synthesizedOutput;
@@ -40094,19 +36825,6 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log();
         if (result.documentAnalysis) {
           console.log(chalk30__default.default.cyan("\u{1F4C4} Document Analysis:"));
-=======
-        console.log(chalk8__default.default.green("\u2705 Paper processing completed!"));
-        console.log();
-        const output = result.synthesizedOutput;
-        console.log(chalk8__default.default.cyan(`\u{1F4CA} Workflow: ${output.workflowId}`));
-        console.log(chalk8__default.default.cyan(`\u{1F916} Agents: ${output.participatingAgents.join(", ")}`));
-        console.log(
-          chalk8__default.default.cyan(`\u2B50 Quality: ${Math.round(output.qualityMetrics.accuracy * 100)}%`)
-        );
-        console.log();
-        if (result.documentAnalysis) {
-          console.log(chalk8__default.default.cyan("\u{1F4C4} Document Analysis:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const analysis = result.documentAnalysis;
           console.log(`  Title: ${analysis["title"] || "N/A"}`);
           console.log(`  Algorithms found: ${analysis["algorithmsFound"] || 0}`);
@@ -40117,11 +36835,7 @@ ${chalk8__default.default.cyan("Examples:")}
           console.log();
         }
         if (result.codebaseInsights) {
-<<<<<<< HEAD
           console.log(chalk30__default.default.cyan("\u{1F4BB} Codebase Insights:"));
-=======
-          console.log(chalk8__default.default.cyan("\u{1F4BB} Codebase Insights:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           const insights = result.codebaseInsights;
           console.log(`  Total files: ${insights["totalFiles"] || 0}`);
           console.log(`  Languages: ${insights["languages"]?.join(", ") || "N/A"}`);
@@ -40130,37 +36844,21 @@ ${chalk8__default.default.cyan("Examples:")}
           );
           console.log();
         }
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F50D} Key Insights:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F50D} Key Insights:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         output.insights.forEach((insight) => {
           console.log(`  \u2022 ${insight}`);
         });
         console.log();
-<<<<<<< HEAD
         console.log(chalk30__default.default.green("\u{1F4A1} Recommendations:"));
-=======
-        console.log(chalk8__default.default.green("\u{1F4A1} Recommendations:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         output.recommendations.forEach((rec) => {
           console.log(`  \u2022 ${rec}`);
         });
       } else {
-<<<<<<< HEAD
         console.error(chalk30__default.default.red("\u274C Paper processing failed:"), result.error);
         process.exit(1);
       }
     } catch (error) {
       console.error(chalk30__default.default.red("\u274C Enhanced paper processing failed:"), error);
-=======
-        console.error(chalk8__default.default.red("\u274C Paper processing failed:"), result.error);
-        process.exit(1);
-      }
-    } catch (error) {
-      console.error(chalk8__default.default.red("\u274C Enhanced paper processing failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40178,30 +36876,17 @@ function registerDocumentCommand(program) {
   const docCommand = program.command("document").alias("doc").description("\u{1F4C4} Advanced document processing and analysis").addHelpText(
     "after",
     `
-<<<<<<< HEAD
 ${chalk30__default.default.cyan("Examples:")}
   ${chalk30__default.default.gray("$")} maria doc process paper.pdf              # Process PDF document
   ${chalk30__default.default.gray("$")} maria doc arxiv 2301.12345               # Fetch and process arXiv paper
   ${chalk30__default.default.gray("$")} maria doc url https://example.com/doc    # Process web document
   ${chalk30__default.default.gray("$")} maria doc search "machine learning"      # Search processed documents
-=======
-${chalk8__default.default.cyan("Examples:")}
-  ${chalk8__default.default.gray("$")} maria doc process paper.pdf              # Process PDF document
-  ${chalk8__default.default.gray("$")} maria doc arxiv 2301.12345               # Fetch and process arXiv paper
-  ${chalk8__default.default.gray("$")} maria doc url https://example.com/doc    # Process web document
-  ${chalk8__default.default.gray("$")} maria doc search "machine learning"      # Search processed documents
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     `
   );
   docCommand.command("process").argument("<source>", "Document source (file path, URL, or arXiv ID)").option("--type <type>", "Document type (pdf|arxiv|url|docx|html|markdown|text)", "auto").option("--extract-structure", "Extract document structure", true).option("--extract-algorithms", "Extract algorithms and procedures", true).option("--extract-code", "Extract code blocks", true).option("--extract-formulas", "Extract mathematical formulas", true).option("--extract-diagrams", "Extract diagram descriptions", false).option("--extract-images", "Extract and analyze images", false).option("--ocr", "Enable OCR for scanned documents", true).option("--language <lang>", "Document language", "auto").description("Process document with advanced extraction").action(async (source, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F4C4} Processing document..."));
       console.log(chalk30__default.default.gray(`Source: ${source}`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F4C4} Processing document..."));
-      console.log(chalk8__default.default.gray(`Source: ${source}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       let type = options.type;
       if (type === "auto") {
         if (source.match(/arxiv\.org|^\d{4}\.\d{4,5}$/)) {
@@ -40220,11 +36905,7 @@ ${chalk8__default.default.cyan("Examples:")}
           type = "text";
         }
       }
-<<<<<<< HEAD
       console.log(chalk30__default.default.gray(`Type: ${type}`));
-=======
-      console.log(chalk8__default.default.gray(`Type: ${type}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await documentProcessor.initialize();
       const document2 = await documentProcessor.processDocument(
         {
@@ -40242,15 +36923,9 @@ ${chalk8__default.default.cyan("Examples:")}
           language: options.language
         }
       );
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u2705 Document processing completed!"));
       console.log();
       console.log(chalk30__default.default.cyan("\u{1F4C4} Document Overview:"));
-=======
-      console.log(chalk8__default.default.green("\u2705 Document processing completed!"));
-      console.log();
-      console.log(chalk8__default.default.cyan("\u{1F4C4} Document Overview:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`  Title: ${document2.title}`);
       console.log(`  ID: ${document2.id}`);
       console.log(`  Authors: ${document2.metadata.authors.join(", ") || "N/A"}`);
@@ -40263,11 +36938,7 @@ ${chalk8__default.default.cyan("Examples:")}
       console.log();
       const content = document2.content.structuredContent;
       if (content.sections.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F4CB} Document Structure:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F4CB} Document Structure:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         content.sections.slice(0, 5).forEach((section) => {
           console.log(
             `  ${section.level === 1 ? "\u{1F4C4}" : "  \u{1F4DD}"} ${section.title} (${section.wordCount} words)`
@@ -40280,11 +36951,7 @@ ${chalk8__default.default.cyan("Examples:")}
       }
       const elements = document2.content.extractedElements;
       if (elements.algorithms.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F527} Algorithms Found:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F527} Algorithms Found:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         elements.algorithms.slice(0, 3).forEach((algo) => {
           console.log(`  \u2022 ${algo.name}: ${algo.description}`);
           if (algo.complexity) {
@@ -40297,11 +36964,7 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log();
       }
       if (elements.codeBlocks.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F4BB} Code Blocks:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F4BB} Code Blocks:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         elements.codeBlocks.slice(0, 3).forEach((code) => {
           console.log(`  \u2022 ${code.language || "Unknown"}: ${code.description || "Code snippet"}`);
         });
@@ -40311,20 +36974,12 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log();
       }
       if (elements.formulas.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F522} Mathematical Formulas:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F522} Mathematical Formulas:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log(`  Found ${elements.formulas.length} formulas`);
         console.log();
       }
       if (content.figures.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F5BC}\uFE0F  Figures:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F5BC}\uFE0F  Figures:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         content.figures.slice(0, 3).forEach((figure) => {
           console.log(`  \u2022 ${figure.caption} (Page ${figure.pageNumber})`);
         });
@@ -40334,19 +36989,11 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log();
       }
       if (content.references.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F4DA} References:"));
         console.log(`  Found ${content.references.length} references`);
         console.log();
       }
       console.log(chalk30__default.default.cyan("\u{1F3AF} Processing Quality:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F4DA} References:"));
-        console.log(`  Found ${content.references.length} references`);
-        console.log();
-      }
-      console.log(chalk8__default.default.cyan("\u{1F3AF} Processing Quality:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       const quality = document2.metadata.processingQuality;
       console.log(`  Text extraction: ${(quality.textExtractionScore * 100).toFixed(1)}%`);
       console.log(
@@ -40356,23 +37003,14 @@ ${chalk8__default.default.cyan("Examples:")}
         `  Algorithm extraction: ${(quality.algorithmExtractionScore * 100).toFixed(1)}%`
       );
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C Document processing failed:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C Document processing failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   docCommand.command("arxiv").argument("<id>", "arXiv paper ID (e.g., 2301.12345)").option("--extract-algorithms", "Extract algorithms", true).option("--extract-code", "Extract code blocks", true).option("--target-language <lang>", "Target programming language for code generation").description("Fetch and process arXiv paper").action(async (id, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F4C4} Fetching arXiv paper..."));
       console.log(chalk30__default.default.gray(`arXiv ID: ${id}`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F4C4} Fetching arXiv paper..."));
-      console.log(chalk8__default.default.gray(`arXiv ID: ${id}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       await documentProcessor.initialize();
       const document2 = await documentProcessor.processDocument(
         {
@@ -40386,15 +37024,9 @@ ${chalk8__default.default.cyan("Examples:")}
           extractFormulas: true
         }
       );
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u2705 arXiv paper processed successfully!"));
       console.log();
       console.log(chalk30__default.default.cyan("\u{1F4C4} Paper Information:"));
-=======
-      console.log(chalk8__default.default.green("\u2705 arXiv paper processed successfully!"));
-      console.log();
-      console.log(chalk8__default.default.cyan("\u{1F4C4} Paper Information:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`  Title: ${document2.title}`);
       console.log(`  Authors: ${document2.metadata.authors.join(", ")}`);
       if (document2.metadata.publishedDate) {
@@ -40403,24 +37035,14 @@ ${chalk8__default.default.cyan("Examples:")}
       console.log(`  arXiv ID: ${document2.metadata.arxivId}`);
       console.log();
       if (document2.content.structuredContent.abstract) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F4DD} Abstract:"));
         const abstract = document2.content.structuredContent.abstract;
         console.log(abstract.length > 500 ? `${abstract.substring(0, 500)}...` : abstract);
-=======
-        console.log(chalk8__default.default.cyan("\u{1F4DD} Abstract:"));
-        const abstract = document2.content.structuredContent.abstract;
-        console.log(abstract.length > 500 ? abstract.substring(0, 500) + "..." : abstract);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log();
       }
       const algorithms = document2.content.extractedElements.algorithms;
       if (algorithms.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F527} Algorithms Detected:"));
-=======
-        console.log(chalk8__default.default.cyan("\u{1F527} Algorithms Detected:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         algorithms.forEach((algo) => {
           console.log(`  \u2022 ${algo.name}`);
           console.log(`    ${algo.description}`);
@@ -40431,33 +37053,20 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log();
       }
       if (options.targetLanguage && algorithms.length > 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u{1F4A1} Suggestion:"));
-=======
-        console.log(chalk8__default.default.yellow("\u{1F4A1} Suggestion:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log(
           `  Use 'maria coderag process-paper' to generate ${options.targetLanguage} code from these algorithms`
         );
       }
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C arXiv processing failed:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C arXiv processing failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   docCommand.command("search").argument("<query>", "Search query").option("--type <types>", "Filter by document types (comma-separated)").option("--author <name>", "Filter by author name").option("--max-results <num>", "Maximum number of results", "10").description("Search processed documents").action(async (query, options) => {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.blue("\u{1F50D} Searching documents..."));
       console.log(chalk30__default.default.gray(`Query: "${query}"`));
-=======
-      console.log(chalk8__default.default.blue("\u{1F50D} Searching documents..."));
-      console.log(chalk8__default.default.gray(`Query: "${query}"`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       const filterByType = options.type ? options.type.split(",").map((t) => t.trim()) : void 0;
       const results = await documentProcessor.searchDocuments(query, {
         filterByType,
@@ -40465,7 +37074,6 @@ ${chalk8__default.default.cyan("Examples:")}
         maxResults: parseInt(options.maxResults, 10)
       });
       if (results.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u{1F50D} No documents found matching your query"));
         return;
       }
@@ -40475,41 +37083,21 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log(chalk30__default.default.cyan(`[${index + 1}] ${doc.title}`));
         console.log(
           chalk30__default.default.gray(
-=======
-        console.log(chalk8__default.default.yellow("\u{1F50D} No documents found matching your query"));
-        return;
-      }
-      console.log(chalk8__default.default.green(`\u2705 Found ${results.length} documents:`));
-      console.log();
-      results.forEach((doc, index) => {
-        console.log(chalk8__default.default.cyan(`[${index + 1}] ${doc.title}`));
-        console.log(
-          chalk8__default.default.gray(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             `    Type: ${doc.source.type} | Authors: ${doc.metadata.authors.join(", ") || "N/A"}`
           )
         );
         console.log(
-<<<<<<< HEAD
           chalk30__default.default.gray(
-=======
-          chalk8__default.default.gray(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             `    Pages: ${doc.metadata.pageCount} | Words: ${doc.metadata.wordCount.toLocaleString()}`
           )
         );
         console.log(
-<<<<<<< HEAD
           chalk30__default.default.gray(
-=======
-          chalk8__default.default.gray(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             `    Quality: ${(doc.metadata.processingQuality.overallScore * 100).toFixed(1)}%`
           )
         );
         const elements = doc.content.extractedElements;
         const summary = [];
-<<<<<<< HEAD
         if (elements.algorithms.length > 0) {
           summary.push(`${elements.algorithms.length} algorithms`);
         }
@@ -40521,24 +37109,11 @@ ${chalk8__default.default.cyan("Examples:")}
         }
         if (summary.length > 0) {
           console.log(chalk30__default.default.gray(`    Content: ${summary.join(", ")}`));
-=======
-        if (elements.algorithms.length > 0)
-          summary.push(`${elements.algorithms.length} algorithms`);
-        if (elements.codeBlocks.length > 0)
-          summary.push(`${elements.codeBlocks.length} code blocks`);
-        if (elements.formulas.length > 0) summary.push(`${elements.formulas.length} formulas`);
-        if (summary.length > 0) {
-          console.log(chalk8__default.default.gray(`    Content: ${summary.join(", ")}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
         console.log();
       });
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C Document search failed:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C Document search failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40561,7 +37136,6 @@ ${chalk8__default.default.cyan("Examples:")}
           break;
       }
       if (docs.length === 0) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow("\u{1F4C4} No processed documents found"));
         console.log(chalk30__default.default.gray('Use "maria doc process <file>" to process documents'));
         return;
@@ -40574,31 +37148,13 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log(chalk30__default.default.gray(`    Processed: ${doc.processingTimestamp.toLocaleString()}`));
         console.log(
           chalk30__default.default.gray(
-=======
-        console.log(chalk8__default.default.yellow("\u{1F4C4} No processed documents found"));
-        console.log(chalk8__default.default.gray('Use "maria doc process <file>" to process documents'));
-        return;
-      }
-      console.log(chalk8__default.default.cyan(`\u{1F4C4} Processed Documents (${docs.length}):`));
-      console.log();
-      docs.forEach((doc, index) => {
-        console.log(chalk8__default.default.cyan(`[${index + 1}] ${doc.title}`));
-        console.log(chalk8__default.default.gray(`    Type: ${doc.source.type} | ID: ${doc.id}`));
-        console.log(chalk8__default.default.gray(`    Processed: ${doc.processingTimestamp.toLocaleString()}`));
-        console.log(
-          chalk8__default.default.gray(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             `    Quality: ${(doc.metadata.processingQuality.overallScore * 100).toFixed(1)}%`
           )
         );
         console.log();
       });
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C Failed to list documents:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C Failed to list documents:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40606,19 +37162,11 @@ ${chalk8__default.default.cyan("Examples:")}
     try {
       const document2 = documentProcessor.getDocument(id);
       if (!document2) {
-<<<<<<< HEAD
         console.log(chalk30__default.default.yellow(`\u{1F4C4} Document not found: ${id}`));
         console.log(chalk30__default.default.gray('Use "maria doc list" to see available documents'));
         return;
       }
       console.log(chalk30__default.default.cyan("\u{1F4C4} Document Details:"));
-=======
-        console.log(chalk8__default.default.yellow(`\u{1F4C4} Document not found: ${id}`));
-        console.log(chalk8__default.default.gray('Use "maria doc list" to see available documents'));
-        return;
-      }
-      console.log(chalk8__default.default.cyan("\u{1F4C4} Document Details:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log();
       console.log(`Title: ${document2.title}`);
       console.log(`ID: ${document2.id}`);
@@ -40627,11 +37175,7 @@ ${chalk8__default.default.cyan("Examples:")}
       console.log(`Language: ${document2.metadata.language}`);
       console.log(`Processed: ${document2.processingTimestamp.toLocaleString()}`);
       console.log();
-<<<<<<< HEAD
       console.log(chalk30__default.default.cyan("\u{1F4CA} Metadata:"));
-=======
-      console.log(chalk8__default.default.cyan("\u{1F4CA} Metadata:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`  Pages: ${document2.metadata.pageCount}`);
       console.log(`  Words: ${document2.metadata.wordCount.toLocaleString()}`);
       if (document2.metadata.publishedDate) {
@@ -40644,11 +37188,7 @@ ${chalk8__default.default.cyan("Examples:")}
         console.log(`  arXiv ID: ${document2.metadata.arxivId}`);
       }
       console.log();
-<<<<<<< HEAD
       console.log(chalk30__default.default.cyan("\u{1F3AF} Quality Metrics:"));
-=======
-      console.log(chalk8__default.default.cyan("\u{1F3AF} Quality Metrics:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       const quality = document2.metadata.processingQuality;
       console.log(`  Overall: ${(quality.overallScore * 100).toFixed(1)}%`);
       console.log(`  Text extraction: ${(quality.textExtractionScore * 100).toFixed(1)}%`);
@@ -40658,11 +37198,7 @@ ${chalk8__default.default.cyan("Examples:")}
       );
       console.log();
       const elements = document2.content.extractedElements;
-<<<<<<< HEAD
       console.log(chalk30__default.default.cyan("\u{1F4CB} Extracted Content:"));
-=======
-      console.log(chalk8__default.default.cyan("\u{1F4CB} Extracted Content:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`  Sections: ${document2.content.structuredContent.sections.length}`);
       console.log(`  Algorithms: ${elements.algorithms.length}`);
       console.log(`  Code blocks: ${elements.codeBlocks.length}`);
@@ -40671,7 +37207,6 @@ ${chalk8__default.default.cyan("Examples:")}
       console.log(`  References: ${document2.content.structuredContent.references.length}`);
       if (options.full) {
         console.log();
-<<<<<<< HEAD
         console.log(chalk30__default.default.cyan("\u{1F4DD} Full Content:"));
         console.log(document2.content.rawText.substring(0, 2e3));
         if (document2.content.rawText.length > 2e3) {
@@ -40680,23 +37215,12 @@ ${chalk8__default.default.cyan("Examples:")}
       }
     } catch (error) {
       console.error(chalk30__default.default.red("\u274C Failed to show document:"), error);
-=======
-        console.log(chalk8__default.default.cyan("\u{1F4DD} Full Content:"));
-        console.log(document2.content.rawText.substring(0, 2e3));
-        if (document2.content.rawText.length > 2e3) {
-          console.log(chalk8__default.default.gray("... (truncated)"));
-        }
-      }
-    } catch (error) {
-      console.error(chalk8__default.default.red("\u274C Failed to show document:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
   docCommand.command("status").description("Show document processor status").action(async () => {
     try {
       const status = documentProcessor.getStatus();
-<<<<<<< HEAD
       console.log(chalk30__default.default.cyan("\u{1F4C4} Document Processor Status:"));
       console.log();
       console.log(`Initialized: ${status.initialized ? chalk30__default.default.green("\u2705") : chalk30__default.default.red("\u274C")}`);
@@ -40705,25 +37229,11 @@ ${chalk8__default.default.cyan("Examples:")}
       console.log(`Currently processing: ${status.isProcessing ? chalk30__default.default.yellow("Yes") : "No"}`);
       console.log();
       console.log(chalk30__default.default.cyan("Supported formats:"));
-=======
-      console.log(chalk8__default.default.cyan("\u{1F4C4} Document Processor Status:"));
-      console.log();
-      console.log(`Initialized: ${status.initialized ? chalk8__default.default.green("\u2705") : chalk8__default.default.red("\u274C")}`);
-      console.log(`Processed documents: ${status.processedDocuments}`);
-      console.log(`Queue length: ${status.queueLength}`);
-      console.log(`Currently processing: ${status.isProcessing ? chalk8__default.default.yellow("Yes") : "No"}`);
-      console.log();
-      console.log(chalk8__default.default.cyan("Supported formats:"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       status.supportedFormats.forEach((format) => {
         console.log(`  \u2022 ${format}`);
       });
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("\u274C Status check failed:"), error);
-=======
-      console.error(chalk8__default.default.red("\u274C Status check failed:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40742,11 +37252,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalLog(options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error showing approval log:"), error);
-=======
-      console.error(chalk8__default.default.red("Error showing approval log:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40754,11 +37260,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalBranch(branchName, options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error managing approval branches:"), error);
-=======
-      console.error(chalk8__default.default.red("Error managing approval branches:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40766,11 +37268,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalMerge(sourceBranch, options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error merging approval branches:"), error);
-=======
-      console.error(chalk8__default.default.red("Error merging approval branches:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40778,11 +37276,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalRevert(commitId, options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error reverting approval commit:"), error);
-=======
-      console.error(chalk8__default.default.red("Error reverting approval commit:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40790,11 +37284,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalTag(tagName, options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error managing approval tags:"), error);
-=======
-      console.error(chalk8__default.default.red("Error managing approval tags:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40802,11 +37292,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalStatus(options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error showing approval status:"), error);
-=======
-      console.error(chalk8__default.default.red("Error showing approval status:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40814,11 +37300,7 @@ function registerApprovalGitCommands(program) {
     try {
       await handleApprovalShow(commitId, options);
     } catch (error) {
-<<<<<<< HEAD
       console.error(chalk30__default.default.red("Error showing approval commit:"), error);
-=======
-      console.error(chalk8__default.default.red("Error showing approval commit:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
@@ -40826,7 +37308,6 @@ function registerApprovalGitCommands(program) {
 async function handleApprovalLog(options) {
   const repo = ApprovalRepositoryManager.getInstance();
   const logOptions = {
-<<<<<<< HEAD
     limit: parseInt(options.number || "10") || 10,
     author: options.author || "",
     since: options.since ? new Date(options.since) : void 0,
@@ -40839,20 +37320,6 @@ async function handleApprovalLog(options) {
     return;
   }
   console.log(chalk30__default.default.blue("\n\u{1F4CB} Approval History:\n"));
-=======
-    limit: parseInt(options.number) || 10,
-    author: options.author,
-    since: options.since ? new Date(options.since) : void 0,
-    grep: options.grep,
-    branch: options.branch
-  };
-  const commits = repo.getLog(logOptions);
-  if (commits.length === 0) {
-    console.log(chalk8__default.default.gray("No approval commits found"));
-    return;
-  }
-  console.log(chalk8__default.default.blue("\n\u{1F4CB} Approval History:\n"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   commits.forEach((commit) => {
     const formatted = ApprovalCommitManager.formatCommit(commit, {
       oneline: options.oneline,
@@ -40861,11 +37328,7 @@ async function handleApprovalLog(options) {
     });
     if (options.oneline) {
       const status = commit.approvalData.approved ? "\u2705" : "\u274C";
-<<<<<<< HEAD
       const statusColor = commit.approvalData.approved ? chalk30__default.default.green : chalk30__default.default.red;
-=======
-      const statusColor = commit.approvalData.approved ? chalk8__default.default.green : chalk8__default.default.red;
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       console.log(`${status} ${statusColor(formatted)}`);
     } else {
       console.log(formatted);
@@ -40880,15 +37343,9 @@ async function handleApprovalBranch(branchName, options) {
     const force = !!options.forceDelete;
     try {
       repo.deleteBranch(targetBranch, force);
-<<<<<<< HEAD
       console.log(chalk30__default.default.green(`\u2713 Deleted approval branch: ${targetBranch}`));
     } catch (error) {
       console.error(chalk30__default.default.red(`Failed to delete branch: ${error}`));
-=======
-      console.log(chalk8__default.default.green(`\u2713 Deleted approval branch: ${targetBranch}`));
-    } catch (error) {
-      console.error(chalk8__default.default.red(`Failed to delete branch: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     }
     return;
   }
@@ -40896,52 +37353,32 @@ async function handleApprovalBranch(branchName, options) {
     const newBranchName = options.create || branchName;
     try {
       const branch = repo.createBranch(newBranchName);
-<<<<<<< HEAD
       console.log(chalk30__default.default.green(`\u2713 Created approval branch: ${branch.name}`));
       console.log(chalk30__default.default.gray(`Base commit: ${branch.baseCommit || "none"}`));
     } catch (error) {
       console.error(chalk30__default.default.red(`Failed to create branch: ${error}`));
-=======
-      console.log(chalk8__default.default.green(`\u2713 Created approval branch: ${branch.name}`));
-      console.log(chalk8__default.default.gray(`Base commit: ${branch.baseCommit || "none"}`));
-    } catch (error) {
-      console.error(chalk8__default.default.red(`Failed to create branch: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     }
     return;
   }
   if (options.checkout) {
     try {
       const branch = repo.checkoutBranch(options.checkout);
-<<<<<<< HEAD
       console.log(chalk30__default.default.green(`\u2713 Switched to approval branch: ${branch.name}`));
     } catch (error) {
       console.error(chalk30__default.default.red(`Failed to checkout branch: ${error}`));
-=======
-      console.log(chalk8__default.default.green(`\u2713 Switched to approval branch: ${branch.name}`));
-    } catch (error) {
-      console.error(chalk8__default.default.red(`Failed to checkout branch: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     }
     return;
   }
   const branches = repo.listBranches({ merged: options.merged });
   const currentBranch = repo.getCurrentBranch();
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F33F} Approval Branches:\n"));
   if (branches.length === 0) {
     console.log(chalk30__default.default.gray("No approval branches found"));
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F33F} Approval Branches:\n"));
-  if (branches.length === 0) {
-    console.log(chalk8__default.default.gray("No approval branches found"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   branches.forEach((branch) => {
     const isCurrent = branch.name === currentBranch.name;
     const marker = isCurrent ? "* " : "  ";
-<<<<<<< HEAD
     const nameColor = isCurrent ? chalk30__default.default.green.bold : chalk30__default.default.white;
     const protection = branch.protected ? chalk30__default.default.red(" [protected]") : "";
     const lastActivity = branch.lastActivity.toLocaleString();
@@ -40949,15 +37386,6 @@ async function handleApprovalBranch(branchName, options) {
     console.log(`    ${chalk30__default.default.gray(`Head: ${branch.head || "none"} | Activity: ${lastActivity}`)}`);
     if (branch.mergeRequests.length > 0) {
       console.log(`    ${chalk30__default.default.cyan(`${branch.mergeRequests.length} merge request(s)`)}`);
-=======
-    const nameColor = isCurrent ? chalk8__default.default.green.bold : chalk8__default.default.white;
-    const protection = branch.protected ? chalk8__default.default.red(" [protected]") : "";
-    const lastActivity = branch.lastActivity.toLocaleString();
-    console.log(`${marker}${nameColor(branch.name)}${protection}`);
-    console.log(`    ${chalk8__default.default.gray(`Head: ${branch.head || "none"} | Activity: ${lastActivity}`)}`);
-    if (branch.mergeRequests.length > 0) {
-      console.log(`    ${chalk8__default.default.cyan(`${branch.mergeRequests.length} merge request(s)`)}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     }
     console.log("");
   });
@@ -40966,7 +37394,6 @@ async function handleApprovalMerge(sourceBranch, options) {
   const repo = ApprovalRepositoryManager.getInstance();
   const targetBranch = options.target || "main";
   try {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue(`\u{1F504} Merging ${sourceBranch} into ${targetBranch}...`));
     const mergeCommit = await repo.mergeBranch(sourceBranch, targetBranch, {
       message: options.message,
@@ -40977,34 +37404,17 @@ async function handleApprovalMerge(sourceBranch, options) {
     console.log(chalk30__default.default.gray(`Message: ${mergeCommit.metadata.message}`));
   } catch (error) {
     console.error(chalk30__default.default.red(`Merge failed: ${error}`));
-=======
-    console.log(chalk8__default.default.blue(`\u{1F504} Merging ${sourceBranch} into ${targetBranch}...`));
-    const mergeCommit = await repo.mergeBranch(sourceBranch, targetBranch, {
-      message: options.message,
-      noFastForward: options.noFf
-    });
-    console.log(chalk8__default.default.green(`\u2713 Merge completed successfully`));
-    console.log(chalk8__default.default.gray(`Merge commit: ${mergeCommit.id}`));
-    console.log(chalk8__default.default.gray(`Message: ${mergeCommit.metadata.message}`));
-  } catch (error) {
-    console.error(chalk8__default.default.red(`Merge failed: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 async function handleApprovalRevert(commitId, options) {
   const repo = ApprovalRepositoryManager.getInstance();
   try {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue(`\u21A9\uFE0F  Reverting commit ${commitId}...`));
-=======
-    console.log(chalk8__default.default.blue(`\u21A9\uFE0F  Reverting commit ${commitId}...`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const revertCommit = await repo.revertCommit(commitId, {
       message: options.message,
       noCommit: options.noCommit
     });
     if (options.noCommit) {
-<<<<<<< HEAD
       console.log(chalk30__default.default.yellow("\u26A0\uFE0F  Revert prepared but not committed"));
       console.log(chalk30__default.default.gray("Review the changes and commit manually if desired"));
     } else {
@@ -41013,43 +37423,21 @@ async function handleApprovalRevert(commitId, options) {
     }
   } catch (error) {
     console.error(chalk30__default.default.red(`Revert failed: ${error}`));
-=======
-      console.log(chalk8__default.default.yellow("\u26A0\uFE0F  Revert prepared but not committed"));
-      console.log(chalk8__default.default.gray("Review the changes and commit manually if desired"));
-    } else {
-      console.log(chalk8__default.default.green(`\u2713 Revert completed successfully`));
-      console.log(chalk8__default.default.gray(`Revert commit: ${revertCommit.id}`));
-    }
-  } catch (error) {
-    console.error(chalk8__default.default.red(`Revert failed: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 async function handleApprovalTag(tagName, options) {
   const repo = ApprovalRepositoryManager.getInstance();
   if (options.delete) {
     try {
-<<<<<<< HEAD
       console.log(chalk30__default.default.green(`\u2713 Deleted tag: ${options.delete}`));
     } catch (error) {
       console.error(chalk30__default.default.red(`Failed to delete tag: ${error}`));
-=======
-      console.log(chalk8__default.default.green(`\u2713 Deleted tag: ${options.delete}`));
-    } catch (error) {
-      console.error(chalk8__default.default.red(`Failed to delete tag: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     }
     return;
   }
   if (options.list || !tagName) {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue("\n\u{1F3F7}\uFE0F  Approval Tags:\n"));
     console.log(chalk30__default.default.gray("Tag listing will be implemented in repository manager"));
-=======
-    repo.getConfig();
-    console.log(chalk8__default.default.blue("\n\u{1F3F7}\uFE0F  Approval Tags:\n"));
-    console.log(chalk8__default.default.gray("Tag listing will be implemented in repository manager"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     return;
   }
   try {
@@ -41057,27 +37445,17 @@ async function handleApprovalTag(tagName, options) {
       force: options.force,
       message: options.message
     });
-<<<<<<< HEAD
     console.log(chalk30__default.default.green(`\u2713 Created tag: ${tagName}`));
     if (options.message) {
       console.log(chalk30__default.default.gray(`Message: ${options.message}`));
     }
   } catch (error) {
     console.error(chalk30__default.default.red(`Failed to create tag: ${error}`));
-=======
-    console.log(chalk8__default.default.green(`\u2713 Created tag: ${tagName}`));
-    if (options.message) {
-      console.log(chalk8__default.default.gray(`Message: ${options.message}`));
-    }
-  } catch (error) {
-    console.error(chalk8__default.default.red(`Failed to create tag: ${error}`));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 async function handleApprovalStatus(options) {
   const repo = ApprovalRepositoryManager.getInstance();
   const approvalEngine = ApprovalEngine.getInstance();
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\n\u{1F4CA} Approval Repository Status:\n"));
   const currentBranch = repo.getCurrentBranch();
   const stats = repo.getStatistics();
@@ -41116,47 +37494,6 @@ async function handleApprovalStatus(options) {
     console.log(chalk30__default.default.yellow("Contributors:"));
     console.log(`  ${chalk30__default.default.cyan("Total Contributors:")} ${stats.contributors.totalContributors}`);
     console.log(`  ${chalk30__default.default.cyan("Most Active:")} ${stats.contributors.mostActiveContributor}`);
-=======
-  console.log(chalk8__default.default.blue("\n\u{1F4CA} Approval Repository Status:\n"));
-  repo.getConfig();
-  const currentBranch = repo.getCurrentBranch();
-  const stats = repo.getStatistics();
-  const pendingRequests = approvalEngine.getAllPendingRequests();
-  console.log(`${chalk8__default.default.cyan("Current Branch:")} ${currentBranch.name}`);
-  console.log(`${chalk8__default.default.cyan("Head Commit:")} ${currentBranch.head || "none"}`);
-  console.log(`${chalk8__default.default.cyan("Pending Requests:")} ${pendingRequests.length}`);
-  console.log("");
-  console.log(chalk8__default.default.yellow("Repository:"));
-  console.log(`  ${chalk8__default.default.cyan("Total Commits:")} ${stats.repository.totalCommits}`);
-  console.log(`  ${chalk8__default.default.cyan("Total Branches:")} ${stats.repository.totalBranches}`);
-  console.log(`  ${chalk8__default.default.cyan("Total Tags:")} ${stats.repository.totalTags}`);
-  console.log(`  ${chalk8__default.default.cyan("Merge Requests:")} ${stats.repository.totalMergeRequests}`);
-  console.log("");
-  console.log(chalk8__default.default.yellow("Activity:"));
-  console.log(`  ${chalk8__default.default.cyan("Commits (Last Week):")} ${stats.activity.commitsLastWeek}`);
-  console.log(`  ${chalk8__default.default.cyan("Commits (Last Month):")} ${stats.activity.commitsLastMonth}`);
-  console.log(
-    `  ${chalk8__default.default.cyan("Avg Time to Approval:")} ${Math.round(stats.activity.averageTimeToApproval / 1e3)}s`
-  );
-  console.log("");
-  if (options.detailed) {
-    console.log(chalk8__default.default.yellow("Risk Distribution:"));
-    Object.entries(stats.risk.riskDistribution).forEach(([risk, count]) => {
-      console.log(`  ${chalk8__default.default.cyan(risk.toUpperCase())}:    ${count}`);
-    });
-    console.log("");
-    console.log(chalk8__default.default.yellow("Category Distribution:"));
-    Object.entries(stats.risk.categoryDistribution).forEach(([category, count]) => {
-      console.log(`  ${chalk8__default.default.cyan(category)}:    ${count}`);
-    });
-    console.log(
-      `  ${chalk8__default.default.cyan("Rejection Rate:")} ${(stats.risk.rejectionRate * 100).toFixed(1)}%`
-    );
-    console.log("");
-    console.log(chalk8__default.default.yellow("Contributors:"));
-    console.log(`  ${chalk8__default.default.cyan("Total Contributors:")} ${stats.contributors.totalContributors}`);
-    console.log(`  ${chalk8__default.default.cyan("Most Active:")} ${stats.contributors.mostActiveContributor}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   }
 }
 async function handleApprovalShow(commitId, options) {
@@ -41166,35 +37503,23 @@ async function handleApprovalShow(commitId, options) {
     const currentBranch = repo.getCurrentBranch();
     targetCommitId = currentBranch.head;
     if (!targetCommitId) {
-<<<<<<< HEAD
       console.log(chalk30__default.default.gray("No commits found in current branch"));
-=======
-      console.log(chalk8__default.default.gray("No commits found in current branch"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       return;
     }
   }
   const commits = repo.getLog({ limit: 1 });
   const commit = commits.find((c) => c.id.startsWith(targetCommitId.substring(0, 7)));
   if (!commit) {
-<<<<<<< HEAD
     console.error(chalk30__default.default.red(`Commit not found: ${targetCommitId}`));
     return;
   }
   console.log(chalk30__default.default.blue("\n\u{1F4CB} Approval Commit Details:\n"));
-=======
-    console.error(chalk8__default.default.red(`Commit not found: ${targetCommitId}`));
-    return;
-  }
-  console.log(chalk8__default.default.blue("\n\u{1F4CB} Approval Commit Details:\n"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   const formatted = ApprovalCommitManager.formatCommit(commit, {
     oneline: false,
     showDiff: options.diff,
     showTags: options.tags
   });
   console.log(formatted);
-<<<<<<< HEAD
   console.log(chalk30__default.default.yellow("\n\u{1F4DD} Approval Details:"));
   console.log(`${chalk30__default.default.cyan("Action:")} ${commit.approvalData.action}`);
   console.log(`${chalk30__default.default.cyan("Approved:")} ${commit.approvalData.approved ? "\u2705 Yes" : "\u274C No"}`);
@@ -41207,20 +37532,6 @@ async function handleApprovalShow(commitId, options) {
   }
   console.log(
     `${chalk30__default.default.cyan("Quick Decision:")} ${commit.approvalData.quickDecision ? "Yes" : "No"}`
-=======
-  console.log(chalk8__default.default.yellow("\n\u{1F4DD} Approval Details:"));
-  console.log(`${chalk8__default.default.cyan("Action:")} ${commit.approvalData.action}`);
-  console.log(`${chalk8__default.default.cyan("Approved:")} ${commit.approvalData.approved ? "\u2705 Yes" : "\u274C No"}`);
-  console.log(`${chalk8__default.default.cyan("Request ID:")} ${commit.approvalData.requestId}`);
-  if (commit.approvalData.comments) {
-    console.log(`${chalk8__default.default.cyan("Comments:")} ${commit.approvalData.comments}`);
-  }
-  if (commit.approvalData.trustLevel) {
-    console.log(`${chalk8__default.default.cyan("Trust Level:")} ${commit.approvalData.trustLevel}`);
-  }
-  console.log(
-    `${chalk8__default.default.cyan("Quick Decision:")} ${commit.approvalData.quickDecision ? "Yes" : "No"}`
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   );
   console.log("");
 }
@@ -41240,7 +37551,6 @@ var init_approval_git = __esm({
     __name(handleApprovalShow, "handleApprovalShow");
   }
 });
-<<<<<<< HEAD
 var init_InputRenderer = __esm({
   "src/services/visual-cli/InputRenderer.ts"() {
     init_cjs_shims();
@@ -41534,8 +37844,6 @@ var init_package = __esm({
     };
   }
 });
-=======
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
 
 // src/services/llm-health-checker.ts
 var llm_health_checker_exports = {};
@@ -41628,31 +37936,19 @@ var init_llm_health_checker = __esm({
         try {
           const { spawn: spawn3 } = await import('child_process');
           const lmsPath = "/Users/bongin_max/.lmstudio/bin/lms";
-<<<<<<< HEAD
           return new Promise((resolve2) => {
-=======
-          return new Promise((resolve) => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             const child = spawn3(lmsPath, ["server", "start"], {
               stdio: "ignore",
               detached: true
             });
             child.on("error", () => {
-<<<<<<< HEAD
               resolve2(false);
-=======
-              resolve(false);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
             });
             child.on("spawn", () => {
               child.unref();
               setTimeout(async () => {
                 const status = await this.checkService("LM Studio");
-<<<<<<< HEAD
                 resolve2(status.isRunning);
-=======
-                resolve(status.isRunning);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
               }, 3e3);
             });
           });
@@ -41682,7 +37978,6 @@ var init_llm_startup_manager = __esm({
         { name: "Ollama", status: "checking", progress: 0 },
         { name: "vLLM", status: "checking", progress: 0 }
       ];
-<<<<<<< HEAD
       async initializeServices() {
         for (const service of this.services) {
           await this.checkService(service);
@@ -41693,80 +37988,6 @@ var init_llm_startup_manager = __esm({
           console.log(`\u{1F389} Ready! Using ${primary?.name} as primary provider`);
         } else {
           console.log("\u{1F389} Ready! Cloud services available");
-=======
-      displayServices() {
-        console.log("\n\u{1F680} Initializing AI Services...\n");
-        console.log("Local AI Services:");
-        console.log("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-        for (const service of this.services) {
-          const progressBar = this.createProgressBar(service.progress || 0);
-          const statusIcon = this.getStatusIcon(service.status);
-          const message = service.message || this.getDefaultMessage(service.status);
-          console.log(`${service.name.padEnd(12)} ${progressBar} ${statusIcon} ${message}`);
-          if (service.message) {
-            console.log(`             \u2514\u2500 ${service.message}`);
-          }
-        }
-      }
-      createProgressBar(progress) {
-        const total = 20;
-        const filled = Math.round(progress / 100 * total);
-        const empty = total - filled;
-        return `[${"\u2588".repeat(filled)}${"\u2591".repeat(empty)}] ${progress.toString().padStart(3)}%`;
-      }
-      getStatusIcon(status) {
-        switch (status) {
-          case "checking":
-            return "\u23F3";
-          case "starting":
-            return "\u23F3";
-          case "running":
-            return "\u2705";
-          case "failed":
-            return "\u274C";
-          case "not-installed":
-            return "\u26A0\uFE0F";
-          default:
-            return "\u2753";
-        }
-      }
-      getDefaultMessage(status) {
-        switch (status) {
-          case "checking":
-            return "Checking availability...";
-          case "starting":
-            return "Starting...";
-          case "running":
-            return "Running";
-          case "failed":
-            return "Failed to start";
-          case "not-installed":
-            return "Not installed";
-          default:
-            return "Unknown status";
-        }
-      }
-      async initializeServices() {
-        this.displayServices();
-        for (let i = 0; i < this.services.length; i++) {
-          const service = this.services[i];
-          if (!service) continue;
-          await this.checkService(service);
-          this.displayServices();
-        }
-        console.log("\nCloud Services:");
-        console.log("\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500");
-        console.log("OpenAI       \u2705 Available (GPT-5)");
-        console.log("Anthropic    \u2705 Available (Claude Opus 4.1)");
-        console.log("Google AI    \u2705 Available (Gemini 2.5 Pro)");
-        const runningServices = this.services.filter((s) => s.status === "running");
-        if (runningServices.length > 0) {
-          const primary = runningServices[0];
-          console.log(`
-\u{1F389} Ready! Using ${primary?.name} as primary provider`);
-        } else {
-          console.log("\n\u{1F389} Ready! Using cloud providers");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         }
       }
       async checkService(service) {
@@ -41778,11 +37999,7 @@ var init_llm_startup_manager = __esm({
           const healthStatus = await healthChecker.checkService(service.name);
           for (let progress = 0; progress <= 100; progress += 25) {
             service.progress = progress;
-<<<<<<< HEAD
             await new Promise((resolve2) => setTimeout(resolve2, 50));
-=======
-            await new Promise((resolve) => setTimeout(resolve, 50));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
           }
           if (healthStatus.isRunning) {
             service.status = "running";
@@ -41804,20 +38021,13 @@ var init_llm_startup_manager = __esm({
         }
       }
       displayWelcome() {
-<<<<<<< HEAD
         const frameWidth = 58;
         const horizontalLine = "\u2550".repeat(frameWidth - 2);
-=======
-        const frameWidth = 86;
-        const horizontalLine = "\u2550".repeat(frameWidth - 2);
-        const emptyLine = "\u2551" + " ".repeat(frameWidth - 2) + "\u2551";
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         const centerText = /* @__PURE__ */ __name((text) => {
           const plainText = text.replace(/\u001B\[[0-9;]*m/g, "");
           const padding = Math.max(0, frameWidth - 2 - plainText.length);
           const leftPad = Math.floor(padding / 2);
           const rightPad = padding - leftPad;
-<<<<<<< HEAD
           return `\u2551${" ".repeat(leftPad)}${text}${" ".repeat(rightPad)}\u2551`;
         }, "centerText");
         console.log("\n");
@@ -41833,79 +38043,6 @@ var init_llm_startup_manager = __esm({
         console.log(chalk30__default.default.magentaBright(centerText(chalk30__default.default.whiteBright("AI-Powered Development Platform"))));
         console.log(chalk30__default.default.magentaBright(centerText("")));
         console.log(chalk30__default.default.magentaBright(`\u255A${horizontalLine}\u255D`));
-=======
-          return "\u2551" + " ".repeat(leftPad) + text + " ".repeat(rightPad) + "\u2551";
-        }, "centerText");
-        console.log("\n");
-        console.log(chalk8__default.default.magentaBright("\u2554" + horizontalLine + "\u2557"));
-        console.log(chalk8__default.default.magentaBright(emptyLine));
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2588\u2557   \u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2557 "))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557"))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2554\u2588\u2588\u2588\u2588\u2554\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2551"))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2551\u255A\u2588\u2588\u2554\u255D\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2551"))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2551 \u255A\u2550\u255D \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551"))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u255A\u2550\u255D     \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D\u255A\u2550\u255D\u255A\u2550\u255D  \u255A\u2550\u255D"))
-          )
-        );
-        console.log(chalk8__default.default.magentaBright(emptyLine));
-        console.log(
-          chalk8__default.default.magentaBright(centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2557 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557")))
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D\u2588\u2588\u2554\u2550\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2588\u2588\u2557\u2588\u2588\u2554\u2550\u2550\u2550\u2550\u255D"))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2551     \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2588\u2588\u2588\u2557  "))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u2588\u2588\u2551     \u2588\u2588\u2551   \u2588\u2588\u2551\u2588\u2588\u2551  \u2588\u2588\u2551\u2588\u2588\u2554\u2550\u2550\u255D  "))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright("\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2557\u255A\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2554\u255D\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2557"))
-          )
-        );
-        console.log(
-          chalk8__default.default.magentaBright(
-            centerText(chalk8__default.default.bold.magentaBright(" \u255A\u2550\u2550\u2550\u2550\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u255D \u255A\u2550\u2550\u2550\u2550\u2550\u2550\u255D"))
-          )
-        );
-        console.log(chalk8__default.default.magentaBright(emptyLine));
-        console.log(
-          chalk8__default.default.magentaBright(centerText(chalk8__default.default.whiteBright("AI-Powered Development Platform")))
-        );
-        console.log(chalk8__default.default.magentaBright(centerText(chalk8__default.default.gray("(c) 2025 Bonginkan Inc."))));
-        console.log(chalk8__default.default.magentaBright(emptyLine));
-        console.log(chalk8__default.default.magentaBright("\u255A" + horizontalLine + "\u255D"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         console.log("");
       }
     };
@@ -41913,7 +38050,6 @@ var init_llm_startup_manager = __esm({
 });
 function createCLI() {
   const program = new commander.Command();
-<<<<<<< HEAD
   program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version(package_default.version);
   program.argument("[input...]", "Optional chat input or slash command").option(
     "--priority <mode>",
@@ -41954,27 +38090,6 @@ function createCLI() {
   program.command("vision <image> <prompt>").description("Analyze image with text prompt").option("--provider <name>", "Force specific provider").action(async (imagePath, prompt, options) => {
     const config2 = await loadConfig2(options);
     await processVision(imagePath, prompt, config2);
-=======
-  program.name("maria").description("MARIA - Intelligent CLI Assistant with Multi-Model AI Support").version("1.2.0");
-  program.command("chat", { isDefault: true }).description("Start interactive chat session").option(
-    "--priority <mode>",
-    "Set priority mode (privacy-first|performance|cost-effective|auto)"
-  ).option("--provider <name>", "Force specific provider").option("--model <name>", "Force specific model").option("--offline", "Use only local providers").option("--debug", "Enable debug output").action(async (options) => {
-    const config = await loadConfig(options);
-    await startInteractiveChat(config);
-  });
-  program.command("ask <message>").description("Ask a single question").option("--priority <mode>", "Set priority mode").option("--provider <name>", "Force specific provider").option("--model <name>", "Force specific model").action(async (message, options) => {
-    const config = await loadConfig(options);
-    await askSingle(message, config);
-  });
-  program.command("code <prompt>").description("Generate code").option("--language <lang>", "Programming language").option("--provider <name>", "Force specific provider").action(async (prompt, options) => {
-    const config = await loadConfig(options);
-    await generateCode(prompt, options.language, config);
-  });
-  program.command("vision <image> <prompt>").description("Analyze image with text prompt").option("--provider <name>", "Force specific provider").action(async (imagePath, prompt, options) => {
-    const config = await loadConfig(options);
-    await processVision(imagePath, prompt, config);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   });
   program.command("status").description("Show system status and health").action(async () => {
     await showStatus2();
@@ -41995,19 +38110,14 @@ function createCLI() {
   registerApprovalGitCommands(program);
   return program;
 }
-<<<<<<< HEAD
 async function startInteractiveChat(config2, enhanced, initialCommand, initialArgs) {
   if (enhanced) {
     return startEnhancedChat(config2);
   }
-=======
-async function startInteractiveChat(config) {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   const { LLMStartupManager: LLMStartupManager2 } = await Promise.resolve().then(() => (init_llm_startup_manager(), llm_startup_manager_exports));
   const startupManager = new LLMStartupManager2();
   startupManager.displayWelcome();
   await startupManager.initializeServices();
-<<<<<<< HEAD
   const maria = new MariaAI(config2);
   const session = createInteractiveSession(maria);
   if (initialCommand) {
@@ -42043,27 +38153,11 @@ async function askSingle(message, config2) {
 ${chalk30__default.default.green(response.content)}`);
   } catch (error) {
     console.error(chalk30__default.default.red("\u274C Error:"), error);
-=======
-  const maria = new MariaAI(config);
-  const session = createInteractiveSession(maria);
-  await session.start();
-}
-async function askSingle(message, config) {
-  const maria = new MariaAI(config);
-  await maria.initialize();
-  try {
-    console.log(chalk8__default.default.blue("\u{1F916} Thinking..."));
-    const response = await maria.chat(message);
-    console.log("\n" + chalk8__default.default.green(response.content));
-  } catch (error) {
-    console.error(chalk8__default.default.red("\u274C Error:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     process.exit(1);
   } finally {
     await maria.close();
   }
 }
-<<<<<<< HEAD
 async function generateCode(prompt, language, config2) {
   const maria = new MariaAI(config2);
   await maria.initialize();
@@ -42074,33 +38168,15 @@ async function generateCode(prompt, language, config2) {
 ${chalk30__default.default.green(response.content)}`);
   } catch (error) {
     console.error(chalk30__default.default.red("\u274C Error:"), error);
-=======
-async function generateCode(prompt, language, config) {
-  const maria = new MariaAI(config);
-  await maria.initialize();
-  try {
-    console.log(chalk8__default.default.blue("\u{1F527} Generating code..."));
-    const response = await maria.generateCode(prompt, language);
-    console.log("\n" + chalk8__default.default.green(response.content));
-  } catch (error) {
-    console.error(chalk8__default.default.red("\u274C Error:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     process.exit(1);
   } finally {
     await maria.close();
   }
 }
-<<<<<<< HEAD
 async function processVision(imagePath, prompt, config2) {
   const maria = new MariaAI(config2);
   await maria.initialize();
   const fs20 = await (async () => {
-=======
-async function processVision(imagePath, prompt, config) {
-  const maria = new MariaAI(config);
-  await maria.initialize();
-  const fs5 = await (async () => {
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     try {
       return await import('fs-extra');
     } catch {
@@ -42109,7 +38185,6 @@ async function processVision(imagePath, prompt, config) {
     }
   })();
   try {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue("\u{1F441}\uFE0F  Analyzing image..."));
     const imageBuffer = await fs20.readFile(imagePath);
     const response = await maria.vision(imageBuffer, prompt);
@@ -42117,14 +38192,6 @@ async function processVision(imagePath, prompt, config) {
 ${chalk30__default.default.green(response.content)}`);
   } catch (error) {
     console.error(chalk30__default.default.red("\u274C Error:"), error);
-=======
-    console.log(chalk8__default.default.blue("\u{1F441}\uFE0F  Analyzing image..."));
-    const imageBuffer = await fs5.readFile(imagePath);
-    const response = await maria.vision(imageBuffer, prompt);
-    console.log("\n" + chalk8__default.default.green(response.content));
-  } catch (error) {
-    console.error(chalk8__default.default.red("\u274C Error:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     process.exit(1);
   } finally {
     await maria.close();
@@ -42135,11 +38202,7 @@ async function showStatus2() {
   await maria.getHealth().then((health) => {
     printStatus(health);
   }).catch((error) => {
-<<<<<<< HEAD
     console.error(chalk30__default.default.red("\u274C Failed to get status:"), error);
-=======
-    console.error(chalk8__default.default.red("\u274C Failed to get status:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   });
   await maria.close();
 }
@@ -42148,7 +38211,6 @@ async function listModels(provider) {
   try {
     const models = await maria.getModels();
     const filtered = provider ? models.filter((m) => m.provider === provider) : models;
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue(`
 \u{1F4CB} Available Models (${filtered.length}):
 `));
@@ -42159,37 +38221,17 @@ async function listModels(provider) {
       console.log(`   ${chalk30__default.default.gray(model.description)}`);
       if (model.capabilities) {
         console.log(`   ${chalk30__default.default.cyan("Capabilities:")} ${model.capabilities.join(", ")}`);
-=======
-    console.log(chalk8__default.default.blue(`
-\u{1F4CB} Available Models (${filtered.length}):
-`));
-    filtered.forEach((model) => {
-      const status = model.available ? "\u2705" : "\u26A0\uFE0F";
-      const pricing = model.pricing ? ` ($${model.pricing.input}/${model.pricing.output})` : "";
-      console.log(`${status} ${chalk8__default.default.bold(model.name)} - ${model.provider}${pricing}`);
-      console.log(`   ${chalk8__default.default.gray(model.description)}`);
-      if (model.capabilities) {
-        console.log(`   ${chalk8__default.default.cyan("Capabilities:")} ${model.capabilities.join(", ")}`);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       }
       console.log("");
     });
   } catch (error) {
-<<<<<<< HEAD
     console.error(chalk30__default.default.red("\u274C Error listing models:"), error);
-=======
-    console.error(chalk8__default.default.red("\u274C Error listing models:"), error);
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   } finally {
     await maria.close();
   }
 }
 async function runSetup() {
-<<<<<<< HEAD
   console.log(chalk30__default.default.blue("\u{1F680} Running MARIA setup wizard..."));
-=======
-  console.log(chalk8__default.default.blue("\u{1F680} Running MARIA setup wizard..."));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   const { spawn: spawn3 } = await (async () => {
     const { importNodeBuiltin: importNodeBuiltin2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
     return importNodeBuiltin2("child_process");
@@ -42200,26 +38242,16 @@ async function runSetup() {
   });
   setupProcess.on("close", (code) => {
     if (code === 0) {
-<<<<<<< HEAD
       console.log(chalk30__default.default.green("\u2705 Setup completed successfully!"));
     } else {
       console.error(chalk30__default.default.red("\u274C Setup failed"));
-=======
-      console.log(chalk8__default.default.green("\u2705 Setup completed successfully!"));
-    } else {
-      console.error(chalk8__default.default.red("\u274C Setup failed"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
       process.exit(1);
     }
   });
 }
 async function checkHealth(options) {
   if (options.watch) {
-<<<<<<< HEAD
     console.log(chalk30__default.default.blue("\u{1F504} Starting health monitoring... Press Ctrl+C to stop"));
-=======
-    console.log(chalk8__default.default.blue("\u{1F504} Starting health monitoring... Press Ctrl+C to stop"));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     const { spawn: spawn3 } = await (async () => {
       const { importNodeBuiltin: importNodeBuiltin2 } = await Promise.resolve().then(() => (init_import_helper(), import_helper_exports));
       return importNodeBuiltin2("child_process");
@@ -42259,16 +38291,11 @@ var init_cli = __esm({
     init_coderag();
     init_document();
     init_approval_git();
-<<<<<<< HEAD
     init_visual_cli();
     init_package();
     __name(createCLI, "createCLI");
     __name(startInteractiveChat, "startInteractiveChat");
     __name(startEnhancedChat, "startEnhancedChat");
-=======
-    __name(createCLI, "createCLI");
-    __name(startInteractiveChat, "startInteractiveChat");
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
     __name(askSingle, "askSingle");
     __name(generateCode, "generateCode");
     __name(processVision, "processVision");
@@ -42280,7 +38307,6 @@ var init_cli = __esm({
 });
 function checkNodeVersion() {
   const currentVersion = process.version;
-<<<<<<< HEAD
   console.log(chalk30__default.default.gray("\u2500".repeat(60)));
   console.log(chalk30__default.default.bold("\u{1F50D} Node.js Version Check"));
   console.log(chalk30__default.default.gray("\u2500".repeat(60)));
@@ -42300,37 +38326,12 @@ function checkNodeVersion() {
   if (semver__default.default.lt(currentVersion, RECOMMENDED_NODE_VERSION)) {
     console.log(
       chalk30__default.default.yellow(
-=======
-  console.log(chalk8__default.default.gray("\u2500".repeat(60)));
-  console.log(chalk8__default.default.bold("\u{1F50D} Node.js Version Check"));
-  console.log(chalk8__default.default.gray("\u2500".repeat(60)));
-  if (!semver__default.default.satisfies(currentVersion, `>=${MINIMUM_NODE_VERSION}`)) {
-    console.error(chalk8__default.default.red(`
-\u274C Node.js version ${currentVersion} is not supported.`));
-    console.error(chalk8__default.default.yellow(`Minimum required version: ${MINIMUM_NODE_VERSION}`));
-    console.error(chalk8__default.default.yellow(`Recommended version: ${RECOMMENDED_NODE_VERSION} or higher`));
-    console.error(chalk8__default.default.cyan("\nPlease upgrade Node.js:"));
-    console.error(chalk8__default.default.gray("  \u2022 Using nvm: nvm install 20 && nvm use 20"));
-    console.error(chalk8__default.default.gray("  \u2022 Using nodenv: nodenv install 20.0.0 && nodenv global 20.0.0"));
-    console.error(chalk8__default.default.gray("  \u2022 Download from: https://nodejs.org/"));
-    console.error(chalk8__default.default.gray("\u2500".repeat(60)));
-    process.exit(1);
-  }
-  console.log(chalk8__default.default.green(`\u2705 Node.js ${currentVersion} is supported`));
-  if (semver__default.default.lt(currentVersion, RECOMMENDED_NODE_VERSION)) {
-    console.log(
-      chalk8__default.default.yellow(
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
         `
 \u{1F4A1} Recommendation: Upgrade to Node.js ${RECOMMENDED_NODE_VERSION} or higher for best performance`
       )
     );
   }
-<<<<<<< HEAD
   console.log(chalk30__default.default.gray("\u2500".repeat(60)));
-=======
-  console.log(chalk8__default.default.gray("\u2500".repeat(60)));
->>>>>>> 73f1a492c8b30ad4210f6a8d16116a915db9e914
   console.log();
 }
 var MINIMUM_NODE_VERSION, RECOMMENDED_NODE_VERSION;

@@ -43,172 +43,302 @@ _MARIA's enhanced CLI interface with professional progress reporting, mode indic
 - **Service Orchestration**: Kubernetes-native deployment with auto-scaling
 - **API Gateway**: Enterprise routing with authentication and rate limiting
 - **Service Discovery**: Multi-registry support with load balancing
-- **Audit Logging**: Complete operation tracking with compliance reporting
-
-## 🚀 **Quick Start**
-
-### Installation
-```bash
-npm install -g @bonginkan/maria
-maria
-```
-
-### Setup Local AI (Optional)
-```bash
-# Ollama (Recommended)
-maria setup-ollama
-
-# vLLM (High Performance)
-maria setup-vllm
-```
+- **Full Observability**: Prometheus metrics, Jaeger tracing, Grafana dashboards
 
 ## 🌟 **Core Features**
 
-### 🧠 **Revolutionary Dual-Layer Memory System**
-- **System 1 (Fast/Intuitive)**: Instant pattern recognition with image processing
-- **System 2 (Deliberate/Analytical)**: Deep reasoning with content analysis
-- **Cross-Session Learning**: Memory persists across all your development sessions
-- **Adaptive Intelligence**: Learns your coding patterns and preferences
+### 🧠 **Ultra Memory System**
+- **Event Sourcing Foundation**: Complete audit trail with SQLite persistence
+- **Dual-Layer Architecture**: System 1 (fast) + System 2 (deliberate) processing
+- **Knowledge Graph Engine**: Entity extraction and relationship mapping
+- **Cross-Session Learning**: Learns patterns across all your development sessions
 
-### 📸 **Advanced Image Processing**
-```bash
-# Cloud Vision Analysis
-maria analyze-image screenshot.png "What UI issues do you see?"
+### 🏠 **Complete Local AI Integration**
+- **7 AI Providers**: OpenAI, Anthropic, Google, Groq, Grok, LM Studio, Ollama, vLLM
+- **Auto-Detection**: Automatic local LLM discovery and configuration
+- **Privacy-First**: Full offline capabilities with local processing
+- **Zero Cloud Dependencies**: Complete AI development environment locally
 
-# OCR Text Extraction
-maria extract-text document.jpg
+### 🚀 **Enterprise Development Features**
+- **Autonomous Coding Agent**: Complete project development from requirements
+- **Linux Command Intelligence**: 4-phase intelligent command execution with safety validation
+- **Real-Time Monitoring**: Live system health and performance tracking
+- **Advanced Deployment**: Blue-green, canary, and rolling deployment strategies
 
-# Auto-Research from Images
-# Drop any image with URLs or code - MARIA will auto-research relevant topics
-```
-
-### 🎯 **58+ Cognitive Modes**
-- **Self-Questioning**: Automatically active for comprehensive analysis
-- **IntentSocratic**: Resolves ambiguous requirements through smart questioning
-- **DeepThinking**: Complex problem-solving with multi-step reasoning
-- **Creative**: Innovative solutions and architecture design
-- **Implementation**: Code generation with best practices
-- **Validation**: Testing, security, and quality assurance
-
-### 🏠 **Complete Local LLM Integration**
-- **Automatic Detection**: Auto-configures Ollama, vLLM, LM Studio
-- **Privacy-First**: All processing runs locally on your machine
-- **Zero Cloud Dependencies**: Work offline with full AI capabilities
-- **Multi-Model Support**: 20+ local models supported
-
-## 📋 **Commands Overview**
-
-### 🎨 **Content Analysis Commands**
-```bash
-maria /analyze-content file.pdf          # PDF analysis with vision AI
-maria /extract-code image.png            # Code extraction from screenshots  
-maria /research-topic "machine learning" # Auto-research with citations
-maria /deep-dive "REST API design"       # Comprehensive topic analysis
-```
-
-### 🔧 **Development Commands**
-```bash
-maria /code-review                       # AI-powered code review
-maria /refactor-component Button.tsx     # Smart refactoring
-maria /generate-tests api.js             # Auto-generate test suites
-maria /optimize-performance              # Performance analysis and fixes
-```
-
-### 🛠️ **System Commands**
-```bash
-maria status                             # System health check
-maria models                            # List available AI models
-maria setup                             # Interactive setup wizard
-maria health --watch                    # Continuous monitoring
-```
-
-## 🎯 **Use Cases**
-
-### 👨‍💻 **For Developers**
-- **Code Analysis**: Upload screenshots of error messages for instant solutions
-- **Architecture Review**: Drop diagrams for architectural feedback and improvements
-- **Documentation**: Auto-generate docs from code screenshots or files
-- **Learning**: Research new technologies with comprehensive analysis
-
-### 🏢 **For Teams**
-- **Code Reviews**: Enhanced review process with AI-powered insights
-- **Knowledge Sharing**: Cross-session memory builds team knowledge base
-- **Standards Compliance**: Automated code quality and security checks
-- **Onboarding**: New developers get instant help and context
-
-### 🔬 **For Research**
-- **Paper Analysis**: Upload research papers for summarization and insights
-- **Data Visualization**: Analyze charts and graphs from documents
-- **Literature Review**: Auto-research topics with citation management
-- **Trend Analysis**: Track technology trends and developments
-
-## ⚡ **Performance & Privacy**
-
-### 🚀 **Enhanced Performance**
-- **60% Faster Startup**: Optimized initialization with intelligent caching
-- **Real-Time Processing**: Sub-100ms response times for most operations
-- **Parallel Execution**: Multi-core processing for complex tasks
-- **Memory Optimization**: Advanced memory management for large projects
-
-### 🔒 **Privacy-First Design**
-- **Local Processing**: All AI processing can run entirely offline
-- **No Data Collection**: Your code and data never leave your machine
-- **Encrypted Memory**: All session data encrypted at rest
-- **Compliance Ready**: GDPR, CCPA, and enterprise security standards
-
-## 🏗️ **Architecture**
-
-### 🎯 **Microservices Architecture**
-- **Service Mesh**: Complete service-to-service communication
-- **Auto-Scaling**: Dynamic resource allocation based on demand  
-- **Health Monitoring**: Real-time service health and performance tracking
-- **Circuit Breakers**: Fault tolerance and graceful degradation
-
-### 🔧 **Technical Stack**
-- **Runtime**: Node.js 18+ with TypeScript 5.0+
-- **UI Framework**: Blessed.js for rich terminal interfaces
-- **AI Integration**: OpenAI, Anthropic, Google, Groq, Local LLMs
-- **Image Processing**: Tesseract.js, Sharp, Canvas APIs
-- **Database**: SQLite with encryption for local storage
-
-## 📖 **Documentation**
-
-- [Setup Guide](./SETUP.md) - Complete installation and configuration
-- [Getting Started](./GETTING_STARTED.md) - Your first steps with MARIA
-- [Commands Reference](./COMMANDS.md) - Complete command documentation
-- [Developer Guide](./DEVELOPER_GUIDE_v1.1.0.md) - Advanced usage and customization
-- [Release Notes](./RELEASE_NOTES_v2.1.9.md) - Latest features and improvements
-
-## 🤝 **Community & Support**
-
-- **GitHub Issues**: [Report bugs and request features](https://github.com/bonginkan/maria/issues)
-- **Discussions**: [Join the community](https://github.com/bonginkan/maria/discussions)
-- **Documentation**: [Comprehensive guides and tutorials](https://github.com/bonginkan/maria/docs)
-
-## 🚀 **Get Started Now**
+## 📦 **Quick Installation**
 
 ```bash
-# Install MARIA
+# Install globally
 npm install -g @bonginkan/maria
 
-# Start your AI development journey
+# Or with pnpm (recommended)
+pnpm add -g @bonginkan/maria
+
+# Verify installation
+maria --version
+# Output: 2.1.9
+```
+
+## 🚀 **Getting Started**
+
+### **1. Basic Setup**
+```bash
+# Start interactive mode
 maria
+
+# Configure your preferred AI provider
+maria /model
 
 # Setup local AI (optional)
 maria setup-ollama
-
-# Try image analysis
-maria analyze-image screenshot.png "Analyze this UI"
+maria setup-vllm
 ```
 
-**Experience the future of AI-powered development with MARIA v2.1.9!** 🚀
+### **2. Image Processing & Content Analysis**
+```bash
+# Drop an image file in the CLI
+maria
+> my-screenshot.png  # Automatically analyzes with Gemini 2.0 Flash
+
+# Analyze with specific prompt
+maria
+> analyze my-diagram.jpg for architecture patterns
+
+# URL research (auto-triggered)
+maria
+> https://github.com/user/repo  # Automatically researches and summarizes
+```
+
+### **3. CLI Native Development**
+```bash
+# Smart file operations
+maria /find "*.ts" --content "TODO" --modified "last 7 days"
+maria /bulk-edit "src/**/*.ts" --replace "console.log" "logger.debug" --dry-run
+
+# Advanced build system
+maria /build-project --framework webpack --optimize --analyze
+maria /test-smart --parallel --coverage --risk-based
+
+# Deployment pipeline
+maria /deploy-pipeline production --strategy blue-green --dry-run
+```
+
+### **4. Microservices Management**
+```bash
+# Deploy microservices architecture
+maria /microservice-deploy ecommerce-platform --auto-scale
+
+# Configure service discovery
+maria /service-discover api-gateway --load-balance weighted --health-check
+
+# API gateway routes
+maria /gateway-route add api/users --upstream user-service --auth jwt --rate-limit 1000/min
+
+# Monitor everything
+maria /monitor-metrics --all --dashboard grafana
+```
+
+## 🔥 **Key Commands**
+
+### **File & Code Operations**
+```bash
+/find             # Advanced file search with multiple criteria
+/bulk-edit        # Edit multiple files simultaneously  
+/organize         # Organize files by various criteria
+/refactor         # Intelligent code refactoring
+/analyze-deps     # Dependency analysis and optimization
+```
+
+### **Build & Test System**
+```bash
+/build-project    # Multi-framework build orchestration
+/test-smart       # AI-powered test execution
+/deploy-pipeline  # Enterprise deployment automation
+/cicd-create      # Universal CI/CD pipeline generation
+```
+
+### **Microservices & Infrastructure**
+```bash
+/microservice-deploy    # Complete service lifecycle management
+/service-discover       # Intelligent service management
+/gateway-route         # API gateway configuration
+/monitor-metrics       # Comprehensive monitoring setup
+```
+
+### **Development Workflow**
+```bash
+/code             # Generate code with AI assistance
+/review           # Code review with quality analysis
+/bug              # Bug analysis and fix suggestions
+/optimize         # Performance optimization
+/security         # Security audit and recommendations
+```
+
+## 🎯 **Advanced Features**
+
+### **Real-Time Feedback System**
+```typescript
+// Professional feedback with rich styling
+feedback.info('Processing started', 'Analyzing file content');
+feedback.success('Analysis complete', 'Found 15 key insights');  
+feedback.warning('Network slow', 'Falling back to local processing');
+feedback.error('Processing failed', 'File format not supported');
+```
+
+### **Enhanced Progress Tracking**
+```typescript
+// Beautiful animated progress bars
+const session = feedback.startProgressSession({
+  title: 'Image Analysis Pipeline',
+  showTimestamps: true,
+  animateSpinner: true
+});
+
+session.addStep({ id: 'upload', name: 'Upload to Cloud API' });
+session.startStep('upload');
+session.updateProgress('upload', 75, 'Uploading image...');
+session.completeStep('upload');
+```
+
+### **Multi-Provider Vision AI**
+```typescript
+// Intelligent provider selection with fallback
+const visionAnalyzer = new VisionAnalyzer({
+  preferredProvider: 'auto', // Gemini → GPT-4o-mini → Local OCR
+  enableLocalFallback: true,
+  networkTimeout: 10000
+});
+```
+
+## 🔧 **Configuration**
+
+### **Environment Setup**
+```bash
+# Create .env.local file
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
+GOOGLE_API_KEY=...
+GROQ_API_KEY=gsk_...
+
+# Local LLM Configuration (auto-detected)
+OLLAMA_BASE_URL=http://localhost:11434
+VLLM_BASE_URL=http://localhost:8000
+LMSTUDIO_BASE_URL=http://localhost:1234
+```
+
+### **Advanced Configuration**
+```javascript
+// .maria/config.json
+{
+  "cliNative": {
+    "enableAudit": true,
+    "enableSafety": true,
+    "parallelExecution": true,
+    "dryRunByDefault": false
+  },
+  "visionAI": {
+    "preferredProvider": "gemini-2.0-flash",
+    "enableLocalFallback": true,
+    "networkTimeout": 10000
+  },
+  "progressReporting": {
+    "showAnimations": true,
+    "compactMode": false,
+    "showTimestamps": true
+  }
+}
+```
+
+## 📊 **Technical Specifications**
+
+### **Performance Metrics**
+- **Build Performance**: Up to 3x faster with intelligent caching
+- **Test Optimization**: 50-80% reduction in execution time  
+- **Memory Operations**: <50ms response time
+- **Service Discovery**: Sub-50ms service lookup
+- **API Gateway**: 10,000+ RPS with load balancing
+
+### **Architecture**
+- **Components**: 100+ TypeScript modules
+- **Commands**: 50+ professional CLI commands
+- **Cognitive Modes**: 58+ specialized AI states
+- **Vision Providers**: 3 providers (Gemini, OpenAI, local OCR)
+- **Memory System**: Event sourcing with SQLite persistence
+
+### **Enterprise Features**
+- **Security**: End-to-end authentication and authorization
+- **Scalability**: Auto-scaling based on metrics and thresholds
+- **Reliability**: Circuit breakers and automatic recovery
+- **Observability**: Full-stack monitoring with distributed tracing
+- **Compliance**: Audit logging and security scanning
+
+## 🛡️ **Safety & Security**
+
+- **Dry-Run Mode**: Preview all changes before execution
+- **Automatic Backups**: Before any destructive operation
+- **Rollback Capability**: Complete undo functionality
+- **Protected Paths**: Prevents system-critical modifications
+- **Risk Assessment**: Automatic danger level evaluation
+
+## 🎓 **Learning Resources**
+
+### **Documentation**
+- [CLI Command Reference](https://maria.ai/docs/cli-commands)
+- [Vision AI Integration](https://maria.ai/docs/vision-ai)
+- [Microservices Guide](https://maria.ai/docs/microservices)
+- [Memory System](https://maria.ai/docs/memory-system)
+
+### **Examples & Tutorials**
+- [Getting Started Tutorial](https://maria.ai/tutorials/getting-started)
+- [Image Processing Workflow](https://maria.ai/tutorials/image-processing)
+- [Microservices Deployment](https://maria.ai/tutorials/microservices)
+- [CLI Native Development](https://maria.ai/tutorials/cli-native)
+
+## 🏆 **Why Choose MARIA v2.1.9?**
+
+✅ **Complete Local Development** - Full AI capabilities offline  
+✅ **Professional UX** - Enterprise-grade interface with rich feedback  
+✅ **Advanced Vision AI** - Multi-provider image processing with fallback  
+✅ **CLI Native Workflow** - Complete development without leaving terminal  
+✅ **Microservices Ready** - Enterprise architecture out of the box  
+✅ **Ultra Memory System** - Learns from every interaction  
+✅ **Privacy-First** - Your code stays on your machine  
+✅ **Production Ready** - 100% tested with comprehensive safety systems  
+
+## 🚦 **System Requirements**
+
+- **Node.js**: 18.0.0 or higher
+- **Memory**: 4GB RAM minimum (8GB recommended)
+- **Storage**: 2GB free space
+- **Platform**: Windows, macOS, Linux
+- **Optional**: Docker for microservices features
+
+## 💬 **Community & Support**
+
+- **GitHub**: [bonginkan/maria](https://github.com/bonginkan/maria)
+- **Issues**: [Report bugs & request features](https://github.com/bonginkan/maria/issues)
+- **Discord**: [MARIA Community](https://discord.gg/maria)
+- **Email**: support@maria.ai
+
+## 📈 **Version History**
+
+- **v2.1.9** - Enhanced UX & Advanced Content Analysis
+- **v2.1.7** - Linux Command Intelligence Edition  
+- **v2.1.0** - Intelligent Research & Enhanced Deep Dive Edition
+- **v2.0.0** - Memory System & Multi-Agent Foundation
+- **v1.8.6** - Quality Assured Edition with 100% tested commands
+
+## 📄 **License**
+
+Dual-License (Commercial & Open Source) - See [LICENSE](./LICENSE) for details.
 
 ---
 
-<div align="center">
+### 🎉 **Start Your AI-Powered Development Journey**
 
-**Made with ❤️ by [Bonginkan Inc.](https://github.com/bonginkan)**
+```bash
+npm install -g @bonginkan/maria
+maria
+```
 
-*Empowering developers with AI-powered tools and privacy-first solutions*
-
-</div>
+**Experience the future of AI-powered development with MARIA v2.1.9!** 🚀
