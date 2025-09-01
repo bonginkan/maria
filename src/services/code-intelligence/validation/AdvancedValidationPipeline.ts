@@ -1,8 +1,8 @@
-import { BaseService } from '../../BaseService.js';
+import { BaseService } from '../../base/BaseService.js';
 import { execSync, spawn } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { TypeScriptEngine } from '../EnterpriseTypeScriptEngine.js';
+import { EnterpriseTypeScriptEngine } from '../EnterpriseTypeScriptEngine.js';
 
 export interface ValidationResult {
   stage: string;
@@ -34,10 +34,10 @@ export interface ValidationConfig {
 
 export class AdvancedValidationPipeline extends BaseService {
   private config: ValidationConfig;
-  private tsEngine: TypeScriptEngine;
+  private tsEngine: EnterpriseTypeScriptEngine;
 
   constructor(config: Partial<ValidationConfig> = {}) {
-    super();
+    super({ name: 'AdvancedValidationPipeline' });
     this.config = {
       enableSyntaxCheck: true,
       enableSemanticCheck: true,
@@ -48,7 +48,13 @@ export class AdvancedValidationPipeline extends BaseService {
       timeoutMs: 300000, // 5 minutes
       ...config
     };
-    this.tsEngine = new TypeScriptEngine();
+    this.tsEngine = new EnterpriseTypeScriptEngine();
+  }
+
+  async initialize(): Promise<void> {
+    // Initialize validation pipeline components
+    await this.tsEngine.initialize();
+    this.logTelemetry('pipeline.initialized');
   }
 
   async validateChanges(

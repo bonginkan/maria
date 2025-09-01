@@ -219,3 +219,18 @@ function extractSize(args: string[]): string | undefined {
   const sizeArg = args.find(arg => arg.startsWith('--size='));
   return sizeArg?.split('=')[1]?.replace(/"/g, '');
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'battlecard',
+  description: 'Generate competitive battlecards with talk scripts (Pro+)',
+  category: 'business',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'pro' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await battlecardCommand.execute(context, ...(context.args || []));
+}

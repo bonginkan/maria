@@ -470,3 +470,19 @@ export class DoctorCommand {
 }
 
 export default DoctorCommand;
+
+// Export for command registry
+export const metadata = {
+  name: 'doctor',
+  description: 'System diagnostics and health checks',
+  category: 'system',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  const command = new DoctorCommand();
+  return await command.execute(context.args || [], context);
+};

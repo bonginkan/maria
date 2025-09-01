@@ -10,6 +10,8 @@ import type { TTFBAuditor, TTFBAnalytics } from './TTFBAuditor.js';
 import type { HysteresisHealthChecker } from './HysteresisHealthChecker.js';
 import type { RunawayPreventionCircuitBreaker } from './RunawayPreventionCircuitBreaker.js';
 import type { IMSRouter } from './IMSRouter.js';
+import type { AdvancedTTFBMonitor, TTFBHeatmapData, TTFBTrendAnalysis } from './AdvancedTTFBMonitor.js';
+import type { GoldenDatasetMonitor, DailyReproductionReport, GoldenTestCase } from './GoldenDatasetMonitor.js';
 
 export type AdminRole = 'ims.viewer' | 'ims.operator' | 'ims.admin';
 
@@ -109,6 +111,42 @@ export interface ReproductionTestResponse {
   reproductionScore: number; // 0-1, 1 = perfect reproduction
 }
 
+export interface GoldenDatasetResponse {
+  testCases: GoldenTestCase[];
+  totalCount: number;
+  activeCount: number;
+  categories: string[];
+}
+
+export interface DailyReproductionSummary {
+  date: string;
+  totalTests: number;
+  passedTests: number;
+  failedTests: number;
+  averageScore: number;
+  failedTestCases: string[];
+  trends: {
+    scoreChange: number;
+    passRateChange: number;
+    recommendations: string[];
+  };
+}
+
+export interface TTFBHeatmapResponse {
+  heatmapData: TTFBHeatmapData;
+  visualization: {
+    timeSlots: string[];
+    components: string[];
+    values: number[][];
+    alerts: Array<{
+      component: string;
+      severity: 'warning' | 'critical';
+      message: string;
+    }>;
+  };
+  trendAnalysis: TTFBTrendAnalysis[];
+}
+
 /**
  * Decorator for role-based access control
  */
@@ -137,6 +175,8 @@ export class AdminAPI extends EventEmitter {
       ttfbAuditor: TTFBAuditor;
       healthChecker: HysteresisHealthChecker;
       circuitBreaker: RunawayPreventionCircuitBreaker;
+      advancedTTFBMonitor: AdvancedTTFBMonitor;
+      goldenDatasetMonitor: GoldenDatasetMonitor;
     }
   ) {
     super();
@@ -326,6 +366,152 @@ export class AdminAPI extends EventEmitter {
   }
 
   /**
+   * Get TTFB heatmap data with real-time visualization
+   * Requires: ims.operator role
+   */
+  @RequireRole('ims.operator')
+  async getTTFBHeatmap(req: any): Promise<TTFBHeatmapResponse> {
+    const { timeRange = '1h' } = req.query;
+    const timeRangeMs = this.parseTimeRange(timeRange);
+    
+    const heatmapData = this.dependencies.advancedTTFBMonitor.getHeatmapData(timeRangeMs);
+    const trendAnalysis = this.dependencies.advancedTTFBMonitor.getTrendAnalysis();
+    
+    // Transform heatmap data for visualization
+    const visualization = this.transformHeatmapForVisualization(heatmapData);
+
+    this.logAdminAction(req.user, 'VIEW_TTFB_HEATMAP', { timeRange });
+
+    return {
+      heatmapData,
+      visualization,
+      trendAnalysis
+    };
+  }
+
+  /**
+   * Get golden dataset test cases
+   * Requires: ims.viewer role
+   */
+  @RequireRole('ims.viewer')
+  async getGoldenDataset(req: any): Promise<GoldenDatasetResponse> {
+    const { category, active } = req.query;
+    
+    const testCases = this.dependencies.goldenDatasetMonitor.getTestCases(category);
+    const filteredCases = active === 'true' ? 
+      testCases.filter(tc => tc.isActive) : 
+      testCases;
+
+    const categories = [...new Set(testCases.map(tc => tc.category))];
+
+    this.logAdminAction(req.user, 'VIEW_GOLDEN_DATASET', { category, active });
+
+    return {
+      testCases: filteredCases,
+      totalCount: testCases.length,
+      activeCount: testCases.filter(tc => tc.isActive).length,
+      categories
+    };
+  }
+
+  /**
+   * Run golden dataset reproduction tests
+   * Requires: ims.operator role
+   */
+  @RequireRole('ims.operator')
+  async runGoldenDatasetTests(req: any): Promise<DailyReproductionReport> {
+    const { category, testCaseIds } = req.body;
+    
+    let report: DailyReproductionReport;
+    
+    if (testCaseIds && Array.isArray(testCaseIds)) {
+      // Run specific test cases
+      report = await this.dependencies.goldenDatasetMonitor.runSpecificTests(testCaseIds);
+    } else if (category) {
+      // Run tests for specific category
+      report = await this.dependencies.goldenDatasetMonitor.runCategoryTests(category);
+    } else {
+      // Run full daily test suite
+      report = await this.dependencies.goldenDatasetMonitor.runDailyReproductionTests();
+    }
+
+    this.logAdminAction(req.user, 'RUN_GOLDEN_DATASET_TESTS', { 
+      category, 
+      testCaseIds: testCaseIds?.length || 'all',
+      passRate: report.summary.passRate
+    });
+
+    return report;
+  }
+
+  /**
+   * Get daily reproduction report
+   * Requires: ims.viewer role
+   */
+  @RequireRole('ims.viewer')
+  async getDailyReproductionReport(req: any): Promise<DailyReproductionSummary> {
+    const { date } = req.params;
+    const report = this.dependencies.goldenDatasetMonitor.getDailyReport(date);
+    
+    if (!report) {
+      throw new Error(`No reproduction report found for date: ${date}`);
+    }
+
+    // Calculate trends by comparing with previous day
+    const previousDate = new Date(date);
+    previousDate.setDate(previousDate.getDate() - 1);
+    const previousReport = this.dependencies.goldenDatasetMonitor.getDailyReport(
+      previousDate.toISOString().split('T')[0]
+    );
+
+    const trends = this.calculateReproductionTrends(report, previousReport);
+
+    this.logAdminAction(req.user, 'VIEW_REPRODUCTION_REPORT', { date });
+
+    return {
+      date,
+      totalTests: report.summary.totalTests,
+      passedTests: report.summary.passedTests,
+      failedTests: report.summary.failedTests,
+      averageScore: report.summary.averageScore,
+      failedTestCases: report.failedTests.map(ft => ft.testCaseId),
+      trends
+    };
+  }
+
+  /**
+   * Get reproduction trend analysis
+   * Requires: ims.viewer role
+   */
+  @RequireRole('ims.viewer')
+  async getReproductionTrends(req: any) {
+    const { days = 30, testCaseId } = req.query;
+    
+    let trendData;
+    if (testCaseId) {
+      // Get trends for specific test case
+      trendData = this.dependencies.goldenDatasetMonitor.getTestCaseHistory(testCaseId, parseInt(days));
+    } else {
+      // Get overall trends
+      trendData = this.dependencies.goldenDatasetMonitor.getReproductionTrends(parseInt(days));
+    }
+
+    this.logAdminAction(req.user, 'VIEW_REPRODUCTION_TRENDS', { days, testCaseId });
+
+    return {
+      timeRange: { days: parseInt(days) },
+      testCaseId: testCaseId || 'all',
+      trends: trendData,
+      summary: {
+        averageScore: trendData.reduce((acc, t) => acc + t.reproductionScore, 0) / trendData.length,
+        passRate: trendData.filter(t => t.reproductionScore >= 0.95).length / trendData.length,
+        improving: this.isScoreTrendImproving(trendData),
+        recommendations: this.generateTrendRecommendations(trendData)
+      }
+    };
+  }
+
+  /**
    * Get system health status
    * Requires: ims.viewer role
    */
@@ -448,6 +634,96 @@ export class AdminAPI extends EventEmitter {
     if (differences.reasonsDifferent) score -= 0.3;
     
     return Math.max(0, score);
+  }
+
+  private transformHeatmapForVisualization(heatmapData: TTFBHeatmapData): TTFBHeatmapResponse['visualization'] {
+    const timeSlots = heatmapData.timeSlots.map(ts => new Date(ts.startTime).toISOString());
+    const components = Object.keys(heatmapData.timeSlots[0]?.componentBreakdown || {});
+    const values = heatmapData.timeSlots.map(ts => 
+      components.map(component => ts.componentBreakdown[component] || 0)
+    );
+
+    const alerts = heatmapData.alerts.map(alert => ({
+      component: alert.component,
+      severity: alert.severity as 'warning' | 'critical',
+      message: alert.message
+    }));
+
+    return {
+      timeSlots,
+      components,
+      values,
+      alerts
+    };
+  }
+
+  private calculateReproductionTrends(
+    current: DailyReproductionReport, 
+    previous: DailyReproductionReport | null
+  ): DailyReproductionSummary['trends'] {
+    if (!previous) {
+      return {
+        scoreChange: 0,
+        passRateChange: 0,
+        recommendations: ['Baseline established - monitor trends over time']
+      };
+    }
+
+    const scoreChange = current.summary.averageScore - previous.summary.averageScore;
+    const passRateChange = current.summary.passRate - previous.summary.passRate;
+
+    const recommendations: string[] = [];
+    if (scoreChange < -0.05) {
+      recommendations.push('Reproduction scores declining - investigate model changes');
+    }
+    if (passRateChange < -0.1) {
+      recommendations.push('Pass rate dropped significantly - review failed test cases');
+    }
+    if (current.summary.passRate < 0.8) {
+      recommendations.push('Pass rate below target - consider golden dataset updates');
+    }
+
+    return {
+      scoreChange,
+      passRateChange,
+      recommendations: recommendations.length > 0 ? recommendations : ['Trends stable - continue monitoring']
+    };
+  }
+
+  private isScoreTrendImproving(trendData: any[]): boolean {
+    if (trendData.length < 2) return false;
+    
+    const recentScores = trendData.slice(-7).map(t => t.reproductionScore);
+    const earlierScores = trendData.slice(-14, -7).map(t => t.reproductionScore);
+    
+    const recentAvg = recentScores.reduce((a, b) => a + b, 0) / recentScores.length;
+    const earlierAvg = earlierScores.reduce((a, b) => a + b, 0) / earlierScores.length;
+    
+    return recentAvg > earlierAvg + 0.01; // Consider improving if 1% better
+  }
+
+  private generateTrendRecommendations(trendData: any[]): string[] {
+    const recommendations: string[] = [];
+    
+    if (trendData.length === 0) return ['No data available'];
+    
+    const latestScore = trendData[trendData.length - 1]?.reproductionScore || 0;
+    const averageScore = trendData.reduce((acc, t) => acc + t.reproductionScore, 0) / trendData.length;
+    
+    if (latestScore < 0.8) {
+      recommendations.push('Recent reproduction quality low - investigate model behavior');
+    }
+    
+    if (averageScore < 0.9) {
+      recommendations.push('Overall reproduction quality below target - review golden dataset');
+    }
+    
+    const failureRate = trendData.filter(t => t.reproductionScore < 0.95).length / trendData.length;
+    if (failureRate > 0.2) {
+      recommendations.push('High failure rate detected - consider updating test expectations');
+    }
+    
+    return recommendations.length > 0 ? recommendations : ['Reproduction trends healthy'];
   }
 
   private logAdminAction(

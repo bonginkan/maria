@@ -429,4 +429,8 @@ export class Phase2IntegratedSystem extends BaseService {
     const plan = await this.planExecution(projectRoot, 'modification', description, options);
     return await this.executeSafeOperation(projectRoot, operation, plan, options);
   }
+
+  async initialize(): Promise<void> {
+    // Initialize Phase2IntegratedSystem - no initialization needed for now
+  }
 }

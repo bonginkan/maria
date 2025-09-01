@@ -1,4 +1,4 @@
-import { BaseService } from '../../BaseService.js';
+import { BaseService } from '../../base/BaseService.js';
 import { execSync, spawn } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -568,5 +568,9 @@ exit 0
     report += `- Atomic commits: All-or-nothing operation guarantee\n`;
 
     return report;
+  }
+
+  async initialize(): Promise<void> {
+    // Initialize GitBasedSafetySystem - no initialization needed for now
   }
 }

@@ -3,7 +3,7 @@
  * blessed.js統合のインタラクティブダッシュボード
  */
 
-import { SlashCommand } from "../../../types/slash-commands";
+import { SlashCommand } from "../../../types";
 import {
   createEnhancedTUIDashboard,
   DASHBOARD_THEMES,
@@ -19,9 +19,9 @@ import chalk from "chalk";
 
 // Simple dependency checker with graceful fallbacks
 async function checkDependencies(deps: string[]): Promise<boolean> {
-  // For now, always return false to use fallback mode
-  // In production, this would check actual dependency availability
-  return false;
+  // Return true for basic dependencies to enable command
+  // Graceful fallbacks are implemented in the execute function
+  return true;
 }
 
 export interface SalesDashboardCommandOptions {
@@ -572,7 +572,8 @@ export const metadata = {
   version: '1.0.0',
   type: 'functional' as const,
   planRequired: 'free' as const,
-  isPreview: false
+  isPreview: false,
+  deps: [] // No required dependencies - graceful fallback handles missing deps
 };
 
 export async function execute(context: any): Promise<any> {

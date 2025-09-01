@@ -839,3 +839,22 @@ Run \`/evolve --help\` for all available commands
     }
   }
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'evolve',
+  description: 'Advanced RL Evolution - Full AI learning and optimization system',
+  category: 'evolution',
+  version: '2.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  const command = new EvolveCommandPhase2();
+  await command.initialize();
+  const result = await command.execute(context.args || [], context);
+  await command.cleanup();
+  return result;
+}

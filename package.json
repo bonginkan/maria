@@ -1,7 +1,7 @@
 {
   "name": "@bonginkan/maria",
-  "version": "4.1.3",
-  "description": "🚀 MARIA v4.1.3 - Complete Multimodal AI Integration & Enterprise Platform. Revolutionary voice-to-code, image-to-code, and 73 production-ready commands with advanced memory systems. World's first TypeScript AST-powered code generation with GraphRAG intelligence, multilingual support, and dual-architecture cognitive memory. Features zero-error development, OAuth2.0 + PKCE authentication, and military-grade security. Delivers next-generation multimodal development experience with enterprise-grade performance.",
+  "version": "4.1.6",
+  "description": "🚀 MARIA v4.1.4 - Complete Multimodal AI Integration & Enterprise Platform. Revolutionary voice-to-code, image-to-code, and 73 production-ready commands with advanced memory systems. World's first TypeScript AST-powered code generation with GraphRAG intelligence, multilingual support, and dual-architecture cognitive memory. Features zero-error development, OAuth2.0 + PKCE authentication, and military-grade security. Delivers next-generation multimodal development experience with enterprise-grade performance.",
   "keywords": [
     "ai",
     "cli",
@@ -219,21 +219,25 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "src/slash-commands/READY.manifest.json"
   ],
   "sideEffects": false,
   "engines": {
     "node": ">=20.10.0"
   },
   "scripts": {
-    "build": "NODE_ENV=production tsup",
-    "build:dev": "NODE_ENV=development tsup",
-    "build:analyze": "ANALYZE=true NODE_ENV=production tsup",
+    "build": "NODE_ENV=production tsup && npm run copy:manifest && npm run verify:manifest",
+    "build:dev": "NODE_ENV=development tsup && npm run copy:manifest && npm run verify:manifest",
+    "build:analyze": "ANALYZE=true NODE_ENV=production tsup && npm run copy:manifest && npm run verify:manifest",
+    "copy:manifest": "cp src/slash-commands/READY.manifest.json dist/READY.manifest.json || (echo '❌ READY.manifest.json not found! Generating...' && npm run generate:manifest && cp src/slash-commands/READY.manifest.json dist/READY.manifest.json)",
+    "verify:manifest": "test -f dist/READY.manifest.json && echo '✅ READY.manifest.json included in build' || (echo '❌ READY.manifest.json missing from build!' && exit 1)",
     "build:fast": "NODE_ENV=production tsup --minify false --sourcemap false",
     "dev": "NODE_ENV=development tsup --watch",
     "clean": "rm -rf dist",
     "gen:cmd-types": "tsx scripts/gen/command-types.mts",
-    "prebuild": "pnpm run clean && pnpm gen:cmd-types",
+    "prebuild": "pnpm run clean && pnpm gen:cmd-types && pnpm run ensure:manifest",
+    "ensure:manifest": "test -f src/slash-commands/READY.manifest.json || npm run generate:manifest",
     "build:docker": "NODE_ENV=production tsup",
     "postbuild": "chmod +x dist/cli.cjs dist/bin/maria.cjs 2>/dev/null || true",
     "test": "vitest",
@@ -249,6 +253,7 @@
     "generate:manifest": "tsx scripts/generate-ready-manifest.ts",
     "health:report": "tsx scripts/command-health-report.ts",
     "ci:smoke": "pnpm -s build && pnpm -s test:smoke",
+    "verify:build": "tsx scripts/verify-manifest-inclusion.ts",
     "lint": "eslint --cache 'src/**/*.{ts,tsx}'",
     "lint:errors-only": "eslint --cache --quiet 'src/**/*.{ts,tsx}'",
     "lint:ci": "eslint --cache --max-warnings=0 'src/**/*.{ts,tsx}'",
@@ -294,7 +299,7 @@
     "fix:args:anon": "tsx scripts/fix/arg-anonymize-unused.ts",
     "fix:all": "pnpm -s fix:underscores && pnpm -s fix:args && pnpm -s fix:args:anon",
     "fix:quick": "pnpm -s fix:underscores && pnpm -s build && pnpm -s test:smoke",
-    "prepublishOnly": "pnpm -s build && node scripts/qc/assert-registry.mjs",
+    "prepublishOnly": "pnpm -s build && node scripts/qc/assert-registry.mjs && npm run verify:manifest",
     "snapshot:help": "node scripts/qc/help-snapshot.js",
     "ci:maria-md:gate": "node scripts/ci/verify-maria-md.mjs",
     "ci:init-and-gate": "node dist/cli.cjs init --deep --budget-ms=90000 --parallel=8 && node scripts/ci/verify-maria-md.mjs",
@@ -343,7 +348,7 @@
     "quality:report": "tsx scripts/quality-gates.ts > quality-report.txt",
     "coverage:report": "vitest --coverage --reporter=json > coverage.json",
     "bench:startup": "node scripts/startup-bench.js",
-    "ci:quality": "pnpm quality:gates && pnpm test:golden"
+    "ci:quality": "pnpm quality:gates && pnpm test:golden && pnpm verify:build"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.20.0",

@@ -629,4 +629,8 @@ describe('${target}', () => {
       success: true
     };
   }
+
+  async initialize(): Promise<void> {
+    // Initialize VoiceToCodeSystem - no initialization needed for now
+  }
 }

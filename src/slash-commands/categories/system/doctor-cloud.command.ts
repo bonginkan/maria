@@ -341,3 +341,18 @@ async function attemptAutoFixes(issues: DiagnosticResult[]): Promise<void> {
     console.log('   Re-run /doctor to verify fixes');
   }
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'doctor',
+  description: 'Run comprehensive system diagnostics with actionable fixes',
+  category: 'system',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await doctorCommand.execute(...(context.args || []));
+}

@@ -455,3 +455,18 @@ export class MultimodalCommand extends BaseCommand {
 
 // Export instance for registration
 export const multimodalCommand = new MultimodalCommand();
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'mm',
+  description: 'Multimodal code generation: voice, image, and collaborative editing',
+  category: 'code',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await multimodalCommand.execute(context.args || [], context);
+}

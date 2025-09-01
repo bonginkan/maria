@@ -393,6 +393,7 @@ export class IMSAPIEndpoints extends EventEmitter {
   /**
    * GET /v1/health - Health check endpoint
    */
+  // eslint-disable-next-line consistent-return
   async handleHealthCheck(req: Request, res: Response): Promise<void> {
     try {
       const health = await this.dependencies.imsRouter.getHealthStatus();
@@ -416,8 +417,10 @@ export class IMSAPIEndpoints extends EventEmitter {
           ttfbMs: 0
         }
       });
+      return;
     } catch (error) {
-      return this.sendError(res, 'HEALTH_CHECK_FAILED', error.message, Date.now());
+      this.sendError(res, 'HEALTH_CHECK_FAILED', error.message, Date.now());
+      return;
     }
   }
 
@@ -502,6 +505,7 @@ export class IMSAPIEndpoints extends EventEmitter {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   private async handleRegularResponse(
     req: Request,
     res: Response,
@@ -535,9 +539,11 @@ export class IMSAPIEndpoints extends EventEmitter {
       }
 
       res.json(response);
+      return;
     } catch (error) {
       this.emit('providerError', { traceId: taskInput.traceId, error });
-      return this.sendError(res, 'PROVIDER_ERROR', error.message, startTime, taskInput.traceId);
+      this.sendError(res, 'PROVIDER_ERROR', error.message, startTime, taskInput.traceId);
+      return;
     }
   }
 

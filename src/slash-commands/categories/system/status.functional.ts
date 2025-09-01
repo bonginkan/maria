@@ -340,3 +340,19 @@ export class StatusCommand {
 }
 
 export default StatusCommand;
+
+// Export for command registry
+export const metadata = {
+  name: 'status',
+  description: 'System health and status monitoring',
+  category: 'system',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  const command = new StatusCommand();
+  return await command.execute(context.args || [], context);
+};

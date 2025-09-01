@@ -33,6 +33,11 @@ export class ReadyCommandsService {
     } else {
       // Try multiple possible locations for the manifest file
       const possiblePaths = [
+        // For bundled dist version
+        path.join(__dirname, 'READY.manifest.json'),
+        path.join(__dirname, '../READY.manifest.json'),
+        path.join(process.cwd(), 'dist/READY.manifest.json'),
+        // For development/source version
         path.join(__dirname, '../../../src/slash-commands/READY.manifest.json'),
         path.join(__dirname, '../../slash-commands/READY.manifest.json'),
         path.join(process.cwd(), 'src/slash-commands/READY.manifest.json'),
@@ -49,6 +54,11 @@ export class ReadyCommandsService {
    */
   private async findManifestPath(): Promise<void> {
     const possiblePaths = [
+      // For bundled dist version
+      path.join(__dirname, 'READY.manifest.json'),
+      path.join(__dirname, '../READY.manifest.json'),
+      path.join(process.cwd(), 'dist/READY.manifest.json'),
+      // For development/source version
       path.join(__dirname, '../../../src/slash-commands/READY.manifest.json'),
       path.join(__dirname, '../../slash-commands/READY.manifest.json'),
       path.join(process.cwd(), 'src/slash-commands/READY.manifest.json'),

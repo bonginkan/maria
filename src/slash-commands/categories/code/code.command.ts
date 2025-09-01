@@ -260,3 +260,19 @@ export class CodeCommand extends BaseCommand {
 
 // Export instance for registration
 export const codeCommand = new CodeCommand();
+
+// Export metadata for registry
+export const metadata = {
+  name: 'code',
+  description: 'Cloud-only code generation with compact output and quota footer',
+  category: 'code',
+  version: '2.1.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+// Export execute function for registry
+export async function execute(context: any): Promise<any> {
+  return await codeCommand.execute(context.args || [], context);
+};

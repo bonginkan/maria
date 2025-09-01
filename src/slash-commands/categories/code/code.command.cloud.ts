@@ -99,3 +99,18 @@ export const codeCommand = {
     }
   })
 };
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'code',
+  description: 'Revolutionary natural language code generation',
+  category: 'code',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await codeCommand.execute(context);
+}

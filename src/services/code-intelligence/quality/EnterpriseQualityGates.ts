@@ -1,4 +1,4 @@
-import { BaseService } from '../../BaseService.js';
+import { BaseService } from '../../base/BaseService.js';
 import { execSync } from 'child_process';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -905,5 +905,9 @@ export class EnterpriseQualityGates extends BaseService {
     }
 
     return report;
+  }
+
+  async initialize(): Promise<void> {
+    // Initialize EnterpriseQualityGates - no initialization needed for now
   }
 }

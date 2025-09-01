@@ -229,3 +229,18 @@ function formatUptime(seconds: number): string {
   if (hours > 0) return `${hours}h ${minutes}m`;
   return `${minutes}m`;
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'status',
+  description: 'System health monitoring with API connectivity checks',
+  category: 'system',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await statusCommand.execute(...(context.args || []));
+}

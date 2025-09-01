@@ -207,3 +207,18 @@ function extractFormat(args: string[]): string | undefined {
   const formatArg = args.find(arg => arg.startsWith('--format='));
   return formatArg?.split('=')[1];
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'sales-dashboard',
+  description: 'Interactive TUI sales dashboard with real-time updates (Starter+)',
+  category: 'business',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'starter' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await salesDashboardCommand.execute(context, ...(context.args || []));
+}

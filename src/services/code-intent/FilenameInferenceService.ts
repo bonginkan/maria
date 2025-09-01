@@ -3,7 +3,7 @@
  * Intelligently infers appropriate filenames from user intent and code content
  */
 
-import { BaseService } from '../internal-mode/core/BaseService';
+import { BaseService } from '../base/BaseService.js';
 import { ExplicitFilenameAnalyzer } from './analyzers/ExplicitFilenameAnalyzer.js';
 import { ContextualAnalyzer } from './analyzers/ContextualAnalyzer.js';
 import { SemanticAnalyzer } from './analyzers/SemanticAnalyzer.js';
@@ -408,6 +408,10 @@ export class FilenameInferenceService extends BaseService {
       return 'to_pascal';
     }
     return 'custom';
+  }
+
+  async initialize(): Promise<void> {
+    // Initialize FilenameInferenceService - no initialization needed for now
   }
 }
 

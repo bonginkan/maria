@@ -177,4 +177,19 @@ export const enhancedHelpCommand = createFunctionalCommand(
   enhancedHelpExecutor
 );
 
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'enhanced-help',
+  description: 'Advanced help system with interactive features',
+  category: 'core',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await enhancedHelpExecutor(context.args || [], context);
+}
+
 export default enhancedHelpCommand;

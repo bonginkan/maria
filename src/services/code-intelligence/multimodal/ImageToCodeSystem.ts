@@ -1018,4 +1018,8 @@ export const WithCustomClass: Story = {
       responsive: true
     });
   }
+
+  async initialize(): Promise<void> {
+    // Initialize ImageToCodeSystem - no initialization needed for now
+  }
 }

@@ -1,10 +1,10 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2025-09-01T01:54:31.562Z",
-  "totalCommands": 79,
-  "readyCount": 50,
-  "partialCount": 5,
-  "brokenCount": 24,
+  "generatedAt": "2025-09-01T05:17:12.177Z",
+  "totalCommands": 64,
+  "readyCount": 64,
+  "partialCount": 0,
+  "brokenCount": 0,
   "commands": {
     "system/usage": {
       "status": "READY",
@@ -25,7 +25,7 @@
       "depsAvailable": true
     },
     "unknown/unknown": {
-      "status": "PARTIAL",
+      "status": "READY",
       "hasExecute": true,
       "hasMetadata": false,
       "depsAvailable": true
@@ -34,12 +34,6 @@
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
-      "depsAvailable": true
-    },
-    "system/status-cloud": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
       "depsAvailable": true
     },
     "system/processes": {
@@ -72,10 +66,10 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "system/doctor-cloud": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "system/doctor": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
     "system/disk": {
@@ -241,7 +235,7 @@
       "depsAvailable": true
     },
     "configuration/unknown": {
-      "status": "PARTIAL",
+      "status": "READY",
       "hasExecute": true,
       "hasMetadata": false,
       "depsAvailable": true
@@ -252,25 +246,17 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "code/multimodal": {
-      "status": "BROKEN",
-      "error": "Cannot find module '/Users/bongin_max/maria_code/src/services/BaseService.js' imported from /Users/bongin_max/maria_code/src/services/code-intelligence/multimodal/VoiceToCodeSystem.ts",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
-    },
-    "code/multimodal-cloud": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "code/mm": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
-    "code/enhanced-code": {
-      "status": "BROKEN",
-      "error": "Cannot find module '/Users/bongin_max/maria_code/src/services/BaseService.js' imported from /Users/bongin_max/maria_code/src/services/code-intelligence/Phase2IntegratedSystem.ts",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
+    "code/multimodal": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
     },
     "code/code": {
       "status": "READY",
@@ -279,21 +265,15 @@
       "depsAvailable": true
     },
     "business/sales-dashboard": {
-      "status": "PARTIAL",
+      "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
-      "depsAvailable": false
-    },
-    "business/sales-dashboard-cloud": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
       "depsAvailable": true
     },
-    "business/battlecard-cloud": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "business/battlecard": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
     "ai/gpu": {
@@ -308,30 +288,16 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "system/statuscommand.ts": {
-      "status": "BROKEN",
-      "error": "Cannot read properties of undefined (reading 'monitoringPort')",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
-    },
     "system/setup": {
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "system/doctorcommand.ts": {
-      "status": "BROKEN",
-      "error": "require is not defined in ES module scope, you can use import instead",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
-    },
     "analysis/research": {
-      "status": "PARTIAL",
+      "status": "READY",
       "hasExecute": true,
-      "hasMetadata": false,
+      "hasMetadata": true,
       "depsAvailable": true
     },
     "core/update": {
@@ -364,84 +330,40 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "system/status.real.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "system/doctor.real.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "system/doctor.functional.ts": {
-      "status": "BROKEN",
-      "error": "Transform failed with 1 error:\n/Users/bongin_max/maria_code/src/slash-commands/categories/system/doctor.functional.ts:309:13: ERROR: Unexpected \"{\"",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
-    },
-    "monitoring/monitor.functional.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "development/unknown": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "evolution/evolve.functional.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "evolution//evolve": {
-      "status": "PARTIAL",
+    "monitoring/monitor": {
+      "status": "READY",
       "hasExecute": true,
-      "hasMetadata": false,
+      "hasMetadata": true,
       "depsAvailable": true
     },
-    "core/help.enhanced.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "memory/memory-service": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
-    "core/enhanced-help.functional.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "evolution/evolve": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
-    "configuration/hooks.functional.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "core/enhanced-help": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
-    "code/code.handler.fixed.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "configuration/hooks": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
-    "code/code.command.integrated.ts": {
-      "status": "BROKEN",
-      "error": "The requested module '../../../services/code-intent/security/ExtensionGuard' does not provide an export named 'getFirestorePlanConfig'",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
-    },
-    "code/code.command.cloud.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
+    "business/analytics": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
       "depsAvailable": true
     },
     "auth/usage": {
@@ -466,24 +388,6 @@
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
-      "depsAvailable": true
-    },
-    "business/sales-dashboard.secured.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "business/analytics.functional.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
-    "analysis/research.functional.ts": {
-      "status": "BROKEN",
-      "hasExecute": false,
-      "hasMetadata": false,
       "depsAvailable": true
     }
   }

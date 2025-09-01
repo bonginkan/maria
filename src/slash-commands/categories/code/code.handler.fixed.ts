@@ -458,3 +458,18 @@ class TestGeneratedFunction(unittest.TestCase):
   
   return templates[lang] || templates.typescript;
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'code',
+  description: 'Revolutionary natural language code generation (fixed handler)',
+  category: 'code',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await codeHandler(context.args || [], context);
+}

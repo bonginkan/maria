@@ -187,4 +187,19 @@ export const hooksCommand = createFunctionalCommand(
   hooksExecutor
 );
 
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'hooks',
+  description: 'Manage CLI hooks and automation workflows',
+  category: 'configuration',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await hooksExecutor(context.args || [], context);
+}
+
 export default hooksCommand;

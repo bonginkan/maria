@@ -583,3 +583,28 @@ export class StatusCommandV2 extends SystemCommandBase {
     return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
   }
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'status',
+  description: 'Advanced system status with health monitoring',
+  category: 'system',
+  version: '2.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  // Create a mock dependencies object if not provided
+  const dependencies = {
+    configPort: null,
+    monitoringPort: null,
+    timeSeriesPort: null,
+    providers: [],
+    ...context.dependencies
+  };
+  
+  const command = new StatusCommandV2(dependencies);
+  return await command.execute(context.args || [], context);
+}

@@ -1,4 +1,4 @@
-import { BaseService } from '../../BaseService.js';
+import { BaseService } from '../../base/BaseService.js';
 import { EventEmitter } from 'events';
 import * as crypto from 'crypto';
 
@@ -208,8 +208,13 @@ export class RealtimeCollaborationEngine extends BaseService {
   private syncInterval: NodeJS.Timeout | null = null;
 
   constructor() {
-    super();
+    super({ name: 'RealtimeCollaborationEngine' });
     this.startSyncInterval();
+  }
+
+  async initialize(): Promise<void> {
+    // Initialize collaboration engine components
+    this.logTelemetry('engine.initialized');
   }
 
   private startSyncInterval(): void {

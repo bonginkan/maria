@@ -227,4 +227,19 @@ export const analyticsCommand = createFunctionalCommand(
   analyticsExecutor
 );
 
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'analytics',
+  description: 'Business intelligence and data analytics dashboard',
+  category: 'business',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await analyticsExecutor(context.args || [], context);
+}
+
 export default analyticsCommand;

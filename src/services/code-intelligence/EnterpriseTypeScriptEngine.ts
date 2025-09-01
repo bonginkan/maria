@@ -3,8 +3,7 @@
  * Week 1-2 Implementation: Production-grade AST processing with enterprise safety
  */
 
-import { Project, SourceFile, Node, SyntaxKind, ts } from 'ts-morph';
-import * as TypeScriptAPI from 'typescript';
+import { Project, SourceFile, Node, SyntaxKind, ts, ScriptTarget, ModuleKind, ModuleResolutionKind } from 'ts-morph';
 import { EnterpriseProjectResolver } from './EnterpriseProjectResolver.js';
 
 export interface Change {
@@ -42,7 +41,7 @@ export type FeaturePattern = 'react_component' | 'rest_endpoint' | 'utility_func
  */
 export class EnterpriseTypeScriptEngine {
   private project: Project;
-  private compilerHost: TypeScriptAPI.CompilerHost;
+  private compilerHost: ts.CompilerHost;
   private sourceFileCache = new Map<string, SourceFile>();
   private diagnosticsCache = new Map<string, DiagnosticInfo[]>();
   
@@ -70,16 +69,16 @@ export class EnterpriseTypeScriptEngine {
       useInMemoryFileSystem: false,
       skipFileDependencyResolution: false,
       compilerOptions: {
-        target: TypeScriptAPI.ScriptTarget.ES2022,
-        module: TypeScriptAPI.ModuleKind.ES2022,
-        moduleResolution: TypeScriptAPI.ModuleResolutionKind.Bundler,
+        target: ScriptTarget.ES2022,
+        module: ModuleKind.ES2022,
+        moduleResolution: ModuleResolutionKind.Node16,
         strict: false, // Match current project settings
         skipLibCheck: true,
         allowJs: false
       }
     });
 
-    this.compilerHost = TypeScriptAPI.createCompilerHost({});
+    this.compilerHost = ts.createCompilerHost({} as any);
   }
 
   /**
@@ -177,7 +176,7 @@ export class EnterpriseTypeScriptEngine {
             message: 'File not found', 
             code: 2304,
             category: 'error',
-            severity: TypeScriptAPI.DiagnosticCategory.Error
+            severity: ts.DiagnosticCategory.Error
           }],
           confidence: 0
         };

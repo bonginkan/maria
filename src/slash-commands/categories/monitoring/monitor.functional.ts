@@ -206,3 +206,18 @@ export const monitorCommand = createFunctionalCommand(
 );
 
 export default monitorCommand;
+
+// Export for command registry
+export const metadata = {
+  name: 'monitor',
+  description: 'System monitoring and observability dashboard',
+  category: 'monitoring',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await monitorExecutor(context.args || [], context);
+};

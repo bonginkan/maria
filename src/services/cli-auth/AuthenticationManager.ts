@@ -20,9 +20,19 @@ export class AuthenticationManager {
 
   constructor() {
     this.tokenStorage = new TokenStorage();
-    this.authBase = process.env.MARIA_AUTH_BASE || 'http://localhost:3003';
-    this.apiBase = process.env.MARIA_API_BASE || 'http://localhost:3001';
-    this.clientId = process.env.MARIA_CLIENT_ID || 'maria-cli-v3';
+    // Use custom domain for auth-server
+    // Fallback order: env var -> custom domain -> Cloud Run URL
+    this.authBase = process.env.MARIA_AUTH_BASE || 
+                    'https://auth.maria-code.ai';
+    // For now, use Cloud Run URL until DNS is configured
+    // TODO: Remove this fallback once auth.maria-code.ai DNS is ready
+    if (this.authBase === 'https://auth.maria-code.ai') {
+      // Temporarily use Cloud Run URL until DNS propagates
+      this.authBase = 'https://auth-server-1098737975582.us-central1.run.app';
+      console.debug('Using Cloud Run URL for auth (DNS pending for auth.maria-code.ai)');
+    }
+    this.apiBase = process.env.MARIA_API_BASE || 'https://api.maria-code.ai';
+    this.clientId = process.env.MARIA_CLIENT_ID || 'maria-cli';
   }
 
   /**

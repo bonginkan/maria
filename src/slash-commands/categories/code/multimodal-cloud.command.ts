@@ -275,3 +275,35 @@ function extractVideoStyle(args: string[]): string | undefined {
   const styleArg = args.find(arg => arg.startsWith('--style='));
   return styleArg?.split('=')[1];
 }
+
+// Export metadata and execute for command registry
+export const metadata = {
+  name: 'multimodal',
+  description: 'Generate images, voice, and video using AI (cloud-only)',
+  category: 'code',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: true
+};
+
+export async function execute(context: any): Promise<any> {
+  // Route to the appropriate multimodal command based on first argument
+  const command = context.args?.[0];
+  const remainingArgs = context.args?.slice(1) || [];
+  
+  switch(command) {
+    case 'image':
+      return await imageCommand.execute(context, ...remainingArgs);
+    case 'voice':
+      return await voiceCommand.execute(context, ...remainingArgs);
+    case 'video':
+      return await videoCommand.execute(context, ...remainingArgs);
+    default:
+      console.log('🎨 Multimodal Generation Commands:');
+      console.log('  /multimodal image <prompt>  - Generate images');
+      console.log('  /multimodal voice <text>    - Generate speech');
+      console.log('  /multimodal video <prompt>  - Generate videos');
+      return { success: false, endReason: 'invalid-input' };
+  }
+}
