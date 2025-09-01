@@ -1,0 +1,240 @@
+{
+  "version": "1.0",
+  "metadata": {
+    "created": "2025-08-26",
+    "description": "Golden Dataset for Graph RAG 10T Evaluation",
+    "domains": ["enterprise", "technical", "project-management"],
+    "total_queries": 70
+  },
+  "languages": ["ja", "en", "zh", "ko"],
+  "queries": [
+    {
+      "id": "en001",
+      "text": "Project A design requirements and specifications",
+      "language": "en",
+      "domain": "project-management",
+      "relevance": [
+        { "prefix": "docA:section1", "rel": 3, "note": "Direct match - main requirements document" },
+        { "prefix": "docA:section2", "rel": 3, "note": "Design specifications section" },
+        { "prefix": "docB:p1", "rel": 2, "note": "Related project template" },
+        { "prefix": "docC:intro", "rel": 1, "note": "General project guidelines" }
+      ]
+    },
+    {
+      "id": "en002", 
+      "text": "API authentication security implementation",
+      "language": "en",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "security:auth", "rel": 3, "note": "Main authentication guide" },
+        { "prefix": "api:jwt", "rel": 3, "note": "JWT implementation details" },
+        { "prefix": "best:practices", "rel": 2, "note": "Security best practices" },
+        { "prefix": "example:oauth", "rel": 2, "note": "OAuth2 example" }
+      ]
+    },
+    {
+      "id": "en003",
+      "text": "Database performance optimization strategies", 
+      "language": "en",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "perf:db", "rel": 3, "note": "Database optimization guide" },
+        { "prefix": "index:strategy", "rel": 3, "note": "Indexing strategies" },
+        { "prefix": "query:optimize", "rel": 2, "note": "Query optimization techniques" },
+        { "prefix": "monitor:db", "rel": 2, "note": "Database monitoring" }
+      ]
+    },
+    {
+      "id": "ja001",
+      "text": "プロジェクトAの要件定義と仕様書",
+      "language": "ja", 
+      "domain": "project-management",
+      "relevance": [
+        { "prefix": "docA:section1", "rel": 3, "note": "メイン要件定義書" },
+        { "prefix": "docA:section2", "rel": 3, "note": "詳細仕様書セクション" },
+        { "prefix": "template:project", "rel": 2, "note": "プロジェクトテンプレート" },
+        { "prefix": "guide:general", "rel": 1, "note": "一般的なガイドライン" }
+      ]
+    },
+    {
+      "id": "ja002",
+      "text": "API認証のセキュリティ実装方法",
+      "language": "ja",
+      "domain": "technical", 
+      "relevance": [
+        { "prefix": "security:auth", "rel": 3, "note": "認証セキュリティガイド" },
+        { "prefix": "api:jwt", "rel": 3, "note": "JWT実装詳細" },
+        { "prefix": "security:best", "rel": 2, "note": "セキュリティベストプラクティス" },
+        { "prefix": "oauth:example", "rel": 2, "note": "OAuth2実装例" }
+      ]
+    },
+    {
+      "id": "ja003",
+      "text": "データベースパフォーマンス最適化戦略",
+      "language": "ja",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "perf:db", "rel": 3, "note": "DB最適化ガイド" },
+        { "prefix": "index:strategy", "rel": 3, "note": "インデックス戦略" },
+        { "prefix": "query:tune", "rel": 2, "note": "クエリチューニング" },
+        { "prefix": "monitor:db", "rel": 2, "note": "DB監視手法" }
+      ]
+    },
+    {
+      "id": "en004",
+      "text": "Microservices architecture best practices",
+      "language": "en",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "arch:micro", "rel": 3, "note": "Microservices architecture guide" },
+        { "prefix": "pattern:design", "rel": 3, "note": "Design patterns for microservices" },
+        { "prefix": "deploy:container", "rel": 2, "note": "Container deployment strategies" },
+        { "prefix": "monitor:micro", "rel": 2, "note": "Microservices monitoring" }
+      ]
+    },
+    {
+      "id": "en005",
+      "text": "Machine learning model deployment pipeline",
+      "language": "en", 
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "ml:deploy", "rel": 3, "note": "ML deployment guide" },
+        { "prefix": "pipeline:cicd", "rel": 3, "note": "CI/CD for ML models" },
+        { "prefix": "monitor:ml", "rel": 2, "note": "Model monitoring" },
+        { "prefix": "version:model", "rel": 2, "note": "Model versioning" }
+      ]
+    },
+    {
+      "id": "ja004", 
+      "text": "マイクロサービスアーキテクチャのベストプラクティス",
+      "language": "ja",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "arch:micro", "rel": 3, "note": "マイクロサービス設計ガイド" },
+        { "prefix": "pattern:design", "rel": 3, "note": "設計パターン集" },
+        { "prefix": "deploy:k8s", "rel": 2, "note": "Kubernetes展開戦略" },
+        { "prefix": "service:mesh", "rel": 2, "note": "サービスメッシュ導入" }
+      ]
+    },
+    {
+      "id": "ja005",
+      "text": "機械学習モデルのデプロイメントパイプライン",
+      "language": "ja",
+      "domain": "technical", 
+      "relevance": [
+        { "prefix": "ml:deploy", "rel": 3, "note": "ML展開ガイド" },
+        { "prefix": "pipeline:ml", "rel": 3, "note": "MLパイプライン設計" },
+        { "prefix": "monitor:model", "rel": 2, "note": "モデル監視" },
+        { "prefix": "automl:ops", "rel": 2, "note": "MLOps自動化" }
+      ]
+    },
+    {
+      "id": "en006",
+      "text": "Cloud infrastructure cost optimization",
+      "language": "en",
+      "domain": "enterprise", 
+      "relevance": [
+        { "prefix": "cloud:cost", "rel": 3, "note": "Cloud cost optimization guide" },
+        { "prefix": "aws:savings", "rel": 3, "note": "AWS cost savings strategies" },
+        { "prefix": "resource:right", "rel": 2, "note": "Resource right-sizing" },
+        { "prefix": "monitor:billing", "rel": 2, "note": "Billing monitoring setup" }
+      ]
+    },
+    {
+      "id": "en007",
+      "text": "DevOps automation tools and workflows",
+      "language": "en",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "devops:auto", "rel": 3, "note": "DevOps automation guide" },
+        { "prefix": "cicd:tools", "rel": 3, "note": "CI/CD tools comparison" },
+        { "prefix": "infra:code", "rel": 2, "note": "Infrastructure as Code" },
+        { "prefix": "deploy:auto", "rel": 2, "note": "Automated deployment" }
+      ]
+    },
+    {
+      "id": "ja006",
+      "text": "クラウドインフラのコスト最適化",
+      "language": "ja",
+      "domain": "enterprise",
+      "relevance": [
+        { "prefix": "cloud:cost", "rel": 3, "note": "クラウドコスト最適化" },
+        { "prefix": "aws:billing", "rel": 3, "note": "AWS課金最適化" },
+        { "prefix": "resource:plan", "rel": 2, "note": "リソース計画" },
+        { "prefix": "cost:alert", "rel": 2, "note": "コスト監視アラート" }
+      ]
+    },
+    {
+      "id": "ja007",
+      "text": "DevOps自動化ツールとワークフロー",
+      "language": "ja", 
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "devops:auto", "rel": 3, "note": "DevOps自動化ガイド" },
+        { "prefix": "tool:jenkins", "rel": 3, "note": "Jenkins活用法" },
+        { "prefix": "docker:deploy", "rel": 2, "note": "Docker展開戦略" },
+        { "prefix": "ansible:config", "rel": 2, "note": "Ansible設定管理" }
+      ]
+    },
+    {
+      "id": "en008",
+      "text": "Data privacy and GDPR compliance",
+      "language": "en",
+      "domain": "enterprise",
+      "relevance": [
+        { "prefix": "privacy:gdpr", "rel": 3, "note": "GDPR compliance guide" },
+        { "prefix": "data:protection", "rel": 3, "note": "Data protection policies" },
+        { "prefix": "audit:compliance", "rel": 2, "note": "Compliance audit procedures" },
+        { "prefix": "encrypt:data", "rel": 2, "note": "Data encryption standards" }
+      ]
+    },
+    {
+      "id": "zh001",
+      "text": "项目A设计需求和规格说明",
+      "language": "zh",
+      "domain": "project-management", 
+      "relevance": [
+        { "prefix": "docA:section1", "rel": 3, "note": "主要需求文档" },
+        { "prefix": "docA:section2", "rel": 3, "note": "设计规格部分" },
+        { "prefix": "template:project", "rel": 2, "note": "项目模板" },
+        { "prefix": "guide:standard", "rel": 1, "note": "标准指南" }
+      ]
+    },
+    {
+      "id": "zh002",
+      "text": "API认证安全实现方法",
+      "language": "zh",
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "security:auth", "rel": 3, "note": "认证安全指南" },
+        { "prefix": "api:jwt", "rel": 3, "note": "JWT实现详情" },
+        { "prefix": "security:best", "rel": 2, "note": "安全最佳实践" },
+        { "prefix": "oauth:guide", "rel": 2, "note": "OAuth2指南" }
+      ]
+    },
+    {
+      "id": "ko001", 
+      "text": "프로젝트 A 설계 요구사항 및 명세서",
+      "language": "ko",
+      "domain": "project-management",
+      "relevance": [
+        { "prefix": "docA:section1", "rel": 3, "note": "주요 요구사항 문서" },
+        { "prefix": "docA:section2", "rel": 3, "note": "설계 명세서 섹션" },
+        { "prefix": "template:project", "rel": 2, "note": "프로젝트 템플릿" },
+        { "prefix": "guide:general", "rel": 1, "note": "일반 가이드라인" }
+      ]
+    },
+    {
+      "id": "ko002",
+      "text": "API 인증 보안 구현 방법",
+      "language": "ko", 
+      "domain": "technical",
+      "relevance": [
+        { "prefix": "security:auth", "rel": 3, "note": "인증 보안 가이드" },
+        { "prefix": "api:jwt", "rel": 3, "note": "JWT 구현 세부사항" },
+        { "prefix": "security:practice", "rel": 2, "note": "보안 모범 사례" },
+        { "prefix": "oauth:example", "rel": 2, "note": "OAuth2 예제" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,265 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "MARIA State Schema",
+  "description": "Schema for .maria/state.json file used by Graph RAG /init and /update commands",
+  "type": "object",
+  "required": ["version", "timestamp", "root"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "MARIA version that created this state",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": ["3.2.2"]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO timestamp when state was last updated"
+    },
+    "root": {
+      "type": "string",
+      "description": "Absolute path to project root directory"
+    },
+    "lastScan": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last full /init scan"
+    },
+    "lastUpdate": {
+      "type": "object",
+      "description": "Information about last incremental update",
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "delta": {
+          "$ref": "#/definitions/DeltaDiff"
+        },
+        "filesProcessed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": ["timestamp", "delta", "filesProcessed"]
+    },
+    "fileHashes": {
+      "type": "object",
+      "description": "Map of file paths to their SHA-256 hashes for change detection",
+      "patternProperties": {
+        "^.*$": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "stats": {
+      "type": "object",
+      "description": "Statistics about the analyzed codebase",
+      "properties": {
+        "totalFiles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of files analyzed"
+        },
+        "totalLines": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total lines of code"
+        },
+        "totalNodes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total knowledge graph nodes created"
+        },
+        "totalEdges": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total knowledge graph edges created"
+        },
+        "lastAnalysisTime": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Time taken for last analysis in milliseconds"
+        }
+      }
+    },
+    "services": {
+      "type": "object",
+      "description": "Available external services",
+      "properties": {
+        "neo4j": {
+          "type": "boolean",
+          "description": "Neo4j knowledge graph database available"
+        },
+        "openSearch": {
+          "type": "boolean",
+          "description": "OpenSearch text search available"
+        },
+        "qdrant": {
+          "type": "boolean",
+          "description": "Qdrant vector database available"
+        },
+        "knowledgeGraph": {
+          "type": "boolean",
+          "description": "MARIA Knowledge Graph service available"
+        }
+      }
+    },
+    "config": {
+      "type": "object",
+      "description": "Configuration used for analysis",
+      "properties": {
+        "skipDocs": {
+          "type": "boolean",
+          "description": "Whether documentation files were skipped"
+        },
+        "skipTests": {
+          "type": "boolean",
+          "description": "Whether test files were skipped"
+        },
+        "maxDepth": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 20,
+          "description": "Maximum directory depth analyzed"
+        },
+        "parallel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 16,
+          "description": "Number of parallel processes used"
+        }
+      }
+    },
+    "techStack": {
+      "type": "array",
+      "description": "Detected technology stack",
+      "items": {
+        "type": "string"
+      },
+      "examples": [["TypeScript", "Node.js", "React", "Express"]]
+    },
+    "entryPoints": {
+      "type": "array",
+      "description": "Detected entry points in the codebase",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Relative path to entry point"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["main", "cli", "api", "web", "test", "build"],
+            "description": "Type of entry point"
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable description"
+          }
+        },
+        "required": ["path", "type"]
+      }
+    },
+    "circularDependencies": {
+      "type": "array",
+      "description": "Detected circular dependencies",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 2,
+        "description": "Chain of files forming a circular dependency"
+      }
+    }
+  },
+  "definitions": {
+    "DeltaDiff": {
+      "type": "object",
+      "description": "Summary of changes in an update",
+      "required": ["added", "modified", "deleted", "unchanged"],
+      "properties": {
+        "added": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files added"
+        },
+        "modified": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files modified"
+        },
+        "deleted": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files deleted"
+        },
+        "unchanged": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of files unchanged"
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "version": "3.2.2",
+      "timestamp": "2025-08-26T10:30:00.000Z",
+      "root": "/Users/username/my-project",
+      "lastScan": "2025-08-26T10:30:00.000Z",
+      "lastUpdate": {
+        "timestamp": "2025-08-26T11:45:00.000Z",
+        "delta": {
+          "added": 2,
+          "modified": 5,
+          "deleted": 0,
+          "unchanged": 147
+        },
+        "filesProcessed": 7
+      },
+      "fileHashes": {
+        "src/index.ts": "a3b5c7d9e1f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0b2c4d6e8f0a2b4",
+        "package.json": "b4c6d8e0f2a4b6c8d0e2f4a6b8c0d2e4f6a8b0c2d4e6f8a0b2c4d6e8f0a2b5"
+      },
+      "stats": {
+        "totalFiles": 154,
+        "totalLines": 12584,
+        "totalNodes": 420,
+        "totalEdges": 851,
+        "lastAnalysisTime": 8247
+      },
+      "services": {
+        "neo4j": true,
+        "openSearch": true,
+        "qdrant": false,
+        "knowledgeGraph": true
+      },
+      "config": {
+        "skipDocs": false,
+        "skipTests": false,
+        "maxDepth": 10,
+        "parallel": 4
+      },
+      "techStack": ["TypeScript", "Node.js", "React", "Express"],
+      "entryPoints": [
+        {
+          "path": "src/index.ts",
+          "type": "main",
+          "description": "Main application entry point"
+        },
+        {
+          "path": "src/cli.ts",
+          "type": "cli",
+          "description": "Command line interface"
+        }
+      ],
+      "circularDependencies": [
+        ["src/services/a.ts", "src/services/b.ts", "src/services/a.ts"]
+      ]
+    }
+  ]
+}

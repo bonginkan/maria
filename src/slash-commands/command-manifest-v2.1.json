@@ -1,0 +1,506 @@
+{
+  "version": "2.1.0",
+  "updated": "2025-08-31",
+  "shippingSurface": {
+    "free": [
+      "help", "version", "clear", "login", "logout", "usage", "plan", 
+      "code", "image", "voice", "remember", "recall", "forget"
+    ],
+    "starter": ["video", "model", "config", "dashboard"],
+    "pro": ["search", "battlecard", "sales-dashboard", "llm"],
+    "ultra": ["evolve", "pilot-setup", "permissions", "gpu"]
+  },
+  "commands": [
+    {
+      "name": "help",
+      "category": "core",
+      "status": "broken",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Core",
+      "requiredFixes": ["Generate from manifest", "Filter by status", "No mocks"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "version",
+      "category": "core",
+      "status": "broken",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Core",
+      "requiredFixes": ["Read package.json", "Git SHA", "API build ID"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "clear",
+      "category": "conversation",
+      "status": "broken",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Core",
+      "requiredFixes": ["Clear screen + memory", "One-line confirmation", "Remove TODOs"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "login",
+      "category": "auth",
+      "status": "partial",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Auth",
+      "requiredFixes": ["Call /me after success", "Show plan + quota", "One-line output"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "logout",
+      "category": "auth",
+      "status": "partial",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Auth",
+      "requiredFixes": ["Revoke session", "Wipe secure store", "One-line output"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "usage",
+      "category": "auth",
+      "status": "partial",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Core",
+      "requiredFixes": ["Fetch from API", "Show plan + quotas", "One-line format"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "code",
+      "category": "code",
+      "status": "broken",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P0-Day1",
+      "owner": "Code",
+      "requiredFixes": ["Force cloud path", "Compact output", "Quota footer", "Clean spinner"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "notes": "Critical for Free launch"
+    },
+    {
+      "name": "plan",
+      "category": "auth",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P0",
+      "owner": "Auth",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "image",
+      "category": "multimodal",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Day2",
+      "owner": "AI",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "localLLM": "keep for development",
+      "completedFixes": ["Removed direct API keys", "Using callApi()", "Added telemetry"]
+    },
+    {
+      "name": "video",
+      "category": "multimodal",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Day2",
+      "owner": "AI",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["starter", "pro", "ultra"],
+      "localLLM": "keep for development",
+      "completedFixes": ["Removed direct API keys", "Using callApi()", "Added telemetry"]
+    },
+    {
+      "name": "voice",
+      "category": "multimodal",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Day2",
+      "owner": "AI",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "localLLM": "keep for development",
+      "completedFixes": ["Removed direct API keys", "Using callApi()", "Added telemetry"]
+    },
+    {
+      "name": "status",
+      "category": "system",
+      "status": "partial",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P1-Week1",
+      "owner": "Platform",
+      "requiredFixes": ["Add telemetry", "Quota footer"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "doctor",
+      "category": "system",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Week1",
+      "owner": "Platform",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "completedFixes": ["Added telemetry", "Basic health checks ready"]
+    },
+    {
+      "name": "config",
+      "category": "configuration",
+      "status": "partial",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P1-Week1",
+      "owner": "Platform",
+      "requiredFixes": ["Register command", "Read-only mode", "Add telemetry"],
+      "contractTest": "required",
+      "plans": ["free", "starter", "pro", "ultra"]
+    },
+    {
+      "name": "model",
+      "category": "configuration",
+      "status": "partial",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P1-Week1",
+      "owner": "Platform",
+      "requiredFixes": ["Register command", "List from plan", "Read-only"],
+      "contractTest": "required",
+      "plans": ["starter", "pro", "ultra"]
+    },
+    {
+      "name": "remember",
+      "category": "memory",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Week1",
+      "owner": "Memory",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "completedFixes": ["Added telemetry", "Added quota footer"]
+    },
+    {
+      "name": "recall",
+      "category": "memory",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Week1",
+      "owner": "Memory",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "completedFixes": ["Added telemetry", "Added quota footer"]
+    },
+    {
+      "name": "forget",
+      "category": "memory",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P1-Week1",
+      "owner": "Memory",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "completedFixes": ["Added telemetry", "Added quota footer"]
+    },
+    {
+      "name": "memory-status",
+      "category": "memory",
+      "status": "ready",
+      "shippable": true,
+      "registration": "registered",
+      "priority": "P2",
+      "owner": "Memory",
+      "requiredFixes": [],
+      "contractTest": "passing",
+      "plans": ["free", "starter", "pro", "ultra"],
+      "completedFixes": ["Added telemetry", "Added quota footer"]
+    },
+    {
+      "name": "research",
+      "category": "research",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P2",
+      "owner": "Research",
+      "requiredFixes": ["Shield until ready", "Real implementation"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"]
+    },
+    {
+      "name": "search",
+      "category": "graphrag",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P2",
+      "owner": "Graph",
+      "requiredFixes": ["Shield until ready", "Real GraphRAG"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"]
+    },
+    {
+      "name": "battlecard",
+      "category": "business",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P2",
+      "owner": "Business",
+      "requiredFixes": ["Shield handler", "Real data integration"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"]
+    },
+    {
+      "name": "sales-dashboard",
+      "category": "business",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P2",
+      "owner": "Business",
+      "requiredFixes": ["Shield handler", "Real CRM integration"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"]
+    },
+    {
+      "name": "pilot-setup",
+      "category": "business",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P3",
+      "owner": "Business",
+      "requiredFixes": ["Shield handler"],
+      "contractTest": "shield-only",
+      "plans": ["ultra"]
+    },
+    {
+      "name": "evolve",
+      "category": "ai",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P3",
+      "owner": "AI",
+      "requiredFixes": ["Shield handler"],
+      "contractTest": "shield-only",
+      "plans": ["ultra"]
+    },
+    {
+      "name": "gpu",
+      "category": "ai",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P3",
+      "owner": "AI",
+      "requiredFixes": ["Shield handler"],
+      "contractTest": "shield-only",
+      "plans": ["ultra"],
+      "localLLM": "keep for development"
+    },
+    {
+      "name": "llm",
+      "category": "ai",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P2",
+      "owner": "AI",
+      "requiredFixes": ["Register with shield"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"],
+      "localLLM": "keep for development"
+    },
+    {
+      "name": "language",
+      "category": "multilingual",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P3",
+      "owner": "i18n",
+      "requiredFixes": ["Shield until ready"],
+      "contractTest": "shield-only",
+      "plans": ["starter", "pro", "ultra"]
+    },
+    {
+      "name": "l2r",
+      "category": "learning",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "registered",
+      "priority": "P3",
+      "owner": "ML",
+      "requiredFixes": ["Shield until ready"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"]
+    },
+    {
+      "name": "evaluate",
+      "category": "evaluation",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P3",
+      "owner": "QA",
+      "requiredFixes": ["Shield handler"],
+      "contractTest": "shield-only",
+      "plans": ["pro", "ultra"]
+    },
+    {
+      "name": "pm",
+      "category": "product",
+      "status": "hidden",
+      "shippable": false,
+      "registration": "not-registered",
+      "priority": "P4",
+      "owner": "Product",
+      "requiredFixes": ["Complete rewrite"],
+      "contractTest": "none",
+      "plans": ["ultra"]
+    }
+  ],
+  "48HourRecoveryPlan": {
+    "Day1": {
+      "goal": "Core + Guardrails Pass",
+      "exitCriteria": "All P0 pass READY contract; /help lists only ready/partial; no direct API keys in P0",
+      "tasks": [
+        {
+          "command": "help",
+          "owner": "Core",
+          "work": "Render from manifest only; list status:ready; gray partial with 'Coming soon'"
+        },
+        {
+          "command": "version",
+          "owner": "Core",
+          "work": "package.json + Git SHA + API build ID; one line output"
+        },
+        {
+          "command": "clear",
+          "owner": "Core",
+          "work": "Clear screen + session memory; output: ✅ Cleared · context reset"
+        },
+        {
+          "command": "login",
+          "owner": "Auth",
+          "work": "After success call /me; show: ✅ Logged in as alice@… · Plan: Free · 100 req left"
+        },
+        {
+          "command": "logout",
+          "owner": "Auth",
+          "work": "Revoke session, wipe store; show: 👋 Signed out"
+        },
+        {
+          "command": "usage",
+          "owner": "Core",
+          "work": "Fetch from API; show: Free · 98 req left · resets 2025-10-01"
+        },
+        {
+          "command": "code",
+          "owner": "Code",
+          "work": "Force cloud path; compact output with quota footer; clean spinner"
+        },
+        {
+          "task": "Command Manifest SSOT",
+          "owner": "Platform",
+          "work": "Firestore or JSON; CLI refuses non-ready; /help renders from manifest"
+        },
+        {
+          "task": "Register 17 commands",
+          "owner": "Routing",
+          "work": "Register with shield handler: 🔒 Not available in this build · See /help"
+        },
+        {
+          "task": "READY contract test helper",
+          "owner": "QA",
+          "work": "Unauth→auth required; auth→success+footer; rate→Wait Xs"
+        }
+      ]
+    },
+    "Day2": {
+      "goal": "Security + Telemetry Pass",
+      "exitCriteria": "P0 telemetry present; zero direct API keys (except local LLM); consistent rate-limit UX",
+      "tasks": [
+        {
+          "task": "Ban direct API keys in cloud commands",
+          "owner": "Tooling",
+          "work": "ESLint rule or CI grep gate for process.env.*API_KEY in cloud-only commands"
+        },
+        {
+          "task": "Telemetry stub",
+          "owner": "Platform",
+          "work": "trackCommand({cmd,status,latencyMs,plan,quotaLeft}) → /v1/telemetry"
+        },
+        {
+          "task": "Rate-limit headers",
+          "owner": "API",
+          "work": "Ensure Retry-After or X-RateLimit-Reset; CLI reads them"
+        }
+      ]
+    }
+  },
+  "statistics": {
+    "total": 31,
+    "byStatus": {
+      "ready": 1,
+      "partial": 11,
+      "broken": 7,
+      "hidden": 12
+    },
+    "byShippable": {
+      "shippable": 1,
+      "notShippable": 30
+    },
+    "byPriority": {
+      "P0-Day1": 7,
+      "P1-Day2": 3,
+      "P1-Week1": 7,
+      "P2": 7,
+      "P3": 6,
+      "P4": 1
+    },
+    "targets": {
+      "48hours": "≥50% READY (16 commands)",
+      "1week": "≥75% READY (23 commands)",
+      "2weeks": "≥90% READY (28 commands)"
+    }
+  }
+}

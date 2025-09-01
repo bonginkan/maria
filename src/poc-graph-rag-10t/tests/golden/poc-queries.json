@@ -1,0 +1,398 @@
+{
+  "queries": [
+    {
+      "id": "q1",
+      "language": "ja",
+      "input": "2024年度の売上実績を教えて",
+      "expect": {
+        "must_have": ["売上", "2024"],
+        "source": ["db:sales_2024", "excel:financial_report.xlsx"]
+      },
+      "qrels": [
+        { "prefix": "db:sales_2024", "rel": 3 },
+        { "prefix": "excel:financial_report.xlsx", "rel": 2 },
+        { "prefix": "sharepoint:/Finance/Q4_2024", "rel": 1 }
+      ]
+    },
+    {
+      "id": "q2",
+      "language": "en",
+      "input": "Show me the latest project plan from Box",
+      "expect": {
+        "must_have": ["project plan", "Box"],
+        "source": ["box:/Project/Plan_v3.docx"]
+      },
+      "qrels": [
+        { "prefix": "box:/Project/Plan_v3.docx", "rel": 3 },
+        { "prefix": "box:/Project/Plan_v2.docx", "rel": 1 }
+      ]
+    },
+    {
+      "id": "q3",
+      "language": "ja",
+      "input": "先週更新された人事関連ドキュメントを探してください",
+      "expect": {
+        "must_have": ["人事", "先週"],
+        "source": ["sharepoint:/HR/Policies/2025_Update.pdf"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/HR/Policies/2025_Update.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/HR/Guidelines", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q4",
+      "language": "en",
+      "input": "List security policies related to data retention",
+      "expect": {
+        "must_have": ["security policy", "data retention"],
+        "source": ["sharepoint:/Compliance/SecurityPolicy.docx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Compliance/SecurityPolicy.docx", "rel": 3 },
+        { "prefix": "sharepoint:/IT/DataGovernance.pdf", "rel": 2 },
+        { "prefix": "db:policies_table", "rel": 1 }
+      ]
+    },
+    {
+      "id": "q5",
+      "language": "ja",
+      "input": "Tetrisの設計書を見せて",
+      "expect": {
+        "must_have": ["Tetris", "設計"],
+        "source": ["box:/Games/Tetris_Design.pdf"]
+      },
+      "qrels": [
+        { "prefix": "box:/Games/Tetris_Design.pdf", "rel": 3 },
+        { "prefix": "box:/Games/Tetris_Spec.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q6",
+      "language": "ja",
+      "input": "営業部門の組織図と責任者一覧",
+      "expect": {
+        "must_have": ["営業", "組織"],
+        "source": ["sharepoint:/Organization/Sales_Org.pptx", "db:employee_master"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Organization/Sales_Org.pptx", "rel": 3 },
+        { "prefix": "db:employee_master", "rel": 2 },
+        { "prefix": "kg:Organization/Sales", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q7",
+      "language": "en",
+      "input": "Customer complaints from last quarter",
+      "expect": {
+        "must_have": ["customer", "complaints", "quarter"],
+        "source": ["db:support_tickets", "box:/Support/Q4_Issues.xlsx"]
+      },
+      "qrels": [
+        { "prefix": "db:support_tickets", "rel": 3 },
+        { "prefix": "box:/Support/Q4_Issues.xlsx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q8",
+      "language": "ja",
+      "input": "AIプロジェクトの進捗状況とマイルストーン",
+      "expect": {
+        "must_have": ["AI", "進捗"],
+        "source": ["sharepoint:/Projects/AI_Roadmap.pdf", "db:project_milestones"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Projects/AI_Roadmap.pdf", "rel": 3 },
+        { "prefix": "db:project_milestones", "rel": 2 },
+        { "prefix": "kg:Project/AI", "rel": 1 }
+      ]
+    },
+    {
+      "id": "q9",
+      "language": "en",
+      "input": "Budget allocation for R&D department",
+      "expect": {
+        "must_have": ["budget", "R&D"],
+        "source": ["excel:Budget_2024.xlsx", "sharepoint:/Finance/RD_Budget.pdf"]
+      },
+      "qrels": [
+        { "prefix": "excel:Budget_2024.xlsx", "rel": 3 },
+        { "prefix": "sharepoint:/Finance/RD_Budget.pdf", "rel": 3 }
+      ]
+    },
+    {
+      "id": "q10",
+      "language": "ja",
+      "input": "社内規定違反の報告手順",
+      "expect": {
+        "must_have": ["規定違反", "報告"],
+        "source": ["sharepoint:/Compliance/Violation_Process.docx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Compliance/Violation_Process.docx", "rel": 3 },
+        { "prefix": "sharepoint:/HR/CodeOfConduct.pdf", "rel": 1 }
+      ]
+    },
+    {
+      "id": "q11",
+      "language": "en",
+      "input": "Technical specifications for the cloud migration project",
+      "expect": {
+        "must_have": ["technical", "cloud migration"],
+        "source": ["box:/IT/Cloud_Migration_Spec.pdf", "sharepoint:/Architecture/Cloud_Design.docx"]
+      },
+      "qrels": [
+        { "prefix": "box:/IT/Cloud_Migration_Spec.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/Architecture/Cloud_Design.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q12",
+      "language": "ja",
+      "input": "新入社員研修のカリキュラム",
+      "expect": {
+        "must_have": ["新入社員", "研修"],
+        "source": ["sharepoint:/HR/Training/Onboarding.pptx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/HR/Training/Onboarding.pptx", "rel": 3 },
+        { "prefix": "sharepoint:/HR/Training/Schedule.xlsx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q13",
+      "language": "en",
+      "input": "Patent applications filed in 2024",
+      "expect": {
+        "must_have": ["patent", "2024"],
+        "source": ["db:patent_registry", "box:/Legal/Patents_2024.docx"]
+      },
+      "qrels": [
+        { "prefix": "db:patent_registry", "rel": 3 },
+        { "prefix": "box:/Legal/Patents_2024.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q14",
+      "language": "ja",
+      "input": "マーケティングキャンペーンのROI分析",
+      "expect": {
+        "must_have": ["マーケティング", "ROI"],
+        "source": ["excel:Marketing_ROI.xlsx", "sharepoint:/Marketing/Campaign_Analysis.pdf"]
+      },
+      "qrels": [
+        { "prefix": "excel:Marketing_ROI.xlsx", "rel": 3 },
+        { "prefix": "sharepoint:/Marketing/Campaign_Analysis.pdf", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q15",
+      "language": "en",
+      "input": "Emergency response procedures for data breach",
+      "expect": {
+        "must_have": ["emergency", "data breach"],
+        "source": ["sharepoint:/Security/Incident_Response.pdf"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Security/Incident_Response.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/Security/DataBreach_Playbook.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q16",
+      "language": "ja",
+      "input": "製品開発のロードマップと次期リリース予定",
+      "expect": {
+        "must_have": ["製品開発", "ロードマップ"],
+        "source": ["sharepoint:/Product/Roadmap_2025.pdf", "db:release_schedule"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Product/Roadmap_2025.pdf", "rel": 3 },
+        { "prefix": "db:release_schedule", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q17",
+      "language": "en",
+      "input": "Vendor contracts expiring this year",
+      "expect": {
+        "must_have": ["vendor", "contracts", "expiring"],
+        "source": ["db:vendor_contracts", "box:/Procurement/Contract_Schedule.xlsx"]
+      },
+      "qrels": [
+        { "prefix": "db:vendor_contracts", "rel": 3 },
+        { "prefix": "box:/Procurement/Contract_Schedule.xlsx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q18",
+      "language": "ja",
+      "input": "品質管理のKPIと改善提案",
+      "expect": {
+        "must_have": ["品質管理", "KPI"],
+        "source": ["sharepoint:/QA/KPI_Dashboard.xlsx", "sharepoint:/QA/Improvement_Plan.docx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/QA/KPI_Dashboard.xlsx", "rel": 3 },
+        { "prefix": "sharepoint:/QA/Improvement_Plan.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q19",
+      "language": "en",
+      "input": "Employee satisfaction survey results",
+      "expect": {
+        "must_have": ["employee", "satisfaction", "survey"],
+        "source": ["box:/HR/Survey_Results_2024.pdf", "db:survey_responses"]
+      },
+      "qrels": [
+        { "prefix": "box:/HR/Survey_Results_2024.pdf", "rel": 3 },
+        { "prefix": "db:survey_responses", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q20",
+      "language": "ja",
+      "input": "サイバーセキュリティの脅威分析レポート",
+      "expect": {
+        "must_have": ["サイバーセキュリティ", "脅威"],
+        "source": ["sharepoint:/Security/Threat_Analysis_Q4.pdf"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Security/Threat_Analysis_Q4.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/Security/Vulnerability_Report.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q21",
+      "language": "en",
+      "input": "Sustainability initiatives and carbon footprint data",
+      "expect": {
+        "must_have": ["sustainability", "carbon"],
+        "source": ["sharepoint:/ESG/Sustainability_Report.pdf", "db:carbon_metrics"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/ESG/Sustainability_Report.pdf", "rel": 3 },
+        { "prefix": "db:carbon_metrics", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q22",
+      "language": "ja",
+      "input": "リモートワークのガイドラインとツール",
+      "expect": {
+        "must_have": ["リモートワーク", "ガイドライン"],
+        "source": ["sharepoint:/IT/Remote_Work_Guide.pdf", "box:/IT/Tools_List.xlsx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/IT/Remote_Work_Guide.pdf", "rel": 3 },
+        { "prefix": "box:/IT/Tools_List.xlsx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q23",
+      "language": "en",
+      "input": "Merger and acquisition strategy documents",
+      "expect": {
+        "must_have": ["merger", "acquisition"],
+        "source": ["sharepoint:/Strategy/MA_Strategy.pptx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Strategy/MA_Strategy.pptx", "rel": 3 },
+        { "prefix": "sharepoint:/Legal/MA_Framework.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q24",
+      "language": "ja",
+      "input": "顧客データの管理ポリシーとGDPR対応",
+      "expect": {
+        "must_have": ["顧客データ", "GDPR"],
+        "source": ["sharepoint:/Compliance/GDPR_Policy.pdf", "sharepoint:/IT/Data_Management.docx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Compliance/GDPR_Policy.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/IT/Data_Management.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q25",
+      "language": "en",
+      "input": "API documentation for integration partners",
+      "expect": {
+        "must_have": ["API", "documentation", "integration"],
+        "source": ["box:/Tech/API_Docs.md", "sharepoint:/Development/Integration_Guide.pdf"]
+      },
+      "qrels": [
+        { "prefix": "box:/Tech/API_Docs.md", "rel": 3 },
+        { "prefix": "sharepoint:/Development/Integration_Guide.pdf", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q26",
+      "language": "ja",
+      "input": "災害対策とBCPマニュアル",
+      "expect": {
+        "must_have": ["災害", "BCP"],
+        "source": ["sharepoint:/Risk/BCP_Manual.pdf", "sharepoint:/Risk/Disaster_Recovery.docx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Risk/BCP_Manual.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/Risk/Disaster_Recovery.docx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q27",
+      "language": "en",
+      "input": "Intellectual property portfolio overview",
+      "expect": {
+        "must_have": ["intellectual property", "portfolio"],
+        "source": ["db:ip_registry", "box:/Legal/IP_Portfolio.xlsx"]
+      },
+      "qrels": [
+        { "prefix": "db:ip_registry", "rel": 3 },
+        { "prefix": "box:/Legal/IP_Portfolio.xlsx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q28",
+      "language": "ja",
+      "input": "競合分析と市場動向レポート",
+      "expect": {
+        "must_have": ["競合", "市場"],
+        "source": ["sharepoint:/Strategy/Competitive_Analysis.pdf", "sharepoint:/Marketing/Market_Trends.pptx"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Strategy/Competitive_Analysis.pdf", "rel": 3 },
+        { "prefix": "sharepoint:/Marketing/Market_Trends.pptx", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q29",
+      "language": "en",
+      "input": "Training materials for new software deployment",
+      "expect": {
+        "must_have": ["training", "software", "deployment"],
+        "source": ["box:/Training/Software_Training.pptx", "sharepoint:/IT/Deployment_Guide.pdf"]
+      },
+      "qrels": [
+        { "prefix": "box:/Training/Software_Training.pptx", "rel": 3 },
+        { "prefix": "sharepoint:/IT/Deployment_Guide.pdf", "rel": 2 }
+      ]
+    },
+    {
+      "id": "q30",
+      "language": "ja",
+      "input": "経営会議の議事録と決定事項",
+      "expect": {
+        "must_have": ["経営会議", "議事録"],
+        "source": ["sharepoint:/Board/Meeting_Minutes.docx", "db:board_decisions"]
+      },
+      "qrels": [
+        { "prefix": "sharepoint:/Board/Meeting_Minutes.docx", "rel": 3 },
+        { "prefix": "db:board_decisions", "rel": 2 }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,651 @@
+{
+  "version": "3.0.0",
+  "generatedAt": "2025-08-31T14:26:24.340Z",
+  "totalCommands": 62,
+  "readyCount": 52,
+  "functionalCount": 52,
+  "stubCount": 0,
+  "partialCount": 4,
+  "brokenCount": 6,
+  "commands": {
+    "system/status": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "owner": "ops@maria",
+      "slo": {
+        "p95Ms": 500
+      },
+      "telemetry": false,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/doctor": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "owner": "ops@maria",
+      "slo": {
+        "p95Ms": 800
+      },
+      "telemetry": false,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "business/sales-dashboard": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "starter",
+      "isPreview": false,
+      "owner": "business@maria",
+      "slo": {
+        "p95Ms": 1000
+      },
+      "telemetry": false,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/help": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "owner": "core@maria",
+      "slo": {
+        "p95Ms": 200
+      },
+      "telemetry": false,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/usage": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/uptime": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/upgrade": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "unknown/unknown": {
+      "status": "PARTIAL",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "system/processes": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/ping": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/performance": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/network": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/env": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/disk": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/debug": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "multilingual/language": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/remember": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/recall": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/memory-status": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/forget": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "learning/l2r": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "graphrag/search": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "evaluation/evaluate": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/whoami": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/version": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/tutorial": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/time": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/shortcuts": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/quit": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/license": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/feedback": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/examples": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/docs": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/credits": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/contact": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/config": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/changelog": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/about": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "conversation/clear": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/setup": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "code/code": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "ai/gpu": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "pro",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/terminal-setup": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/statuscommand.ts": {
+      "status": "BROKEN",
+      "type": "broken",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": false,
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false,
+      "error": "Cannot read properties of undefined (reading 'monitoringPort')"
+    },
+    "system/setup": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/doctorcommand.ts": {
+      "status": "BROKEN",
+      "type": "broken",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": false,
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false,
+      "error": "require is not defined in ES module scope, you can use import instead"
+    },
+    "analysis/research": {
+      "status": "PARTIAL",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "core/update": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/exit": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/permissions": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/model": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/unknown": {
+      "status": "PARTIAL",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "configuration/config": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "development/unknown": {
+      "status": "BROKEN",
+      "type": "broken",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": false,
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "evolution//evolve": {
+      "status": "PARTIAL",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "code/code.handler.fixed.ts": {
+      "status": "BROKEN",
+      "type": "broken",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": false,
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "code/code.command.integrated.ts": {
+      "status": "BROKEN",
+      "type": "broken",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": false,
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false,
+      "error": "The requested module './BaseCommand' does not provide an export named 'CommandContext'"
+    },
+    "code/code.command.cloud.ts": {
+      "status": "BROKEN",
+      "type": "broken",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": false,
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "auth/usage": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "auth/plan": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "auth/logout": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "auth/login": {
+      "status": "READY",
+      "type": "functional",
+      "planRequired": "free",
+      "isPreview": false,
+      "telemetry": true,
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    }
+  }
+}

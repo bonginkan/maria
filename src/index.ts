@@ -1,40 +1,104 @@
 /**
- * MARIA - Intelligent CLI Assistant
- * Entry point for the library
+ * MARIA v3.6.0 - Minimal Public API + Multimodal
+ *
+ * Core exports for maximum stability and focused functionality.
+ * Everything else is internal implementation detail.
  */
 
-// CLI entry point
-export { createCLI } from './cli';
+// Core Router - The heart of intelligent routing
+export { IntelligentRouterService } from "./services/intelligent-router/app/IntelligentRouterService";
+export type { RoutingDecision } from "./services/intelligent-router/domain/priority-queue";
 
-// Memory System Exports
-export { DualMemoryEngine } from './services/memory-system/dual-memory-engine';
-export { MemoryCoordinator } from './services/memory-system/memory-coordinator';
-export { System1MemoryManager as System1Memory } from './services/memory-system/system1-memory';
-export { System2MemoryManager as System2Memory } from './services/memory-system/system2-memory';
+// Memory System - Dual-layer cognitive architecture
+export { System1MemoryManager } from "./services/memory-system/system1-memory";
+export { System2MemoryManager } from "./services/memory-system/system2-memory";
+export { DualMemoryEngine } from "./services/memory-system/dual-memory-engine";
+export type { DualMemoryEngineConfig } from "./services/memory-system/dual-memory-engine";
 
-// Internal Mode System Exports
+// File Operations - Unified, safe file system interface
+export { FileSystemService } from "./services/file-system/FileSystemService";
+
+// Multimodal AI - Complete multimodal processing platform
+export { MultimodalService } from "./services/multimodal/MultimodalService";
+export { MultimodalDeploymentConfig } from "./services/multimodal/deployment/MultimodalDeploymentConfig";
+export type {
+  MultimodalServiceConfig,
+  MultimodalOperation,
+  MultimodalResult,
+} from "./services/multimodal/MultimodalService";
+
+// Phase 4.0 Enterprise Security & Memory Portability
 export {
-  InternalModeService,
-  getInternalModeService,
-} from './services/internal-mode/InternalModeService';
-export { MemoryAwareModeService } from './services/internal-mode/MemoryAwareModeService';
+  EnterpriseSecurityIntegration,
+  SecureSlashCommandAdapter,
+  RBACCommandGuard,
+  createEnterpriseSecurityIntegration,
+  type SecurityIntegrationConfig,
+  type SecurityMetrics,
+  type SecurityReport,
+  type AuthenticatedUser,
+  type PermissionSet,
+} from "./services/security";
 
-// Memory System Types
-export type {
-  MemoryEvent,
-  UserPreferenceSet,
-  ReasoningTrace,
-  QualityMetrics,
-} from './services/memory-system/types/memory-interfaces';
+export {
+  MemoryPortabilityFramework,
+  createMemoryPortabilityFramework,
+  type PortabilityConfig,
+  type ExportRequest,
+  type ImportRequest,
+  type PortabilityResult,
+} from "./services/memory-system/data-porter-system/MemoryPortabilityFramework";
 
-export type { MemoryResponse } from './services/memory-system/dual-memory-engine';
+// Document Auto-Save System
+export {
+  autoSaveDocument,
+  autoSaveMultipleDocuments,
+  classifyDocument,
+  DocumentType,
+  generateDocumentFilename,
+  saveDocumentToFile
+} from "./services/document-auto-save";
 
-export type {
-  ModeDefinition,
-  ModeContext,
-  ModeRecognitionResult,
-  ModeConfig,
-} from './services/internal-mode/types';
+// Intelligent Document Save System
+export {
+  IntelligentDocumentSaveService,
+  intelligentSave,
+  autoSaveIntelligently,
+  autoSaveMultipleIntelligently,
+  type IntelligentSaveOptions,
+  type IntelligentSaveResult
+} from "./services/intelligent-document-save";
 
-// Version
-export const VERSION = '1.1.0';
+// Filename Inference System
+export {
+  FilenameInferenceService
+} from "./services/code-intent/FilenameInferenceService";
+
+export {
+  EnterpriseDataPorter,
+  type DataPorterConfig,
+} from "./services/memory-system/data-porter-system/enterprise-data-porter";
+
+export {
+  AccessControlManager,
+  type User,
+  type Role,
+  type PermissionSet as AccessControlPermissionSet,
+} from "./services/memory-system/enterprise/access-control-manager";
+
+// Model Selector v2 - Intelligent model selection system (Beta)
+export {
+  ModelSelectorEngine,
+  ModelRegistry,
+  RecommendationEngine,
+  ModelSelectorV2Facade,
+  isModelSelectorV2Enabled,
+  getModelSelectorV2Config,
+  createModelSelector,
+  type ModelInfo,
+  type ModelFilter,
+  type RecommendationContext,
+  type ModelRecommendation,
+  type ModelSelectorConfig,
+  type LegacyModelChoice,
+} from "./services/model-selector/index";

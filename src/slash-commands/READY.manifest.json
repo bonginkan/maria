@@ -1,0 +1,446 @@
+{
+  "version": "2.0.0",
+  "generatedAt": "2025-08-31T15:02:06.181Z",
+  "totalCommands": 72,
+  "readyCount": 50,
+  "partialCount": 5,
+  "brokenCount": 17,
+  "commands": {
+    "unknown/unknown": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "system/usage": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/uptime": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/upgrade": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/status": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/processes": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/ping": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/performance": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/network": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/env": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/disk": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/debug": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "multilingual/language": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/remember": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/recall": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/memory-status": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "memory/forget": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "learning/l2r": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "graphrag/search": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "evaluation/evaluate": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/whoami": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/version": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/tutorial": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/time": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/shortcuts": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/quit": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/license": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/help": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/feedback": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/examples": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/docs": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/credits": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/contact": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/config": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/changelog": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/about": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "conversation/clear": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/setup": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "business/sales-dashboard": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": false
+    },
+    "code/enhanced-code": {
+      "status": "BROKEN",
+      "error": "Cannot read properties of undefined (reading 'ES2022')",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "code/code": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "ai/gpu": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "analysis/research": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "system/terminal-setup": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/statuscommand.ts": {
+      "status": "BROKEN",
+      "error": "Cannot read properties of undefined (reading 'monitoringPort')",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "system/setup": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/doctorcommand.ts": {
+      "status": "BROKEN",
+      "error": "require is not defined in ES module scope, you can use import instead",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "configuration/permissions": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/model": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "configuration/unknown": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "configuration/config": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/update": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/exit": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/status.real.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "system/doctor.real.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "monitoring/monitor.functional.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "development/unknown": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "evolution/evolve.functional.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "evolution//evolve": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "core/help.enhanced.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "core/enhanced-help.functional.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "configuration/hooks.functional.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "business/sales-dashboard.secured.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "business/analytics.functional.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "auth/usage": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "auth/plan": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "auth/logout": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "auth/login": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "code/code.handler.fixed.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "code/code.command.integrated.ts": {
+      "status": "BROKEN",
+      "error": "The requested module '../../../services/code-intent/security/ExtensionGuard' does not provide an export named 'getFirestorePlanConfig'",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "code/code.command.cloud.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "analysis/research.functional.ts": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    }
+  }
+}

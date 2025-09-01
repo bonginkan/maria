@@ -1,0 +1,471 @@
+{
+  "version": "2.0.0",
+  "updated": "2025-08-31",
+  "commands": [
+    {
+      "name": "help",
+      "category": "core",
+      "status": "partial",
+      "aliases": ["h", "?"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P0"
+    },
+    {
+      "name": "version",
+      "category": "core",
+      "status": "partial",
+      "aliases": ["v"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P0"
+    },
+    {
+      "name": "exit",
+      "category": "core",
+      "status": "partial",
+      "aliases": ["quit", "q"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P0"
+    },
+    {
+      "name": "clear",
+      "category": "conversation",
+      "status": "partial",
+      "aliases": ["cls"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["multiple TODOs"],
+      "priority": "P0"
+    },
+    {
+      "name": "update",
+      "category": "core",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P2"
+    },
+    {
+      "name": "status",
+      "category": "system",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1"
+    },
+    {
+      "name": "doctor",
+      "category": "system",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P2"
+    },
+    {
+      "name": "terminal-setup",
+      "category": "system",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1"
+    },
+    {
+      "name": "setup",
+      "category": "config",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P1"
+    },
+    {
+      "name": "remember",
+      "category": "memory",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1"
+    },
+    {
+      "name": "recall",
+      "category": "memory",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1"
+    },
+    {
+      "name": "forget",
+      "category": "memory",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1"
+    },
+    {
+      "name": "memory-status",
+      "category": "memory",
+      "status": "ready",
+      "aliases": ["mem"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P2"
+    },
+    {
+      "name": "code",
+      "category": "code",
+      "status": "partial",
+      "aliases": ["c"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["multiple TODOs", "local API paths", "verbose output"],
+      "priority": "P0",
+      "notes": "cloud-api-only required"
+    },
+    {
+      "name": "image",
+      "category": "multimodal",
+      "status": "ready",
+      "aliases": ["img"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1",
+      "notes": "Imagen 4.0"
+    },
+    {
+      "name": "video",
+      "category": "multimodal",
+      "status": "ready",
+      "aliases": ["vid"],
+      "plans": ["starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1",
+      "notes": "Veo 2.0"
+    },
+    {
+      "name": "voice",
+      "category": "multimodal",
+      "status": "ready",
+      "aliases": ["audio", "tts"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P1",
+      "notes": "Gemini TTS"
+    },
+    {
+      "name": "research",
+      "category": "research",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P2"
+    },
+    {
+      "name": "login",
+      "category": "auth",
+      "status": "ready",
+      "aliases": ["signin"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P0"
+    },
+    {
+      "name": "logout",
+      "category": "auth",
+      "status": "ready",
+      "aliases": ["signout"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P0"
+    },
+    {
+      "name": "usage",
+      "category": "auth",
+      "status": "ready",
+      "aliases": ["quota"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P0"
+    },
+    {
+      "name": "plan",
+      "category": "auth",
+      "status": "ready",
+      "aliases": ["subscription"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": [],
+      "priority": "P0"
+    },
+    {
+      "name": "l2r",
+      "category": "learning",
+      "status": "partial",
+      "aliases": ["learn"],
+      "plans": ["pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P3"
+    },
+    {
+      "name": "search",
+      "category": "graphrag",
+      "status": "partial",
+      "aliases": ["find"],
+      "plans": ["pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P2"
+    },
+    {
+      "name": "language",
+      "category": "multilingual",
+      "status": "partial",
+      "aliases": ["lang"],
+      "plans": ["starter", "pro", "ultra"],
+      "registration": "registered",
+      "issues": ["mock implementation"],
+      "priority": "P3"
+    },
+    {
+      "name": "battlecard",
+      "category": "business",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["mock implementation", "not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "pilot-setup",
+      "category": "business",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "sales-dashboard",
+      "category": "business",
+      "status": "ready",
+      "aliases": ["sales"],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "tune",
+      "category": "business",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P3"
+    },
+    {
+      "name": "evolve",
+      "category": "ai",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P3"
+    },
+    {
+      "name": "gpu",
+      "category": "ai",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["ultra"],
+      "registration": "not-registered",
+      "issues": ["mock implementation", "not imported"],
+      "priority": "P3"
+    },
+    {
+      "name": "llm",
+      "category": "ai",
+      "status": "ready",
+      "aliases": ["model"],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "pm",
+      "category": "product",
+      "status": "broken",
+      "aliases": [],
+      "plans": ["ultra"],
+      "registration": "not-registered",
+      "issues": ["no execute method", "not imported"],
+      "priority": "P4"
+    },
+    {
+      "name": "evaluate",
+      "category": "evaluation",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["mock implementation", "not imported"],
+      "priority": "P3"
+    },
+    {
+      "name": "shell",
+      "category": "system",
+      "status": "ready",
+      "aliases": ["sh"],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "dashboard",
+      "category": "system",
+      "status": "ready",
+      "aliases": ["dash"],
+      "plans": ["starter", "pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported", "duplicate name"],
+      "priority": "P2"
+    },
+    {
+      "name": "upgrade",
+      "category": "system",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P1"
+    },
+    {
+      "name": "config",
+      "category": "configuration",
+      "status": "ready",
+      "aliases": ["cfg"],
+      "plans": ["free", "starter", "pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P1"
+    },
+    {
+      "name": "hooks",
+      "category": "configuration",
+      "status": "ready",
+      "aliases": [],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "model",
+      "category": "configuration",
+      "status": "partial",
+      "aliases": [],
+      "plans": ["starter", "pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["mock implementation", "not imported"],
+      "priority": "P2"
+    },
+    {
+      "name": "permissions",
+      "category": "configuration",
+      "status": "ready",
+      "aliases": ["perms"],
+      "plans": ["ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P3"
+    },
+    {
+      "name": "multimodal",
+      "category": "multimodal",
+      "status": "ready",
+      "aliases": ["mm"],
+      "plans": ["pro", "ultra"],
+      "registration": "not-registered",
+      "issues": ["not imported"],
+      "priority": "P2"
+    }
+  ],
+  "readiness_criteria": {
+    "ready": {
+      "auth": "Respects /login guard, never makes local provider calls",
+      "plan_quota": "Rejects with 401/402/403 + single-line guidance, quota footer on success",
+      "rate_limit": "Friendly wait time, no Infinity/Invalid Date",
+      "i18n": "English output only",
+      "ux_polish": "Compact relative paths, no stack traces, spinner stops cleanly",
+      "telemetry": "Logs {cmd, status, latency, plan, quotaLeft}",
+      "contract_tests": "Pass READY contract"
+    },
+    "partial": {
+      "definition": "Core functionality works but has mocks, TODOs, or missing features",
+      "display": "Show in help but grayed + 'Coming soon'",
+      "behavior": "Shield with friendly message"
+    },
+    "broken": {
+      "definition": "Non-functional or missing critical implementation",
+      "display": "Hidden from help",
+      "behavior": "Return 'Not available in this build'"
+    }
+  },
+  "statistics": {
+    "total": 43,
+    "by_status": {
+      "ready": 20,
+      "partial": 16,
+      "broken": 1,
+      "hidden": 6
+    },
+    "by_registration": {
+      "registered": 25,
+      "not_registered": 18
+    },
+    "by_priority": {
+      "P0": 7,
+      "P1": 8,
+      "P2": 14,
+      "P3": 9,
+      "P4": 1
+    }
+  }
+}

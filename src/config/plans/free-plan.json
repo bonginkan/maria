@@ -1,0 +1,129 @@
+{
+  "id": "free",
+  "name": "Free",
+  "displayName": "Free Plan",
+  "priceUsd": 0,
+  "priceJpy": 0,
+  "status": "active",
+  "features": {
+    "priority": "community",
+    "support": "community",
+    "accessLevel": "basic"
+  },
+  
+  "buckets": {
+    "req": 100,
+    "tokens": 150000,
+    "code": 20,
+    "attachment": 5,
+    "image": 25,
+    "video": 5
+  },
+  
+  "models": [
+    "google:gemini-2.5-flash",
+    "google:gemini-2.0-flash"
+  ],
+  
+  "imageModels": [
+    "google:imagen-4-fast",
+    "google:gemini-2.5-image"
+  ],
+  
+  "videoModels": [
+    "google:veo-3-fast",
+    "google:veo-2.0-generate-001"
+  ],
+  
+  "costRules": {
+    "longContextTokens": {
+      "threshold": 8000,
+      "multiplier": 2,
+      "description": "Long context (>8k tokens) consumes 2x"
+    },
+    "imageGen": {
+      "multiplier": 1,
+      "description": "1 image = 1 image bucket consumption"
+    },
+    "videoGen": {
+      "multiplier": 1,
+      "description": "1 video = 1 video bucket consumption"
+    }
+  },
+  
+  "limits": {
+    "image": {
+      "maxSize": "1024x1024",
+      "maxWidth": 1024,
+      "maxHeight": 1024,
+      "maxCountPerCall": 1,
+      "formats": ["png", "jpg", "jpeg", "webp", "svg"],
+      "monthlyLimit": 25
+    },
+    "video": {
+      "maxDurationSec": 8,
+      "minDurationSec": 6,
+      "maxCountPerCall": 1,
+      "aspectWhitelist": ["16:9", "9:16", "1:1"],
+      "personGeneration": "DONT_ALLOW",
+      "monthlyLimit": 5
+    },
+    "code": {
+      "maxTokensPerRequest": 8000,
+      "maxOutputTokens": 2048,
+      "temperature": {
+        "min": 0.1,
+        "max": 0.2,
+        "default": 0.15
+      }
+    },
+    "rateLimit": {
+      "requestsPerSecond": 0.33,
+      "description": "1 request per 3 seconds"
+    }
+  },
+  
+  "fileSave": {
+    "allowExtensions": [
+      ".ts", ".tsx", ".js", ".jsx", ".py", ".java", ".go", ".rs",
+      ".html", ".css", ".scss", ".json", ".yml", ".yaml",
+      ".sql", ".csv", ".md", ".sh", ".bash",
+      ".png", ".jpg", ".jpeg", ".webp", ".svg"
+    ],
+    "maxFileSizeMB": 10,
+    "naming": {
+      "convention": "kebab-case",
+      "pattern": "^[a-z0-9-_]+\\.[a-z]+$"
+    },
+    "dirs": {
+      "default": "outputs",
+      "images": "outputs/images",
+      "videos": "outputs/videos",
+      "code": "outputs/code"
+    }
+  },
+  
+  "ui": {
+    "badge": "FREE",
+    "badgeColor": "#4CAF50",
+    "description": "Perfect for getting started with AI development",
+    "highlights": [
+      "100 requests/month",
+      "Gemini 2.5 Flash for code",
+      "25 images/month (1024px)",
+      "5 videos/month (8 sec)",
+      "Community support"
+    ]
+  },
+  
+  "telemetry": {
+    "trackingEnabled": true,
+    "anonymousId": true,
+    "events": [
+      "model_usage",
+      "command_execution",
+      "error_rate",
+      "latency"
+    ]
+  }
+}

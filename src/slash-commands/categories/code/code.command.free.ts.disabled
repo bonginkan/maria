@@ -1,0 +1,274 @@
+/**
+ * FREE Plan Code Command
+ * Uses Gemini 2.5 Flash for fast, affordable code generation
+ */
+
+import { BaseCommand } from "../../base-command.js";
+import {
+  CommandArgs,
+  CommandContext,
+  CommandResult,
+  CommandExample,
+} from "../../types";
+import { FreeModelSelector } from "../../../services/model-selector/free-model-selector.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import * as path from "path";
+import * as fs from "fs";
+import chalk from "chalk";
+
+export class FreeCodeCommand extends BaseCommand {
+  name = "code";
+  category = "code" as const;
+  description = "Generate code using Gemini 2.5 Flash (FREE)";
+  usage = "/code <your code request>";
+  
+  private modelSelector = new FreeModelSelector('free');
+  
+  examples: CommandExample[] = [
+    {
+      input: "/code create a REST API endpoint",
+      description: "Generate REST API code using Gemini 2.5 Flash",
+    },
+    {
+      input: "/code React component for user profile",
+      description: "Generate React component quickly",
+    },
+    {
+      input: "/code Python function to validate email",
+      description: "Generate utility functions",
+    },
+  ];
+
+  async execute(
+    commandArgs: CommandArgs,
+    context: CommandContext,
+  ): Promise<CommandResult> {
+    const prompt = commandArgs.raw.join(" ").trim();
+    
+    // Check for empty prompt
+    if (!prompt) {
+      return this.success(
+        chalk.cyan("🚀 Code Generation (FREE Plan)\n\n") +
+        "Generate code using Google's Gemini 2.5 Flash - fast & efficient!\n\n" +
+        chalk.gray("Usage: /code <your request>\n") +
+        chalk.gray("Example: /code create a login form in React\n\n") +
+        chalk.yellow("FREE Plan Limits:\n") +
+        "• 20 code generations/month\n" +
+        "• Max 8,000 input tokens\n" +
+        "• Max 2,048 output tokens\n" +
+        chalk.gray("\nPro features coming soon! Join waitlist: /upgrade")
+      );
+    }
+
+    // Start spinner
+    const spinner = this.createSpinner("Generating code with Gemini 2.5 Flash...");
+    spinner.start();
+
+    try {
+      // Get API key
+      const apiKey = process.env.GEMINI_API_KEY || 
+                     process.env.GOOGLE_API_KEY || 
+                     process.env.GOOGLE_AI_API_KEY;
+                     
+      if (!apiKey) {
+        spinner.stop();
+        return this.error(
+          "❌ Google API key not found\n" +
+          "Please set GEMINI_API_KEY environment variable"
+        );
+      }
+
+      // Select model based on FREE plan
+      const modelId = this.modelSelector.pickAllowedModel('text', undefined, [
+        'google:gemini-2.5-flash',
+        'google:gemini-2.0-flash'
+      ]);
+      
+      // Get clean model name for API
+      const apiModelId = modelId.replace('google:', '');
+      
+      // Get plan limits
+      const planConfig = this.modelSelector.getPlanConfig();
+      const codeLimits = planConfig.limits.code;
+      
+      // Initialize Gemini
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ 
+        model: apiModelId,
+        generationConfig: {
+          temperature: codeLimits?.temperature?.default || 0.15,
+          maxOutputTokens: codeLimits?.maxOutputTokens || 2048,
+          topP: 0.95,
+          topK: 40,
+        }
+      });
+
+      // Create enhanced prompt for better code generation
+      const enhancedPrompt = `You are an expert programmer. Generate clean, well-commented code based on this request:
+
+${prompt}
+
+Requirements:
+- Include helpful comments
+- Follow best practices
+- Make it production-ready
+- Handle edge cases
+- Include example usage if applicable`;
+
+      // Generate code
+      const result = await model.generateContent(enhancedPrompt);
+      const response = await result.response;
+      const generatedCode = response.text();
+      
+      spinner.stop();
+      
+      // Extract code blocks and detect language
+      const codeBlocks = this.extractCodeBlocks(generatedCode);
+      
+      if (codeBlocks.length > 0) {
+        // Save code to file
+        const savedFiles: string[] = [];
+        
+        for (let i = 0; i < codeBlocks.length; i++) {
+          const block = codeBlocks[i];
+          const filename = this.generateFilename(prompt, block.language, i);
+          const filepath = path.join(process.cwd(), 'outputs', 'code', filename);
+          
+          // Ensure directory exists
+          fs.mkdirSync(path.dirname(filepath), { recursive: true });
+          
+          // Save file
+          fs.writeFileSync(filepath, block.code, 'utf-8');
+          savedFiles.push(filepath);
+        }
+        
+        // Display result
+        console.log(chalk.green("✅ Code generated successfully!\n"));
+        console.log(generatedCode);
+        
+        if (savedFiles.length > 0) {
+          console.log(chalk.cyan("\n📁 Saved to:"));
+          savedFiles.forEach(file => {
+            const relativePath = path.relative(process.cwd(), file);
+            console.log(chalk.gray(`   • ./${relativePath}`));
+          });
+        }
+        
+        // Show consumption
+        const consumption = this.modelSelector.getConsumption('text', {
+          tokens: prompt.length * 4 // Rough estimate
+        });
+        
+        console.log(chalk.gray(`\n💡 Consumed: ${consumption.amount} request(s)`));
+        console.log(chalk.gray(`   Model: ${this.modelSelector.getModelDisplayName(modelId)}`));
+        
+        return this.success("");
+      } else {
+        // No code blocks found, just display the response
+        console.log(chalk.green("✅ Response generated!\n"));
+        console.log(generatedCode);
+        return this.success("");
+      }
+      
+    } catch (error) {
+      spinner.stop();
+      console.error("Error:", error);
+      return this.error(`Failed to generate code: ${(error as Error).message}`);
+    }
+  }
+  
+  /**
+   * Create animated spinner
+   */
+  private createSpinner(message: string) {
+    const frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+    let frameIndex = 0;
+    
+    return {
+      interval: null as any,
+      start() {
+        this.interval = setInterval(() => {
+          process.stdout.write(
+            `\r${chalk.cyan(frames[frameIndex])} ${chalk.gray(message)}  `
+          );
+          frameIndex = (frameIndex + 1) % frames.length;
+        }, 80);
+      },
+      stop() {
+        if (this.interval) {
+          clearInterval(this.interval);
+          process.stdout.write("\r\x1b[K"); // Clear line
+        }
+      }
+    };
+  }
+  
+  /**
+   * Extract code blocks from response
+   */
+  private extractCodeBlocks(text: string): Array<{ language: string; code: string }> {
+    const blocks: Array<{ language: string; code: string }> = [];
+    const regex = /```(\w+)?\n([\s\S]*?)```/g;
+    let match;
+    
+    while ((match = regex.exec(text)) !== null) {
+      blocks.push({
+        language: match[1] || 'plaintext',
+        code: match[2].trim()
+      });
+    }
+    
+    return blocks;
+  }
+  
+  /**
+   * Generate appropriate filename
+   */
+  private generateFilename(prompt: string, language: string, index: number): string {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    
+    // Language to extension mapping
+    const extensions: Record<string, string> = {
+      javascript: '.js',
+      typescript: '.ts',
+      python: '.py',
+      java: '.java',
+      go: '.go',
+      rust: '.rs',
+      cpp: '.cpp',
+      c: '.c',
+      html: '.html',
+      css: '.css',
+      jsx: '.jsx',
+      tsx: '.tsx',
+      sql: '.sql',
+      bash: '.sh',
+      yaml: '.yaml',
+      json: '.json',
+      markdown: '.md',
+      plaintext: '.txt'
+    };
+    
+    const ext = extensions[language.toLowerCase()] || '.txt';
+    
+    // Extract meaningful name from prompt
+    let baseName = 'code';
+    const promptLower = prompt.toLowerCase();
+    
+    if (promptLower.includes('api')) baseName = 'api';
+    else if (promptLower.includes('component')) baseName = 'component';
+    else if (promptLower.includes('function')) baseName = 'function';
+    else if (promptLower.includes('class')) baseName = 'class';
+    else if (promptLower.includes('test')) baseName = 'test';
+    else if (promptLower.includes('service')) baseName = 'service';
+    else if (promptLower.includes('util')) baseName = 'util';
+    
+    // Add index if multiple blocks
+    const indexPart = index > 0 ? `_${index + 1}` : '';
+    
+    return `${baseName}${indexPart}_${timestamp}${ext}`;
+  }
+}
+
+// Export for registration
+export default FreeCodeCommand;

@@ -1,0 +1,15 @@
+@@ -30,10 +30,12 @@
+ /**
+  * Run tasks with budget control and AbortController support
+  */
+ export async function runWithBudget(
+   tasks: Task[],
+-  totalMs = 6000,
+-  perStepMs = 600
++  totalMs = 8000,
++  perStepMsInitial = 1500
+ ): Promise<InitFinding[]> {
+   const started = Date.now();
+   const out: InitFinding[] = [];
++  let movingAvg = perStepMsInitial;
++  const clamp = (v:number,min:number,max:number) => Math.max(min, Math.min(max, v));

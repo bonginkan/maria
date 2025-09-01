@@ -1,0 +1,51 @@
+{
+  "name": "poc-graph-rag-10t",
+  "version": "0.1.0",
+  "description": "Graph RAG 10T POC - Enterprise-scale hybrid search with Knowledge Graph",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:clean": "docker compose down -v",
+    "docker:logs": "docker compose logs -f",
+    "setup:opensearch": "node scripts/opensearch-create-index.js",
+    "setup:qdrant": "node scripts/qdrant-create-collection.js",
+    "setup:neo4j": "node scripts/neo4j-setup.js",
+    "setup:all": "npm run setup:opensearch && npm run setup:qdrant && npm run setup:neo4j",
+    "ingest:sharepoint": "node src/connectors/sharepoint.js",
+    "ingest:box": "node src/connectors/box.js",
+    "ingest:db": "node src/connectors/database.js",
+    "ingest:all": "npm run ingest:sharepoint && npm run ingest:box && npm run ingest:db",
+    "index:opensearch": "node scripts/opensearch-index-chunks.js",
+    "index:qdrant": "node scripts/qdrant-index-vectors.js",
+    "index:neo4j": "node scripts/neo4j-build-kg.js",
+    "index:all": "npm run index:opensearch && npm run index:qdrant && npm run index:neo4j",
+    "test:golden": "node tests/golden/run-poc-golden.js",
+    "test:golden:ab": "node tests/golden/run-poc-golden-ab.js",
+    "test:integration": "node tests/integration/run-integration.js",
+    "test": "npm run test:golden && npm run test:integration",
+    "benchmark": "node tests/benchmark/run-benchmark.js",
+    "clean": "rm -rf data/cache data/temp logs/*.log",
+    "monitor": "node scripts/monitor.js"
+  },
+  "keywords": [
+    "graph",
+    "rag",
+    "retrieval",
+    "knowledge-graph",
+    "hybrid-search",
+    "opensearch",
+    "qdrant",
+    "neo4j"
+  ],
+  "author": "POC Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.10.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

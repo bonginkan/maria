@@ -1,1 +1,389 @@
+# =============================================================================
+# OSS DISTRIBUTION .GITIGNORE - PUBLIC REPOSITORY - v4.0.0
+# =============================================================================
+# Enhanced security configuration for open source distribution with v4.0.0 features
+# Includes OAuth2.0 + PKCE authentication security and enterprise compliance
+# Stricter than private repository to prevent any sensitive data leakage
+
+# =============================================================================
+# CRITICAL SECURITY - NEVER COMMIT THESE
+# =============================================================================
+
+# ALL environment files - more restrictive for OSS
+.env*
+!.env.example
+!.env.sample
+!.env.template
+!.env.local.sample
+.environment*
+config.json
+config.*.json
+!config.example.json
+
+# API Keys, tokens, and ALL secrets
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cer
+*.cert
+*.pub
+secrets/
+secrets.*
+tokens/
+tokens.*
+credentials/
+credentials.*
+auth/
+auth.*
+private/
+private.*
+
+# Configuration files that may contain sensitive data
+.npmrc
+.yarnrc
+.npmrc.local
+.yarnrc.local
+.aws/
+.firebase/
+.firebaserc
+.vercel/
+.netlify/
+.heroku/
+
+# =============================================================================
+# BUILD OUTPUT & COMPILED FILES - OSS CLEAN
+# =============================================================================
+
+# All build outputs
+dist/
+build/
+out/
+lib/
+lib-cov/
+public/build/
+
+# TypeScript compilation
+*.tsbuildinfo
+*.buildinfo
+tsconfig.tsbuildinfo
+
+# Source maps - could expose source in OSS
+*.map
+*.js.map
+*.ts.map
+*.css.map
+
+# =============================================================================
+# DEPENDENCIES & PACKAGE MANAGERS
+# =============================================================================
+
+# Dependencies
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+jspm_packages/
+web_modules/
+
+# Cache directories
+.npm/
+.yarn/
+.yarn-integrity
+.pnpm/
+.cache/
+.parcel-cache/
+
+# =============================================================================
+# TESTING & COVERAGE - NEVER COMMIT TEST RESULTS
+# =============================================================================
+
+# ALL test coverage and results
+coverage/
+.coverage/
+*.lcov
+.lcov
+.lcov.info
+.c8/
+.nyc_output/
+test-results/
+test-output/
+junit.xml
+coverage.xml
+.vitest/
+
+# Test artifacts
+*.test.tmp
+*.spec.tmp
+__tests__/__snapshots__/
+.jest/
+
+# =============================================================================
+# DEVELOPMENT TOOLS & IDEs
+# =============================================================================
+
+# VSCode (keep only essential shared configs)
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# All other IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+*.sublime-workspace
+*.sublime-project
+
+# Editor files
+*.swp
+*.swo
+*~
+.netrwhist
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# =============================================================================
+# LOGS & RUNTIME - OSS SECURITY
+# =============================================================================
+
+# ALL logs
+logs/
+*.log
+*.log.*
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Runtime and cache
+.grunt/
+.npm-cache/
+.eslintcache
+.tmp/
+.temp/
+*.tmp
+*.temp
+
+# =============================================================================
+# SYSTEM & OS FILES
+# =============================================================================
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# Windows  
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# CLOUD & DEPLOYMENT - OSS SECURITY
+# =============================================================================
+
+# ALL cloud configurations
+.firebase/
+firebase-debug.log*
+.aws/
+aws-exports.js
+.vercel/
+.netlify/
+.heroku/
+
+# Docker sensitive
+Dockerfile.local
+docker-compose.override.yml
+.dockerignore.local
+
+# Terraform - all state files
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+terraform.tfvars.json
+
+# =============================================================================
+# DATABASE & STORAGE
+# =============================================================================
+
+# ALL database files
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Storage directories
+storage/
+uploads/
+media/
+data/
+
+# =============================================================================
+# OSS-SPECIFIC EXCLUSIONS
+# =============================================================================
+
+# Development and internal tools
+research/
+experiments/
+sandbox/
+playground/
+internal/
+private/
+enterprise/
+
+# Backup and archive files
+*.backup
+*.bak
+*.bak.*
+*.broken
+*.patch
+*.orig
+*.tar.gz
+*.zip
+*.rar
+*.7z
+
+# Archive directory (for refactoring)
+archive/
+src/commands.backup/
+
+# Cleaned up directories during phase3/release3_0_6
+research_papers/
+packages/
+outputs/
+tmp/
+temp/
+data/
+models/
+test/
+
+# Docs organization (keep structured documentation)
+# Allow organized docs structure but ignore legacy scattered files
+docs/legacy-reports/
+docs/temp-reports/
+docs/drafts/
+
+# Documentation builds
+docs/_build/
+site/
+
+# Performance monitoring
+.clinic/
+.0x/
+stats.json
+bundle-report.html
+
+# Security scanning results
+.snyk
+snyk-results.json
+security-report.json
+
+# Generated reports (moved to reports/ directory)
+reports/
+*.report.json
+*-report.json
+*-results.json
+test-results*.json
+lint-*.json
+*_report.json
+*_REPORT.json
+phase*-report*.json
+benchmark-*.json
+
+# =============================================================================
+# AI & ML - OSS SPECIFIC
+# =============================================================================
+
+# Large model files (not suitable for git)
+*.model
+*.pkl
+*.h5
+*.pb
+models/
+weights/
+training-data/
+datasets/
+
+# =============================================================================
+# LOCAL DEVELOPMENT OVERRIDES
+# =============================================================================
+
+# ALL local overrides
+*.local
+*.local.*
+local.*
+!*.local.example
+!*.local.sample
+
+# Development directories
+tmp/
+temp/
+.tmp/
+.temp/
+
+# MARIA Generated Files (keep project clean)
+maria-generated/
+.maria-session.json
+.maria-cache/
+
+# OAuth2.0 + PKCE Authentication - v4.0.0 Security
+oauth-tokens/
+oauth-cache/
+.oauth2/
+pkce-verifiers/
+auth-state/
+session-tokens/
+
+# Enterprise Security Artifacts - v4.0.0
+compliance-reports/
+audit-logs/
+security-scan-results/
+threat-detection/
+quantum-keys/
+
+# Performance Monitoring - v4.0.0
+performance-metrics/
+streaming-analytics/
+dashboard-cache/
+monitoring-data/
+
+# Lock files for tools
+*.lock
+.lock
+
+# v4.0.0 TypeScript Zero-Error Achievement Artifacts
+type-check-errors.txt
+lint-errors.json
+quality-reports/
+zero-error-validation/
+
+# =============================================================================
+# END OF OSS .GITIGNORE v4.0.0
+# =============================================================================

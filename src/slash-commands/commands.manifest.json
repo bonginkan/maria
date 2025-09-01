@@ -1,0 +1,252 @@
+{
+  "lastUpdated": "2025-08-31T15:00:00Z",
+  "version": "2.0.0",
+  "readyCount": 12,
+  "totalCommands": 25,
+  "readyPercentage": 48,
+  "targetReadyCount": 52,
+  "commands": {
+    "core/help": {
+      "status": "PARTIAL",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": false,
+      "description": "Show available commands and usage help",
+      "contractTestPath": "tests/contract/core/help.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "manifest-driven-generation",
+      "priority": "P0"
+    },
+    "core/version": {
+      "status": "PARTIAL", 
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": false,
+      "description": "Show MARIA version and build information",
+      "contractTestPath": "tests/contract/core/version.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-metadata",
+      "priority": "P0"
+    },
+    "conversation/clear": {
+      "status": "PARTIAL",
+      "plans": ["FREE", "PRO", "ULTRA"], 
+      "authRequired": true,
+      "description": "Clear conversation history",
+      "contractTestPath": "tests/contract/conversation/clear.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-withAuth-integration",
+      "priority": "P0"
+    },
+    "system/usage": {
+      "status": "PARTIAL",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Show current usage and quota information",
+      "contractTestPath": "tests/contract/system/usage.test.ts", 
+      "lastContractTest": null,
+      "blockedBy": "plan-manager-stub-needed",
+      "priority": "P0"
+    },
+    "code/code": {
+      "status": "READY",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Revolutionary natural language code generation",
+      "contractTestPath": "tests/contract/code/code.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P0"
+    },
+    "memory/remember": {
+      "status": "READY",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Store information in memory system",
+      "contractTestPath": "tests/contract/memory/remember.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P1"
+    },
+    "memory/recall": {
+      "status": "READY", 
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Retrieve information from memory system",
+      "contractTestPath": "tests/contract/memory/recall.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P1"
+    },
+    "memory/forget": {
+      "status": "READY",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Remove information from memory system", 
+      "contractTestPath": "tests/contract/memory/forget.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P1"
+    },
+    "memory/memory-status": {
+      "status": "READY",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Show memory system status and statistics",
+      "contractTestPath": "tests/contract/memory/memory-status.test.ts", 
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P1"
+    },
+    "multilingual/language": {
+      "status": "READY",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Language processing and translation",
+      "contractTestPath": "tests/contract/multilingual/language.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z", 
+      "priority": "P2"
+    },
+    "learning/l2r": {
+      "status": "READY",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Learning to rank optimization",
+      "contractTestPath": "tests/contract/learning/l2r.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P2"
+    },
+    "graphrag/search": {
+      "status": "READY", 
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Graph RAG-based search and retrieval",
+      "contractTestPath": "tests/contract/graphrag/search.test.ts",
+      "lastContractTest": "2025-08-31T00:00:00Z",
+      "priority": "P2"
+    },
+    "config/setup": {
+      "status": "PARTIAL",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": false,
+      "description": "Configure MARIA settings and preferences",
+      "contractTestPath": "tests/contract/config/setup.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-withAuth-integration",
+      "priority": "P1"
+    },
+    "multimodal/multimodal": {
+      "status": "BROKEN",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Multimodal AI generation (image, video, voice)",
+      "contractTestPath": "tests/contract/multimodal/multimodal.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-dependencies",
+      "priority": "P1"
+    },
+    "system/upgrade": {
+      "status": "PARTIAL",
+      "plans": ["FREE", "PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Upgrade subscription plan",
+      "contractTestPath": "tests/contract/system/upgrade.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "plan-manager-stub-needed",
+      "priority": "P1"
+    },
+    "evaluation/evaluate": {
+      "status": "PARTIAL",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "AI model evaluation and benchmarking",
+      "contractTestPath": "tests/contract/evaluation/evaluate.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-metadata",
+      "priority": "P2"
+    },
+    "ai/gpu": {
+      "status": "PARTIAL",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "GPU resource management and allocation",
+      "contractTestPath": "tests/contract/ai/gpu.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-metadata",
+      "priority": "P2"
+    },
+    "ai/llm": {
+      "status": "BROKEN",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Large language model management",
+      "contractTestPath": "tests/contract/ai/llm.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-RewardCalculator-dependency",
+      "priority": "P2"
+    },
+    "ai/evolve": {
+      "status": "BROKEN",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "AI model evolution and optimization",
+      "contractTestPath": "tests/contract/ai/evolve.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-slash-command-base-dependency",
+      "priority": "P2"
+    },
+    "business/battlecard": {
+      "status": "PARTIAL",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Generate competitive analysis battlecards",
+      "contractTestPath": "tests/contract/business/battlecard.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-external-dependencies",
+      "priority": "P2"
+    },
+    "business/sales-dashboard": {
+      "status": "PARTIAL", 
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Real-time sales performance dashboard",
+      "contractTestPath": "tests/contract/business/sales-dashboard.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-external-dependencies",
+      "priority": "P2"
+    },
+    "business/pilot-setup": {
+      "status": "PARTIAL",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Setup 5-person team pilot automation",
+      "contractTestPath": "tests/contract/business/pilot-setup.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-external-dependencies",
+      "priority": "P2"
+    },
+    "business/tune": {
+      "status": "BROKEN",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Business process tuning and optimization",
+      "contractTestPath": "tests/contract/business/tune.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-execute-function",
+      "priority": "P3"
+    },
+    "product/pm": {
+      "status": "BROKEN",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "Product management tools and analytics",
+      "contractTestPath": "tests/contract/product/pm.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-register-dependency",
+      "priority": "P3"
+    },
+    "system/dashboard": {
+      "status": "BROKEN",
+      "plans": ["PRO", "ULTRA"],
+      "authRequired": true,
+      "description": "System monitoring and analytics dashboard",
+      "contractTestPath": "tests/contract/system/dashboard.test.ts",
+      "lastContractTest": null,
+      "blockedBy": "missing-provider-factory-dependency",
+      "priority": "P3"
+    }
+  }
+}

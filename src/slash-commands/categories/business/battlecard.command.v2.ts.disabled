@@ -1,0 +1,172 @@
+/**
+ * Battlecard Command v2.0
+ * Competitive analysis battlecard generation with graceful degradation
+ */
+
+import { BaseCommand, CommandMeta, CommandResult } from '../../shared/BaseCommand';
+import { withDependencyGuard } from '../../shared/deps';
+import { CommandArgs, CommandContext } from '../../../types';
+
+// SSOT Metadata
+export const meta: CommandMeta = {
+  name: 'battlecard',
+  category: 'business',
+  description: 'Generate competitive analysis battlecards',
+  deps: ['COMPETITIVE_INTEL_API', 'MARKET_DATA_API'],
+  aliases: ['compete', 'competitive'],
+  status: 'stable'
+};
+
+export class BattlecardCommand extends BaseCommand {
+  readonly meta = meta;
+
+  async execute(args: CommandArgs, context: CommandContext): Promise<CommandResult> {
+    const competitor = args.parsed?.positional?.[0] || 'general';
+    
+    return withDependencyGuard(
+      meta.deps || [],
+      async () => this.generateRealBattlecard(competitor),
+      () => this.generateMockBattlecard(competitor)
+    );
+  }
+
+  private async generateRealBattlecard(competitor: string): Promise<CommandResult> {
+    try {
+      // Fetch real competitive intelligence
+      const intelData = await this.fetchCompetitiveIntel(competitor);
+      const marketData = await this.fetchMarketData(competitor);
+      
+      const battlecard = this.compileBattlecard(intelData, marketData);
+      
+      return this.success(`⚔️ Battlecard: ${competitor}`, {
+        ...battlecard,
+        source: 'Live Intelligence',
+        generated: new Date().toISOString()
+      });
+    } catch (error) {
+      return this.generateMockBattlecard(competitor);
+    }
+  }
+
+  private async generateMockBattlecard(competitor: string): Promise<CommandResult> {
+    const mockBattlecard = {
+      competitor: competitor || 'CompetitorX',
+      overview: {
+        founded: '2015',
+        headquarters: 'San Francisco, CA',
+        employees: '500-1000',
+        funding: '$125M Series C',
+        valuation: '$800M'
+      },
+      strengths: [
+        '✅ Strong brand recognition in enterprise market',
+        '✅ Comprehensive feature set',
+        '✅ Well-funded with strong investor backing',
+        '✅ Established partnership ecosystem',
+        '✅ Good developer documentation'
+      ],
+      weaknesses: [
+        '❌ Higher pricing than competitors',
+        '❌ Complex implementation process',
+        '❌ Limited customization options',
+        '❌ Poor mobile experience',
+        '❌ Slow customer support response times'
+      ],
+      opportunities: [
+        '💡 They lack AI/ML capabilities we offer',
+        '💡 Our pricing is 40% more competitive',
+        '💡 Better integration with modern tech stack',
+        '💡 Superior user experience and onboarding',
+        '💡 Stronger presence in SMB market'
+      ],
+      threats: [
+        '⚠️ They have 3x our marketing budget',
+        '⚠️ Established relationships with Fortune 500',
+        '⚠️ Recent acquisition of key technology',
+        '⚠️ Strong sales team in target regions'
+      ],
+      positioning: {
+        ourAdvantage: 'Modern, AI-powered, cost-effective solution',
+        theirPosition: 'Legacy leader with enterprise focus',
+        differentiators: [
+          'AI-powered automation',
+          'No-code customization',
+          'Usage-based pricing',
+          'Real-time collaboration'
+        ]
+      },
+      winStrategies: [
+        '🎯 Lead with TCO savings (40% lower)',
+        '🎯 Demo AI features early in sales cycle',
+        '🎯 Emphasize implementation speed (2 weeks vs 3 months)',
+        '🎯 Provide migration assistance from their platform',
+        '🎯 Leverage customer success stories in similar industries'
+      ],
+      commonObjections: {
+        'They are the market leader': 'Market leaders often become complacent. We offer innovation and agility that established players cannot match.',
+        'They have more features': 'More features mean more complexity. We focus on the features that matter most and make them exceptional.',
+        'They have been around longer': 'We built our platform with modern technology from day one, avoiding the technical debt that holds back legacy solutions.'
+      },
+      talkingPoints: [
+        '📢 "While [Competitor] was built for yesterday\'s challenges, we\'re built for tomorrow\'s opportunities"',
+        '📢 "Our customers see ROI in 3 months, not 3 years"',
+        '📢 "We don\'t just sell software, we deliver outcomes"'
+      ],
+      battleMetrics: {
+        winRate: '65%',
+        avgDealSize: '$45,000',
+        salesCycle: '45 days',
+        customerChurn: '8%',
+        nps: 72
+      }
+    };
+
+    return this.mockedSuccess(
+      `⚔️ Battlecard: ${competitor}`,
+      mockBattlecard,
+      '/setup competitive-intel'
+    );
+  }
+
+  private async fetchCompetitiveIntel(competitor: string): Promise<any> {
+    const apiUrl = process.env.COMPETITIVE_INTEL_API;
+    const response = await fetch(`${apiUrl}/competitors/${competitor}`, {
+      headers: { 'Authorization': `Bearer ${process.env.INTEL_API_KEY}` }
+    });
+    
+    if (!response.ok) throw new Error('Failed to fetch competitive intelligence');
+    return response.json();
+  }
+
+  private async fetchMarketData(competitor: string): Promise<any> {
+    const apiUrl = process.env.MARKET_DATA_API;
+    const response = await fetch(`${apiUrl}/analysis/${competitor}`, {
+      headers: { 'Authorization': `Bearer ${process.env.MARKET_API_KEY}` }
+    });
+    
+    if (!response.ok) throw new Error('Failed to fetch market data');
+    return response.json();
+  }
+
+  private compileBattlecard(intel: any, market: any): any {
+    // Compile real data into battlecard format
+    return {
+      competitor: intel.name,
+      overview: intel.overview,
+      strengths: intel.strengths,
+      weaknesses: intel.weaknesses,
+      opportunities: market.opportunities,
+      threats: market.threats,
+      positioning: {
+        ourAdvantage: market.positioning?.advantage,
+        theirPosition: market.positioning?.competitor,
+        differentiators: market.differentiators
+      },
+      winStrategies: intel.strategies,
+      battleMetrics: market.metrics
+    };
+  }
+}
+
+// Export for command registry
+export default new BattlecardCommand({});

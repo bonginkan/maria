@@ -1,0 +1,1126 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2025-08-28T02:34:25.432Z",
+  "generatorVersion": "2.1.0",
+  "commands": [
+    {
+      "name": "/llm",
+      "title": "Advanced LLM management and model operations",
+      "category": "ai",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1700,
+      "tags": [
+        "advanced"
+      ],
+      "examples": [
+        "/llm list",
+        "/llm use gpt-oss-20b",
+        "/llm bench --detailed",
+        "/llm coop run --iterations 5",
+        "/llm studio status"
+      ]
+    },
+    {
+      "name": "/pr-comments",
+      "title": "Generate PR comments",
+      "category": "analysis",
+      "level": "primary",
+      "depth": 0,
+      "rank": 300,
+      "examples": [
+        "/pr-comments https://github.com/user/repo/pull/123"
+      ]
+    },
+    {
+      "name": "/review",
+      "title": "Review code or pull requests",
+      "category": "analysis",
+      "level": "primary",
+      "depth": 0,
+      "rank": 300,
+      "examples": [
+        "/review src/app.ts",
+        "/review https://github.com/user/repo/pull/123"
+      ]
+    },
+    {
+      "name": "/login",
+      "title": "Login to services",
+      "category": "auth",
+      "level": "primary",
+      "depth": 0,
+      "rank": 800,
+      "examples": [
+        "/login",
+        "/login github"
+      ]
+    },
+    {
+      "name": "/logout",
+      "title": "Logout from services",
+      "category": "auth",
+      "level": "primary",
+      "depth": 0,
+      "rank": 800,
+      "examples": [
+        "/logout",
+        "/logout github"
+      ]
+    },
+    {
+      "name": "/permissions",
+      "title": "Manage permissions",
+      "category": "auth",
+      "level": "primary",
+      "depth": 0,
+      "rank": 800,
+      "examples": [
+        "/permissions",
+        "/permissions fileAccess true"
+      ]
+    },
+    {
+      "name": "/battlecard",
+      "title": "Generate competitive battlecards with talk scripts and PDF creation",
+      "category": "business",
+      "level": "primary",
+      "depth": 0,
+      "rank": 2000,
+      "examples": [
+        "/battlecard --competitor \"CompetitorX\"",
+        "/battlecard -c \"CompetitorY\" --customer \"ABC Manufacturing\" --industry manufacturing",
+        "/battlecard -c \"CompetitorZ\" --size enterprise --pain \"cost_reduction,efficiency\""
+      ]
+    },
+    {
+      "name": "/pilot-setup",
+      "title": "Sales team pilot setup - Supports 5-person teams",
+      "category": "business",
+      "level": "primary",
+      "depth": 0,
+      "rank": 2000,
+      "examples": [
+        "/pilot-setup template",
+        "/pilot-setup setup --config ./pilot-config.json",
+        "/pilot-setup onboard --pilot-id pilot_123 --member-id member_001",
+        "/pilot-setup start --pilot-id pilot_123"
+      ]
+    },
+    {
+      "name": "/pm",
+      "title": "Project Management Suite - SOW and Gantt chart generation from natural language",
+      "category": "business",
+      "level": "primary",
+      "depth": 0,
+      "rank": 2000,
+      "examples": [
+        "/pm analyze --source all --days 30",
+        "/pm sow \"Improve search latency by 20% with GPU acceleration\"",
+        "/pm gantt --sow docs/SOW_AUTO.md --ics out/schedule.ics",
+        "/pm update --since 2025-08-01 --create-pr",
+        "/pm export --format mermaid"
+      ]
+    },
+    {
+      "name": "/pm analyze",
+      "title": "Analyze repository for PM insights (WBS, risks, dependencies)",
+      "category": "business",
+      "parent": "/pm",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 2000,
+      "examples": [
+        "/pm analyze",
+        "/pm analyze --source issues --days 7",
+        "/pm analyze --json > analysis.json"
+      ]
+    },
+    {
+      "name": "/pm export",
+      "title": "Export PM artifacts in various formats (mermaid, ics, json)",
+      "category": "business",
+      "parent": "/pm",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 2000,
+      "examples": [
+        "/pm export --format mermaid",
+        "/pm export --format ics --out calendar.ics",
+        "/pm export --format json"
+      ]
+    },
+    {
+      "name": "/pm gantt",
+      "title": "Generate Mermaid Gantt chart and optional ICS calendar from SOW",
+      "category": "business",
+      "parent": "/pm",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 2000,
+      "examples": [
+        "/pm gantt",
+        "/pm gantt --sow docs/SOW_Q4.md --ics out/timeline.ics"
+      ]
+    },
+    {
+      "name": "/pm sow",
+      "title": "Generate Statement of Work from natural language description",
+      "category": "business",
+      "parent": "/pm",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 2000,
+      "examples": [
+        "/pm sow \"Implement GPU acceleration for search reranking\"",
+        "/pm sow \"Improve API latency by 20%\" --out docs/Q4_SOW.md"
+      ]
+    },
+    {
+      "name": "/pm update",
+      "title": "Update SOW/Gantt with recent repository changes",
+      "category": "business",
+      "parent": "/pm",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 2000,
+      "examples": [
+        "/pm update --since 2025-08-01",
+        "/pm update --create-pr"
+      ]
+    },
+    {
+      "name": "/sales-dashboard",
+      "title": "Interactive TUI sales dashboard with real-time updates",
+      "category": "business",
+      "level": "primary",
+      "depth": 0,
+      "rank": 2000,
+      "examples": [
+        "/sales-dashboard",
+        "/sales-dashboard --profile executive --theme light",
+        "/sales-dashboard --format json --export csv",
+        "/sales-dashboard --format slack"
+      ]
+    },
+    {
+      "name": "/tune",
+      "title": "Natural language reward tuning - Optimize AI agent behavior patterns",
+      "category": "business",
+      "level": "primary",
+      "depth": 0,
+      "rank": 2000,
+      "examples": [
+        "/tune \"Prioritize customer relationship building to improve sales\"",
+        "/tune \"Focus on cost reduction while maintaining quality\" --intensity high",
+        "/tune --metric conversion_rate --direction increase --scope team"
+      ]
+    },
+    {
+      "name": "/auto-organize",
+      "title": "Automatically organize files and folders following best practices",
+      "category": "coding-agent",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1900,
+      "examples": [
+        "/auto-organize",
+        "/auto-organize --dry-run"
+      ]
+    },
+    {
+      "name": "/create-feature",
+      "title": "Generate complete feature with all necessary files and folders",
+      "category": "coding-agent",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1900,
+      "examples": [
+        "/create-feature \"user authentication\"",
+        "/create-feature \"shopping cart functionality\"",
+        "/create-feature \"file upload system\""
+      ]
+    },
+    {
+      "name": "/generate-docs",
+      "title": "Generate comprehensive documentation for the project",
+      "category": "coding-agent",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1900,
+      "examples": [
+        "/generate-docs",
+        "/generate-docs --type api",
+        "/generate-docs --format markdown"
+      ]
+    },
+    {
+      "name": "/optimize-structure",
+      "title": "Analyze and optimize project structure for better maintainability",
+      "category": "coding-agent",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1900,
+      "examples": [
+        "/optimize-structure",
+        "/optimize-structure --suggestions",
+        "/optimize-structure --apply"
+      ]
+    },
+    {
+      "name": "/setup-project",
+      "title": "Automatically setup project structure and dependencies",
+      "category": "coding-agent",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1900,
+      "examples": [
+        "/setup-project \"react-typescript\"",
+        "/setup-project \"node-express-api\"",
+        "/setup-project \"python-flask\""
+      ]
+    },
+    {
+      "name": "/model",
+      "title": "Interactive AI model selector",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 4,
+      "aliases": [
+        "/m",
+        "/models"
+      ],
+      "examples": [
+        "/model",
+        "/model list",
+        "/model set claude-3-sonnet",
+        "/model info gpt-4"
+      ]
+    },
+    {
+      "name": "/init",
+      "title": "Intelligent project analysis & MARIA.md generation",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 5,
+      "examples": [
+        "/init",
+        "/init --scan",
+        "/init --json > analysis.json",
+        "/init --scan --budget-ms 8000 --max-lines 300"
+      ]
+    },
+    {
+      "name": "/add-dir",
+      "title": "Add directory to project",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 500,
+      "examples": [
+        "/add-dir src",
+        "/add-dir lib/utils"
+      ]
+    },
+    {
+      "name": "/config",
+      "title": "Show configuration settings",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 500,
+      "examples": [
+        "/config",
+        "/config model gpt-4"
+      ]
+    },
+    {
+      "name": "/settings",
+      "title": "Environment variable setup",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 500,
+      "examples": [
+        "/settings"
+      ]
+    },
+    {
+      "name": "/setup",
+      "title": "First-time environment setup wizard",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 500,
+      "examples": [
+        "/setup"
+      ]
+    },
+    {
+      "name": "/update",
+      "title": "Update project dependencies, configurations, and system components",
+      "category": "configuration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 500,
+      "examples": [
+        "/update",
+        "/update --deps",
+        "/update --config",
+        "/update --system"
+      ]
+    },
+    {
+      "name": "/brain",
+      "title": "Switch between cognitive & operation modes",
+      "category": "configuration",
+      "level": "hidden",
+      "depth": 0,
+      "rank": 5500,
+      "tags": [
+        "deprecated"
+      ],
+      "examples": [
+        "/brain",
+        "/brain creative",
+        "/brain analytical"
+      ]
+    },
+    {
+      "name": "/help",
+      "title": "Show help information and command list",
+      "category": "core",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1,
+      "examples": [
+        "/help",
+        "/help generation",
+        "/help /code"
+      ]
+    },
+    {
+      "name": "/exit",
+      "title": "Exit the application",
+      "category": "core",
+      "level": "primary",
+      "depth": 0,
+      "rank": 2,
+      "examples": [
+        "/exit"
+      ]
+    },
+    {
+      "name": "/clear",
+      "title": "Clear screen and conversation context",
+      "category": "core",
+      "level": "primary",
+      "depth": 0,
+      "rank": 3,
+      "examples": [
+        "/clear"
+      ]
+    },
+    {
+      "name": "/version",
+      "title": "Show version information",
+      "category": "core",
+      "level": "primary",
+      "depth": 0,
+      "rank": 100,
+      "examples": [
+        "/version"
+      ]
+    },
+    {
+      "name": "/design",
+      "title": "Design System Suite - Creative brief, analysis, and asset generation",
+      "category": "creative",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1300,
+      "examples": [
+        "/design brief \"Modern B2B SaaS landing page\"",
+        "/design analyze --brand ./brand.md --competitor ./competitors.txt",
+        "/design web --profile=landing --a11y --perf",
+        "/design wireframe --pages Home,Pricing,Contact"
+      ]
+    },
+    {
+      "name": "/design analyze",
+      "title": "Analyze brand guidelines and competitor designs",
+      "category": "creative",
+      "parent": "/design",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 1300,
+      "examples": [
+        "/design analyze --brand ./brand-guide.md",
+        "/design analyze --competitor ./competitors.txt",
+        "/design analyze --brand ./brand.md --competitor ./competitors.txt"
+      ]
+    },
+    {
+      "name": "/design brief",
+      "title": "Generate creative brief from natural language prompt",
+      "category": "creative",
+      "parent": "/design",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 1300,
+      "examples": [
+        "/design brief \"Professional B2B SaaS landing page\"",
+        "/design brief \"Minimal e-commerce product showcase\""
+      ]
+    },
+    {
+      "name": "/design web",
+      "title": "Generate Web SOW with accessibility and performance options",
+      "category": "creative",
+      "parent": "/design",
+      "level": "secondary",
+      "depth": 1,
+      "rank": 1300,
+      "examples": [
+        "/design web --profile=landing --a11y --perf",
+        "/design web --profile=site --out ./docs/web-sow.md"
+      ]
+    },
+    {
+      "name": "/diagram",
+      "title": "Generate visual diagrams and charts",
+      "category": "creative",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1300,
+      "examples": [
+        "/diagram flowchart login process",
+        "/diagram architecture microservices",
+        "/diagram er user database",
+        "/diagram sequence API request"
+      ]
+    },
+    {
+      "name": "/calc",
+      "title": "Calculate mathematical expressions safely without eval()",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "aliases": [],
+      "examples": [
+        "/calc \"2 + 3 * 4\"",
+        "/calc \"sin(pi/4) + cos(pi/4)\"",
+        "/calc \"sqrt(x^2 + y^2)\" --vars x=3 y=4"
+      ]
+    },
+    {
+      "name": "/export",
+      "title": "Export project data",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "examples": [
+        "/export json",
+        "/export --clipboard"
+      ]
+    },
+    {
+      "name": "/hooks",
+      "title": "Manage Git hooks integration",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "examples": [
+        "/hooks list",
+        "/hooks add pre-commit"
+      ]
+    },
+    {
+      "name": "/memory",
+      "title": "Manage project memory",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "examples": [
+        "/memory show",
+        "/memory clear",
+        "/memory export"
+      ]
+    },
+    {
+      "name": "/plot",
+      "title": "Plot and visualize mathematical functions",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "aliases": [],
+      "examples": [
+        "/plot \"sin(x)\" --range -3 3",
+        "/plot \"x^2 - 4*x + 3\" --range -2 6 --svg output.svg"
+      ]
+    },
+    {
+      "name": "/release-notes",
+      "title": "Generate release notes",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "examples": [
+        "/release-notes v1.2.0",
+        "/release-notes"
+      ]
+    },
+    {
+      "name": "/solve",
+      "title": "Solve equations and systems of equations using numerical methods",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "aliases": [],
+      "examples": [
+        "/solve \"x^2 - 4\" --vars x --x0 2",
+        "/solve \"x^2 + y^2 - 25\" \"x + y - 7\" --vars x y"
+      ]
+    },
+    {
+      "name": "/terminal-setup",
+      "title": "Setup terminal integration",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "examples": [
+        "/terminal-setup"
+      ]
+    },
+    {
+      "name": "/vim",
+      "title": "Vim editor integration",
+      "category": "development",
+      "level": "primary",
+      "depth": 0,
+      "rank": 600,
+      "examples": [
+        "/vim src/app.ts",
+        "/vim"
+      ]
+    },
+    {
+      "name": "/evolve",
+      "title": "Autonomous system evolution and optimization controls",
+      "category": "evolution",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1600,
+      "tags": [
+        "advanced"
+      ],
+      "aliases": [
+        "/evolution",
+        "/auto-evolve"
+      ],
+      "examples": [
+        "/evolve on nightly",
+        "/evolve status",
+        "/evolve plan",
+        "/evolve history 30",
+        "/evolve approve approval_123",
+        "/evolve revert v1.0.5",
+        "/evolve run canary",
+        "/evolve off"
+      ]
+    },
+    {
+      "name": "/save",
+      "title": "Save last AI response to a file",
+      "category": "file",
+      "level": "primary",
+      "depth": 0,
+      "rank": 900,
+      "aliases": [
+        "/write"
+      ],
+      "examples": [
+        "/save tetris.html",
+        "/save code.js",
+        "/save output.txt"
+      ]
+    },
+    {
+      "name": "/saveto",
+      "title": "Save response to specified directory",
+      "category": "file",
+      "level": "primary",
+      "depth": 0,
+      "rank": 900,
+      "aliases": [
+        "/writeto"
+      ],
+      "examples": [
+        "/saveto ~/Documents/code.js",
+        "/saveto ./output/report.md"
+      ]
+    },
+    {
+      "name": "/code",
+      "title": "Intelligent code operations - create, modify, fix, refactor",
+      "category": "generation",
+      "level": "primary",
+      "depth": 0,
+      "rank": 200,
+      "examples": [
+        "/code fix errors in src/index.ts",
+        "/code create new service AuthService",
+        "/code refactor function calculateTotal to use async",
+        "/code add validation to user input"
+      ]
+    },
+    {
+      "name": "/paper",
+      "title": "Process research papers and generate code",
+      "category": "generation",
+      "level": "primary",
+      "depth": 0,
+      "rank": 200,
+      "examples": [
+        "/paper \"Implement QuickSort algorithm\"",
+        "/paper --source pdf paper.pdf"
+      ]
+    },
+    {
+      "name": "/test",
+      "title": "Generate tests for code",
+      "category": "generation",
+      "level": "primary",
+      "depth": 0,
+      "rank": 200,
+      "examples": [
+        "/test src/utils.ts",
+        "/test calculateTotal function"
+      ]
+    },
+    {
+      "name": "/snippet",
+      "title": "Code snippet management",
+      "category": "implementation",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1400,
+      "examples": [
+        "/snippet save \"quicksort\" \"function quicksort...\"",
+        "/snippet search authentication",
+        "/snippet list --tags=react",
+        "/snippet export ./my-snippets.json"
+      ]
+    },
+    {
+      "name": "/agents",
+      "title": "Manage AI agents",
+      "category": "integration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1000,
+      "examples": [
+        "/agents list",
+        "/agents start codeReview"
+      ]
+    },
+    {
+      "name": "/mcp",
+      "title": "MCP integrations",
+      "category": "integration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1000,
+      "examples": [
+        "/mcp status",
+        "/mcp start myServer"
+      ]
+    },
+    {
+      "name": "/migrate-installer",
+      "title": "Migrate installer configuration",
+      "category": "integration",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1000,
+      "examples": [
+        "/migrate-installer"
+      ]
+    },
+    {
+      "name": "/avatar",
+      "title": "Interactive ASCII avatar",
+      "category": "media",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1500,
+      "examples": [
+        "/avatar"
+      ]
+    },
+    {
+      "name": "/image",
+      "title": "Generate images with AI",
+      "category": "media",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1500,
+      "examples": [
+        "/image A sunset over mountains",
+        "/image Logo design for tech company"
+      ]
+    },
+    {
+      "name": "/video",
+      "title": "Generate videos with AI",
+      "category": "media",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1500,
+      "examples": [
+        "/video A car driving through city",
+        "/video Product demo animation"
+      ]
+    },
+    {
+      "name": "/chart",
+      "title": "Create and display charts from data",
+      "category": "monitoring",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1800,
+      "tags": [
+        "advanced",
+        "experimental"
+      ],
+      "examples": [
+        "/chart line --data \"./metrics.json\" --format ascii",
+        "/chart bar --data \"cpu,memory,disk\" --format html",
+        "/chart gauge system.cpu --threshold 80"
+      ]
+    },
+    {
+      "name": "/dashboard",
+      "title": "Create and manage monitoring dashboards",
+      "category": "monitoring",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1800,
+      "tags": [
+        "advanced"
+      ],
+      "aliases": [
+        "/dash"
+      ],
+      "examples": [
+        "/dashboard create --template system-overview",
+        "/dashboard list",
+        "/dashboard show my-dashboard --format html",
+        "/dashboard export my-dashboard"
+      ]
+    },
+    {
+      "name": "/monitor",
+      "title": "Start real-time monitoring dashboard",
+      "category": "monitoring",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1800,
+      "tags": [
+        "advanced"
+      ],
+      "examples": [
+        "/monitor --format ascii --refresh 5",
+        "/monitor system --template system-overview",
+        "/monitor --port 3001 --auth"
+      ]
+    },
+    {
+      "name": "/stream",
+      "title": "Manage real-time data streams",
+      "category": "monitoring",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1800,
+      "tags": [
+        "advanced",
+        "experimental"
+      ],
+      "examples": [
+        "/stream start system:metrics",
+        "/stream list",
+        "/stream subscribe app:logs --filter error",
+        "/stream stop system:metrics"
+      ]
+    },
+    {
+      "name": "/templates",
+      "title": "Manage dashboard templates",
+      "category": "monitoring",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1800,
+      "tags": [
+        "advanced"
+      ],
+      "examples": [
+        "/templates list",
+        "/templates show system-overview",
+        "/templates create --name my-template",
+        "/templates generate --from-data metrics.json"
+      ]
+    },
+    {
+      "name": "/benchmark",
+      "title": "Performance analysis and benchmarking",
+      "category": "optimization",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1200,
+      "examples": [
+        "/benchmark quicksort",
+        "/benchmark compare \"bubble sort\" vs \"merge sort\"",
+        "/benchmark --profile complex-algorithm"
+      ]
+    },
+    {
+      "name": "/bug",
+      "title": "Bug analysis and fix suggestions",
+      "category": "quality",
+      "level": "primary",
+      "depth": 0,
+      "rank": 400,
+      "examples": [
+        "/bug Function returns undefined",
+        "/bug Memory leak in component"
+      ]
+    },
+    {
+      "name": "/lint",
+      "title": "ESLint analysis and auto-fix",
+      "category": "quality",
+      "level": "primary",
+      "depth": 0,
+      "rank": 400,
+      "examples": [
+        "/lint src/app.ts",
+        "/lint"
+      ]
+    },
+    {
+      "name": "/security-review",
+      "title": "Security vulnerability assessment",
+      "category": "quality",
+      "level": "primary",
+      "depth": 0,
+      "rank": 400,
+      "examples": [
+        "/security-review src/auth.ts"
+      ]
+    },
+    {
+      "name": "/typecheck",
+      "title": "TypeScript type safety analysis",
+      "category": "quality",
+      "level": "primary",
+      "depth": 0,
+      "rank": 400,
+      "examples": [
+        "/typecheck src/app.ts",
+        "/typecheck"
+      ]
+    },
+    {
+      "name": "/approval",
+      "title": "Review and approve pending patch operations (Phase B)",
+      "category": "system",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1100,
+      "tags": [
+        "advanced"
+      ],
+      "aliases": [
+        "/approve"
+      ],
+      "examples": [
+        "/approval",
+        "/approval --auto",
+        "/approval --colorize --line-numbers"
+      ]
+    },
+    {
+      "name": "/cost",
+      "title": "Show usage costs",
+      "category": "system",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1100,
+      "examples": [
+        "/cost"
+      ]
+    },
+    {
+      "name": "/doctor",
+      "title": "Run system diagnostics",
+      "category": "system",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1100,
+      "examples": [
+        "/doctor"
+      ]
+    },
+    {
+      "name": "/shell",
+      "title": "Execute natural language shell operations safely (Phase B: with patch support)",
+      "category": "system",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1100,
+      "tags": [
+        "advanced"
+      ],
+      "aliases": [
+        "/sh"
+      ],
+      "examples": [
+        "/shell \"show README file\"",
+        "/shell \"list TypeScript files in src\"",
+        "/shell \"search for TODO in package.json\"",
+        "/shell \"find all .md files\" --dry",
+        "/shell \"replace 'old' with 'new' in test.txt\" --phase B"
+      ]
+    },
+    {
+      "name": "/status",
+      "title": "Show system status",
+      "category": "system",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1100,
+      "examples": [
+        "/status"
+      ]
+    },
+    {
+      "name": "/upgrade",
+      "title": "Upgrade MARIA to latest version",
+      "category": "system",
+      "level": "primary",
+      "depth": 0,
+      "rank": 1100,
+      "examples": [
+        "/upgrade"
+      ]
+    },
+    {
+      "name": "/alias",
+      "title": "Manage command aliases",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/alias add /gs \"/git status\"",
+        "/alias list"
+      ]
+    },
+    {
+      "name": "/batch",
+      "title": "Execute multiple commands",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/batch /status /model /config"
+      ]
+    },
+    {
+      "name": "/chain",
+      "title": "Execute command chains",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/chain projectSetup",
+        "/chain analysis --interactive"
+      ]
+    },
+    {
+      "name": "/compact",
+      "title": "Compact session data",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/compact"
+      ]
+    },
+    {
+      "name": "/hotkey",
+      "title": "Manage keyboard shortcuts",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/hotkey add ctrl+s /status",
+        "/hotkey list"
+      ]
+    },
+    {
+      "name": "/resume",
+      "title": "Resume previous session",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/resume",
+        "/resume last"
+      ]
+    },
+    {
+      "name": "/suggest",
+      "title": "Get intelligent command suggestions",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/suggest"
+      ]
+    },
+    {
+      "name": "/template",
+      "title": "Command templates management",
+      "category": "workflow",
+      "level": "primary",
+      "depth": 0,
+      "rank": 700,
+      "examples": [
+        "/template list",
+        "/template run myTemplate"
+      ]
+    }
+  ],
+  "stats": {
+    "totalCommands": 84,
+    "totalCategories": 20,
+    "lastUpdated": "2025-08-28T02:34:25.432Z"
+  }
+}
