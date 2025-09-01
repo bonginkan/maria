@@ -1337,10 +1337,10 @@ export function createCLI(): Command {
       // Try to display startup screen (optional)
       if (!startupDisplayed) {
         try {
-          const { displayFinalStartupScreen } = await import(
+          const { displayStartupLogo } = await import(
             "./services/startup-display.js"
           );
-          await displayFinalStartupScreen();
+          displayStartupLogo();
           startupDisplayed = true;
         } catch {
           // Startup display is optional

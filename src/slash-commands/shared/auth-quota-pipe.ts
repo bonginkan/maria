@@ -13,7 +13,7 @@ interface CommandContext {
 
 interface UserPlan {
   id: string;
-  name: 'FREE' | 'PRO' | 'ULTRA';
+  name: 'FREE' | 'STARTER' | 'PRO' | 'ULTRA';
   limits: {
     requests: number;
     imageGeneration: number;
@@ -187,6 +187,32 @@ export function withQuotaCheck(commandName: string) {
           endReason: 'error'
         };
       }
+    };
+  };
+}
+
+/**
+ * Plan requirement guard - ensures user has minimum plan level
+ */
+export function withPlan(requiredPlan: 'FREE' | 'STARTER' | 'PRO' | 'ULTRA') {
+  return <T extends any[]>(
+    fn: (context: CommandContext, ...args: T) => Promise<CommandResult>
+  ) => {
+    return async (context: CommandContext, ...args: T): Promise<CommandResult> => {
+      const planHierarchy = ['FREE', 'STARTER', 'PRO', 'ULTRA'];
+      const userPlanIndex = planHierarchy.indexOf(context.plan.name);
+      const requiredPlanIndex = planHierarchy.indexOf(requiredPlan);
+      
+      if (userPlanIndex < requiredPlanIndex) {
+        const upgradeUrl = requiredPlan === 'STARTER' ? '/upgrade' : '/pricing';
+        return {
+          success: false,
+          message: `💎 ${requiredPlan}+ plan required · Upgrade: ${upgradeUrl}`,
+          endReason: 'quota'
+        };
+      }
+      
+      return await fn(context, ...args);
     };
   };
 }

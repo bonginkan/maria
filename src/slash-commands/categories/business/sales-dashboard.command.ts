@@ -17,6 +17,13 @@ import { NotificationService } from "../../../services/data-integration/Notifica
 import { Logger } from "../../../utils/logger";
 import chalk from "chalk";
 
+// Simple dependency checker with graceful fallbacks
+async function checkDependencies(deps: string[]): Promise<boolean> {
+  // For now, always return false to use fallback mode
+  // In production, this would check actual dependency availability
+  return false;
+}
+
 export interface SalesDashboardCommandOptions {
   profile?: "executive" | "sales_manager" | "sales" | "marketing" | "pm";
   theme?: "default" | "dark" | "light" | "business";
@@ -555,4 +562,19 @@ ${chalk.yellow("権限:")}
   営業担当者以上の権限でアクセス可能。
   データ表示範囲は役職に応じて制限されます。
 `;
+}
+
+// Export metadata and execute function for command registry
+export const metadata = {
+  name: 'sales-dashboard',
+  description: 'Interactive TUI sales dashboard - Real-time updates supported',
+  category: 'business',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await salesDashboardCommand.execute(context.args || [], context);
 }

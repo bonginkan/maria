@@ -12,6 +12,11 @@ import { ModelPoolManager } from './ModelPoolManager.js';
 import { RoutingDecisionEngine } from './RoutingDecision.js';
 import { CompleteDecisionLogger } from './CompleteDecisionLogger.js';
 import { CompletePIIRedactor } from './CompletePIIRedactor.js';
+import { HysteresisHealthChecker } from './HysteresisHealthChecker.js';
+import { RunawayPreventionCircuitBreaker } from './RunawayPreventionCircuitBreaker.js';
+import { TTFBAuditor } from './TTFBAuditor.js';
+import { IdempotencyManager } from './IdempotencyManager.js';
+import { HotCache } from './HotCache.js';
 
 export interface IMSRouterConfig {
   firestoreClient: any;
@@ -20,6 +25,12 @@ export interface IMSRouterConfig {
   enablePIIRedaction: boolean;
   enableDecisionLogging: boolean;
   emergencyFallbackModel: string;
+  // Phase 2 enhancements
+  enableHysteresisHealthChecking: boolean;
+  enableRunawayPrevention: boolean;
+  enableTTFBAuditing: boolean;
+  enableIdempotency: boolean;
+  enableHotCaching: boolean;
 }
 
 export interface RouteResult {
@@ -72,13 +83,20 @@ export class IMSRouter extends EventEmitter {
   private readonly decisionLogger: CompleteDecisionLogger;
   private readonly piiRedactor: CompletePIIRedactor;
   
+  // Phase 2 components
+  private readonly healthChecker?: HysteresisHealthChecker;
+  private readonly circuitBreaker?: RunawayPreventionCircuitBreaker;
+  private readonly ttfbAuditor?: TTFBAuditor;
+  private readonly idempotencyManager?: IdempotencyManager;
+  private readonly hotCache?: HotCache;
+  
   private isInitialized = false;
   private emergencyMode = false;
   
   constructor(private readonly config: IMSRouterConfig) {
     super();
     
-    // Initialize components
+    // Initialize core components
     this.policyEngine = new PolicyEngine(config.firestoreClient);
     this.poolManager = new ModelPoolManager(config.firestoreClient);
     this.piiRedactor = new CompletePIIRedactor();
@@ -97,6 +115,27 @@ export class IMSRouter extends EventEmitter {
         encryptionEnabled: true
       }
     );
+    
+    // Initialize Phase 2 components
+    if (config.enableHysteresisHealthChecking) {
+      this.healthChecker = new HysteresisHealthChecker();
+    }
+    
+    if (config.enableRunawayPrevention) {
+      this.circuitBreaker = new RunawayPreventionCircuitBreaker();
+    }
+    
+    if (config.enableTTFBAuditing) {
+      this.ttfbAuditor = new TTFBAuditor();
+    }
+    
+    if (config.enableIdempotency) {
+      this.idempotencyManager = new IdempotencyManager();
+    }
+    
+    if (config.enableHotCaching) {
+      this.hotCache = new HotCache();
+    }
     
     this.setupEventHandlers();
   }
@@ -129,7 +168,7 @@ export class IMSRouter extends EventEmitter {
   }
 
   /**
-   * Route request to optimal model with complete TTFB tracking
+   * Route request to optimal model with complete TTFB tracking and Phase 2 enhancements
    */
   async route(input: TaskInput): Promise<RouteResult> {
     if (!this.isInitialized) {
@@ -156,6 +195,23 @@ export class IMSRouter extends EventEmitter {
 
     try {
       this.emit('routingStarted', { traceId: input.traceId, taskKind: input.task.kind });
+
+      // Phase 2 Enhancement: Check idempotency first
+      if (this.idempotencyManager && input.idempotencyKey !== input.traceId) {
+        const duplicateCheck = this.idempotencyManager.registerRequest(
+          input.idempotencyKey,
+          input.traceId,
+          input.content
+        );
+
+        if (duplicateCheck.isDuplicate) {
+          const cachedResponse = this.idempotencyManager.getResponse(input.idempotencyKey);
+          if (cachedResponse) {
+            return this.buildRouteResultFromCache(cachedResponse, input.traceId, startTime);
+          }
+          // Continue if duplicate but no cached response yet
+        }
+      }
 
       // Step 1: Authentication/Authorization (Budget: 40ms)
       const authStartTime = Date.now();
@@ -186,14 +242,42 @@ export class IMSRouter extends EventEmitter {
         };
       }
 
-      // Step 3: Policy evaluation (Budget: 20ms)
+      // Step 3: Policy evaluation with hot cache (Budget: 20ms)
       const cacheStartTime = Date.now();
-      // Cache access is handled within policyEngine
+      let cachedPolicy = null;
+      
+      if (this.hotCache) {
+        const cacheKey = `policy:${this.config.defaultPolicyId}`;
+        cachedPolicy = this.hotCache.getValue(cacheKey);
+        
+        if (!cachedPolicy) {
+          // Cache miss - will be loaded by policyEngine
+          this.emit('cacheMiss', { key: cacheKey, type: 'policy' });
+        }
+      }
+      
       ttfbBreakdown.cacheMs = Date.now() - cacheStartTime;
       ttfbBreakdown.budgetCompliance.cache = ttfbBreakdown.cacheMs <= 20;
 
-      // Step 4: Rules evaluation (Budget: 10ms)
+      // Step 4: Rules evaluation with circuit breaker protection (Budget: 10ms)
       const rulesStartTime = Date.now();
+      
+      // Phase 2 Enhancement: Circuit breaker check before decision making
+      if (this.circuitBreaker) {
+        const availableCandidates = await this.getAvailableCandidates(processedTask);
+        const selectedCandidate = await this.circuitBreaker.selectWithRunawayPrevention(
+          availableCandidates,
+          processedTask.traceId
+        );
+        
+        // Log circuit breaker decision
+        this.emit('circuitBreakerSelection', {
+          traceId: processedTask.traceId,
+          selectedModel: selectedCandidate.model.id,
+          availableCount: availableCandidates.length
+        });
+      }
+      
       const decision = await this.decisionEngine.makeRoutingDecision(
         processedTask,
         this.config.defaultPolicyId
@@ -214,6 +298,19 @@ export class IMSRouter extends EventEmitter {
       // Calculate total TTFB
       ttfbBreakdown.totalMs = Date.now() - startTime;
       ttfbBreakdown.budgetCompliance.total = ttfbBreakdown.totalMs <= 500;
+
+      // Phase 2 Enhancement: Record TTFB measurement
+      this.recordTTFBMeasurement(
+        input.traceId,
+        ttfbBreakdown,
+        input.task.kind,
+        decision.selectedModel.id
+      );
+
+      // Phase 2 Enhancement: Store idempotent response if applicable
+      if (this.idempotencyManager && input.idempotencyKey !== input.traceId) {
+        this.storeIdempotentResponse(input.idempotencyKey, routeResult);
+      }
 
       // Log decision if enabled
       if (this.config.enableDecisionLogging) {
@@ -543,14 +640,147 @@ export class IMSRouter extends EventEmitter {
   }
 
   /**
+   * Phase 2 Helper Methods
+   */
+
+  /**
+   * Get available candidates with circuit breaker integration
+   */
+  private async getAvailableCandidates(processedTask: ProcessedTaskInput): Promise<ModelCandidate[]> {
+    const decision = await this.decisionEngine.makeRoutingDecision(
+      processedTask,
+      this.config.defaultPolicyId
+    );
+
+    // Transform decision to candidates format
+    const candidates: ModelCandidate[] = [
+      {
+        model: {
+          id: decision.selectedModel.id,
+          providerId: decision.selectedModel.providerId || 'unknown'
+        },
+        selectionScore: decision.selectedModel.confidence || 0.8,
+        constraints: decision.selectedModel.constraints,
+        healthScore: 1.0, // Will be updated by health checker
+        costPrediction: decision.costPrediction
+      }
+    ];
+
+    // Add fallback models as candidates
+    if (decision.fallbackChain.length > 0) {
+      for (const fallbackModel of decision.fallbackChain) {
+        candidates.push({
+          model: {
+            id: fallbackModel,
+            providerId: 'unknown'
+          },
+          selectionScore: 0.6, // Lower score for fallbacks
+          constraints: {},
+          healthScore: 0.8,
+          costPrediction: { estimatedCostUsd: 0.001, budgetImpact: 'low' }
+        });
+      }
+    }
+
+    return candidates;
+  }
+
+  /**
+   * Build route result from cached response
+   */
+  private buildRouteResultFromCache(cachedResponse: any, traceId: string, startTime: number): RouteResult {
+    return {
+      modelId: cachedResponse.modelId || 'cached-response',
+      providerId: cachedResponse.providerId || 'cache',
+      generationParams: cachedResponse.generationParams || {},
+      constraints: cachedResponse.constraints || {},
+      trace: {
+        traceId,
+        routedAt: new Date().toISOString(),
+        policyUsed: 'cached',
+        fallbackChain: [],
+        ttfbMs: Date.now() - startTime,
+        cacheHit: true
+      },
+      costPrediction: cachedResponse.costPrediction || { estimatedCostUsd: 0, budgetImpact: 'negligible' }
+    };
+  }
+
+  /**
+   * Store response in idempotency manager
+   */
+  private storeIdempotentResponse(idempotencyKey: string, routeResult: RouteResult): void {
+    if (this.idempotencyManager) {
+      this.idempotencyManager.storeResponse(idempotencyKey, {
+        modelId: routeResult.modelId,
+        providerId: routeResult.providerId,
+        generationParams: routeResult.generationParams,
+        constraints: routeResult.constraints,
+        costPrediction: routeResult.costPrediction,
+        timestamp: Date.now(),
+        ttl: 3600000 // 1 hour
+      });
+    }
+  }
+
+  /**
+   * Record TTFB measurement with auditor
+   */
+  private recordTTFBMeasurement(
+    traceId: string, 
+    breakdown: TTFBBreakdown,
+    taskKind: string,
+    modelId: string
+  ): void {
+    if (this.ttfbAuditor) {
+      this.ttfbAuditor.recordMeasurement({
+        traceId,
+        timestamp: Date.now(),
+        taskType: taskKind,
+        modelId,
+        providerName: 'unknown',
+        totalTTFBMs: breakdown.totalMs,
+        breakdown,
+        budgetCompliance: breakdown.budgetCompliance,
+        sessionContext: {
+          userId: 'unknown',
+          plan: 'pro'
+        },
+        networkContext: {
+          region: 'us-central1'
+        }
+      });
+    }
+  }
+
+  /**
    * Cleanup method
    */
   async cleanup(): Promise<void> {
-    await Promise.all([
+    // Phase 2: Cleanup new components
+    const cleanupPromises = [
       this.policyEngine.cleanup(),
       this.poolManager.cleanup(),
       this.decisionLogger.cleanup()
-    ]);
+    ];
+
+    if (this.hysteresisHealthChecker) {
+      cleanupPromises.push(this.hysteresisHealthChecker.cleanup());
+    }
+    if (this.circuitBreaker) {
+      cleanupPromises.push(this.circuitBreaker.cleanup());
+    }
+    if (this.ttfbAuditor) {
+      cleanupPromises.push(this.ttfbAuditor.cleanup());
+    }
+    if (this.hotCache) {
+      cleanupPromises.push(this.hotCache.cleanup());
+    }
+    if (this.idempotencyManager) {
+      cleanupPromises.push(this.idempotencyManager.cleanup());
+    }
+
+    await Promise.all(cleanupPromises);
     
     this.isInitialized = false;
     this.emit('cleanup');

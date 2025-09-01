@@ -102,3 +102,19 @@ export {
   type ModelSelectorConfig,
   type LegacyModelChoice,
 } from "./services/model-selector/index";
+
+// Intelligent Model Selector (IMS) - Phase 1 & Phase 2 Implementation
+// Phase 1: Foundation + Complete Decision Logging
+export { IMSRouter } from './services/intelligent-model-selector/IMSRouter.js';
+export { HysteresisHealthChecker } from './services/intelligent-model-selector/HysteresisHealthChecker.js';
+export { RunawayPreventionCircuitBreaker } from './services/intelligent-model-selector/RunawayPreventionCircuitBreaker.js';
+export { PreciseCostCalculator } from './services/intelligent-model-selector/PreciseCostCalculator.js';
+export { TTFBAuditor } from './services/intelligent-model-selector/TTFBAuditor.js';
+export { IdempotencyManager } from './services/intelligent-model-selector/IdempotencyManager.js';
+export { HotCache } from './services/intelligent-model-selector/HotCache.js';
+
+// Phase 2: API Integration + SSE Adaptive Control
+export { IMSAPIEndpoints } from './services/intelligent-model-selector/api/IMSAPIEndpoints.js';
+export { AdaptiveSSEController } from './services/intelligent-model-selector/api/AdaptiveSSEController.js';
+export { UnifiedProviderInterface } from './services/intelligent-model-selector/providers/UnifiedProviderInterface.js';
+export { AdminAPI } from './services/intelligent-model-selector/AdminAPI.js';

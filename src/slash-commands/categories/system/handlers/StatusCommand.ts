@@ -37,11 +37,11 @@ export class StatusCommandV2 extends SystemCommandBase {
   constructor(dependencies: any) {
     super(dependencies);
 
-    // SystemEngine 初期化
+    // SystemEngine 初期化 with null safety
     this.systemEngine = new SystemEngine({
       configPort: this.configPort,
-      monitoringPort: this.monitoringPort,
-      timeSeriesPort: this.timeSeriesPort,
+      monitoringPort: this.monitoringPort ?? dependencies.monitoringPort ?? null,
+      timeSeriesPort: this.timeSeriesPort ?? dependencies.timeSeriesPort ?? null,
       providers: dependencies.providers || [],
     });
   }

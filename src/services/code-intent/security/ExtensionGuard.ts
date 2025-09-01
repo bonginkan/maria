@@ -91,7 +91,7 @@ export class ExtensionGuard {
   /**
    * Loads plan configuration from file or cache
    */
-  private async getPlanConfig(planId: string): Promise<PlanFileSaveConfig | undefined> {
+  public async getPlanConfig(planId: string): Promise<PlanFileSaveConfig | undefined> {
     // Check cache
     if (this.plansCache.has(planId) && Date.now() - this.lastCacheUpdate < this.cacheTimeout) {
       return this.plansCache.get(planId);
@@ -236,4 +236,10 @@ export class ExtensionGuard {
     const additionalDangerous = ['sh', 'bat', 'cmd', 'ps1'];
     return this.getDangerousExtensions().includes(ext) || additionalDangerous.includes(ext);
   }
+}
+
+// Export utility function for external use
+export async function getFirestorePlanConfig(planId: string): Promise<PlanFileSaveConfig | undefined> {
+  const guard = new ExtensionGuard();
+  return guard.getPlanConfig(planId);
 }

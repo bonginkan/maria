@@ -1,4 +1,4 @@
-import { BaseService } from '../../BaseService.js';
+import { BaseService } from '../../base/BaseService.js';
 import { Phase2IntegratedSystem } from '../Phase2IntegratedSystem.js';
 import * as fs from 'fs/promises';
 import * as path from 'path';

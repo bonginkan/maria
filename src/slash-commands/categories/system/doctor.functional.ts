@@ -3,7 +3,7 @@
  * Phase 5: Real diagnostics replacing stub
  */
 
-import { existsSync, readFileSync } from 'fs';
+import { existsSync, readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 import { execSync } from 'child_process';
 
@@ -46,8 +46,8 @@ export class DoctorCommand {
       ...this.checkDependencies(),
       ...this.checkConfiguration(),
       ...this.checkNetwork(),
-      ...this.checkPermissions(),
-      ...this.checkResources()
+      ...(await this.checkPermissions()),
+      ...(await this.checkResources())
     ];
 
     // Categorize results
@@ -300,14 +300,14 @@ export class DoctorCommand {
     return checks;
   }
 
-  private checkPermissions(): DiagnosticCheck[] {
+  private async checkPermissions(): Promise<DiagnosticCheck[]> {
     const checks: DiagnosticCheck[] = [];
     
     // Check write permissions
     try {
       const testFile = resolve(process.cwd(), '.doctor-test');
-      require('fs').writeFileSync(testFile, 'test');
-      require('fs').unlinkSync(testFile);
+      writeFileSync(testFile, 'test');
+      unlinkSync(testFile);
       
       checks.push({
         category: 'Permissions',
@@ -338,7 +338,7 @@ export class DoctorCommand {
     return checks;
   }
 
-  private checkResources(): DiagnosticCheck[] {
+  private async checkResources(): Promise<DiagnosticCheck[]> {
     const checks: DiagnosticCheck[] = [];
     
     // Memory usage
@@ -360,13 +360,14 @@ export class DoctorCommand {
     });
 
     // CPU usage (approximate)
-    const cpus = require('os').cpus();
+    const { cpus } = await import('os');
+    const cpuInfo = cpus();
     checks.push({
       category: 'Resources',
       name: 'CPU Cores',
       status: 'pass',
-      message: `${cpus.length} cores available`,
-      details: { cores: cpus.length, model: cpus[0]?.model }
+      message: `${cpuInfo.length} cores available`,
+      details: { cores: cpuInfo.length, model: cpuInfo[0]?.model }
     });
 
     // Disk space (if possible)

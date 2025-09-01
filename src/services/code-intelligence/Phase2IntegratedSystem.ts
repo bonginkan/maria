@@ -1,4 +1,4 @@
-import { BaseService } from '../BaseService.js';
+import { BaseService } from '../base/BaseService.js';
 import { AdvancedValidationPipeline, ValidationResult } from './validation/AdvancedValidationPipeline.js';
 import { GitBasedSafetySystem, SafetyOperation } from './safety/GitBasedSafetySystem.js';
 import { EnterpriseQualityGates, QualityGateResult } from './quality/EnterpriseQualityGates.js';

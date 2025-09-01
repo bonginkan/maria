@@ -97,6 +97,20 @@ Usage: /research <query>
   }
 }
 
+export const metadata = {
+  name: 'research',
+  description: 'AI-powered research and analysis tools',
+  category: 'analysis',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false
+};
+
+export async function execute(context: any): Promise<any> {
+  return await researchExecutor(context.args || [], context);
+}
+
 export const researchCommand = createFunctionalCommand(
   'research',
   'analysis',

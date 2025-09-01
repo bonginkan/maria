@@ -1,17 +1,11 @@
 {
   "version": "2.0.0",
-  "generatedAt": "2025-08-31T15:02:06.181Z",
-  "totalCommands": 72,
+  "generatedAt": "2025-09-01T01:54:31.562Z",
+  "totalCommands": 79,
   "readyCount": 50,
   "partialCount": 5,
-  "brokenCount": 17,
+  "brokenCount": 24,
   "commands": {
-    "unknown/unknown": {
-      "status": "PARTIAL",
-      "hasExecute": true,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
     "system/usage": {
       "status": "READY",
       "hasExecute": true,
@@ -30,10 +24,22 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
+    "unknown/unknown": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
     "system/status": {
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/status-cloud": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
       "depsAvailable": true
     },
     "system/processes": {
@@ -64,6 +70,12 @@
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "system/doctor-cloud": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
       "depsAvailable": true
     },
     "system/disk": {
@@ -228,7 +240,39 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
+    "configuration/unknown": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
     "configuration/setup": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "code/multimodal": {
+      "status": "BROKEN",
+      "error": "Cannot find module '/Users/bongin_max/maria_code/src/services/BaseService.js' imported from /Users/bongin_max/maria_code/src/services/code-intelligence/multimodal/VoiceToCodeSystem.ts",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "code/multimodal-cloud": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "code/enhanced-code": {
+      "status": "BROKEN",
+      "error": "Cannot find module '/Users/bongin_max/maria_code/src/services/BaseService.js' imported from /Users/bongin_max/maria_code/src/services/code-intelligence/Phase2IntegratedSystem.ts",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "code/code": {
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
@@ -240,29 +284,22 @@
       "hasMetadata": true,
       "depsAvailable": false
     },
-    "code/enhanced-code": {
+    "business/sales-dashboard-cloud": {
       "status": "BROKEN",
-      "error": "Cannot read properties of undefined (reading 'ES2022')",
       "hasExecute": false,
       "hasMetadata": false,
-      "depsAvailable": false
+      "depsAvailable": true
     },
-    "code/code": {
-      "status": "READY",
-      "hasExecute": true,
-      "hasMetadata": true,
+    "business/battlecard-cloud": {
+      "status": "BROKEN",
+      "hasExecute": false,
+      "hasMetadata": false,
       "depsAvailable": true
     },
     "ai/gpu": {
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
-      "depsAvailable": true
-    },
-    "analysis/research": {
-      "status": "PARTIAL",
-      "hasExecute": true,
-      "hasMetadata": false,
       "depsAvailable": true
     },
     "system/terminal-setup": {
@@ -291,6 +328,24 @@
       "hasMetadata": false,
       "depsAvailable": false
     },
+    "analysis/research": {
+      "status": "PARTIAL",
+      "hasExecute": true,
+      "hasMetadata": false,
+      "depsAvailable": true
+    },
+    "core/update": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
+    "core/exit": {
+      "status": "READY",
+      "hasExecute": true,
+      "hasMetadata": true,
+      "depsAvailable": true
+    },
     "configuration/permissions": {
       "status": "READY",
       "hasExecute": true,
@@ -303,25 +358,7 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "configuration/unknown": {
-      "status": "PARTIAL",
-      "hasExecute": true,
-      "hasMetadata": false,
-      "depsAvailable": true
-    },
     "configuration/config": {
-      "status": "READY",
-      "hasExecute": true,
-      "hasMetadata": true,
-      "depsAvailable": true
-    },
-    "core/update": {
-      "status": "READY",
-      "hasExecute": true,
-      "hasMetadata": true,
-      "depsAvailable": true
-    },
-    "core/exit": {
       "status": "READY",
       "hasExecute": true,
       "hasMetadata": true,
@@ -338,6 +375,13 @@
       "hasExecute": false,
       "hasMetadata": false,
       "depsAvailable": true
+    },
+    "system/doctor.functional.ts": {
+      "status": "BROKEN",
+      "error": "Transform failed with 1 error:\n/Users/bongin_max/maria_code/src/slash-commands/categories/system/doctor.functional.ts:309:13: ERROR: Unexpected \"{\"",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
     },
     "monitoring/monitor.functional.ts": {
       "status": "BROKEN",
@@ -381,13 +425,20 @@
       "hasMetadata": false,
       "depsAvailable": true
     },
-    "business/sales-dashboard.secured.ts": {
+    "code/code.handler.fixed.ts": {
       "status": "BROKEN",
       "hasExecute": false,
       "hasMetadata": false,
       "depsAvailable": true
     },
-    "business/analytics.functional.ts": {
+    "code/code.command.integrated.ts": {
+      "status": "BROKEN",
+      "error": "The requested module '../../../services/code-intent/security/ExtensionGuard' does not provide an export named 'getFirestorePlanConfig'",
+      "hasExecute": false,
+      "hasMetadata": false,
+      "depsAvailable": false
+    },
+    "code/code.command.cloud.ts": {
       "status": "BROKEN",
       "hasExecute": false,
       "hasMetadata": false,
@@ -417,20 +468,13 @@
       "hasMetadata": true,
       "depsAvailable": true
     },
-    "code/code.handler.fixed.ts": {
+    "business/sales-dashboard.secured.ts": {
       "status": "BROKEN",
       "hasExecute": false,
       "hasMetadata": false,
       "depsAvailable": true
     },
-    "code/code.command.integrated.ts": {
-      "status": "BROKEN",
-      "error": "The requested module '../../../services/code-intent/security/ExtensionGuard' does not provide an export named 'getFirestorePlanConfig'",
-      "hasExecute": false,
-      "hasMetadata": false,
-      "depsAvailable": false
-    },
-    "code/code.command.cloud.ts": {
+    "business/analytics.functional.ts": {
       "status": "BROKEN",
       "hasExecute": false,
       "hasMetadata": false,

@@ -636,3 +636,24 @@ Run \`/evolve help\` for available commands
       : "• System optimized - maintain current performance";
   }
 }
+
+// Export metadata and execute function for command registry
+export const metadata = {
+  name: 'evolve',
+  description: 'Reinforcement Learning Evolution - Learn and optimize from history',
+  category: 'evolution',
+  version: '1.0.0',
+  type: 'functional' as const,
+  planRequired: 'free' as const,
+  isPreview: false,
+  aliases: ['rl', 'learn', 'optimize']
+};
+
+export async function execute(context: any): Promise<any> {
+  const command = new EvolveCommand();
+  await command.initialize();
+  return await command.execute(
+    { raw: context.args || [], parsed: {} },
+    context
+  );
+}

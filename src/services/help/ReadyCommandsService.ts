@@ -28,7 +28,48 @@ export class ReadyCommandsService {
   private manifestPath: string;
 
   constructor(manifestPath?: string) {
-    this.manifestPath = manifestPath || path.join(process.cwd(), 'src/slash-commands/READY.manifest.json');
+    if (manifestPath) {
+      this.manifestPath = manifestPath;
+    } else {
+      // Try multiple possible locations for the manifest file
+      const possiblePaths = [
+        path.join(__dirname, '../../../src/slash-commands/READY.manifest.json'),
+        path.join(__dirname, '../../slash-commands/READY.manifest.json'),
+        path.join(process.cwd(), 'src/slash-commands/READY.manifest.json'),
+        path.join(process.cwd(), 'READY.manifest.json'),
+      ];
+      
+      // Use the first path that exists, or default to the first one
+      this.manifestPath = possiblePaths[0];
+    }
+  }
+
+  /**
+   * Find the correct path for the manifest file
+   */
+  private async findManifestPath(): Promise<void> {
+    const possiblePaths = [
+      path.join(__dirname, '../../../src/slash-commands/READY.manifest.json'),
+      path.join(__dirname, '../../slash-commands/READY.manifest.json'),
+      path.join(process.cwd(), 'src/slash-commands/READY.manifest.json'),
+      path.join(process.cwd(), 'READY.manifest.json'),
+      // Additional paths for different build scenarios
+      path.resolve(__dirname, '../../../src/slash-commands/READY.manifest.json'),
+      path.resolve(process.cwd(), 'src/slash-commands/READY.manifest.json'),
+    ];
+    
+    for (const testPath of possiblePaths) {
+      try {
+        await fs.access(testPath);
+        this.manifestPath = testPath;
+        return;
+      } catch {
+        // File doesn't exist, try next path
+        continue;
+      }
+    }
+    
+    // If none found, keep the original path (will fail with proper error message)
   }
 
   /**
@@ -36,6 +77,9 @@ export class ReadyCommandsService {
    */
   async loadReadyCommands(): Promise<void> {
     try {
+      // Find the correct manifest file path
+      await this.findManifestPath();
+      
       // Try to load from existing manifest first
       const content = await fs.readFile(this.manifestPath, 'utf-8');
       const manifest = JSON.parse(content);

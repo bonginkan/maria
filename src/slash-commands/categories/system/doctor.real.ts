@@ -5,7 +5,7 @@
  */
 
 import { withLightPipe, type CommandContext, type CommandResult } from '../../shared/secure-pipe.js';
-import { existsSync, statSync } from 'fs';
+import { existsSync, statSync, writeFileSync, unlinkSync } from 'fs';
 import { resolve } from 'path';
 import { execSync } from 'child_process';
 
@@ -238,14 +238,14 @@ class DoctorCommandImpl {
       const testFile = resolve(process.cwd(), '.doctor-test-' + Date.now());
       
       // Try to write
-      require('fs').writeFileSync(testFile, 'test');
+      writeFileSync(testFile, 'test');
       
       // Check if we can read it back
       const stats = statSync(testFile);
       const canWrite = stats.mode & 0o200;
       
       // Clean up
-      require('fs').unlinkSync(testFile);
+      unlinkSync(testFile);
       
       if (canWrite) {
         return {

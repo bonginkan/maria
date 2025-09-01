@@ -6,6 +6,16 @@ const _norm = (s: string) => s.normalize("NFKC").trim().toLowerCase();
 
 /** dist<=1 を高速判定(insert/delete/substitute いずれか1回を許可) */
 
+export const metadata = {
+  name: 'unknown',
+  description: 'Handle unknown commands with suggestions',
+  category: 'unknown',
+  planRequired: 'free' as const,
+  type: 'functional' as const,
+  isPreview: false,
+  version: '1.0.0'
+};
+
 export interface UnknownMetadata {
   name: 'unknown';
   description: 'Handle unknown commands with suggestions';
@@ -121,6 +131,25 @@ export function formatUnknownCommandMessage(
   const docLine = docUrl ? `See: ${docUrl}` : "";
 
   return [unknownLine, sugLine, docLine].filter(Boolean).join("\n");
+}
+
+/** Execute function for command registry */
+export async function execute(context: any): Promise<any> {
+  const input = context?.input ?? 'unknown';
+  const message = formatUnknownCommandMessage(input, {
+    fuzzy: true,
+    maxSuggestions: 5,
+    color: true
+  });
+  
+  return {
+    endReason: 'partial',
+    message: message,
+    data: {
+      suggestions: suggestCommands(input, 5, true),
+      type: 'unknown_command'
+    }
+  };
 }
 
 /** 便利関数:メッセージ出力＋終了コード設定 */
